@@ -65,8 +65,18 @@ def register():
             user.instagram = request.form.get('instagram')
             user.twitter = request.form.get('twitter')
             user.facebook = request.form.get('facebook')
+            user.tiktok = request.form.get('tiktok')
+            user.youtube = request.form.get('youtube')
             user.github = request.form.get('github')
             user.behance = request.form.get('behance')
+            user.dribbble = request.form.get('dribbble')
+            user.pinterest = request.form.get('pinterest')
+            user.snapchat = request.form.get('snapchat')
+            user.telegram = request.form.get('telegram')
+            
+            user.bio = request.form.get('bio')
+            years_exp = request.form.get('years_experience')
+            user.years_experience = int(years_exp) if years_exp else None
             
             date_of_birth = request.form.get('date_of_birth')
             if date_of_birth:

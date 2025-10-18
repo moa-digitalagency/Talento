@@ -7,7 +7,7 @@ bp = Blueprint('api', __name__, url_prefix='/api')
 
 @bp.route('/countries')
 def get_countries():
-    countries = Country.query.all()
+    countries = Country.query.order_by(Country.name).all()
     return jsonify([{
         'id': c.id,
         'name': c.name,
@@ -16,7 +16,7 @@ def get_countries():
 
 @bp.route('/cities')
 def get_cities():
-    cities = City.query.all()
+    cities = City.query.order_by(City.name).all()
     return jsonify([{
         'id': c.id,
         'name': c.name,

@@ -33,9 +33,17 @@ class User(UserMixin, db.Model):
     twitter = db.Column(db.String(255))
     facebook = db.Column(db.String(255))
     tiktok = db.Column(db.String(255))
+    youtube = db.Column(db.String(255))
     github = db.Column(db.String(255))
     behance = db.Column(db.String(255))
     dribbble = db.Column(db.String(255))
+    pinterest = db.Column(db.String(255))
+    snapchat = db.Column(db.String(255))
+    telegram = db.Column(db.String(255))
+    
+    bio = db.Column(db.Text)
+    years_experience = db.Column(db.Integer)
+    profile_score = db.Column(db.Integer, default=0)
     
     availability = db.Column(db.String(50))
     work_mode = db.Column(db.String(50))
