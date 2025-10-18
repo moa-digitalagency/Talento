@@ -8,6 +8,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///talento.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
+    ENCRYPTION_KEY = os.environ.get('ENCRYPTION_KEY')
+    
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
     UPLOAD_FOLDER = 'app/static/uploads'
     ALLOWED_PHOTO_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -21,3 +23,7 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER') or 'noreply@talento.app'
+    
+    SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+    
+    OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
