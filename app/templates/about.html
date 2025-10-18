@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}À propos - Talento{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-6">À propos de Talento</h1>
+    
+    <div class="card mb-6">
+        <h2 class="text-2xl font-semibold mb-4">Notre Mission</h2>
+        <p class="text-gray-700 leading-relaxed">
+            Talento est une plateforme innovante dédiée à la centralisation et à la valorisation des profils de talents. 
+            Notre objectif est de faciliter la connexion entre les talents et les opportunités professionnelles.
+        </p>
+    </div>
+
+    <div class="card mb-6">
+        <h2 class="text-2xl font-semibold mb-4">Fonctionnalités</h2>
+        <ul class="list-disc list-inside space-y-2 text-gray-700">
+            <li>Création de profil personnalisé avec photo et CV</li>
+            <li>Sélection multiple de talents et compétences</li>
+            <li>Génération d'identifiant unique et QR code</li>
+            <li>Espace personnel pour gérer votre profil</li>
+            <li>Exports multiples (Excel, CSV, PDF)</li>
+            <li>Sécurité et confidentialité des données</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

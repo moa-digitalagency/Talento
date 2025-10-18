@@ -1,0 +1,116 @@
+Créer une webapp avec backend Python et frontend html et css taolwind pour centraliser des profils de talents. Les utilisateurs s’inscrivent, renseignent leurs informations, sélectionnent leurs talents et joignent des pièces (photo, CV, portefolio, réseaux sociaux).
+
+Parcours utilisateur
+
+Inscription
+
+Formulaire d’informations personnelles (obligatoire).
+
+Coordonnées : email (obligatoire), téléphone (appel & WhatsApp obligatoires).
+
+Photo de profil.
+
+Talents (sélection multiple).
+
+Origine (pays).
+
+Ville au Maroc (pour le code).
+
+CV (PDF/Word) et/ou lien vers portfolio.
+
+Réseaux sociaux (liens).
+
+Génération d’un identifiant
+
+Code alphanumérique :
+PPVVVNNNNG
+
+PP : 2 premières lettres du pays d’origine (ex. MA, FR, SN).
+
+VVV : 3 lettres de la ville au Maroc (ex. RAB, CASA → CAS, TNG).
+
+NNNN : 4 chiffres aléatoires.
+
+G : 1 lettre du genre (M/F/N).
+
+Exemple : MA-CAS-4821-F (affichage avec tirets pour la lisibilité, stockage sans tirets).
+
+Regex de validation (stockage sans tirets) : ^[A-Z]{2}[A-Z]{3}\d{4}[MFN]$
+
+Génération d’un QR code pointant vers la fiche profil.
+
+Confirmation
+
+Envoi d’un email de confirmation avec récapitulatif.
+
+Création automatique d’un compte : identifiant = email, mot de passe aléatoire (envoyé par email).
+
+Espace personnel pour consulter/modifier le profil.
+
+Champs à collecter (suggestion)
+
+Identité : Nom, Prénom, Date de naissance, Genre (M/F/Non précisé), Nationalité(s).
+
+Coordonnées : Email, Téléphone (appel), WhatsApp, Ville (Maroc), Adresse (optionnel).
+
+Talents (multi-sélection, avec émojis) – exemples :
+
+🍳 Cuisine, 🧹 Ménage, 📸 Modèle photo, 🧵 Mannequinat, 💻 Informatique, 🧱 Maçonnerie, 🎶 Musique, 🔧 Plomberie, ⚡ Électricité, 🛠️ Bricolage, 🚗 Chauffeur, 👩‍🏫 Formation, 🧑‍🍳 Pâtisserie, 🧑‍🎨 Design, 📝 Rédaction, 📣 Community management, 🖥️ Dév. web, 📱 Dév. mobile, 🎥 Vidéo, 🖌️ Graphisme, 🌐 SEO/SEA, 📊 Data/BI, 🤖 IA/ML, 🎭 Animation/Événementiel… (liste extensible)
+
+Origine(s) : Pays (mono-sélection), Talents = multi-sélection.
+
+Médias & docs : Photo de profil (JPEG/PNG ≤ 5 Mo), CV (PDF/DOC/DOCX ≤ 10 Mo), Portfolio (URL), Réseaux sociaux (LinkedIn, Instagram, X, Facebook, TikTok, GitHub, Behance, Dribbble…).
+
+Disponibilités & modalités (optionnel) : temps plein/partiel, freelance, remote, fourchette tarifaire.
+
+Côté administrateur
+
+Accès complet à la base.
+
+Recherche & filtres croisés : par talents, ville, pays d’origine, disponibilité, genre, date d’inscription, présence de CV/portfolio, etc.
+
+Recherche par QR code ou par code alphanumérique.
+
+Exports : Excel (XLSX), CSV, PDF (liste et fiche individuelle).
+
+Fiche talent : consultation détaillée + export PDF.
+
+Règles & validations
+
+Email valide et unique.
+
+Téléphone/WhatsApp au format international (+212… pour le Maroc), validation de longueur.
+
+Poids et formats de fichiers contrôlés (voir limites ci-dessus).
+
+Talents : multi-sélection ; Pays d’origine : mono-sélection.
+
+Génération et validation du code selon le schéma décrit.
+
+Mot de passe généré (12+ caractères, aléatoire).
+
+Captcha/anti-bot à l’inscription.
+
+Notifications
+
+Email de confirmation de candidature avec : récapitulatif, identifiant (email), mot de passe temporaire, lien vers l’espace profil.
+
+Option : email à l’admin pour chaque nouvelle candidature.
+
+Design
+
+Professionnel, esthétique et responsive (mobile-first).
+
+Respect des contrastes et accessibilité (labels, erreurs visibles, lecture d’écran).
+
+Icônes/émojis pour les catégories de talents.
+
+Sécurité & conformité
+
+Stockage chiffré des mots de passe (bcrypt/argon2).
+
+Scan antivirus sur upload, limitation de taille, whitelist de formats.
+
+Politique de confidentialité (RGPD-like), consentement pour le traitement des données.
+
+Journalisation basique (création, modification de profil, exports).

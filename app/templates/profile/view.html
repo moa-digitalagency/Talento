@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Profil de {{ user.full_name }} - Talento{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4">
+    <div class="card">
+        <div class="text-center mb-6">
+            {% if user.photo_filename %}
+            <img src="{{ url_for('static', filename='uploads/photos/' + user.photo_filename) }}" alt="{{ user.full_name }}" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+            {% endif %}
+            <h1 class="text-3xl font-bold">{{ user.full_name }}</h1>
+            <p class="text-gray-600">{{ user.formatted_code }}</p>
+        </div>
+        
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-2">Talents</h3>
+            <div class="flex flex-wrap gap-2">
+                {% for user_talent in user.talents %}
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                    {{ user_talent.talent.emoji }} {{ user_talent.talent.name }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div>
+                <p class="text-gray-600 mb-2"><strong>Email:</strong> {{ user.email }}</p>
+                <p class="text-gray-600 mb-2"><strong>Téléphone:</strong> {{ user.phone }}</p>
+                {% if user.whatsapp %}
+                <p class="text-gray-600 mb-2"><strong>WhatsApp:</strong> {{ user.whatsapp }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                {% if user.country %}
+                <p class="text-gray-600 mb-2"><strong>Pays:</strong> {{ user.country.name }}</p>
+                {% endif %}
+                {% if user.city %}
+                <p class="text-gray-600 mb-2"><strong>Ville:</strong> {{ user.city.name }}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if user.portfolio_url or user.linkedin or user.github %}
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-2">Liens</h3>
+            <div class="space-y-2">
+                {% if user.portfolio_url %}
+                <p><a href="{{ user.portfolio_url }}" target="_blank" class="text-primary hover:underline">Portfolio</a></p>
+                {% endif %}
+                {% if user.linkedin %}
+                <p><a href="{{ user.linkedin }}" target="_blank" class="text-primary hover:underline">LinkedIn</a></p>
+                {% endif %}
+                {% if user.github %}
+                <p><a href="{{ user.github }}" target="_blank" class="text-primary hover:underline">GitHub</a></p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

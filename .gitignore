@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+.pythonlibs/
+
+# Flask
+instance/
+.webassets-cache
+*.db
+*.sqlite3
+
+# Environment
+.env
+
+# Uploads
+app/static/uploads/photos/*
+app/static/uploads/cvs/*
+app/static/uploads/qrcodes/*
+!app/static/uploads/photos/.gitkeep
+!app/static/uploads/cvs/.gitkeep
+!app/static/uploads/qrcodes/.gitkeep
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# CSS
+app/static/css/output.css
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+/tmp/
+
+# Replit
+.cache/
+.config/
+.local/
+.upm/
