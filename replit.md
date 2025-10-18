@@ -74,8 +74,9 @@ talento/
 
 ### Compte Admin par défaut
 - **Email**: admin@talento.app
-- **Mot de passe**: admin123
+- **Mot de passe**: Configurable via variable d'environnement `ADMIN_PASSWORD` (défaut: admin123 en développement)
 - **Code unique**: MARAB0001N
+- **⚠️ IMPORTANT**: En production, définir la variable d'environnement `ADMIN_PASSWORD` avec un mot de passe sécurisé
 
 ### Format du code unique
 ```
@@ -111,6 +112,15 @@ flask db upgrade     # Appliquer migration
 ```
 
 ### Seed data
+La base de données est automatiquement initialisée au démarrage de l'application avec:
+- 54 pays africains
+- 12 villes marocaines
+- 74 talents organisés en 14 catégories
+- Compte administrateur (si ADMIN_PASSWORD est défini)
+
+Le seeding est **idempotent** : il ne duplique pas les données existantes.
+
+Pour réinitialiser manuellement:
 ```bash
 python seed_data.py
 ```
@@ -167,15 +177,20 @@ python seed_data.py
    - Thème sombre
    - Export profil individuel PDF
 
-## 🌐 Configuration Email
+## 🌐 Configuration
 
-Pour activer les emails de confirmation:
-1. Configurer les variables d'environnement:
-   - MAIL_SERVER
-   - MAIL_PORT
-   - MAIL_USERNAME
-   - MAIL_PASSWORD
-2. Utiliser un service SMTP (Gmail, SendGrid, etc.)
+### Variables d'environnement
+
+**Production (obligatoire):**
+- `ADMIN_PASSWORD`: Mot de passe sécurisé pour le compte admin (⚠️ Ne jamais utiliser le défaut 'admin123' en production)
+
+**Email (optionnel):**
+- `MAIL_SERVER`: Serveur SMTP
+- `MAIL_PORT`: Port SMTP
+- `MAIL_USERNAME`: Nom d'utilisateur SMTP
+- `MAIL_PASSWORD`: Mot de passe SMTP
+
+Utiliser un service SMTP (Gmail, SendGrid, etc.) pour les emails de confirmation.
 
 ## 📦 Technologies utilisées
 
@@ -213,19 +228,24 @@ Pour activer les emails de confirmation:
   - **AMÉLIORATION**: 90+ talents organisés par 11 catégories
   - **AMÉLIORATION**: Limite de 5 talents maximum
   - **AMÉLIORATION**: Redirection automatique vers inscription depuis page d'accueil
+  - **AMÉLIORATION**: Seeding automatique de la base de données au démarrage (idempotent)
+  - **AMÉLIORATION**: Style outline pour les icônes de sections (bordures colorées au lieu de fonds pleins)
+  - **AMÉLIORATION**: Support de la variable d'environnement ADMIN_PASSWORD pour sécuriser le compte admin
 
 ## 🎯 État actuel
 
 Le projet est fonctionnel avec les fonctionnalités de base :
 - ✅ Inscription utilisateur complète avec design coloré et sections organisées
+- ✅ Style outline pour les icônes de sections (bordures colorées)
 - ✅ 54 pays africains avec drapeaux
-- ✅ 90+ talents organisés en 11 catégories (Construction, Technologie, Créatif, Médias, Marketing, Artistique, Services, Transport, Éducation, Santé, Commerce, Événementiel, Bureautique)
+- ✅ 74 talents organisés en 14 catégories (Construction, Restauration, Technologie, Créatif, Médias, Marketing, Artistique, Services, Transport, Éducation, Santé, Commerce, Événementiel, Bureautique)
 - ✅ Limite de 5 talents maximum avec compteur en temps réel
 - ✅ Authentification
 - ✅ Génération codes/QR
 - ✅ Dashboard utilisateur
 - ✅ Dashboard admin
-- ✅ Base de données seedée
+- ✅ Base de données seedée automatiquement au démarrage
+- ✅ Configuration sécurisée via variables d'environnement
 
 **Prêt pour**: Inscription de nouveaux talents et consultation des profils.
 

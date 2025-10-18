@@ -180,19 +180,27 @@ def seed_database():
             db.session.add(talent)
     
     if not User.query.filter_by(email='admin@talento.app').first():
-        admin = User()
-        admin.first_name = 'Admin'
-        admin.last_name = 'Talento'
-        admin.email = 'admin@talento.app'
-        admin.set_password('admin123')
-        admin.phone = '+212600000000'
-        admin.whatsapp = '+212600000000'
-        admin.gender = 'N'
-        admin.is_admin = True
-        admin.unique_code = 'MA' + 'RAB' + '0001' + 'N'
-        admin.country_id = 1
-        admin.city_id = 1
-        db.session.add(admin)
+        morocco = Country.query.filter_by(code='MA').first()
+        rabat = City.query.filter_by(code='RAB').first()
+        
+        if morocco and rabat:
+            admin = User()
+            admin.first_name = 'Admin'
+            admin.last_name = 'Talento'
+            admin.email = 'admin@talento.app'
+            import os
+            admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
+            admin.set_password(admin_password)
+            admin.phone = '+212600000000'
+            admin.whatsapp = '+212600000000'
+            admin.gender = 'N'
+            admin.is_admin = True
+            admin.unique_code = 'MA' + 'RAB' + '0001' + 'N'
+            admin.country_id = morocco.id
+            admin.city_id = rabat.id
+            db.session.add(admin)
+        else:
+            print("WARNING: Could not create admin user - Morocco or Rabat not found in database")
     
     db.session.commit()
 
