@@ -50,6 +50,9 @@ class User(UserMixin, db.Model):
     work_mode = db.Column(db.String(50))
     rate_range = db.Column(db.String(100))
     
+    cv_analysis = db.Column(db.Text)
+    cv_analyzed_at = db.Column(db.DateTime)
+    
     is_admin = db.Column(db.Boolean, default=False)
     account_active = db.Column(db.Boolean, default=True)
     

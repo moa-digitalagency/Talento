@@ -11,7 +11,22 @@ mail = Mail()
 migrate = Migrate()
 
 def seed_database():
-    """Seed the database with initial data (idempotent)"""
+    """
+    Seed the database with initial data (idempotent)
+    DEPRECATED: Utiliser migrations_init.py à la place
+    """
+    import subprocess
+    import sys
+    try:
+        print("🔄 Exécution du script de migration...")
+        subprocess.run([sys.executable, 'migrations_init.py'], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"⚠️  Erreur lors de la migration: {e}")
+        print("Utilisation du seeding interne de secours...")
+        _seed_database_fallback()
+
+def _seed_database_fallback():
+    """Seed de secours (ancienne méthode)"""
     from app.models.user import User
     from app.models.talent import Talent
     from app.models.location import Country, City
