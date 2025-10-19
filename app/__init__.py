@@ -194,7 +194,14 @@ def _seed_database_fallback():
             talent = Talent(**data)
             db.session.add(talent)
     
-    if not User.query.filter_by(email='admin@talento.app').first():
+    admin_email = 'admin@talento.com'
+    admin_code = 'MARAB0001N'
+    
+    admin = User.query.filter(
+        (User.email == admin_email) | (User.unique_code == admin_code)
+    ).first()
+    
+    if not admin:
         morocco = Country.query.filter_by(code='MA').first()
         rabat = City.query.filter_by(code='RAB').first()
         
@@ -202,22 +209,30 @@ def _seed_database_fallback():
             admin = User()
             admin.first_name = 'Admin'
             admin.last_name = 'Talento'
-            admin.email = 'admin@talento.app'
+            admin.email = admin_email
             import os
-            admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
+            admin_password = os.environ.get('ADMIN_PASSWORD', '@4dm1n')
             admin.set_password(admin_password)
             admin.phone = '+212600000000'
             admin.whatsapp = '+212600000000'
             admin.gender = 'N'
             admin.is_admin = True
-            admin.unique_code = 'MA' + 'RAB' + '0001' + 'N'
+            admin.unique_code = admin_code
             admin.country_id = morocco.id
             admin.city_id = rabat.id
             db.session.add(admin)
+            
+            try:
+                db.session.commit()
+                print(f"✅ Compte admin créé (fallback): {admin_email}")
+            except Exception as e:
+                db.session.rollback()
+                print(f"⚠️  Admin existe déjà ou erreur (fallback): {e}")
         else:
-            print("WARNING: Could not create admin user - Morocco or Rabat not found in database")
-    
-    db.session.commit()
+            print("⚠️  Impossible de créer admin - Morocco/Rabat introuvables")
+    else:
+        print(f"✅ Compte admin existe déjà (fallback): {admin.email}")
+        db.session.commit()
 
 def create_app(config_class=Config):
     app = Flask(__name__)

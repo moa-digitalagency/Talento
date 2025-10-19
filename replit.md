@@ -2,7 +2,7 @@
 
 ## 📋 Vue d'ensemble
 
-Talento est une application web de gestion de profils de talents permettant aux utilisateurs de centraliser leurs compétences, CV, portfolios et informations de contact en un seul endroit. Chaque profil génère automatiquement un code unique et un QR code pour faciliter le partage.
+Talento est une application web intelligente de gestion de profils de talents permettant aux utilisateurs de centraliser leurs compétences, CV, portfolios et informations de contact en un seul endroit. Chaque profil génère automatiquement un code unique et un QR code pour faciliter le partage. **Version 2.0** inclut l'analyse IA des CV, exports avancés, et dashboard admin complet.
 
 ## 🏗️ Architecture
 
@@ -11,13 +11,19 @@ Talento est une application web de gestion de profils de talents permettant aux 
 - **ORM**: SQLAlchemy avec Flask-SQLAlchemy
 - **Base de données**: PostgreSQL (Helium - Replit)
 - **Authentification**: Flask-Login
-- **Migrations**: Flask-Migrate (Alembic)
-- **Email**: Flask-Mail
+- **Migrations**: Script auto-réparable (`migrations_init.py`)
+- **Email**: Flask-Mail / SendGrid
+- **IA**: OpenRouter (analyse de CV)
+- **Chiffrement**: Fernet (données sensibles)
 
 ### Frontend
 - **Templates**: Jinja2 (HTML)
 - **CSS**: Tailwind CSS 3.4
 - **Build**: npm/Tailwind CLI
+
+### Services
+- **CV Analyzer** (`app/services/cv_analyzer.py`) - Analyse IA des CV avec scoring
+- **Export Service** (`app/services/export_service.py`) - Exports Excel, CSV, PDF
 
 ## 📁 Structure du projet
 
@@ -26,29 +32,40 @@ talento/
 ├── app/
 │   ├── __init__.py           # Application factory
 │   ├── models/               # Modèles de base de données
-│   │   ├── user.py          # Modèle User
+│   │   ├── user.py          # Modèle User (+ cv_analysis, cv_analyzed_at)
 │   │   ├── talent.py        # Modèles Talent et UserTalent
 │   │   └── location.py      # Modèles Country et City
 │   ├── routes/              # Routes/Controllers
 │   │   ├── main.py          # Routes principales
 │   │   ├── auth.py          # Authentification
 │   │   ├── profile.py       # Profils utilisateur
-│   │   ├── admin.py         # Administration
+│   │   ├── admin.py         # Administration (filtres, exports, analyse IA)
 │   │   └── api.py           # API endpoints
+│   ├── services/            # Services métier (NOUVEAU)
+│   │   ├── cv_analyzer.py   # Analyse IA des CV
+│   │   └── export_service.py# Exports Excel/CSV/PDF
 │   ├── templates/           # Templates HTML
+│   │   ├── admin/
+│   │   │   ├── dashboard.html    # Dashboard avec filtres
+│   │   │   ├── users.html
+│   │   │   └── user_detail.html  # Fiche talent (NOUVEAU)
+│   │   └── ...
 │   ├── static/              # Fichiers statiques
 │   │   ├── css/
-│   │   ├── js/
-│   │   └── uploads/         # Fichiers uploadés
+│   │   └── uploads/         # Fichiers uploadés (photos, CVs, QR codes)
 │   └── utils/               # Utilitaires
 │       ├── id_generator.py  # Génération codes uniques
 │       ├── qr_generator.py  # Génération QR codes
 │       ├── email_service.py # Service email
-│       └── file_handler.py  # Gestion fichiers
+│       ├── file_handler.py  # Gestion fichiers
+│       └── encryption.py    # Chiffrement données sensibles
+├── migrations_init.py        # Script de migration robuste (NOUVEAU)
 ├── app.py                    # Point d'entrée
 ├── config.py                 # Configuration
-├── seed_data.py             # Données initiales
-└── requirements.txt         # Dépendances Python
+├── seed_data.py             # Données initiales (legacy)
+├── requirements.txt         # Dépendances Python
+├── CHANGELOG.md             # Historique des changements (NOUVEAU)
+└── replit.md                # Documentation
 ```
 
 ## 🚀 Fonctionnalités
@@ -63,20 +80,36 @@ talento/
 - ✅ Espace personnel pour consulter le profil
 - 🚧 Modification du profil (en cours)
 
-### Admin
-- ✅ Dashboard administrateur
-- ✅ Liste de tous les talents
-- ✅ Recherche et filtres basiques
-- 🚧 Exports (Excel, CSV, PDF) - à implémenter
-- 🚧 Filtres avancés - à implémenter
+### Admin (V2.0 - Complet)
+- ✅ Dashboard administrateur avec statistiques
+- ✅ **Filtres croisés avancés**:
+  - Recherche textuelle (nom, email, code)
+  - Recherche par QR code / code alphanumérique
+  - Filtre par talents (multi-sélection)
+  - Filtre par pays, ville, genre
+  - Filtre par disponibilité
+  - Filtre par présence CV/portfolio
+  - Filtre par dates d'inscription
+- ✅ **Exports complets**:
+  - Excel (XLSX) avec mise en forme
+  - CSV pour analyse de données
+  - PDF liste complète
+  - PDF fiche talent individuelle
+- ✅ **Analyse IA des CV**:
+  - Score automatique (0-100)
+  - Détection des compétences
+  - Points forts / faibles
+  - Recommandations personnalisées
+- ✅ Fiche talent détaillée avec toutes les infos
+- ✅ Recherche par QR code en temps réel
 
 ## 🔑 Informations importantes
 
 ### Compte Admin par défaut
-- **Email**: admin@talento.app
-- **Mot de passe**: Configurable via variable d'environnement `ADMIN_PASSWORD` (défaut: admin123 en développement)
+- **Email**: admin@talento.com (changé depuis v2.0)
+- **Mot de passe**: Configurable via variable d'environnement `ADMIN_PASSWORD` (défaut: @4dm1n)
 - **Code unique**: MARAB0001N
-- **⚠️ IMPORTANT**: En production, définir la variable d'environnement `ADMIN_PASSWORD` avec un mot de passe sécurisé
+- **⚠️ IMPORTANT**: Toujours définir `ADMIN_PASSWORD` avec un mot de passe fort en production
 
 ### Format du code unique
 ```
@@ -91,7 +124,10 @@ Exemple: MA-CAS-4821-F
 ### Base de données
 - PostgreSQL sur Replit (Helium)
 - Tables: users, talents, user_talents, countries, cities
-- Migrations gérées via Flask-Migrate
+- **Auto-migration** au démarrage via `migrations_init.py`
+- Vérification et correction automatique de la structure
+- Ajout automatique des colonnes manquantes
+- Seeding idempotent (ne duplique pas les données)
 
 ## 🛠️ Développement
 
@@ -111,18 +147,23 @@ flask db migrate     # Créer migration
 flask db upgrade     # Appliquer migration
 ```
 
-### Seed data
-La base de données est automatiquement initialisée au démarrage de l'application avec:
-- 54 pays africains
-- 12 villes marocaines
-- 74 talents organisés en 14 catégories
-- Compte administrateur (si ADMIN_PASSWORD est défini)
+### Migrations et Initialisation
 
-Le seeding est **idempotent** : il ne duplique pas les données existantes.
+**Le script `migrations_init.py` s'exécute automatiquement au démarrage** et effectue:
 
-Pour réinitialiser manuellement:
+1. ✅ Vérification de la structure de la base de données
+2. ✅ Création des tables manquantes
+3. ✅ Ajout des colonnes manquantes (cv_analysis, cv_analyzed_at, etc.)
+4. ✅ Seeding des 54 pays africains
+5. ✅ Seeding des 12 villes marocaines
+6. ✅ Seeding des 74 talents (14 catégories)
+7. ✅ Création du compte super admin (admin@talento.com)
+
+Le processus est **idempotent** : peut être exécuté plusieurs fois sans créer de doublons.
+
+Pour exécuter manuellement:
 ```bash
-python seed_data.py
+python migrations_init.py
 ```
 
 ## 📊 Modèle de données
@@ -181,16 +222,52 @@ python seed_data.py
 
 ### Variables d'environnement
 
-**Production (obligatoire):**
-- `ADMIN_PASSWORD`: Mot de passe sécurisé pour le compte admin (⚠️ Ne jamais utiliser le défaut 'admin123' en production)
+**Sécurité (obligatoire):**
+- `SECRET_KEY`: Clé secrète Flask pour sessions (auto-généré si absent)
+- `ENCRYPTION_KEY`: Clé de chiffrement Fernet pour données sensibles (**OBLIGATOIRE**)
+- `ADMIN_PASSWORD`: Mot de passe compte admin (défaut: @4dm1n)
 
-**Email (optionnel):**
-- `MAIL_SERVER`: Serveur SMTP
-- `MAIL_PORT`: Port SMTP
-- `MAIL_USERNAME`: Nom d'utilisateur SMTP
-- `MAIL_PASSWORD`: Mot de passe SMTP
+**Intelligence Artificielle (requis pour analyse CV):**
+- `OPENROUTER_API_KEY`: Clé API OpenRouter pour analyse IA des CV
+  - Obtenir sur: https://openrouter.ai/
+  - Modèle utilisé: `meta-llama/llama-3.1-8b-instruct:free`
 
-Utiliser un service SMTP (Gmail, SendGrid, etc.) pour les emails de confirmation.
+**Email (optionnel - pour notifications):**
+- `SENDGRID_API_KEY`: Clé API SendGrid pour envoi d'emails
+  - Obtenir sur: https://sendgrid.com/
+  - Plan gratuit: 100 emails/jour
+- OU configuration SMTP manuelle:
+  - `MAIL_SERVER`: Serveur SMTP
+  - `MAIL_PORT`: Port SMTP (défaut: 587)
+  - `MAIL_USERNAME`: Nom d'utilisateur SMTP
+  - `MAIL_PASSWORD`: Mot de passe SMTP
+  - `MAIL_DEFAULT_SENDER`: Expéditeur par défaut
+
+**Base de données (auto-configuré sur Replit):**
+- `DATABASE_URL`: URL PostgreSQL (fourni automatiquement par Replit Helium)
+
+### Première Installation
+
+1. **Configurer les secrets obligatoires** dans Replit Secrets:
+   ```
+   ENCRYPTION_KEY=<clé générée>
+   SECRET_KEY=<chaîne aléatoire forte>
+   ADMIN_PASSWORD=<mot de passe admin sécurisé>
+   ```
+
+2. **(Optionnel) Configurer les API externes**:
+   ```
+   OPENROUTER_API_KEY=<votre clé>
+   SENDGRID_API_KEY=<votre clé>
+   ```
+
+3. **Démarrer l'application** - Le script `migrations_init.py` s'exécute automatiquement
+
+### Génération de la clé de chiffrement
+
+```bash
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+```
 
 ## 📦 Technologies utilisées
 

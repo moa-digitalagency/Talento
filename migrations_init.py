@@ -258,11 +258,15 @@ def seed_talents():
     return True
 
 def create_admin_user():
-    """Créer le compte super admin"""
+    """Créer le compte super admin (idempotent)"""
     print("\n👤 Vérification du compte admin...")
     
     admin_email = 'admin@talento.com'
-    admin = User.query.filter_by(email=admin_email).first()
+    admin_code = 'MARAB0001N'
+    
+    admin = User.query.filter(
+        (User.email == admin_email) | (User.unique_code == admin_code)
+    ).first()
     
     if not admin:
         print("➕ Création du compte super admin...")
@@ -276,7 +280,7 @@ def create_admin_user():
             email=admin_email,
             first_name='Admin',
             last_name='Talento',
-            unique_code='MARAB0001N',
+            unique_code=admin_code,
             is_admin=True,
             account_active=True,
             country_id=morocco.id if morocco else None,
@@ -287,17 +291,33 @@ def create_admin_user():
         admin.phone = '+212600000000'
         
         db.session.add(admin)
-        db.session.commit()
-        print(f"✅ Compte admin créé: {admin_email}")
-        print(f"   Code unique: MARAB0001N")
-        print(f"   Mot de passe: {'[Variable ADMIN_PASSWORD]' if os.environ.get('ADMIN_PASSWORD') else '@4dm1n'}")
+        
+        try:
+            db.session.commit()
+            print(f"✅ Compte admin créé: {admin_email}")
+            print(f"   Code unique: {admin_code}")
+            print(f"   Mot de passe: {'[Variable ADMIN_PASSWORD]' if os.environ.get('ADMIN_PASSWORD') else '@4dm1n'}")
+        except Exception as e:
+            db.session.rollback()
+            admin = User.query.filter(
+                (User.email == admin_email) | (User.unique_code == admin_code)
+            ).first()
+            if admin:
+                print(f"✅ Compte admin existe déjà (détecté après rollback): {admin.email}")
+            else:
+                print(f"⚠️  Erreur inattendue lors de la création admin: {e}")
+                raise
     else:
-        print(f"✅ Compte admin existe déjà: {admin_email}")
+        print(f"✅ Compte admin existe déjà: {admin.email}")
         if admin.email != admin_email or not admin.is_admin:
             admin.email = admin_email
             admin.is_admin = True
-            db.session.commit()
-            print("   ℹ️  Compte admin mis à jour")
+            try:
+                db.session.commit()
+                print("   ℹ️  Compte admin mis à jour")
+            except Exception as e:
+                db.session.rollback()
+                print(f"   ⚠️  Impossible de mettre à jour: {e}")
     
     return True
 
