@@ -69,60 +69,60 @@ def seed_countries():
     print("\n🌍 Initialisation des pays africains...")
     
     countries_data = [
-        {'name': 'Maroc', 'code': 'MA'},
+        {'name': 'Afrique du Sud', 'code': 'ZA'},
         {'name': 'Algérie', 'code': 'DZ'},
-        {'name': 'Tunisie', 'code': 'TN'},
-        {'name': 'Libye', 'code': 'LY'},
-        {'name': 'Égypte', 'code': 'EG'},
-        {'name': 'Mauritanie', 'code': 'MR'},
-        {'name': 'Mali', 'code': 'ML'},
-        {'name': 'Sénégal', 'code': 'SN'},
-        {'name': 'Gambie', 'code': 'GM'},
-        {'name': 'Guinée-Bissau', 'code': 'GW'},
-        {'name': 'Guinée', 'code': 'GN'},
-        {'name': 'Sierra Leone', 'code': 'SL'},
-        {'name': 'Liberia', 'code': 'LR'},
-        {'name': "Côte d'Ivoire", 'code': 'CI'},
-        {'name': 'Ghana', 'code': 'GH'},
-        {'name': 'Togo', 'code': 'TG'},
-        {'name': 'Bénin', 'code': 'BJ'},
-        {'name': 'Nigéria', 'code': 'NG'},
-        {'name': 'Niger', 'code': 'NE'},
-        {'name': 'Burkina Faso', 'code': 'BF'},
-        {'name': 'Cameroun', 'code': 'CM'},
-        {'name': 'Tchad', 'code': 'TD'},
-        {'name': 'République Centrafricaine', 'code': 'CF'},
-        {'name': 'Guinée Équatoriale', 'code': 'GQ'},
-        {'name': 'Gabon', 'code': 'GA'},
-        {'name': 'Congo', 'code': 'CG'},
-        {'name': 'RD Congo', 'code': 'CD'},
         {'name': 'Angola', 'code': 'AO'},
+        {'name': 'Bénin', 'code': 'BJ'},
+        {'name': 'Botswana', 'code': 'BW'},
+        {'name': 'Burkina Faso', 'code': 'BF'},
+        {'name': 'Burundi', 'code': 'BI'},
+        {'name': 'Cameroun', 'code': 'CM'},
+        {'name': 'Cap-Vert', 'code': 'CV'},
+        {'name': 'Comores', 'code': 'KM'},
+        {'name': 'Congo', 'code': 'CG'},
+        {'name': "Côte d'Ivoire", 'code': 'CI'},
+        {'name': 'Djibouti', 'code': 'DJ'},
+        {'name': 'Égypte', 'code': 'EG'},
+        {'name': 'Érythrée', 'code': 'ER'},
+        {'name': 'Eswatini', 'code': 'SZ'},
+        {'name': 'Éthiopie', 'code': 'ET'},
+        {'name': 'Gabon', 'code': 'GA'},
+        {'name': 'Gambie', 'code': 'GM'},
+        {'name': 'Ghana', 'code': 'GH'},
+        {'name': 'Guinée', 'code': 'GN'},
+        {'name': 'Guinée-Bissau', 'code': 'GW'},
+        {'name': 'Guinée Équatoriale', 'code': 'GQ'},
+        {'name': 'Kenya', 'code': 'KE'},
+        {'name': 'Lesotho', 'code': 'LS'},
+        {'name': 'Liberia', 'code': 'LR'},
+        {'name': 'Libye', 'code': 'LY'},
+        {'name': 'Madagascar', 'code': 'MG'},
+        {'name': 'Malawi', 'code': 'MW'},
+        {'name': 'Mali', 'code': 'ML'},
+        {'name': 'Maroc', 'code': 'MA'},
+        {'name': 'Maurice', 'code': 'MU'},
+        {'name': 'Mauritanie', 'code': 'MR'},
+        {'name': 'Mozambique', 'code': 'MZ'},
+        {'name': 'Namibie', 'code': 'NA'},
+        {'name': 'Niger', 'code': 'NE'},
+        {'name': 'Nigéria', 'code': 'NG'},
+        {'name': 'Ouganda', 'code': 'UG'},
+        {'name': 'RD Congo', 'code': 'CD'},
+        {'name': 'République Centrafricaine', 'code': 'CF'},
+        {'name': 'Rwanda', 'code': 'RW'},
+        {'name': 'São Tomé-et-Príncipe', 'code': 'ST'},
+        {'name': 'Sénégal', 'code': 'SN'},
+        {'name': 'Seychelles', 'code': 'SC'},
+        {'name': 'Sierra Leone', 'code': 'SL'},
+        {'name': 'Somalie', 'code': 'SO'},
         {'name': 'Soudan', 'code': 'SD'},
         {'name': 'Soudan du Sud', 'code': 'SS'},
-        {'name': 'Éthiopie', 'code': 'ET'},
-        {'name': 'Érythrée', 'code': 'ER'},
-        {'name': 'Djibouti', 'code': 'DJ'},
-        {'name': 'Somalie', 'code': 'SO'},
-        {'name': 'Kenya', 'code': 'KE'},
-        {'name': 'Ouganda', 'code': 'UG'},
-        {'name': 'Rwanda', 'code': 'RW'},
-        {'name': 'Burundi', 'code': 'BI'},
         {'name': 'Tanzanie', 'code': 'TZ'},
-        {'name': 'Malawi', 'code': 'MW'},
-        {'name': 'Mozambique', 'code': 'MZ'},
-        {'name': 'Zimbabwe', 'code': 'ZW'},
+        {'name': 'Tchad', 'code': 'TD'},
+        {'name': 'Togo', 'code': 'TG'},
+        {'name': 'Tunisie', 'code': 'TN'},
         {'name': 'Zambie', 'code': 'ZM'},
-        {'name': 'Botswana', 'code': 'BW'},
-        {'name': 'Namibie', 'code': 'NA'},
-        {'name': 'Afrique du Sud', 'code': 'ZA'},
-        {'name': 'Lesotho', 'code': 'LS'},
-        {'name': 'Eswatini', 'code': 'SZ'},
-        {'name': 'Madagascar', 'code': 'MG'},
-        {'name': 'Maurice', 'code': 'MU'},
-        {'name': 'Comores', 'code': 'KM'},
-        {'name': 'Seychelles', 'code': 'SC'},
-        {'name': 'Cap-Vert', 'code': 'CV'},
-        {'name': 'São Tomé-et-Príncipe', 'code': 'ST'},
+        {'name': 'Zimbabwe', 'code': 'ZW'},
     ]
     
     count = 0
@@ -321,6 +321,114 @@ def create_admin_user():
     
     return True
 
+def create_demo_users():
+    """Créer 5 utilisateurs de démonstration (idempotent)"""
+    print("\n👥 Vérification des utilisateurs de démonstration...")
+    
+    morocco = Country.query.filter_by(code='MA').first()
+    casablanca = City.query.filter_by(code='CAS').first()
+    rabat = City.query.filter_by(code='RAB').first()
+    
+    if not morocco or not casablanca or not rabat:
+        print("⚠️  Pays ou villes manquants, impossible de créer les démos")
+        return False
+    
+    talent_dev_web = Talent.query.filter_by(name='Développement Web').first()
+    talent_graphisme = Talent.query.filter_by(name='Graphisme').first()
+    talent_plomberie = Talent.query.filter_by(name='Plomberie').first()
+    talent_cuisine = Talent.query.filter_by(name='Cuisine').first()
+    talent_marketing = Talent.query.filter_by(name='Marketing digital').first()
+    
+    demo_users = [
+        {
+            'email': 'demo1@talento.com',
+            'unique_code': 'MACAS0002M',
+            'first_name': 'Ahmed',
+            'last_name': 'Bennani',
+            'gender': 'M',
+            'country_id': morocco.id,
+            'city_id': casablanca.id,
+            'bio': 'Développeur web full-stack avec 5 ans d\'expérience',
+            'years_experience': 5,
+            'talents': [talent_dev_web.id] if talent_dev_web else []
+        },
+        {
+            'email': 'demo2@talento.com',
+            'unique_code': 'MARAB0002F',
+            'first_name': 'Fatima',
+            'last_name': 'El Amrani',
+            'gender': 'F',
+            'country_id': morocco.id,
+            'city_id': rabat.id,
+            'bio': 'Designer graphique spécialisée en branding',
+            'years_experience': 3,
+            'talents': [talent_graphisme.id] if talent_graphisme else []
+        },
+        {
+            'email': 'demo3@talento.com',
+            'unique_code': 'MACAS0003M',
+            'first_name': 'Youssef',
+            'last_name': 'Tazi',
+            'gender': 'M',
+            'country_id': morocco.id,
+            'city_id': casablanca.id,
+            'bio': 'Plombier professionnel, interventions rapides',
+            'years_experience': 10,
+            'talents': [talent_plomberie.id] if talent_plomberie else []
+        },
+        {
+            'email': 'demo4@talento.com',
+            'unique_code': 'MARAB0003F',
+            'first_name': 'Samira',
+            'last_name': 'Chraibi',
+            'gender': 'F',
+            'country_id': morocco.id,
+            'city_id': rabat.id,
+            'bio': 'Chef de cuisine avec spécialité en pâtisserie française',
+            'years_experience': 7,
+            'talents': [talent_cuisine.id] if talent_cuisine else []
+        },
+        {
+            'email': 'demo5@talento.com',
+            'unique_code': 'MACAS0004M',
+            'first_name': 'Omar',
+            'last_name': 'Alaoui',
+            'gender': 'M',
+            'country_id': morocco.id,
+            'city_id': casablanca.id,
+            'bio': 'Expert en marketing digital et SEO',
+            'years_experience': 4,
+            'talents': [talent_marketing.id] if talent_marketing else []
+        }
+    ]
+    
+    count = 0
+    for demo_data in demo_users:
+        existing = User.query.filter_by(email=demo_data['email']).first()
+        if not existing:
+            talents = demo_data.pop('talents')
+            user = User(**demo_data)
+            user.set_password('demo123')
+            user.phone = '+212600000000'
+            user.account_active = True
+            
+            db.session.add(user)
+            db.session.flush()
+            
+            for talent_id in talents:
+                user_talent = UserTalent(user_id=user.id, talent_id=talent_id)
+                db.session.add(user_talent)
+            
+            count += 1
+    
+    if count > 0:
+        db.session.commit()
+        print(f"✅ {count} nouveaux utilisateurs de démonstration créés")
+    else:
+        print("✅ Les utilisateurs de démonstration existent déjà")
+    
+    return True
+
 def main():
     """Fonction principale d'initialisation"""
     print("=" * 60)
@@ -337,6 +445,7 @@ def main():
             seed_cities()
             seed_talents()
             create_admin_user()
+            create_demo_users()
             
             print("\n" + "=" * 60)
             print("✅ INITIALISATION TERMINÉE AVEC SUCCÈS")

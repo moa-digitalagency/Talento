@@ -19,6 +19,8 @@ def login():
         if user and user.check_password(password):
             login_user(user, remember=True)
             next_page = request.args.get('next')
+            if user.is_admin:
+                return redirect(next_page or url_for('admin.dashboard'))
             return redirect(next_page or url_for('profile.dashboard'))
         else:
             flash('Email ou mot de passe incorrect.', 'error')
