@@ -12,7 +12,7 @@ from reportlab.lib.pagesizes import letter, A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
-from reportlab.lib.enums import TA_CENTER, TA_LEFT
+from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
 
 class ExportService:
     """Service d'export des données"""
@@ -187,7 +187,7 @@ class ExportService:
     @staticmethod
     def export_talent_card_pdf(user):
         """
-        Générer une fiche talent individuelle en PDF
+        Générer une fiche talent individuelle en PDF avec design professionnel
         
         Args:
             user: Objet User
@@ -196,47 +196,51 @@ class ExportService:
             bytes: Données du fichier PDF
         """
         buffer = io.BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=letter)
+        doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=0.5*inch, bottomMargin=0.5*inch)
         elements = []
         
         styles = getSampleStyleSheet()
         
-        title_style = ParagraphStyle(
-            'Title',
+        # Couleurs de la plateforme
+        color_blue = colors.HexColor('#3B82F6')
+        color_purple = colors.HexColor('#9333EA')
+        color_cyan = colors.HexColor('#06B6D4')
+        color_indigo = colors.HexColor('#4F46E5')
+        color_gray = colors.HexColor('#6B7280')
+        
+        # ==== EN-TÊTE AVEC LOGO ET TITRE ====
+        header_style = ParagraphStyle(
+            'Header',
             parent=styles['Heading1'],
-            fontSize=28,
-            textColor=colors.HexColor('#4F46E5'),
-            spaceAfter=10,
-            alignment=TA_CENTER
+            fontSize=24,
+            textColor=color_indigo,
+            alignment=TA_CENTER,
+            fontName='Helvetica-Bold',
+            spaceAfter=5
         )
         
-        subtitle_style = ParagraphStyle(
-            'Subtitle',
+        subtitle_header_style = ParagraphStyle(
+            'SubtitleHeader',
             parent=styles['Normal'],
-            fontSize=14,
-            textColor=colors.grey,
+            fontSize=12,
+            textColor=color_gray,
             alignment=TA_CENTER,
             spaceAfter=20
         )
         
-        section_style = ParagraphStyle(
-            'Section',
-            parent=styles['Heading2'],
-            fontSize=16,
-            textColor=colors.HexColor('#4F46E5'),
-            spaceAfter=10,
-            spaceBefore=15
-        )
+        elements.append(Paragraph("🌍 TALENTO - FICHE DE TALENT", header_style))
+        elements.append(Paragraph("Plateforme de Centralisation des Talents Africains", subtitle_header_style))
         
-        elements.append(Paragraph("FICHE TALENT", title_style))
-        elements.append(Paragraph(f"Code: {user.formatted_code}", subtitle_style))
-        elements.append(Spacer(1, 20))
+        # Ligne de séparation
+        line_table = Table([['']],  colWidths=[6.5*inch])
+        line_table.setStyle(TableStyle([
+            ('LINEABOVE', (0, 0), (-1, 0), 3, color_indigo),
+            ('LINEBELOW', (0, 0), (-1, 0), 1, color_cyan),
+        ]))
+        elements.append(line_table)
+        elements.append(Spacer(1, 15))
         
-        # Photo et QR Code côte à côte
-        photo_qr_data = []
-        
-        # Photo de profil ou placeholder
-        # Générer les initiales de manière sécurisée
+        # ==== SECTION PRINCIPALE: PHOTO, INFO & QR CODE ====
         def get_initial(name):
             """Extraire l'initiale de manière sécurisée"""
             if not name:
@@ -248,19 +252,65 @@ class ExportService:
         last_initial = get_initial(user.last_name)
         initials = f"{first_initial}{last_initial}"
         
+        # Générer la photo ou le placeholder basé sur le genre
+        photo_element = None
         if user.photo_filename:
             try:
                 photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'photos', user.photo_filename)
                 if os.path.exists(photo_path):
-                    img = Image(photo_path, width=2*inch, height=2*inch)
-                else:
-                    img = Paragraph(f"<para align=center fontSize=60><b>{initials}</b></para>", styles['Normal'])
+                    photo_element = Image(photo_path, width=1.8*inch, height=1.8*inch)
             except:
-                img = Paragraph(f"<para align=center fontSize=60><b>{initials}</b></para>", styles['Normal'])
-        else:
-            img = Paragraph(f"<para align=center fontSize=60><b>{initials}</b></para>", styles['Normal'])
+                pass
         
-        # QR Code si disponible
+        if not photo_element:
+            # Placeholder selon le sexe
+            if user.gender == 'M':
+                placeholder_text = f"👨<br/><b>{initials}</b>"
+                placeholder_color = color_blue
+            elif user.gender == 'F':
+                placeholder_text = f"👩<br/><b>{initials}</b>"
+                placeholder_color = color_purple
+            else:
+                placeholder_text = f"👤<br/><b>{initials}</b>"
+                placeholder_color = color_cyan
+            
+            placeholder_style = ParagraphStyle(
+                'Placeholder',
+                parent=styles['Normal'],
+                fontSize=40,
+                textColor=placeholder_color,
+                alignment=TA_CENTER,
+                fontName='Helvetica-Bold'
+            )
+            photo_element = Paragraph(placeholder_text, placeholder_style)
+        
+        # Informations principales dans une carte
+        info_name_style = ParagraphStyle(
+            'InfoName',
+            parent=styles['Heading1'],
+            fontSize=20,
+            textColor=color_indigo,
+            alignment=TA_CENTER,
+            fontName='Helvetica-Bold',
+            spaceAfter=5
+        )
+        
+        info_code_style = ParagraphStyle(
+            'InfoCode',
+            parent=styles['Normal'],
+            fontSize=14,
+            textColor=color_gray,
+            alignment=TA_CENTER,
+            fontName='Courier-Bold',
+            spaceAfter=10
+        )
+        
+        info_content = [
+            Paragraph(f"{user.first_name} {user.last_name}", info_name_style),
+            Paragraph(f"Code: {user.formatted_code}", info_code_style),
+        ]
+        
+        # QR Code
         qr_element = Spacer(1, 1)
         if user.qr_code_filename:
             try:
@@ -268,52 +318,95 @@ class ExportService:
                 if os.path.exists(qr_path):
                     qr_element = Image(qr_path, width=1.5*inch, height=1.5*inch)
             except:
-                pass
+                qr_label = ParagraphStyle('QRLabel', parent=styles['Normal'], fontSize=10, alignment=TA_CENTER)
+                qr_element = Paragraph("QR Code<br/>Non disponible", qr_label)
         
-        # Créer un tableau pour photo et QR code
-        photo_qr_table = Table([[img, qr_element]], colWidths=[3*inch, 2*inch])
-        photo_qr_table.setStyle(TableStyle([
+        # Table principale avec photo, info et QR
+        main_table = Table(
+            [[photo_element, info_content, qr_element]], 
+            colWidths=[2*inch, 2.5*inch, 2*inch]
+        )
+        main_table.setStyle(TableStyle([
             ('ALIGN', (0, 0), (0, 0), 'CENTER'),
             ('ALIGN', (1, 0), (1, 0), 'CENTER'),
+            ('ALIGN', (2, 0), (2, 0), 'CENTER'),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F3F4F6')),
+            ('BOX', (0, 0), (-1, -1), 2, color_indigo),
+            ('TOPPADDING', (0, 0), (-1, -1), 15),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 15),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
         ]))
-        elements.append(photo_qr_table)
+        elements.append(main_table)
         elements.append(Spacer(1, 20))
         
-        elements.append(Paragraph("IDENTITÉ", section_style))
+        # ==== SECTION IDENTITÉ ====
+        section_style = ParagraphStyle(
+            'Section',
+            parent=styles['Heading2'],
+            fontSize=14,
+            textColor=colors.white,
+            fontName='Helvetica-Bold',
+            alignment=TA_LEFT,
+            leftIndent=10
+        )
+        
+        # Titre de section
+        identity_title = Table([['👤  IDENTITÉ']], colWidths=[6.5*inch])
+        identity_title.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), color_blue),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 14),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(identity_title)
+        
         info_data = [
-            ['Nom complet:', f"{user.first_name} {user.last_name}"],
-            ['Email:', user.email],
-            ['Téléphone:', user.phone or 'Non renseigné'],
-            ['WhatsApp:', user.whatsapp or 'Non renseigné'],
+            ['Email', user.email],
+            ['Téléphone', user.phone or 'Non renseigné'],
+            ['WhatsApp', user.whatsapp or 'Non renseigné'],
+            ['Date de naissance', user.date_of_birth.strftime('%d/%m/%Y') if user.date_of_birth else 'Non renseignée'],
+            ['Genre', {'M': 'Masculin', 'F': 'Féminin', 'N': 'Non précisé'}.get(user.gender, 'Non précisé')],
+            ['Pays d\'origine', user.country.name if user.country else 'Non renseigné'],
+            ['Ville au Maroc', user.city.name if user.city else 'Non renseignée'],
         ]
         
-        if user.date_of_birth:
-            info_data.append(['Date de naissance:', user.date_of_birth.strftime('%d/%m/%Y')])
-        
-        info_data.extend([
-            ['Genre:', {'M': 'Masculin', 'F': 'Féminin', 'N': 'Non précisé'}.get(user.gender, 'Non précisé')],
-            ['Pays d\'origine:', user.country.name if user.country else 'Non renseigné'],
-        ])
-        
-        if user.city:
-            info_data.append(['Ville au Maroc:', user.city.name])
-        
-        info_table = Table(info_data, colWidths=[2*inch, 4*inch])
+        info_table = Table(info_data, colWidths=[2*inch, 4.5*inch])
         info_table.setStyle(TableStyle([
             ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
             ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#DBEAFE')),
+            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
             ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+            ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+            ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
         ]))
         elements.append(info_table)
         elements.append(Spacer(1, 15))
         
+        # ==== SECTION TALENTS & COMPÉTENCES ====
         if user.talents:
-            elements.append(Paragraph("TALENTS & COMPÉTENCES", section_style))
+            talents_title = Table([['🎯  TALENTS & COMPÉTENCES']], colWidths=[6.5*inch])
+            talents_title.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), color_purple),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 14),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(talents_title)
+            
             talents_by_category = {}
             for ut in user.talents:
                 category = ut.talent.category
@@ -321,63 +414,157 @@ class ExportService:
                     talents_by_category[category] = []
                 talents_by_category[category].append(f"{ut.talent.emoji} {ut.talent.name}")
             
+            talents_data = []
             for category, talents in talents_by_category.items():
-                elements.append(Paragraph(f"<b>{category}:</b> {', '.join(talents)}", styles['Normal']))
+                talents_data.append([category, ', '.join(talents)])
+            
+            talents_table = Table(talents_data, colWidths=[2*inch, 4.5*inch])
+            talents_table.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+                ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#F3E8FF')),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+                ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
+            ]))
+            elements.append(talents_table)
             elements.append(Spacer(1, 15))
         
-        elements.append(Paragraph("PROFIL PROFESSIONNEL", section_style))
+        # ==== SECTION PROFIL PROFESSIONNEL ====
+        prof_title = Table([['💼  PROFIL PROFESSIONNEL']], colWidths=[6.5*inch])
+        prof_title.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), color_cyan),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 14),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(prof_title)
+        
         prof_data = [
-            ['Disponibilité:', user.availability or 'Non renseigné'],
-            ['Mode de travail:', user.work_mode or 'Non renseigné'],
-            ['Fourchette tarifaire:', user.rate_range or 'Non renseigné'],
-            ['Score de profil:', f"{user.profile_score or 0}/100"],
-            ['CV:', 'Oui ✓' if user.cv_filename else 'Non ✗'],
-            ['Portfolio:', 'Oui ✓' if user.portfolio_url else 'Non ✗'],
+            ['Disponibilité', user.availability or 'Non renseigné'],
+            ['Mode de travail', user.work_mode or 'Non renseigné'],
+            ['Fourchette tarifaire', user.rate_range or 'Non renseigné'],
+            ['Score de profil', f"{user.profile_score or 0}/100"],
+            ['CV disponible', '✓ Oui' if user.cv_filename else '✗ Non'],
+            ['Portfolio', user.portfolio_url if user.portfolio_url else '✗ Non renseigné'],
         ]
         
-        prof_table = Table(prof_data, colWidths=[2*inch, 4*inch])
+        prof_table = Table(prof_data, colWidths=[2*inch, 4.5*inch])
         prof_table.setStyle(TableStyle([
             ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 11),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+            ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#CFFAFE')),
+            ('ALIGN', (0, 0), (0, -1), 'LEFT'),
+            ('ALIGN', (1, 0), (1, -1), 'LEFT'),
+            ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+            ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
         ]))
         elements.append(prof_table)
         elements.append(Spacer(1, 15))
         
+        # ==== SECTION BIOGRAPHIE ====
         if user.bio:
-            elements.append(Paragraph("BIOGRAPHIE", section_style))
-            elements.append(Paragraph(user.bio, styles['Normal']))
+            bio_title = Table([['📝  BIOGRAPHIE']], colWidths=[6.5*inch])
+            bio_title.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#10B981')),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 14),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(bio_title)
+            
+            bio_style = ParagraphStyle(
+                'Bio',
+                parent=styles['Normal'],
+                fontSize=10,
+                leading=14,
+                alignment=TA_JUSTIFY
+            )
+            
+            bio_table = Table([[Paragraph(user.bio, bio_style)]], colWidths=[6.5*inch])
+            bio_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F0FDF4')),
+                ('TOPPADDING', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
+            ]))
+            elements.append(bio_table)
             elements.append(Spacer(1, 15))
         
+        # ==== SECTION RÉSEAUX SOCIAUX ====
         social_links = []
-        for platform in ['linkedin', 'instagram', 'twitter', 'facebook', 'github', 'behance']:
+        for platform in ['linkedin', 'instagram', 'twitter', 'facebook', 'github', 'behance', 'dribbble', 'youtube']:
             value = getattr(user, platform, None)
             if value:
                 social_links.append([platform.capitalize(), value])
         
         if social_links:
-            elements.append(Paragraph("RÉSEAUX SOCIAUX", section_style))
-            social_table = Table(social_links, colWidths=[1.5*inch, 4.5*inch])
+            social_title = Table([['🌐  RÉSEAUX SOCIAUX']], colWidths=[6.5*inch])
+            social_title.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EC4899')),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 14),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(social_title)
+            
+            social_table = Table(social_links, colWidths=[2*inch, 4.5*inch])
             social_table.setStyle(TableStyle([
                 ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, -1), 10),
-                ('TOPPADDING', (0, 0), (-1, -1), 5),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+                ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 9),
+                ('TOPPADDING', (0, 0), (-1, -1), 6),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#FCE7F3')),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+                ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
             ]))
             elements.append(social_table)
+            elements.append(Spacer(1, 15))
         
-        elements.append(Spacer(1, 30))
+        # ==== FOOTER ====
+        elements.append(Spacer(1, 20))
+        footer_line = Table([['']],  colWidths=[6.5*inch])
+        footer_line.setStyle(TableStyle([
+            ('LINEABOVE', (0, 0), (-1, 0), 2, color_indigo),
+        ]))
+        elements.append(footer_line)
+        
         footer_style = ParagraphStyle(
             'Footer',
             parent=styles['Normal'],
             fontSize=9,
-            textColor=colors.grey,
+            textColor=color_gray,
             alignment=TA_CENTER
         )
+        elements.append(Spacer(1, 10))
         elements.append(Paragraph(f"Document généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')}", footer_style))
-        elements.append(Paragraph("Plateforme Talento - Centralisation des Talents", footer_style))
+        elements.append(Paragraph("🌍 Plateforme Talento - Centralisation des Talents Africains", footer_style))
         
         doc.build(elements)
         buffer.seek(0)
