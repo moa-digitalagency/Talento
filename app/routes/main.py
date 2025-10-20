@@ -29,6 +29,7 @@ def admin_dashboard():
     city_filter = request.args.get('city')
     gender_filter = request.args.get('gender')
     availability_filter = request.args.get('availability')
+    work_mode_filter = request.args.get('work_mode')
     has_cv = request.args.get('has_cv')
     has_portfolio = request.args.get('has_portfolio')
     date_from = request.args.get('date_from')
@@ -69,6 +70,9 @@ def admin_dashboard():
     if availability_filter:
         query = query.filter(User.availability == availability_filter)
     
+    if work_mode_filter:
+        query = query.filter(User.work_mode == work_mode_filter)
+    
     if has_cv == 'yes':
         query = query.filter(User.cv_filename.isnot(None))
     elif has_cv == 'no':
@@ -95,45 +99,53 @@ def admin_dashboard():
     
     users = query.order_by(User.created_at.desc()).all()
     
-    # Statistiques générales
+    # Statistiques générales basées sur les utilisateurs actifs
     total_users = User.query.filter_by(account_active=True, is_admin=False).count()
-    total_talents_unique = Talent.query.count()
-    total_countries = Country.query.count()
-    total_cities = City.query.count()
+    
+    # Nombre de compétences sélectionnées par les talents (pas le total disponible)
+    total_talents_selected = db.session.query(func.count(func.distinct(UserTalent.talent_id))).filter(
+        UserTalent.user_id.in_(
+            db.session.query(User.id).filter_by(account_active=True, is_admin=False)
+        )
+    ).scalar() or 0
+    
+    # Nombre de villes où il y a des utilisateurs inscrits
+    total_cities_with_users = db.session.query(func.count(func.distinct(User.city_id))).filter(
+        User.account_active == True,
+        User.is_admin == False,
+        User.city_id.isnot(None)
+    ).scalar() or 0
+    
+    # Nombre de pays où il y a des utilisateurs inscrits
+    total_countries_with_users = db.session.query(func.count(func.distinct(User.country_id))).filter(
+        User.account_active == True,
+        User.is_admin == False,
+        User.country_id.isnot(None)
+    ).scalar() or 0
     
     # Utilisateurs récents (derniers 6)
     recent_users = User.query.filter_by(account_active=True, is_admin=False).order_by(desc(User.created_at)).limit(6).all()
     
-    # Statistiques par disponibilité (nouvelles valeurs)
-    temps_plein_users = User.query.filter_by(availability='Temps plein', account_active=True).count()
-    temps_partiel_users = User.query.filter_by(availability='Temps partiel', account_active=True).count()
-    flexible_users = User.query.filter_by(availability='Flexible', account_active=True).count()
-    
-    # Top talents les plus utilisés (top 10)
+    # Top 10 compétences les plus sélectionnées par les utilisateurs
     top_talents = db.session.query(
         Talent.name,
         Talent.emoji,
         Talent.category,
         func.count(UserTalent.talent_id).label('count')
-    ).join(UserTalent).group_by(Talent.id, Talent.name, Talent.emoji, Talent.category).order_by(desc('count')).limit(10).all()
+    ).join(UserTalent).join(User).filter(
+        User.account_active == True,
+        User.is_admin == False
+    ).group_by(Talent.id, Talent.name, Talent.emoji, Talent.category).order_by(desc('count')).limit(10).all()
     
-    # Statistiques par catégorie
-    category_stats = db.session.query(
-        Talent.category,
-        func.count(func.distinct(UserTalent.user_id)).label('user_count')
-    ).join(UserTalent).group_by(Talent.category).all()
-    
-    # Statistiques par mode de travail
-    work_mode_stats = db.session.query(
-        User.work_mode,
-        func.count(User.id).label('count')
-    ).filter(User.account_active == True, User.work_mode != None).group_by(User.work_mode).all()
-    
-    # Top 5 villes avec le plus de talents
-    top_cities = db.session.query(
+    # Top 10 villes marocaines avec le plus de talents
+    top_morocco_cities = db.session.query(
         City.name,
         func.count(User.id).label('user_count')
-    ).join(User).filter(User.account_active == True).group_by(City.id, City.name).order_by(desc('user_count')).limit(5).all()
+    ).join(User).join(Country).filter(
+        User.account_active == True,
+        User.is_admin == False,
+        Country.code == 'MA'
+    ).group_by(City.id, City.name).order_by(desc('user_count')).limit(10).all()
     
     # Données pour les filtres
     all_talents = Talent.query.order_by(Talent.category, Talent.name).all()
@@ -154,17 +166,12 @@ def admin_dashboard():
                          cities=all_cities,
                          stats=stats,
                          total_users=total_users,
-                         total_talents_unique=total_talents_unique,
-                         total_countries=total_countries,
-                         total_cities=total_cities,
+                         total_talents_selected=total_talents_selected,
+                         total_countries_with_users=total_countries_with_users,
+                         total_cities_with_users=total_cities_with_users,
                          recent_users=recent_users,
-                         temps_plein_users=temps_plein_users,
-                         temps_partiel_users=temps_partiel_users,
-                         flexible_users=flexible_users,
                          top_talents=top_talents,
-                         category_stats=category_stats,
-                         work_mode_stats=work_mode_stats,
-                         top_cities=top_cities)
+                         top_morocco_cities=top_morocco_cities)
 
 @bp.route('/about')
 def about():
@@ -176,33 +183,52 @@ def talents():
     """Page de recherche et visualisation des talents"""
     search_query = request.args.get('search', '').strip()
     category_filter = request.args.get('category', '').strip()
+    availability_filter = request.args.get('availability')
+    work_mode_filter = request.args.get('work_mode')
+    city_filter = request.args.get('city')
     
-    # Base query
-    query = Talent.query.filter_by(is_active=True)
+    # Obtenir uniquement les talents qui ont au moins un utilisateur
+    talents_with_users = db.session.query(
+        Talent.id,
+        Talent.name,
+        Talent.emoji,
+        Talent.category,
+        func.count(UserTalent.user_id).label('user_count')
+    ).join(UserTalent).join(User).filter(
+        User.account_active == True,
+        User.is_admin == False
+    ).group_by(Talent.id, Talent.name, Talent.emoji, Talent.category)
     
-    # Filtres
+    # Appliquer les filtres
     if search_query:
-        query = query.filter(Talent.name.ilike(f'%{search_query}%'))
+        talents_with_users = talents_with_users.filter(Talent.name.ilike(f'%{search_query}%'))
     
     if category_filter:
-        query = query.filter_by(category=category_filter)
+        talents_with_users = talents_with_users.filter(Talent.category == category_filter)
     
-    talents_list = query.order_by(Talent.category, Talent.name).all()
+    # Filtres utilisateurs
+    if availability_filter or work_mode_filter or city_filter:
+        if availability_filter:
+            talents_with_users = talents_with_users.filter(User.availability == availability_filter)
+        if work_mode_filter:
+            talents_with_users = talents_with_users.filter(User.work_mode == work_mode_filter)
+        if city_filter:
+            talents_with_users = talents_with_users.filter(User.city_id == int(city_filter))
     
-    # Compter les utilisateurs par talent
-    talent_stats = []
-    for talent in talents_list:
-        user_count = UserTalent.query.filter_by(talent_id=talent.id).count()
-        talent_stats.append({
-            'talent': talent,
-            'user_count': user_count
-        })
+    talent_stats = talents_with_users.order_by(Talent.category, Talent.name).all()
     
     # Catégories disponibles (uniquement celles avec des talents utilisés)
-    categories = db.session.query(Talent.category).join(UserTalent).distinct().order_by(Talent.category).all()
+    categories = db.session.query(Talent.category).join(UserTalent).join(User).filter(
+        User.account_active == True,
+        User.is_admin == False
+    ).distinct().order_by(Talent.category).all()
     categories = [c[0] for c in categories]
+    
+    # Données pour les filtres
+    all_cities = City.query.order_by(City.name).all()
     
     return render_template('talents.html', 
                          talent_stats=talent_stats,
                          categories=categories,
-                         total_talents=len(talents_list))
+                         cities=all_cities,
+                         total_talents=len(talent_stats))

@@ -55,6 +55,38 @@
                     </div>
                 </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Disponibilité</label>
+                        <select name="availability" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                            <option value="">Toutes</option>
+                            <option value="Temps plein" {% if request.args.get('availability') == 'Temps plein' %}selected{% endif %}>⏰ Temps plein</option>
+                            <option value="Temps partiel" {% if request.args.get('availability') == 'Temps partiel' %}selected{% endif %}>🕐 Temps partiel</option>
+                            <option value="Mi-temps" {% if request.args.get('availability') == 'Mi-temps' %}selected{% endif %}>⏳ Mi-temps</option>
+                            <option value="Flexible" {% if request.args.get('availability') == 'Flexible' %}selected{% endif %}>🔄 Flexible</option>
+                            <option value="Occasionnel" {% if request.args.get('availability') == 'Occasionnel' %}selected{% endif %}>📅 Occasionnel</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Mode de travail</label>
+                        <select name="work_mode" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                            <option value="">Tous</option>
+                            <option value="Sur site" {% if request.args.get('work_mode') == 'Sur site' %}selected{% endif %}>🏢 Sur site</option>
+                            <option value="À distance" {% if request.args.get('work_mode') == 'À distance' %}selected{% endif %}>💻 À distance</option>
+                            <option value="Hybride" {% if request.args.get('work_mode') == 'Hybride' %}selected{% endif %}>🔄 Hybride</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Ville</label>
+                        <select name="city" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                            <option value="">Toutes</option>
+                            {% for city in cities %}
+                            <option value="{{ city.id }}" {% if request.args.get('city') == city.id|string %}selected{% endif %}>{{ city.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
                 <div class="flex gap-4">
                     <button type="submit" class="btn-primary flex-1">
                         🔍 Rechercher
@@ -76,15 +108,15 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {% for item in talent_stats %}
+                {% for talent in talent_stats %}
                 <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-green-500 hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                     <div class="text-center">
-                        <div class="text-6xl mb-3">{{ item.talent.emoji }}</div>
-                        <h3 class="font-bold text-lg text-gray-800 mb-2">{{ item.talent.name }}</h3>
-                        <p class="text-sm text-gray-600 mb-3">{{ item.talent.category }}</p>
+                        <div class="text-6xl mb-3">{{ talent.emoji }}</div>
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">{{ talent.name }}</h3>
+                        <p class="text-sm text-gray-600 mb-3">{{ talent.category }}</p>
                         <div class="flex items-center justify-center gap-2 bg-green-100 py-2 px-4 rounded-full">
-                            <span class="text-2xl font-bold text-green-700">{{ item.user_count }}</span>
-                            <span class="text-sm text-green-600">profil{{ 's' if item.user_count > 1 else '' }}</span>
+                            <span class="text-2xl font-bold text-green-700">{{ talent.user_count }}</span>
+                            <span class="text-sm text-green-600">profil{{ 's' if talent.user_count > 1 else '' }}</span>
                         </div>
                     </div>
                 </div>
@@ -107,8 +139,8 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {% set category_counts = {} %}
-                {% for item in talent_stats %}
-                    {% set category = item.talent.category %}
+                {% for talent in talent_stats %}
+                    {% set category = talent.category %}
                     {% if category not in category_counts %}
                         {% set _ = category_counts.update({category: 0}) %}
                     {% endif %}

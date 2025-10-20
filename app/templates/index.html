@@ -41,13 +41,13 @@
                 <div class="flex items-center justify-between mb-4">
                     <div>
                         <p class="text-purple-700 text-sm font-semibold uppercase">Compétences</p>
-                        <p class="text-gray-800 text-4xl font-bold mt-2">{{ total_talents_unique }}</p>
+                        <p class="text-gray-800 text-4xl font-bold mt-2">{{ total_talents_selected }}</p>
                     </div>
                     <div class="text-6xl opacity-30">⭐</div>
                 </div>
                 <div class="flex items-center gap-2 text-purple-600">
                     <span class="text-2xl">🎯</span>
-                    <span class="text-sm font-semibold">Talents disponibles</span>
+                    <span class="text-sm font-semibold">Sélectionnées</span>
                 </div>
             </div>
 
@@ -55,13 +55,13 @@
                 <div class="flex items-center justify-between mb-4">
                     <div>
                         <p class="text-green-700 text-sm font-semibold uppercase">Villes</p>
-                        <p class="text-gray-800 text-4xl font-bold mt-2">{{ total_cities }}</p>
+                        <p class="text-gray-800 text-4xl font-bold mt-2">{{ total_cities_with_users }}</p>
                     </div>
                     <div class="text-6xl opacity-30">🏙️</div>
                 </div>
                 <div class="flex items-center gap-2 text-green-600">
                     <span class="text-2xl">📍</span>
-                    <span class="text-sm font-semibold">Au Maroc</span>
+                    <span class="text-sm font-semibold">Avec talents</span>
                 </div>
             </div>
 
@@ -69,13 +69,13 @@
                 <div class="flex items-center justify-between mb-4">
                     <div>
                         <p class="text-orange-700 text-sm font-semibold uppercase">Pays</p>
-                        <p class="text-gray-800 text-4xl font-bold mt-2">{{ total_countries }}</p>
+                        <p class="text-gray-800 text-4xl font-bold mt-2">{{ total_countries_with_users }}</p>
                     </div>
                     <div class="text-6xl opacity-30">🌍</div>
                 </div>
                 <div class="flex items-center gap-2 text-orange-600">
                     <span class="text-2xl">🗺️</span>
-                    <span class="text-sm font-semibold">Pays africains</span>
+                    <span class="text-sm font-semibold">Avec talents</span>
                 </div>
             </div>
         </div>
@@ -125,6 +125,15 @@
                         </select>
                     </div>
                     <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Mode de travail</label>
+                        <select name="work_mode" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Tous</option>
+                            <option value="Sur site" {% if request.args.get('work_mode') == 'Sur site' %}selected{% endif %}>🏢 Sur site</option>
+                            <option value="À distance" {% if request.args.get('work_mode') == 'À distance' %}selected{% endif %}>💻 À distance</option>
+                            <option value="Hybride" {% if request.args.get('work_mode') == 'Hybride' %}selected{% endif %}>🔄 Hybride</option>
+                        </select>
+                    </div>
+                    <div>
                         <label class="block text-gray-700 font-semibold mb-2">Genre</label>
                         <select name="gender" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
                             <option value="">Tous</option>
@@ -133,12 +142,24 @@
                             <option value="N" {% if request.args.get('gender') == 'N' %}selected{% endif %}>Autre</option>
                         </select>
                     </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-gray-700 font-semibold mb-2">Ville</label>
                         <select name="city" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
                             <option value="">Toutes</option>
                             {% for city in cities %}
                             <option value="{{ city.id }}" {% if request.args.get('city') == city.id|string %}selected{% endif %}>{{ city.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Talents</label>
+                        <select name="talent" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Tous</option>
+                            {% for talent in talents %}
+                            <option value="{{ talent.id }}" {% if talent.id|string in request.args.getlist('talent') %}selected{% endif %}>{{ talent.emoji }} {{ talent.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -259,14 +280,14 @@
             </div>
         </div>
 
-        <!-- Statistiques visuelles -->
+        <!-- Statistiques visuelles combinées -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             
-            <!-- Top Talents -->
+            <!-- Top Compétences -->
             <div class="section-purple p-8">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-4xl">🏆</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Top 10 Talents</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">Top Compétences</h2>
                 </div>
                 <div class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
                     {% for talent in top_talents %}
@@ -287,18 +308,21 @@
                 </div>
             </div>
 
-            <!-- Top Catégories de Talents -->
+            <!-- Top Villes du Maroc -->
             <div class="section-green p-8">
                 <div class="flex items-center gap-3 mb-6">
-                    <span class="text-4xl">📊</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Top Catégories</h2>
+                    <span class="text-4xl">🏙️</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Top Villes du Maroc</h2>
                 </div>
-                <div class="space-y-3">
-                    {% for cat_stat in category_stats[:5] %}
+                <div class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
+                    {% for city in top_morocco_cities %}
                     <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-all border-l-4 border-green-500">
-                        <span class="font-semibold text-gray-800">{{ cat_stat.category }}</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">📍</span>
+                            <span class="font-semibold text-gray-800">{{ city.name }}</span>
+                        </div>
                         <div class="flex items-center gap-2">
-                            <span class="text-2xl font-bold text-green-600">{{ cat_stat.user_count }}</span>
+                            <span class="text-2xl font-bold text-green-600">{{ city.user_count }}</span>
                             <span class="text-gray-500 text-sm">profils</span>
                         </div>
                     </div>
