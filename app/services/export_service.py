@@ -452,6 +452,7 @@ class ExportService:
         
         # ==== SECTION TALENTS & COMPÉTENCES ====
         if user.talents:
+            elements.append(PageBreak())
             talents_title = Table([['🎯  TALENTS & COMPÉTENCES']], colWidths=[6.5*inch])
             talents_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), color_purple),

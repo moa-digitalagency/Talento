@@ -63,6 +63,8 @@ def register():
             user.whatsapp = request.form.get('whatsapp')
             user.address = request.form.get('address')
             user.gender = request.form.get('gender')
+            user.passport_number = request.form.get('passport_number')
+            user.residence_card = request.form.get('residence_card')
             
             country_id = request.form.get('country_id')
             city_id = request.form.get('city_id')
