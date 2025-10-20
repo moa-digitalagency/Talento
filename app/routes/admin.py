@@ -253,7 +253,7 @@ def edit_user(user_id):
         
         db.session.commit()
         flash('Profil mis à jour avec succès.', 'success')
-        return redirect(url_for('admin.user_detail', user_id=user.id))
+        return redirect(url_for('profile.view', unique_code=user.unique_code))
     
     countries = Country.query.order_by(Country.name).all()
     cities = City.query.order_by(City.name).all()
