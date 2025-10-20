@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime
 from sqlalchemy import or_, and_, func
+from urllib.parse import urlparse, urljoin
 from app import db
 from app.models.user import User
 from app.models.talent import Talent, UserTalent
@@ -17,6 +18,14 @@ import io
 import os
 import secrets
 import string
+
+def is_safe_url(target):
+    """Vérifie qu'une URL est sûre pour la redirection (même domaine)"""
+    if not target:
+        return False
+    ref_url = urlparse(urljoin(request.host_url, target))
+    test_url = urlparse(request.host_url)
+    return ref_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -61,12 +70,14 @@ def delete_user(user_id):
     user = User.query.get_or_404(user_id)
     if user.is_admin:
         flash('Impossible de supprimer un compte administrateur.', 'error')
-        return redirect(url_for('main.index'))
+        next_page = request.referrer if is_safe_url(request.referrer) else url_for('main.index')
+        return redirect(next_page)
     
     db.session.delete(user)
     db.session.commit()
     flash('Utilisateur supprimé avec succès.', 'success')
-    return redirect(url_for('main.index'))
+    next_page = request.referrer if is_safe_url(request.referrer) else url_for('main.index')
+    return redirect(next_page)
 
 @bp.route('/export/excel')
 @login_required
@@ -614,3 +625,4 @@ def bulk_delete():
         db.session.rollback()
         current_app.logger.error(f'Erreur lors de la suppression en masse: {e}')
         return jsonify({'success': False, 'error': str(e)}), 500
+
