@@ -14,8 +14,20 @@
                 <span>✏️</span>
                 <span>Modifier</span>
             </a>
+            <form method="POST" action="{{ url_for('admin.toggle_active', user_id=user.id) }}" class="inline">
+                <button type="submit" class="px-6 py-3 {% if user.account_active %}bg-orange-100 text-orange-700 border-orange-500{% else %}bg-green-100 text-green-700 border-green-500{% endif %} font-bold rounded-lg border-2 hover:{% if user.account_active %}bg-orange-200{% else %}bg-green-200{% endif %} transition-all flex items-center gap-2">
+                    <span>{% if user.account_active %}⏸️{% else %}▶️{% endif %}</span>
+                    <span>{% if user.account_active %}Suspendre{% else %}Activer{% endif %}</span>
+                </button>
+            </form>
+            <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce profil ? Cette action est irréversible.');" class="inline">
+                <button type="submit" class="px-6 py-3 bg-red-100 text-red-700 font-bold rounded-lg border-2 border-red-500 hover:bg-red-200 transition-all flex items-center gap-2">
+                    <span>🗑️</span>
+                    <span>Supprimer</span>
+                </button>
+            </form>
             <a href="{{ url_for('admin.export_pdf_individual', user_id=user.id) }}" 
-               class="px-6 py-3 bg-red-100 text-red-700 font-bold rounded-lg border-2 border-red-500 hover:bg-red-200 transition-all flex items-center gap-2">
+               class="px-6 py-3 bg-blue-100 text-blue-700 font-bold rounded-lg border-2 border-blue-500 hover:bg-blue-200 transition-all flex items-center gap-2">
                 <span>📑</span>
                 <span>Télécharger PDF</span>
             </a>
