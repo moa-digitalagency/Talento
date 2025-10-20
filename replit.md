@@ -6,6 +6,9 @@ Talento is a professional web application designed to centralize and showcase ta
 
 ## Recent Changes (October 20, 2025)
 
+- **QR Code Fix (v2.13.0)**: Fixed QR code generation to use proper HTTPS URLs that open profile pages in browsers instead of displaying text. QR codes are automatically regenerated on app restart.
+- **Navigation Improvements (v2.13.0)**: Fixed back button on profile pages to return to `/talents` list. Added responsive hamburger menu for mobile/tablet navigation while keeping Talento logo always visible.
+- **Responsive Design (v2.13.0)**: QR codes are now hidden on mobile and tablet devices (visible only on desktop) to optimize space and improve mobile experience.
 - **Availability Harmonization**: Replaced legacy availability values ('available', 'partially_available', 'unavailable') with French labels ('Temps plein', 'Temps partiel', 'Mi-temps', 'Flexible', 'Occasionnel', 'Indisponible') across all forms, filters, and displays.
 - **Data Migration**: Created `migrate_availability.py` to convert existing user data from legacy to new availability values. This script must be run on deployment.
 - **Dashboard Statistics Update**: Replaced availability-based statistics with talent category statistics, showing top 5 talent categories by user count.
