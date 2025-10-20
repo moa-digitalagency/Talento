@@ -5,6 +5,64 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.9.0] - 2025-10-20
+
+### 🎨 Harmonisation du Design et Simplification de la Navigation
+
+#### Uniformisation des Boutons d'Action
+- **Page Talents (/talents)** : Boutons d'action redesignés pour correspondre au style de la page d'accueil
+  - Remplacement des boutons pleins (bg-*-600) par des boutons outline (bg-*-100)
+  - Style cohérent : fond coloré léger avec bordure solide
+  - Boutons "👁️ Voir" et "⚙️ Gérer" harmonisés avec le reste de l'application
+  - Meilleure lisibilité et cohérence visuelle
+
+#### Centralisation de la Visualisation des Profils
+- **Route unique de visualisation** : `/profile/view/<unique_code>` est maintenant la seule page pour consulter un profil
+  - Suppression de la route `/admin/user/<user_id>` (page de détail admin)
+  - Tous les boutons "Gérer" redirigent maintenant vers la page de profil unifiée
+  - Navigation simplifiée et plus intuitive
+  - Suppression du template `admin/user_detail.html`
+
+#### Nouveau Bouton de Modification
+- **Bouton "✏️ Modifier"** ajouté sur la page de profil (`/profile/view/<unique_code>`)
+  - Visible uniquement pour les administrateurs
+  - Positionné à côté du bouton "📑 Télécharger PDF"
+  - Style cohérent : fond violet léger avec bordure (bg-purple-100, border-purple-500)
+  - Accès direct à la page d'édition du profil
+
+#### Redirection Optimisée Après Édition
+- **Workflow d'édition amélioré** :
+  - Après modification d'un profil via `/admin/user/<user_id>/edit`
+  - Redirection automatique vers `/profile/view/<unique_code>` (au lieu de l'ancienne page de détail)
+  - L'utilisateur visualise immédiatement les changements effectués
+  - Message de confirmation "Profil mis à jour avec succès"
+
+### 📊 Impact Utilisateur
+
+#### Navigation Plus Intuitive
+- **Une seule page de profil** : plus de confusion entre page admin et page utilisateur
+- **Workflow simplifié** : Voir profil → Modifier → Voir profil mis à jour
+- **Moins de clics** : accès direct à l'édition depuis la page de profil
+
+#### Cohérence Visuelle
+- **Design uniforme** : tous les boutons suivent le même style outline
+- **Interface professionnelle** : cohérence entre pages publiques et pages admin
+- **Expérience utilisateur améliorée** : moins de variations visuelles
+
+### 🔧 Modifications Techniques
+
+#### Routes Modifiées
+- **Suppression** : `@bp.route('/user/<int:user_id>')` (admin.user_detail)
+- **Modification** : Redirection dans `edit_user()` de `admin.user_detail` vers `profile.view`
+
+#### Templates Modifiés
+- **index.html** : Bouton "Gérer" redirige vers `profile.view` au lieu de `admin.user_detail`
+- **talents.html** : Boutons redesignés avec style outline + redirection vers `profile.view`
+- **profile/view.html** : Ajout du bouton "Modifier" pour les administrateurs
+
+#### Templates Supprimés
+- **admin/user_detail.html** : Template devenu obsolète avec la centralisation
+
 ## [2.8.0] - 2025-10-20
 
 ### 🎯 Gestion Avancée des Talents
