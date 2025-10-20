@@ -480,14 +480,14 @@
         </div>
 
         <!-- Database Info -->
-        <div class="section-gray p-8 mb-8" style="border: 3px dotted #9CA3AF;">
+        <div class="section-gray p-8 mb-8">
             <div class="flex items-center gap-3 mb-6">
                 <span class="text-4xl">💾</span>
                 <h2 class="text-2xl font-bold text-gray-800">Base de données</h2>
             </div>
             
             <!-- Connection Status -->
-            <div class="bg-white p-6 rounded-lg border-2 {% if db_diagnostics.connection_status %}border-green-300{% else %}border-red-300{% endif %} mb-4">
+            <div class="bg-white p-6 rounded-lg border-2 {% if db_diagnostics.connection_status %}border-green-300{% else %}border-red-300{% endif %} mb-4 hover:shadow-lg transition-all">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
                         <span>🔌</span>
@@ -504,7 +504,7 @@
             </div>
 
             <!-- Database Statistics -->
-            <div class="bg-white p-6 rounded-lg border-2 border-blue-300 mb-4">
+            <div class="bg-white p-6 rounded-lg border-2 border-blue-300 mb-4 hover:shadow-lg transition-all">
                 <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <span>📊</span>
                     <span>Statistiques</span>
@@ -543,7 +543,7 @@
             </div>
 
             <!-- Tables List -->
-            <div class="bg-white p-6 rounded-lg border-2 border-gray-300">
+            <div class="bg-white p-6 rounded-lg border-2 border-gray-300 hover:shadow-lg transition-all">
                 <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <span>📋</span>
                     <span>Tables ({{ db_diagnostics.tables|length }})</span>

@@ -421,6 +421,8 @@ class ExportService:
             ['Téléphone', user.phone or 'Information non disponible'],
             ['WhatsApp', user.whatsapp or 'Information non disponible'],
             ['Adresse', user.address or 'Information non disponible'],
+            ['Passeport', (user.passport_number.upper() if user.passport_number else 'Non renseigné')],
+            ['Carte de séjour', (user.residence_card.upper() if user.residence_card else 'Non renseigné')],
             ['Date de naissance', user.date_of_birth.strftime('%d/%m/%Y') if user.date_of_birth else 'Information non disponible'],
             ['Genre', {'M': 'Masculin', 'F': 'Féminin', 'N': 'Non précisé'}.get(user.gender, 'Information non disponible')],
             ['Pays d\'origine', user.country.name if user.country else 'Information non disponible'],

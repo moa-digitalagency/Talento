@@ -47,7 +47,9 @@ def check_and_add_columns():
         'cv_analysis': 'TEXT',
         'cv_analyzed_at': 'TIMESTAMP',
         'languages': 'VARCHAR(255)',
-        'education': 'TEXT'
+        'education': 'TEXT',
+        'passport_number_encrypted': 'TEXT',
+        'residence_card_encrypted': 'TEXT'
     }
     
     if 'users' in inspector.get_table_names():
@@ -429,6 +431,8 @@ def create_demo_users():
             'phone': '+212661234567',
             'whatsapp': '+212661234567',
             'address': '15 Boulevard Zerktouni, Casablanca',
+            'passport_number': 'ab123456',
+            'residence_card': 'ma2024001234',
             'bio': 'Développeur web full-stack passionné avec 5 ans d\'expérience dans la création d\'applications web modernes. Spécialisé en React, Node.js et Python. J\'ai travaillé sur plus de 30 projets pour des clients internationaux.',
             'years_experience': 5,
             'availability': 'Temps plein',
@@ -454,6 +458,8 @@ def create_demo_users():
             'phone': '+212662345678',
             'whatsapp': '+212662345678',
             'address': '28 Avenue Mohammed V, Rabat',
+            'passport_number': 'cd789012',
+            'residence_card': 'ma2024005678',
             'bio': 'Designer graphique créative spécialisée en branding et identité visuelle. Portfolio comprenant des marques nationales et internationales. Passionnée par le design minimaliste et l\'impact visuel fort.',
             'years_experience': 3,
             'availability': 'Temps plein',
@@ -480,6 +486,8 @@ def create_demo_users():
             'phone': '+212663456789',
             'whatsapp': '+212663456789',
             'address': '42 Rue des Oudayas, Casablanca',
+            'passport_number': 'ef345678',
+            'residence_card': 'ma2023009876',
             'bio': 'Plombier professionnel certifié avec 10 ans d\'expérience. Interventions rapides 24/7, spécialiste en installation sanitaire moderne, détection de fuites et rénovation complète. Plus de 500 chantiers réussis.',
             'years_experience': 10,
             'availability': 'Flexible',
@@ -503,6 +511,8 @@ def create_demo_users():
             'phone': '+212664567890',
             'whatsapp': '+212664567890',
             'address': '7 Rue de la Kasbah, Marrakech',
+            'passport_number': 'gh901234',
+            'residence_card': 'ma2024011222',
             'bio': 'Chef de cuisine passionnée avec 7 ans d\'expérience en gastronomie française et marocaine. Spécialiste en pâtisserie fine et cuisine fusion. Diplômée Le Cordon Bleu Paris. Organisatrice d\'événements culinaires.',
             'years_experience': 7,
             'availability': 'Temps partiel',
@@ -528,6 +538,8 @@ def create_demo_users():
             'phone': '+212665678901',
             'whatsapp': '+212665678901',
             'address': '33 Boulevard Pasteur, Tanger',
+            'passport_number': 'ij567890',
+            'residence_card': 'ma2024015544',
             'bio': 'Expert en marketing digital et SEO avec 4 ans d\'expérience. Spécialiste en croissance organique, publicité Google/Facebook, et stratégie de contenu. Résultats prouvés : +250% de trafic pour mes clients.',
             'years_experience': 4,
             'availability': 'Temps plein',
@@ -552,6 +564,8 @@ def create_demo_users():
             phone_val = demo_data.pop('phone', None)
             whatsapp_val = demo_data.pop('whatsapp', None)
             address_val = demo_data.pop('address', None)
+            passport_val = demo_data.pop('passport_number', None)
+            residence_val = demo_data.pop('residence_card', None)
             
             user = User(**demo_data)
             user.set_password('demo123')
@@ -563,6 +577,10 @@ def create_demo_users():
                 user.whatsapp = whatsapp_val
             if address_val:
                 user.address = address_val
+            if passport_val:
+                user.passport_number = passport_val
+            if residence_val:
+                user.residence_card = residence_val
             
             db.session.add(user)
             db.session.flush()

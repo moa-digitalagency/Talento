@@ -21,6 +21,8 @@ class User(UserMixin, db.Model):
     phone_encrypted = db.Column(db.Text)
     whatsapp_encrypted = db.Column(db.Text)
     address_encrypted = db.Column(db.Text)
+    passport_number_encrypted = db.Column(db.Text)
+    residence_card_encrypted = db.Column(db.Text)
     
     country_id = db.Column(db.Integer, db.ForeignKey('countries.id'))
     city_id = db.Column(db.Integer, db.ForeignKey('cities.id'))
@@ -142,6 +144,46 @@ class User(UserMixin, db.Model):
             self.address_encrypted = encrypt_sensitive_data(value)
         else:
             self.address_encrypted = None
+    
+    @property
+    def passport_number(self):
+        """Déchiffrer et retourner le numéro de passeport"""
+        if not self.passport_number_encrypted:
+            return None
+        try:
+            from app.utils.encryption import decrypt_sensitive_data
+            return decrypt_sensitive_data(self.passport_number_encrypted)
+        except:
+            return None
+    
+    @passport_number.setter
+    def passport_number(self, value):
+        """Chiffrer et stocker le numéro de passeport"""
+        if value:
+            from app.utils.encryption import encrypt_sensitive_data
+            self.passport_number_encrypted = encrypt_sensitive_data(value)
+        else:
+            self.passport_number_encrypted = None
+    
+    @property
+    def residence_card(self):
+        """Déchiffrer et retourner le numéro de carte de séjour"""
+        if not self.residence_card_encrypted:
+            return None
+        try:
+            from app.utils.encryption import decrypt_sensitive_data
+            return decrypt_sensitive_data(self.residence_card_encrypted)
+        except:
+            return None
+    
+    @residence_card.setter
+    def residence_card(self, value):
+        """Chiffrer et stocker le numéro de carte de séjour"""
+        if value:
+            from app.utils.encryption import encrypt_sensitive_data
+            self.residence_card_encrypted = encrypt_sensitive_data(value)
+        else:
+            self.residence_card_encrypted = None
     
     def _get_social_media(self, field_name):
         """Helper pour déchiffrer les réseaux sociaux"""

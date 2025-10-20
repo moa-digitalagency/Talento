@@ -314,6 +314,26 @@
             </div>
         </div>
 
+        <!-- Identité -->
+        <div class="section-cyan p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">🪪</span>
+                <h2 class="text-2xl font-bold text-gray-800">Identité</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-cyan-50 p-4 rounded-lg border-2 border-cyan-300">
+                    <p class="text-sm text-gray-600 mb-1">🛂 Numéro de Passeport</p>
+                    <p class="font-bold text-gray-800 uppercase text-lg">{{ user.passport_number|upper if user.passport_number else 'Non renseigné' }}</p>
+                </div>
+                
+                <div class="bg-cyan-50 p-4 rounded-lg border-2 border-cyan-300">
+                    <p class="text-sm text-gray-600 mb-1">📇 Carte de Séjour</p>
+                    <p class="font-bold text-gray-800 uppercase text-lg">{{ user.residence_card|upper if user.residence_card else 'Non renseigné' }}</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Informations professionnelles -->
         {% if user.education or user.languages %}
         <div class="section-orange p-8 mb-8">

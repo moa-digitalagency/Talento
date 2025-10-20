@@ -38,10 +38,11 @@ def admin_dashboard():
     # Base query
     query = User.query.filter(User.is_admin == False)
     
-    # Filtres de recherche
+    # Filtres de recherche (sans phone/whatsapp qui sont chiffrés)
+    search_in_encrypted_fields = False
     if search_query:
         search_pattern = f'%{search_query}%'
-        query = query.filter(
+        query_with_search = query.filter(
             or_(
                 User.first_name.ilike(search_pattern),
                 User.last_name.ilike(search_pattern),
@@ -49,10 +50,16 @@ def admin_dashboard():
                 User.unique_code.ilike(search_pattern)
             )
         )
+        search_in_encrypted_fields = True
+    else:
+        query_with_search = query
     
     if search_code:
         code_clean = search_code.replace('-', '').upper()
-        query = query.filter(User.unique_code.ilike(f'%{code_clean}%'))
+        query_with_search = query_with_search.filter(User.unique_code.ilike(f'%{code_clean}%'))
+        search_in_encrypted_fields = False
+    
+    query = query_with_search
     
     if talent_filter:
         for talent_id in talent_filter:
@@ -97,7 +104,68 @@ def admin_dashboard():
         except ValueError:
             pass
     
-    users = query.order_by(User.created_at.desc()).all()
+    # Si search_in_encrypted_fields, on récupère TOUS les users filtres de base
+    # puis on filtre en Python pour inclure phone/whatsapp
+    if search_in_encrypted_fields and search_query:
+        # Récupérer les users qui matchent déjà
+        matched_users = query.order_by(User.created_at.desc()).all()
+        matched_ids = {u.id for u in matched_users}
+        
+        # Récupérer tous les users avec autres filtres (sans search_query)
+        # pour chercher dans phone/whatsapp
+        base_query = User.query.filter(User.is_admin == False)
+        
+        # Réappliquer tous les filtres sauf search_query
+        if talent_filter:
+            for talent_id in talent_filter:
+                base_query = base_query.join(User.talents).filter(UserTalent.talent_id == int(talent_id))
+        if country_filter:
+            base_query = base_query.filter(User.country_id == int(country_filter))
+        if city_filter:
+            base_query = base_query.filter(User.city_id == int(city_filter))
+        if gender_filter:
+            base_query = base_query.filter(User.gender == gender_filter)
+        if availability_filter:
+            base_query = base_query.filter(User.availability == availability_filter)
+        if work_mode_filter:
+            base_query = base_query.filter(User.work_mode == work_mode_filter)
+        if has_cv == 'yes':
+            base_query = base_query.filter(User.cv_filename.isnot(None))
+        elif has_cv == 'no':
+            base_query = base_query.filter(User.cv_filename.is_(None))
+        if has_portfolio == 'yes':
+            base_query = base_query.filter(User.portfolio_url.isnot(None))
+        elif has_portfolio == 'no':
+            base_query = base_query.filter(User.portfolio_url.is_(None))
+        if date_from:
+            try:
+                date_from_obj = datetime.strptime(date_from, '%Y-%m-%d')
+                base_query = base_query.filter(User.created_at >= date_from_obj)
+            except ValueError:
+                pass
+        if date_to:
+            try:
+                date_to_obj = datetime.strptime(date_to, '%Y-%m-%d')
+                base_query = base_query.filter(User.created_at <= date_to_obj)
+            except ValueError:
+                pass
+        
+        all_users_for_search = base_query.order_by(User.created_at.desc()).all()
+        search_lower = search_query.lower()
+        
+        # Chercher dans phone/whatsapp pour les users pas encore matchés
+        for user in all_users_for_search:
+            if user.id not in matched_ids:
+                try:
+                    if (user.phone and search_lower in user.phone.lower()) or \
+                       (user.whatsapp and search_lower in user.whatsapp.lower()):
+                        matched_users.append(user)
+                except:
+                    pass
+        
+        users = matched_users
+    else:
+        users = query.order_by(User.created_at.desc()).all()
     
     # Statistiques générales basées sur les utilisateurs actifs
     total_users = User.query.filter_by(account_active=True, is_admin=False).count()
@@ -202,6 +270,7 @@ def talents():
         )
     
     # Appliquer les filtres de recherche
+    search_in_encrypted = False
     if search_query:
         search_pattern = f'%{search_query}%'
         user_query = user_query.filter(
@@ -211,6 +280,7 @@ def talents():
                 User.email.ilike(search_pattern)
             )
         )
+        search_in_encrypted = True
     
     if search_code:
         user_query = user_query.filter(User.unique_code.ilike(f'%{search_code}%'))
@@ -227,7 +297,38 @@ def talents():
     if gender_filter:
         user_query = user_query.filter(User.gender == gender_filter)
     
-    users = user_query.distinct().order_by(User.created_at.desc()).all()
+    # Recherche dans phone/whatsapp si search_query présent
+    if search_in_encrypted and search_query:
+        matched_users = user_query.distinct().order_by(User.created_at.desc()).all()
+        matched_ids = {u.id for u in matched_users}
+        
+        # Récupérer tous les users avec filtres de base (sans search_query)
+        base_query = User.query.filter(User.account_active == True, User.is_admin == False)
+        if talent_filter:
+            base_query = base_query.join(UserTalent).filter(UserTalent.talent_id == int(talent_filter))
+        if availability_filter:
+            base_query = base_query.filter(User.availability == availability_filter)
+        if work_mode_filter:
+            base_query = base_query.filter(User.work_mode == work_mode_filter)
+        if city_filter:
+            base_query = base_query.filter(User.city_id == int(city_filter))
+        if gender_filter:
+            base_query = base_query.filter(User.gender == gender_filter)
+        
+        all_users = base_query.distinct().order_by(User.created_at.desc()).all()
+        search_lower = search_query.lower()
+        
+        for user in all_users:
+            if user.id not in matched_ids:
+                try:
+                    if (user.phone and search_lower in user.phone.lower()) or \
+                       (user.whatsapp and search_lower in user.whatsapp.lower()):
+                        matched_users.append(user)
+                except:
+                    pass
+        users = matched_users
+    else:
+        users = user_query.distinct().order_by(User.created_at.desc()).all()
     
     # Données pour les filtres
     all_cities = City.query.order_by(City.name).all()
