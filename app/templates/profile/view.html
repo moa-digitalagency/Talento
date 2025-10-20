@@ -128,6 +128,104 @@
             </div>
         </div>
 
+        <!-- Score et Analyse CV -->
+        {% if user.profile_score or cv_analysis %}
+        <div class="section-yellow p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">🎯</span>
+                <h2 class="text-2xl font-bold text-gray-800">Analyse du Profil</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                {% if user.profile_score %}
+                <div class="bg-white p-6 rounded-lg border-2 border-yellow-300 text-center">
+                    <p class="text-sm text-gray-600 mb-2">Score du Profil</p>
+                    <div class="relative w-32 h-32 mx-auto">
+                        <svg class="transform -rotate-90 w-32 h-32">
+                            <circle cx="64" cy="64" r="56" stroke="#fef3c7" stroke-width="8" fill="none"/>
+                            <circle cx="64" cy="64" r="56" 
+                                    stroke="{% if user.profile_score >= 70 %}#10b981{% elif user.profile_score >= 40 %}#f59e0b{% else %}#ef4444{% endif %}" 
+                                    stroke-width="8" 
+                                    fill="none" 
+                                    stroke-dasharray="{{ (user.profile_score / 100 * 352)|round }}, 352"/>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-4xl font-bold {% if user.profile_score >= 70 %}text-green-600{% elif user.profile_score >= 40 %}text-yellow-600{% else %}text-red-600{% endif %}">
+                                {{ user.profile_score }}
+                            </span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">
+                        {% if user.profile_score >= 70 %}✅ Excellent profil
+                        {% elif user.profile_score >= 40 %}⚡ Profil prometteur
+                        {% else %}📝 Profil à compléter{% endif %}
+                    </p>
+                </div>
+                {% endif %}
+                
+                {% if cv_analysis and cv_analysis.get('experience_years') %}
+                <div class="bg-white p-6 rounded-lg border-2 border-yellow-300 text-center">
+                    <p class="text-sm text-gray-600 mb-2">Expérience Détectée</p>
+                    <p class="text-5xl font-bold text-blue-600">{{ cv_analysis.experience_years }}</p>
+                    <p class="text-lg text-gray-700 mt-2">ans</p>
+                </div>
+                {% endif %}
+                
+                {% if user.cv_analyzed_at %}
+                <div class="bg-white p-6 rounded-lg border-2 border-yellow-300 text-center">
+                    <p class="text-sm text-gray-600 mb-2">Dernière Analyse</p>
+                    <p class="text-xl font-semibold text-gray-800">{{ user.cv_analyzed_at.strftime('%d/%m/%Y') }}</p>
+                    <p class="text-sm text-gray-500 mt-1">{{ user.cv_analyzed_at.strftime('%H:%M') }}</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if cv_analysis %}
+            <div class="bg-yellow-50 p-6 rounded-lg border-2 border-yellow-300">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>🤖</span>
+                    <span>Analyse par Intelligence Artificielle</span>
+                </h3>
+                
+                {% if cv_analysis.get('strengths') %}
+                <div class="mb-4">
+                    <p class="font-semibold text-green-700 mb-2">✨ Points Forts :</p>
+                    <ul class="list-disc list-inside space-y-1 text-gray-700">
+                        {% for strength in cv_analysis.strengths %}
+                        <li>{{ strength }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                
+                {% if cv_analysis.get('skills_detected') %}
+                <div class="mb-4">
+                    <p class="font-semibold text-blue-700 mb-2">🔧 Compétences Détectées :</p>
+                    <div class="flex flex-wrap gap-2">
+                        {% for skill in cv_analysis.skills_detected %}
+                        <span class="bg-blue-100 px-3 py-1 rounded-full text-sm font-medium text-blue-800 border border-blue-300">
+                            {{ skill }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if cv_analysis.get('recommendations') %}
+                <div>
+                    <p class="font-semibold text-purple-700 mb-2">💡 Recommandations :</p>
+                    <ul class="list-disc list-inside space-y-1 text-gray-700">
+                        {% for rec in cv_analysis.recommendations %}
+                        <li>{{ rec }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
         <!-- Talents -->
         <div class="section-purple p-8 mb-8">
             <div class="flex items-center gap-3 mb-6">

@@ -19,16 +19,16 @@
             <form method="POST" action="{{ url_for('auth.login') }}" class="space-y-5">
                 <div>
                     <label for="email" class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
-                        <span class="text-xl">📧</span>
-                        <span>Email</span>
+                        <span class="text-xl">👤</span>
+                        <span>Email ou Code unique</span>
                     </label>
                     <input 
-                        type="email" 
+                        type="text" 
                         id="email" 
                         name="email" 
                         required 
-                        autocomplete="email"
-                        placeholder="votre.email@exemple.com"
+                        autocomplete="username"
+                        placeholder="votre.email@exemple.com ou MARAB0001N"
                         class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
                     >
                 </div>

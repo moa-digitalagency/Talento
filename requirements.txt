@@ -40,3 +40,4 @@ reportlab==4.0.7
 requests==2.31.0
 sqlalchemy
 Werkzeug==3.0.1
+sendgrid

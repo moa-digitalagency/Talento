@@ -1,7 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_user, logout_user, current_user
 from app import db
 from app.models.user import User
+from datetime import datetime
+import json
+import os
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -86,7 +89,6 @@ def register():
             
             date_of_birth = request.form.get('date_of_birth')
             if date_of_birth:
-                from datetime import datetime
                 user.date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date()
             
             existing_user = User.query.filter_by(email=user.email).first()
@@ -140,7 +142,6 @@ def register():
             
             if cv_file_path and os.path.exists(cv_file_path):
                 try:
-                    from flask import current_app
                     analysis_result = CVAnalyzerService.analyze_cv(user.cv_filename, {
                         'name': user.full_name,
                         'talents': [talent_id for talent_id in talent_ids],
@@ -148,7 +149,6 @@ def register():
                     })
                     
                     if analysis_result.get('success'):
-                        import json
                         user.cv_analysis = json.dumps(analysis_result, ensure_ascii=False)
                         user.profile_score = analysis_result.get('score', 0)
                         user.cv_analyzed_at = datetime.utcnow()
