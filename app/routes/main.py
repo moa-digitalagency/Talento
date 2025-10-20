@@ -1,4 +1,5 @@
 from flask import Blueprint, redirect, url_for, render_template
+from flask_login import login_required
 from app.models.user import User
 from app.models.talent import Talent, UserTalent
 from app.models.location import Country, City
@@ -8,6 +9,7 @@ from sqlalchemy import func, desc
 bp = Blueprint('main', __name__)
 
 @bp.route('/')
+@login_required
 def index():
     # Statistiques générales
     total_users = User.query.filter_by(account_active=True, is_admin=False).count()
