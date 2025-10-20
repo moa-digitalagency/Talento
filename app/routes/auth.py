@@ -11,10 +11,12 @@ def login():
         return redirect(url_for('profile.dashboard'))
     
     if request.method == 'POST':
-        email = request.form.get('email')
+        identifier = request.form.get('email')
         password = request.form.get('password')
         
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=identifier).first()
+        if not user:
+            user = User.query.filter_by(unique_code=identifier).first()
         
         if user and user.check_password(password):
             login_user(user, remember=True)
@@ -23,7 +25,7 @@ def login():
                 return redirect(next_page or url_for('admin.dashboard'))
             return redirect(next_page or url_for('profile.dashboard'))
         else:
-            flash('Email ou mot de passe incorrect.', 'error')
+            flash('Identifiant ou mot de passe incorrect.', 'error')
     
     return render_template('auth/login.html')
 
@@ -43,8 +45,10 @@ def register():
         from app.models.location import Country, City
         from app.utils.id_generator import generate_unique_user_code
         from app.utils.qr_generator import generate_qr_code
-        from app.utils.email_service import generate_random_password, send_confirmation_email
+        from app.utils.email_service import generate_random_password
         from app.utils.file_handler import save_file
+        from app.services.email_service import email_service
+        from app.services.cv_analyzer import CVAnalyzerService
         import os
         
         try:
@@ -113,12 +117,14 @@ def register():
                     if filename:
                         user.photo_filename = filename
             
+            cv_file_path = None
             if 'cv' in request.files:
                 cv = request.files['cv']
                 if cv.filename:
                     filename = save_file(cv, 'cv')
                     if filename:
                         user.cv_filename = filename
+                        cv_file_path = os.path.join('app', 'static', 'uploads', 'cvs', filename)
             
             db.session.add(user)
             db.session.flush()
@@ -132,9 +138,30 @@ def register():
             qr_filename = generate_qr_code(user.unique_code, qr_path)
             user.qr_code_filename = qr_filename
             
+            if cv_file_path and os.path.exists(cv_file_path):
+                try:
+                    from flask import current_app
+                    analysis_result = CVAnalyzerService.analyze_cv(user.cv_filename, {
+                        'name': user.full_name,
+                        'talents': [talent_id for talent_id in talent_ids],
+                        'location': f"{user.city.name if user.city else ''}, {user.country.name if user.country else ''}"
+                    })
+                    
+                    if analysis_result.get('success'):
+                        import json
+                        user.cv_analysis = json.dumps(analysis_result, ensure_ascii=False)
+                        user.profile_score = analysis_result.get('score', 0)
+                        user.cv_analyzed_at = datetime.utcnow()
+                except Exception as e:
+                    current_app.logger.error(f"Erreur analyse CV: {str(e)}")
+            
             db.session.commit()
             
-            send_confirmation_email(user, password)
+            try:
+                email_service.send_application_confirmation(user)
+                email_service.send_login_credentials(user, password)
+            except Exception as e:
+                current_app.logger.error(f"Erreur envoi emails: {str(e)}")
             
             flash('Votre profil a été créé avec succès ! Vérifiez votre email pour vos identifiants de connexion.', 'success')
             return redirect(url_for('auth.login'))
