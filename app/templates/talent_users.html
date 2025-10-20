@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}{{ talent.name }} - Profils - Talento{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- En-tête avec retour -->
+        <div class="mb-6">
+            <a href="{{ url_for('main.talents') }}" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold">
+                <span>←</span>
+                <span>Retour aux talents</span>
+            </a>
+        </div>
+
+        <!-- En-tête Talent -->
+        <div class="section-purple p-8 mb-8">
+            <div class="text-center">
+                <div class="text-7xl mb-4">{{ talent.emoji }}</div>
+                <h1 class="text-5xl font-bold text-gray-800 mb-2">
+                    {{ talent.name }}
+                </h1>
+                <p class="text-xl text-gray-600">{{ talent.category }}</p>
+                <div class="mt-4 inline-flex items-center gap-2 bg-purple-100 py-2 px-6 rounded-full">
+                    <span class="text-3xl font-bold text-purple-700">{{ total_users }}</span>
+                    <span class="text-lg text-purple-600">profil{{ 's' if total_users > 1 else '' }} trouvé{{ 's' if total_users > 1 else '' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtres de recherche -->
+        <div class="section-indigo p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">🔍</span>
+                <h2 class="text-2xl font-bold text-gray-800">Filtres de recherche</h2>
+            </div>
+            
+            <form method="GET" action="{{ url_for('main.talent_users', talent_id=talent.id) }}" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+                            <span>📝</span>
+                            <span>Recherche par nom/email</span>
+                        </label>
+                        <input type="text" name="search" value="{{ request.args.get('search', '') }}" 
+                               placeholder="Nom, prénom ou email..."
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Ville</label>
+                        <select name="city" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Toutes</option>
+                            {% for city in cities %}
+                            <option value="{{ city.id }}" {% if request.args.get('city') == city.id|string %}selected{% endif %}>{{ city.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Disponibilité</label>
+                        <select name="availability" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Toutes</option>
+                            <option value="Temps plein" {% if request.args.get('availability') == 'Temps plein' %}selected{% endif %}>⏰ Temps plein</option>
+                            <option value="Temps partiel" {% if request.args.get('availability') == 'Temps partiel' %}selected{% endif %}>🕐 Temps partiel</option>
+                            <option value="Mi-temps" {% if request.args.get('availability') == 'Mi-temps' %}selected{% endif %}>⏳ Mi-temps</option>
+                            <option value="Flexible" {% if request.args.get('availability') == 'Flexible' %}selected{% endif %}>🔄 Flexible</option>
+                            <option value="Occasionnel" {% if request.args.get('availability') == 'Occasionnel' %}selected{% endif %}>📅 Occasionnel</option>
+                            <option value="Indisponible" {% if request.args.get('availability') == 'Indisponible' %}selected{% endif %}>❌ Indisponible</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Mode de travail</label>
+                        <select name="work_mode" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Tous</option>
+                            <option value="Sur site" {% if request.args.get('work_mode') == 'Sur site' %}selected{% endif %}>🏢 Sur site</option>
+                            <option value="À distance" {% if request.args.get('work_mode') == 'À distance' %}selected{% endif %}>💻 À distance</option>
+                            <option value="Hybride" {% if request.args.get('work_mode') == 'Hybride' %}selected{% endif %}>🔄 Hybride</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Genre</label>
+                        <select name="gender" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Tous</option>
+                            <option value="M" {% if request.args.get('gender') == 'M' %}selected{% endif %}>Homme</option>
+                            <option value="F" {% if request.args.get('gender') == 'F' %}selected{% endif %}>Femme</option>
+                            <option value="N" {% if request.args.get('gender') == 'N' %}selected{% endif %}>Autre</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="btn-primary flex-1">
+                        🔍 Rechercher
+                    </button>
+                    <a href="{{ url_for('main.talent_users', talent_id=talent.id) }}" class="btn-secondary px-6">
+                        ❌ Réinitialiser
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Liste des utilisateurs -->
+        <div class="section-cyan p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">👥</span>
+                <h2 class="text-2xl font-bold text-gray-800">Profils ({{ total_users }})</h2>
+            </div>
+
+            {% if users %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                    <thead class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
+                        <tr>
+                            <th class="px-6 py-4 text-left">Photo</th>
+                            <th class="px-6 py-4 text-left">Nom</th>
+                            <th class="px-6 py-4 text-left">Code</th>
+                            <th class="px-6 py-4 text-left">Ville</th>
+                            <th class="px-6 py-4 text-left">Disponibilité</th>
+                            <th class="px-6 py-4 text-left">Mode de travail</th>
+                            <th class="px-6 py-4 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for user in users %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                {% if user.photo_filename %}
+                                <img src="{{ url_for('static', filename='uploads/photos/' + user.photo_filename) }}" 
+                                     alt="{{ user.full_name }}"
+                                     class="w-12 h-12 rounded-full object-cover border-2 border-blue-200">
+                                {% else %}
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-lg border-2 border-blue-200">
+                                    {{ user.first_name[0] if user.first_name else '?' }}{{ user.last_name[0] if user.last_name else '' }}
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="font-semibold text-gray-800">{{ user.full_name }}</div>
+                                <div class="text-sm text-gray-500">{{ user.email }}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <code class="bg-gray-100 px-2 py-1 rounded text-sm">{{ user.formatted_code }}</code>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-gray-700">{{ user.city.name if user.city else '-' }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                {% if user.availability %}
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                                    {{ user.availability }}
+                                </span>
+                                {% else %}
+                                <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4">
+                                {% if user.work_mode %}
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+                                    {{ user.work_mode }}
+                                </span>
+                                {% else %}
+                                <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4">
+                                {% if current_user.is_admin %}
+                                <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" 
+                                   class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm font-semibold">
+                                    Gérer
+                                </a>
+                                {% else %}
+                                <a href="{{ url_for('profile.view_profile', user_id=user.id) }}" 
+                                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm font-semibold">
+                                    Voir
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <div class="text-6xl mb-4">🔍</div>
+                <p class="text-xl font-semibold text-gray-700">Aucun profil trouvé</p>
+                <p class="text-sm text-gray-500">Essayez de modifier vos critères de recherche</p>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

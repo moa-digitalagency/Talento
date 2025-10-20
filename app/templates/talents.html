@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Talents - Talento{% endblock %}
+{% block title %}Catalogue des Talents - Talento{% endblock %}
 
 {% block content %}
 <div class="min-h-screen bg-gray-50 py-8 px-4">
@@ -10,91 +10,35 @@
         <div class="section-purple p-8 mb-8">
             <div class="text-center">
                 <div class="inline-block mb-4">
-                    <span class="text-7xl">⭐</span>
+                    <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Talento Logo" class="w-20 h-20 mx-auto">
                 </div>
                 <h1 class="text-5xl font-bold text-gray-800 mb-4">
                     Catalogue des Talents
                 </h1>
                 <p class="text-xl text-gray-600">
-                    Découvrez {{ total_talents }} compétences disponibles
+                    Découvrez tous les talents disponibles sur la plateforme
                 </p>
             </div>
         </div>
 
-        <!-- Filtres de recherche -->
-        <div class="section-blue p-8 mb-8">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="text-4xl">🔍</span>
-                <h2 class="text-2xl font-bold text-gray-800">Rechercher un talent</h2>
-            </div>
-            
-            <form method="GET" action="{{ url_for('main.talents') }}" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
-                            <span>📝</span>
-                            <span>Nom du talent</span>
-                        </label>
-                        <input type="text" name="search" value="{{ request.args.get('search', '') }}" 
-                               placeholder="Ex: Développeur, Designer, Électricien..."
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
-                            <span>📁</span>
-                            <span>Catégorie</span>
-                        </label>
-                        <select name="category" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                            <option value="">Toutes les catégories</option>
-                            {% for category in categories %}
-                            <option value="{{ category }}" {% if request.args.get('category') == category %}selected{% endif %}>
-                                {{ category }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
+        <!-- Barre de recherche -->
+        <div class="section-blue p-6 mb-8">
+            <form method="GET" action="{{ url_for('main.talents') }}" class="flex gap-4">
+                <div class="flex-1">
+                    <input type="text" 
+                           name="search" 
+                           value="{{ request.args.get('search', '') }}" 
+                           placeholder="Rechercher un talent par nom..."
+                           class="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Disponibilité</label>
-                        <select name="availability" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                            <option value="">Toutes</option>
-                            <option value="Temps plein" {% if request.args.get('availability') == 'Temps plein' %}selected{% endif %}>⏰ Temps plein</option>
-                            <option value="Temps partiel" {% if request.args.get('availability') == 'Temps partiel' %}selected{% endif %}>🕐 Temps partiel</option>
-                            <option value="Mi-temps" {% if request.args.get('availability') == 'Mi-temps' %}selected{% endif %}>⏳ Mi-temps</option>
-                            <option value="Flexible" {% if request.args.get('availability') == 'Flexible' %}selected{% endif %}>🔄 Flexible</option>
-                            <option value="Occasionnel" {% if request.args.get('availability') == 'Occasionnel' %}selected{% endif %}>📅 Occasionnel</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Mode de travail</label>
-                        <select name="work_mode" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                            <option value="">Tous</option>
-                            <option value="Sur site" {% if request.args.get('work_mode') == 'Sur site' %}selected{% endif %}>🏢 Sur site</option>
-                            <option value="À distance" {% if request.args.get('work_mode') == 'À distance' %}selected{% endif %}>💻 À distance</option>
-                            <option value="Hybride" {% if request.args.get('work_mode') == 'Hybride' %}selected{% endif %}>🔄 Hybride</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Ville</label>
-                        <select name="city" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
-                            <option value="">Toutes</option>
-                            {% for city in cities %}
-                            <option value="{{ city.id }}" {% if request.args.get('city') == city.id|string %}selected{% endif %}>{{ city.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-
-                <div class="flex gap-4">
-                    <button type="submit" class="btn-primary flex-1">
-                        🔍 Rechercher
-                    </button>
-                    <a href="{{ url_for('main.talents') }}" class="btn-secondary px-6">
-                        ❌ Réinitialiser
-                    </a>
-                </div>
+                <button type="submit" class="btn-primary px-8 text-lg">
+                    🔍 Rechercher
+                </button>
+                {% if request.args.get('search') %}
+                <a href="{{ url_for('main.talents') }}" class="btn-secondary px-6">
+                    ❌ Réinitialiser
+                </a>
+                {% endif %}
             </form>
         </div>
 
@@ -109,56 +53,26 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {% for talent in talent_stats %}
-                <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-green-500 hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-green-500 hover:shadow-xl transition-all duration-300">
                     <div class="text-center">
                         <div class="text-6xl mb-3">{{ talent.emoji }}</div>
                         <h3 class="font-bold text-lg text-gray-800 mb-2">{{ talent.name }}</h3>
                         <p class="text-sm text-gray-600 mb-3">{{ talent.category }}</p>
-                        <div class="flex items-center justify-center gap-2 bg-green-100 py-2 px-4 rounded-full">
+                        <div class="flex items-center justify-center gap-2 bg-green-100 py-2 px-4 rounded-full mb-4">
                             <span class="text-2xl font-bold text-green-700">{{ talent.user_count }}</span>
                             <span class="text-sm text-green-600">profil{{ 's' if talent.user_count > 1 else '' }}</span>
                         </div>
+                        <a href="{{ url_for('main.talent_users', talent_id=talent.id) }}" 
+                           class="btn-primary w-full inline-block py-3">
+                            👁️ Voir les profils
+                        </a>
                     </div>
                 </div>
                 {% else %}
                 <div class="col-span-full text-center py-12">
                     <div class="text-6xl mb-4">🔍</div>
                     <p class="text-xl font-semibold text-gray-700">Aucun talent trouvé</p>
-                    <p class="text-sm text-gray-500">Essayez de modifier vos filtres de recherche</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- Statistiques par catégorie -->
-        <div class="section-orange p-8 mt-8">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="text-4xl">📊</span>
-                <h2 class="text-2xl font-bold text-gray-800">Répartition par catégorie</h2>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% set category_counts = {} %}
-                {% for talent in talent_stats %}
-                    {% set category = talent.category %}
-                    {% if category not in category_counts %}
-                        {% set _ = category_counts.update({category: 0}) %}
-                    {% endif %}
-                    {% set _ = category_counts.update({category: category_counts[category] + 1}) %}
-                {% endfor %}
-                
-                {% for category, count in category_counts.items() %}
-                <div class="bg-orange-50 p-6 rounded-xl border-2 border-orange-300 hover:shadow-lg transition-all">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="font-bold text-lg text-gray-800 mb-1">{{ category }}</h3>
-                            <p class="text-sm text-gray-600">Catégorie</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-3xl font-bold text-orange-600">{{ count }}</p>
-                            <p class="text-xs text-gray-500">talent{{ 's' if count > 1 else '' }}</p>
-                        </div>
-                    </div>
+                    <p class="text-sm text-gray-500">Essayez de modifier votre recherche</p>
                 </div>
                 {% endfor %}
             </div>

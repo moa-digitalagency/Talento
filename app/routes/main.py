@@ -182,10 +182,6 @@ def about():
 def talents():
     """Page de recherche et visualisation des talents"""
     search_query = request.args.get('search', '').strip()
-    category_filter = request.args.get('category', '').strip()
-    availability_filter = request.args.get('availability')
-    work_mode_filter = request.args.get('work_mode')
-    city_filter = request.args.get('city')
     
     # Obtenir uniquement les talents qui ont au moins un utilisateur
     talents_with_users = db.session.query(
@@ -199,36 +195,66 @@ def talents():
         User.is_admin == False
     ).group_by(Talent.id, Talent.name, Talent.emoji, Talent.category)
     
-    # Appliquer les filtres
+    # Appliquer le filtre de recherche si présent
     if search_query:
         talents_with_users = talents_with_users.filter(Talent.name.ilike(f'%{search_query}%'))
     
-    if category_filter:
-        talents_with_users = talents_with_users.filter(Talent.category == category_filter)
-    
-    # Filtres utilisateurs
-    if availability_filter or work_mode_filter or city_filter:
-        if availability_filter:
-            talents_with_users = talents_with_users.filter(User.availability == availability_filter)
-        if work_mode_filter:
-            talents_with_users = talents_with_users.filter(User.work_mode == work_mode_filter)
-        if city_filter:
-            talents_with_users = talents_with_users.filter(User.city_id == int(city_filter))
-    
     talent_stats = talents_with_users.order_by(Talent.category, Talent.name).all()
     
-    # Catégories disponibles (uniquement celles avec des talents utilisés)
-    categories = db.session.query(Talent.category).join(UserTalent).join(User).filter(
+    return render_template('talents.html', 
+                         talent_stats=talent_stats,
+                         total_talents=len(talent_stats))
+
+@bp.route('/talents/users/<int:talent_id>')
+@login_required
+def talent_users(talent_id):
+    """Page affichant les utilisateurs qui ont un talent spécifique"""
+    talent = Talent.query.get_or_404(talent_id)
+    
+    # Filtres de recherche
+    search_query = request.args.get('search', '').strip()
+    availability_filter = request.args.get('availability')
+    work_mode_filter = request.args.get('work_mode')
+    city_filter = request.args.get('city')
+    gender_filter = request.args.get('gender')
+    
+    # Base query: utilisateurs qui ont ce talent
+    query = User.query.join(UserTalent).filter(
+        UserTalent.talent_id == talent_id,
         User.account_active == True,
         User.is_admin == False
-    ).distinct().order_by(Talent.category).all()
-    categories = [c[0] for c in categories]
+    )
+    
+    # Appliquer les filtres
+    if search_query:
+        search_pattern = f'%{search_query}%'
+        query = query.filter(
+            or_(
+                User.first_name.ilike(search_pattern),
+                User.last_name.ilike(search_pattern),
+                User.email.ilike(search_pattern)
+            )
+        )
+    
+    if availability_filter:
+        query = query.filter(User.availability == availability_filter)
+    
+    if work_mode_filter:
+        query = query.filter(User.work_mode == work_mode_filter)
+    
+    if city_filter:
+        query = query.filter(User.city_id == int(city_filter))
+    
+    if gender_filter:
+        query = query.filter(User.gender == gender_filter)
+    
+    users = query.order_by(User.created_at.desc()).all()
     
     # Données pour les filtres
     all_cities = City.query.order_by(City.name).all()
     
-    return render_template('talents.html', 
-                         talent_stats=talent_stats,
-                         categories=categories,
+    return render_template('talent_users.html',
+                         talent=talent,
+                         users=users,
                          cities=all_cities,
-                         total_talents=len(talent_stats))
+                         total_users=len(users))
