@@ -10,9 +10,9 @@ from flask import current_app, render_template
 class EmailService:
     """Service pour l'envoi d'emails via SendGrid"""
     
-    def __init__(self):
-        self.api_key = os.environ.get('SENDGRID_API_KEY')
-        self.from_email = os.environ.get('SENDGRID_FROM_EMAIL', 'noreply@talento.com')
+    def __init__(self, api_key=None, from_email=None):
+        self.api_key = api_key or os.environ.get('SENDGRID_API_KEY')
+        self.from_email = from_email or os.environ.get('SENDGRID_FROM_EMAIL', 'noreply@myoneart.com')
         
     def send_email(self, to_email, subject, html_content, attachments=None):
         """
@@ -246,6 +246,77 @@ class EmailService:
             
         except Exception as e:
             current_app.logger.error(f"Erreur envoi identifiants: {str(e)}")
+            return False
+    
+    def send_test_email(self, to_email):
+        """
+        Envoie un email de test pour vérifier la configuration SendGrid
+        
+        Args:
+            to_email: Email du destinataire
+        
+        Returns:
+            True si envoyé, False sinon
+        """
+        try:
+            html_content = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                    .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
+                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+                    .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
+                    .success { background: #d1fae5; border-left: 4px solid #10b981; 
+                               padding: 15px; margin: 20px 0; border-radius: 5px; }
+                    .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>✅ Email de Test Talento</h1>
+                    </div>
+                    <div class="content">
+                        <div class="success">
+                            <strong>✨ Félicitations !</strong> La configuration SendGrid fonctionne correctement.
+                        </div>
+                        
+                        <p>Cet email de test confirme que :</p>
+                        <ul>
+                            <li>✅ La clé API SendGrid est valide</li>
+                            <li>✅ L'email expéditeur est correctement configuré</li>
+                            <li>✅ Les emails peuvent être envoyés depuis Talento</li>
+                        </ul>
+                        
+                        <p>Vous pouvez maintenant utiliser l'envoi automatique d'emails pour :</p>
+                        <ul>
+                            <li>Confirmer les nouvelles candidatures</li>
+                            <li>Envoyer les identifiants de connexion</li>
+                        </ul>
+                        
+                        <p style="margin-top: 30px;">Cordialement,<br>
+                        <strong>L'équipe Talento</strong></p>
+                    </div>
+                    <div class="footer">
+                        <p>Cet email a été envoyé depuis la page de configuration de Talento.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            return self.send_email(
+                to_email=to_email,
+                subject="✅ Test de configuration SendGrid - Talento",
+                html_content=html_content
+            )
+            
+        except Exception as e:
+            current_app.logger.error(f"Erreur envoi test email: {str(e)}")
             return False
 
 # Instance globale

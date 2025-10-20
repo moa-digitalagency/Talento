@@ -12,6 +12,17 @@
             <p class="text-gray-600">Configuration de l'application et gestion des administrateurs</p>
         </div>
 
+        <!-- Messages Flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="mb-6 p-4 rounded-lg border-2 {% if category == 'success' %}bg-green-50 border-green-300 text-green-800{% elif category == 'error' %}bg-red-50 border-red-300 text-red-800{% else %}bg-blue-50 border-blue-300 text-blue-800{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         <!-- Configuration API Keys -->
         <div class="section-blue p-8 mb-8">
             <div class="flex items-center gap-3 mb-6">
@@ -19,75 +30,113 @@
                 <h2 class="text-2xl font-bold text-gray-800">Clés API et Configuration</h2>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- SendGrid Status -->
-                <div class="bg-white p-6 rounded-lg border-2 {% if config.sendgrid %}border-green-300{% else %}border-red-300{% endif %}">
+            <form method="POST" action="{{ url_for('admin.save_settings') }}" class="space-y-6">
+                <!-- SendGrid Configuration -->
+                <div class="bg-white p-6 rounded-lg border-2 {% if config.sendgrid %}border-green-300{% else %}border-orange-300{% endif %}">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-3">
                             <span class="text-3xl">📧</span>
-                            <h3 class="text-lg font-bold text-gray-800">SendGrid</h3>
+                            <h3 class="text-lg font-bold text-gray-800">SendGrid API Key</h3>
                         </div>
-                        <span class="px-3 py-1 rounded-full text-sm font-semibold {% if config.sendgrid %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
-                            {% if config.sendgrid %}✅ Configuré{% else %}❌ Non configuré{% endif %}
+                        <span class="px-3 py-1 rounded-full text-sm font-semibold {% if config.sendgrid %}bg-green-100 text-green-700{% else %}bg-orange-100 text-orange-700{% endif %}">
+                            {% if config.sendgrid %}✅ Configuré{% else %}⚠️ Non configuré{% endif %}
                         </span>
                     </div>
-                    <p class="text-gray-600 text-sm mb-2">Envoi automatique des emails :</p>
-                    <ul class="text-sm text-gray-700 space-y-1 ml-4 list-disc">
-                        <li>Confirmation de candidature</li>
-                        <li>Identifiants de connexion</li>
-                    </ul>
-                    {% if config.sendgrid %}
-                    <div class="mt-4 p-3 bg-blue-50 rounded border border-blue-200">
-                        <p class="text-xs text-gray-700"><strong>Email expéditeur :</strong> {{ config.sendgrid_from }}</p>
-                    </div>
-                    {% else %}
-                    <div class="mt-4 p-3 bg-yellow-50 rounded border border-yellow-200">
-                        <p class="text-xs text-gray-700">Ajoutez SENDGRID_API_KEY dans les secrets Replit pour activer cette fonctionnalité.</p>
-                    </div>
-                    {% endif %}
+                    <p class="text-gray-600 text-sm mb-4">Clé API pour l'envoi automatique des emails (confirmation, identifiants)</p>
+                    <input type="password" 
+                           name="sendgrid_api_key" 
+                           value="{{ config.sendgrid_key_masked }}" 
+                           placeholder="SG.xxxxxxxxxxxxxxxxxxxxxxxxx"
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm">
+                    <p class="text-xs text-gray-500 mt-2">💡 Obtenez votre clé sur <a href="https://sendgrid.com" target="_blank" class="text-blue-600 hover:underline">sendgrid.com</a></p>
                 </div>
 
-                <!-- OpenRouter Status -->
-                <div class="bg-white p-6 rounded-lg border-2 {% if config.openrouter %}border-green-300{% else %}border-red-300{% endif %}">
+                <!-- OpenRouter Configuration -->
+                <div class="bg-white p-6 rounded-lg border-2 {% if config.openrouter %}border-green-300{% else %}border-orange-300{% endif %}">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-3">
                             <span class="text-3xl">🤖</span>
-                            <h3 class="text-lg font-bold text-gray-800">OpenRouter AI</h3>
+                            <h3 class="text-lg font-bold text-gray-800">OpenRouter API Key</h3>
                         </div>
-                        <span class="px-3 py-1 rounded-full text-sm font-semibold {% if config.openrouter %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
-                            {% if config.openrouter %}✅ Configuré{% else %}❌ Non configuré{% endif %}
+                        <span class="px-3 py-1 rounded-full text-sm font-semibold {% if config.openrouter %}bg-green-100 text-green-700{% else %}bg-orange-100 text-orange-700{% endif %}">
+                            {% if config.openrouter %}✅ Configuré{% else %}⚠️ Non configuré{% endif %}
                         </span>
                     </div>
-                    <p class="text-gray-600 text-sm mb-2">Analyse intelligente des CV :</p>
-                    <ul class="text-sm text-gray-700 space-y-1 ml-4 list-disc">
-                        <li>Analyse automatique du CV</li>
-                        <li>Score du profil (0-100)</li>
-                        <li>Détection des compétences</li>
-                        <li>Recommandations IA</li>
-                    </ul>
-                    {% if not config.openrouter %}
-                    <div class="mt-4 p-3 bg-yellow-50 rounded border border-yellow-200">
-                        <p class="text-xs text-gray-700">Ajoutez OPENROUTER_API_KEY dans les secrets Replit pour activer cette fonctionnalité.</p>
-                    </div>
-                    {% endif %}
+                    <p class="text-gray-600 text-sm mb-4">Clé API pour l'analyse intelligente des CV par IA</p>
+                    <input type="password" 
+                           name="openrouter_api_key" 
+                           value="{{ config.openrouter_key_masked }}" 
+                           placeholder="sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxx"
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm">
+                    <p class="text-xs text-gray-500 mt-2">💡 Obtenez votre clé sur <a href="https://openrouter.ai" target="_blank" class="text-blue-600 hover:underline">openrouter.ai</a></p>
                 </div>
-            </div>
 
-            <!-- Database Info -->
-            <div class="mt-6 bg-white p-6 rounded-lg border-2 border-blue-300">
-                <div class="flex items-center gap-3 mb-2">
-                    <span class="text-2xl">💾</span>
-                    <h3 class="text-lg font-bold text-gray-800">Base de données</h3>
+                <!-- Email Configuration -->
+                <div class="bg-white p-6 rounded-lg border-2 border-blue-300">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-3xl">✉️</span>
+                        <h3 class="text-lg font-bold text-gray-800">Email Expéditeur</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Adresse email qui apparaîtra comme expéditeur des emails automatiques</p>
+                    <input type="email" 
+                           name="sender_email" 
+                           value="{{ config.sendgrid_from }}" 
+                           placeholder="noreply@myoneart.com"
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
-                <p class="text-gray-700"><strong>Type :</strong> {{ config.database_type }}</p>
+
+                <!-- Save Button -->
+                <div class="flex justify-end">
+                    <button type="submit" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2">
+                        <span>💾</span>
+                        <span>Enregistrer les paramètres</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Email Test Section -->
+        <div class="section-green p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">📮</span>
+                <h2 class="text-2xl font-bold text-gray-800">Test d'envoi d'email</h2>
             </div>
+            
+            <p class="text-gray-600 mb-4">Testez la configuration SendGrid en envoyant un email de test</p>
+            
+            <form method="POST" action="{{ url_for('admin.test_email') }}" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Email destinataire</label>
+                    <input type="email" 
+                           name="test_email" 
+                           placeholder="votre.email@exemple.com"
+                           required
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                </div>
+                <button type="submit" 
+                        {% if not config.sendgrid %}disabled{% endif %}
+                        class="px-6 py-3 {% if config.sendgrid %}bg-green-600 hover:bg-green-700{% else %}bg-gray-400 cursor-not-allowed{% endif %} text-white font-bold rounded-lg transition-all flex items-center gap-2">
+                    <span>📧</span>
+                    <span>Envoyer un email de test</span>
+                </button>
+                {% if not config.sendgrid %}
+                <p class="text-sm text-orange-600">⚠️ Configurez d'abord la clé SendGrid API ci-dessus pour activer cette fonctionnalité</p>
+                {% endif %}
+            </form>
         </div>
 
         <!-- Administrateurs -->
         <div class="section-purple p-8 mb-8">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="text-4xl">👥</span>
-                <h2 class="text-2xl font-bold text-gray-800">Utilisateurs Administrateurs</h2>
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <span class="text-4xl">👥</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Utilisateurs Administrateurs</h2>
+                </div>
+                <a href="{{ url_for('admin.create_admin_user') }}" 
+                   class="px-6 py-3 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition-all flex items-center gap-2">
+                    <span>➕</span>
+                    <span>Créer un nouvel admin</span>
+                </a>
             </div>
             
             <div class="bg-white rounded-lg border-2 border-purple-300 overflow-hidden">
@@ -145,11 +194,11 @@
                 </table>
             </div>
 
-            <!-- Ajouter un nouvel administrateur -->
+            <!-- Promote existing user -->
             <div class="mt-6 bg-purple-50 p-6 rounded-lg border-2 border-purple-300">
                 <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <span>➕</span>
-                    <span>Promouvoir un utilisateur en administrateur</span>
+                    <span>⬆️</span>
+                    <span>Promouvoir un utilisateur existant en administrateur</span>
                 </h3>
                 <p class="text-sm text-gray-600 mb-4">Sélectionnez un utilisateur existant dans la liste pour lui donner les droits administrateur.</p>
                 
@@ -221,6 +270,17 @@
                         return false;
                     }
                 </script>
+            </div>
+        </div>
+
+        <!-- Database Info -->
+        <div class="section-gray p-8 mb-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">💾</span>
+                <h2 class="text-2xl font-bold text-gray-800">Base de données</h2>
+            </div>
+            <div class="bg-white p-6 rounded-lg border-2 border-gray-300">
+                <p class="text-gray-700"><strong>Type :</strong> {{ config.database_type }}</p>
             </div>
         </div>
 

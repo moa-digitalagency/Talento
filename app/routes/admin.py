@@ -7,10 +7,14 @@ from app import db
 from app.models.user import User
 from app.models.talent import Talent, UserTalent
 from app.models.location import Country, City
+from app.models.settings import AppSettings
 from app.services.export_service import ExportService
 from app.services.cv_analyzer import CVAnalyzerService
+from app.services.email_service import EmailService
 import io
 import os
+import secrets
+import string
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -274,13 +278,24 @@ def edit_user(user_id):
 def settings():
     admin_users = User.query.filter(User.is_admin == True).order_by(User.created_at).all()
     
-    sendgrid_configured = bool(os.environ.get('SENDGRID_API_KEY'))
-    openrouter_configured = bool(os.environ.get('OPENROUTER_API_KEY'))
+    sendgrid_key = AppSettings.get('sendgrid_api_key', '') or os.environ.get('SENDGRID_API_KEY', '')
+    openrouter_key = AppSettings.get('openrouter_api_key', '') or os.environ.get('OPENROUTER_API_KEY', '')
+    sender_email = AppSettings.get('sender_email', 'noreply@myoneart.com')
+    
+    sendgrid_configured = bool(sendgrid_key)
+    openrouter_configured = bool(openrouter_key)
+    
+    def mask_key(key):
+        if not key or len(key) < 8:
+            return ''
+        return key[:4] + '*' * (len(key) - 8) + key[-4:]
     
     config_info = {
         'sendgrid': sendgrid_configured,
         'openrouter': openrouter_configured,
-        'sendgrid_from': os.environ.get('SENDGRID_FROM_EMAIL', 'noreply@talento.com'),
+        'sendgrid_key_masked': mask_key(sendgrid_key) if sendgrid_configured else '',
+        'openrouter_key_masked': mask_key(openrouter_key) if openrouter_configured else '',
+        'sendgrid_from': sender_email,
         'database_type': 'PostgreSQL' if 'postgresql' in current_app.config.get('SQLALCHEMY_DATABASE_URI', '').lower() else 'SQLite'
     }
     
@@ -324,3 +339,116 @@ def demote_admin(user_id):
     db.session.commit()
     flash(f'{user.full_name} n\'est plus administrateur.', 'success')
     return redirect(url_for('admin.settings'))
+
+@bp.route('/save-settings', methods=['POST'])
+@login_required
+@admin_required
+def save_settings():
+    sendgrid_key = request.form.get('sendgrid_api_key', '').strip()
+    openrouter_key = request.form.get('openrouter_api_key', '').strip()
+    sender_email = request.form.get('sender_email', '').strip() or 'noreply@myoneart.com'
+    
+    if sendgrid_key and not sendgrid_key.startswith('*'):
+        AppSettings.set('sendgrid_api_key', sendgrid_key)
+    
+    if openrouter_key and not openrouter_key.startswith('*'):
+        AppSettings.set('openrouter_api_key', openrouter_key)
+    
+    AppSettings.set('sender_email', sender_email)
+    
+    flash('Paramètres sauvegardés avec succès.', 'success')
+    return redirect(url_for('admin.settings'))
+
+@bp.route('/test-email', methods=['POST'])
+@login_required
+@admin_required
+def test_email():
+    test_email_address = request.form.get('test_email', '').strip()
+    
+    if not test_email_address:
+        flash('Veuillez saisir une adresse email.', 'error')
+        return redirect(url_for('admin.settings'))
+    
+    sendgrid_key = AppSettings.get('sendgrid_api_key', '') or os.environ.get('SENDGRID_API_KEY', '')
+    sender_email = AppSettings.get('sender_email', 'noreply@myoneart.com')
+    
+    if not sendgrid_key:
+        flash('Clé SendGrid API non configurée.', 'error')
+        return redirect(url_for('admin.settings'))
+    
+    try:
+        email_service = EmailService(sendgrid_key, sender_email)
+        success = email_service.send_test_email(test_email_address)
+        
+        if success:
+            flash(f'Email de test envoyé avec succès à {test_email_address}', 'success')
+        else:
+            flash('Échec de l\'envoi de l\'email de test.', 'error')
+    except Exception as e:
+        flash(f'Erreur lors de l\'envoi de l\'email: {str(e)}', 'error')
+    
+    return redirect(url_for('admin.settings'))
+
+@bp.route('/create-admin-user', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def create_admin_user():
+    if request.method == 'POST':
+        first_name = request.form.get('first_name', '').strip()
+        last_name = request.form.get('last_name', '').strip()
+        email = request.form.get('email', '').strip()
+        country_id = request.form.get('country_id')
+        city_id = request.form.get('city_id')
+        
+        if not all([first_name, last_name, email, country_id, city_id]):
+            flash('Tous les champs sont obligatoires.', 'error')
+            return redirect(url_for('admin.create_admin_user'))
+        
+        if User.query.filter(User.email == email).first():
+            flash('Cet email est déjà utilisé.', 'error')
+            return redirect(url_for('admin.create_admin_user'))
+        
+        country = Country.query.get(country_id)
+        city = City.query.get(city_id)
+        
+        if not country or not city:
+            flash('Pays ou ville invalide.', 'error')
+            return redirect(url_for('admin.create_admin_user'))
+        
+        gender = request.form.get('gender', 'M')
+        random_password = ''.join(secrets.choice(string.ascii_letters + string.digits + '@#$%') for _ in range(12))
+        
+        user = User()
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        user.password = random_password
+        user.country_id = country_id
+        user.city_id = city_id
+        user.gender = gender
+        user.is_admin = True
+        user.account_active = True
+        
+        db.session.add(user)
+        db.session.flush()
+        
+        from app.utils.id_generator import generate_unique_code
+        from app.utils.qr_generator import generate_qr_code
+        
+        user.unique_code = generate_unique_code(country.code, city.code, user.id, gender)
+        
+        try:
+            qr_filename = generate_qr_code(user.unique_code, user.id)
+            user.qr_code_filename = qr_filename
+        except Exception as e:
+            print(f"Erreur génération QR code: {e}")
+        
+        db.session.commit()
+        
+        flash(f'Administrateur créé avec succès! Email: {email}, Mot de passe: {random_password}', 'success')
+        return redirect(url_for('admin.settings'))
+    
+    countries = Country.query.order_by(Country.name).all()
+    cities = City.query.order_by(City.name).all()
+    
+    return render_template('admin/create_admin.html', countries=countries, cities=cities)
