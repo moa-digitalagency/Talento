@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, jsonify, current_app
+from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, jsonify, current_app, after_this_request
 from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime
@@ -14,8 +14,10 @@ from app.services.cv_analyzer import CVAnalyzerService
 from app.services.email_service import EmailService
 from app.services.database_service import DatabaseService
 from app.services.update_service import UpdateService
+from app.services.backup_service import BackupService
 import io
 import os
+import shutil
 import secrets
 import string
 
@@ -625,4 +627,94 @@ def bulk_delete():
         db.session.rollback()
         current_app.logger.error(f'Erreur lors de la suppression en masse: {e}')
         return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@bp.route('/backup/create', methods=['POST'])
+@login_required
+@admin_required
+def create_backup():
+    """Créer une sauvegarde complète de l'application"""
+    zip_path = None
+    temp_dir = None
+    
+    try:
+        # Créer le backup
+        zip_path, temp_dir = BackupService.create_full_backup()
+        
+        # Définir le nettoyage après l'envoi de la réponse
+        @after_this_request
+        def cleanup(response):
+            try:
+                if temp_dir and os.path.exists(temp_dir):
+                    shutil.rmtree(temp_dir)
+            except Exception as e:
+                current_app.logger.warning(f"Impossible de nettoyer le temp_dir: {e}")
+            return response
+        
+        # Envoyer le fichier ZIP au client
+        return send_file(
+            zip_path,
+            mimetype='application/zip',
+            as_attachment=True,
+            download_name=os.path.basename(zip_path)
+        )
+    
+    except Exception as e:
+        # Nettoyer en cas d'erreur
+        if temp_dir and os.path.exists(temp_dir):
+            try:
+                shutil.rmtree(temp_dir)
+            except:
+                pass
+        
+        current_app.logger.error(f'Erreur lors de la création du backup: {e}')
+        flash(f'Erreur lors de la création de la sauvegarde: {str(e)}', 'error')
+        return redirect(url_for('admin.settings'))
+
+
+@bp.route('/backup/restore', methods=['POST'])
+@login_required
+@admin_required
+def restore_backup():
+    """Restaurer l'application depuis un fichier de sauvegarde"""
+    try:
+        # Vérifier qu'un fichier a été uploadé
+        if 'backup_file' not in request.files:
+            flash('Aucun fichier de sauvegarde fourni.', 'error')
+            return redirect(url_for('admin.settings'))
+        
+        backup_file = request.files['backup_file']
+        
+        if backup_file.filename == '':
+            flash('Aucun fichier sélectionné.', 'error')
+            return redirect(url_for('admin.settings'))
+        
+        # Vérifier que c'est un fichier ZIP
+        if not backup_file.filename.endswith('.zip'):
+            flash('Le fichier doit être un fichier ZIP de sauvegarde Talento.', 'error')
+            return redirect(url_for('admin.settings'))
+        
+        # Sauvegarder temporairement le fichier
+        import tempfile
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.zip')
+        backup_file.save(temp_file.name)
+        temp_file.close()
+        
+        # Restaurer depuis le backup
+        result = BackupService.restore_from_backup(temp_file.name)
+        
+        # Nettoyer le fichier temporaire
+        os.unlink(temp_file.name)
+        
+        if result['success']:
+            flash('Restauration réussie ! L\'application a été restaurée depuis la sauvegarde.', 'success')
+        else:
+            flash(f'Erreur lors de la restauration: {result.get("message", "Erreur inconnue")}', 'error')
+        
+        return redirect(url_for('admin.settings'))
+    
+    except Exception as e:
+        current_app.logger.error(f'Erreur lors de la restauration du backup: {e}')
+        flash(f'Erreur lors de la restauration: {str(e)}', 'error')
+        return redirect(url_for('admin.settings'))
 
