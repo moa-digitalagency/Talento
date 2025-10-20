@@ -3,30 +3,73 @@
 {% block title %}Connexion - Talento{% endblock %}
 
 {% block content %}
-<div class="max-w-md mx-auto px-4">
-    <div class="card">
-        <h2 class="text-2xl font-bold text-center mb-6">Connexion</h2>
-        
-        <form method="POST" action="{{ url_for('auth.login') }}">
-            <div class="mb-4">
-                <label for="email" class="block text-gray-700 font-semibold mb-2">Email</label>
-                <input type="email" id="email" name="email" required class="input-field">
-            </div>
+<div class="min-h-[calc(100vh-300px)] flex items-center justify-center px-4">
+    <div class="max-w-md w-full">
+        <div class="text-center mb-8">
+            <div class="inline-block text-6xl mb-4">⭐</div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">Bon retour !</h1>
+            <p class="text-gray-600">Connectez-vous pour accéder à votre profil de talent</p>
+        </div>
+
+        <div class="section-blue p-8 mb-6">
+            <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Connexion</h2>
             
-            <div class="mb-6">
-                <label for="password" class="block text-gray-700 font-semibold mb-2">Mot de passe</label>
-                <input type="password" id="password" name="password" required class="input-field">
-            </div>
-            
-            <button type="submit" class="w-full btn-primary">
-                Se connecter
-            </button>
-        </form>
-        
-        <p class="mt-4 text-center text-gray-600">
-            Pas encore de compte ? 
-            <a href="{{ url_for('auth.register') }}" class="text-primary hover:underline">S'inscrire</a>
-        </p>
+            <form method="POST" action="{{ url_for('auth.login') }}" class="space-y-5">
+                <div>
+                    <label for="email" class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+                        <span class="text-xl">📧</span>
+                        <span>Email</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        required 
+                        autocomplete="email"
+                        placeholder="votre.email@exemple.com"
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                    >
+                </div>
+                
+                <div>
+                    <label for="password" class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+                        <span class="text-xl">🔒</span>
+                        <span>Mot de passe</span>
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        required 
+                        autocomplete="current-password"
+                        placeholder="••••••••"
+                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+                    >
+                </div>
+                
+                <button type="submit" class="w-full btn-primary text-lg py-3 mt-6">
+                    🔐 Se connecter
+                </button>
+            </form>
+        </div>
+
+        <div class="section-green p-6 text-center">
+            <p class="text-gray-700 mb-3">
+                <span class="font-semibold">Pas encore de compte ?</span>
+            </p>
+            <a href="{{ url_for('auth.register') }}" class="inline-flex items-center gap-2 text-green-700 font-bold hover:text-green-800 hover:underline transition-all text-lg">
+                <span>✨</span>
+                <span>Créer un compte gratuitement</span>
+                <span>→</span>
+            </a>
+        </div>
+
+        <div class="mt-8 text-center">
+            <p class="text-sm text-gray-500 flex items-center justify-center gap-2">
+                <span>💡</span>
+                <span>Compte admin par défaut : <strong>admin@talento.com</strong> / <strong>@4dm1n</strong></span>
+            </p>
+        </div>
     </div>
 </div>
 {% endblock %}
