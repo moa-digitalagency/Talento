@@ -5,6 +5,116 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2025-10-20
+
+### 🎨 Refonte Complète du Formulaire d'Inscription
+
+#### Réorganisation des Sections (10 étapes)
+- **Nouvelle structure optimisée** pour une meilleure expérience utilisateur :
+  1. 👤 **Identité** (Bleu) - Informations personnelles
+  2. 📞 **Contact** (Vert) - Coordonnées
+  3. 📍 **Localisation** (Rouge) - Pays et ville
+  4. 💼 **Expérience & Bio** (Violet) - Parcours professionnel
+  5. ⏰ **Disponibilité** (Jaune) - Temps de travail et tarifs (DÉPLACÉ)
+  6. 🏢 **Mode de Travail** (Indigo) - Préférences de lieu (DÉPLACÉ)
+  7. ⭐ **Talents** (Orange) - Sélection des compétences
+  8. 📄 **Documents** (Cyan) - CV, photo, portfolio
+  9. 🔗 **Réseaux Sociaux** (Rose) - Profils en ligne
+  10. 🎓 **Langues & Formation** (Émeraude) - Compétences linguistiques et académiques (NOUVEAU)
+
+#### Section 10 : Langues & Formation (Nouvelle)
+- **Champ Langues parlées** (textarea)
+  - Permet d'indiquer toutes les langues avec niveau de maîtrise
+  - Placeholder avec exemples : Arabe (natif), Français (courant), Anglais (intermédiaire)
+  - Conseil d'indiquer le niveau pour chaque langue
+  
+- **Champ Formation & Diplômes** (textarea)
+  - Liste des diplômes du plus récent au plus ancien
+  - Format suggéré : diplôme - institution - année
+  - Aide les recruteurs à évaluer les qualifications académiques
+  
+- **Indicateur d'étape 10/10** avec couleur émeraude
+- **Message informatif** expliquant l'importance de ces informations
+
+#### Optimisation de l'Ordre des Sections
+- **Disponibilité et Mode de Travail déplacés** des positions 8-9 vers 5-6
+  - Meilleure logique de flux : profil professionnel → préférences → compétences → documents
+  - Les informations sur les préférences de travail arrivent maintenant avant la sélection détaillée des talents
+  - Permet aux utilisateurs de définir leurs attentes professionnelles avant les détails techniques
+
+#### Design Harmonisé des Catégories de Talents
+- **Bordures pointillées colorées** pour toutes les catégories de talents
+  - Chaque catégorie utilise maintenant la classe `.section-{color}` avec style `dotted-section`
+  - Cohérence visuelle avec le reste du formulaire
+  - Catégories avec couleurs thématiques :
+    - 💻 Technologies & Informatique (Bleu)
+    - 🎨 Design & Création (Violet)
+    - 💼 Services Professionnels (Vert)
+    - 🔨 Artisanat & Construction (Orange)
+    - 👥 Services à la Personne (Rose)
+  
+- **Effets hover améliorés** sur les cartes de talents
+  - Transition fluide avec scale et ombres
+  - Bordures colorées au survol selon la catégorie
+  - Feedback visuel clair lors de la sélection
+
+#### Amélioration de la Mise en Page
+- **Largeur uniforme** pour toutes les sections
+  - Conteneur `max-w-4xl` appliqué au formulaire complet
+  - Toutes les sections ont la même largeur maximale
+  - Meilleure cohérence visuelle sur tous les écrans
+  
+- **Espacement optimisé**
+  - Spacing vertical cohérent entre les sections (space-y-8)
+  - Padding uniforme dans toutes les sections (p-8)
+  - Grilles responsive avec gaps standardisés
+
+#### Bouton de Soumission
+- **Design premium maintenu**
+  - Gradient dégradé bleu → violet → rose
+  - Effet hover avec inversion du gradient
+  - Émojis motivants : 🚀 Créer mon profil de talent ✨
+  - Transformation et ombre portée au survol
+  - État de chargement pendant la soumission
+
+### 📊 Impact sur l'Expérience Utilisateur
+
+#### Navigation Améliorée
+- **Flux logique** : Identité → Contact → Localisation → Expérience → Préférences de travail → Talents → Documents → Réseaux → Formation
+- **Progression claire** : Indicateurs d'étapes mis à jour (1/10 à 10/10)
+- **Sections métier regroupées** : Disponibilité et Mode de travail côte à côte pour définir les attentes professionnelles
+
+#### Profils Plus Complets
+- **Nouvelles informations collectées** :
+  - Langues parlées avec niveaux de maîtrise
+  - Formation académique complète
+  - Diplômes et certifications
+  
+- **Meilleure valorisation** des compétences linguistiques et académiques
+- **Profils enrichis** pour une meilleure correspondance talents-opportunités
+
+#### Cohérence Visuelle Totale
+- **Design unifié** sur tout le formulaire
+- **Catégories de talents** alignées avec le style général
+- **Couleurs thématiques** cohérentes et reconnaissables
+- **Animations et transitions** harmonisées
+
+### 🔧 Améliorations Techniques
+
+#### Code Optimisé
+- **JavaScript amélioré** pour la génération dynamique des catégories de talents
+- **Mapping de couleurs** par catégorie pour cohérence visuelle
+- **Classes CSS réutilisables** (section-{color}, dotted-section)
+- **Validation maintenue** : minimum 1 talent requis
+
+#### Accessibilité
+- **Labels descriptifs** pour tous les champs
+- **Placeholders informatifs** avec exemples concrets
+- **Messages d'aide contextuels** pour guider la saisie
+- **Indicateurs visuels clairs** de progression et de validation
+
+---
+
 ## [2.1.0] - 2025-10-20
 
 ### 🎨 Design & Interface
