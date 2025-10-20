@@ -303,6 +303,12 @@ def talent_edit(talent_id):
             flash('Le nom et la catégorie sont obligatoires', 'error')
             return redirect(url_for('admin.talent_edit', talent_id=talent_id))
         
+        # Vérifier les noms dupliqués (sauf le talent actuel)
+        existing = Talent.query.filter(Talent.name == name, Talent.id != talent_id).first()
+        if existing:
+            flash('Un talent avec ce nom existe déjà', 'error')
+            return redirect(url_for('admin.talent_edit', talent_id=talent_id))
+        
         talent.name = name
         talent.emoji = emoji or '⭐'
         talent.category = category
