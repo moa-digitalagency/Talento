@@ -254,16 +254,10 @@
                                 {% endif %}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                <div class="flex gap-2">
-                                    <a href="{{ url_for('profile.view', unique_code=user.unique_code) }}" 
-                                       class="px-3 py-1 bg-blue-100 text-blue-700 font-semibold rounded-lg border border-blue-500 hover:bg-blue-200 transition-all">
-                                        👁️ Voir
-                                    </a>
-                                    <a href="{{ url_for('profile.view', unique_code=user.unique_code) }}" 
-                                       class="px-3 py-1 bg-purple-100 text-purple-700 font-semibold rounded-lg border border-purple-500 hover:bg-purple-200 transition-all">
-                                        ⚙️ Gérer
-                                    </a>
-                                </div>
+                                <a href="{{ url_for('profile.view', unique_code=user.unique_code) }}" 
+                                   class="px-3 py-1 bg-blue-100 text-blue-700 font-semibold rounded-lg border border-blue-500 hover:bg-blue-200 transition-all">
+                                    👁️ Voir
+                                </a>
                             </td>
                         </tr>
                         {% else %}
