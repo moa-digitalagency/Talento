@@ -8,7 +8,7 @@ from datetime import datetime
 from flask import current_app
 import pandas as pd
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import letter, A4
+from reportlab.lib.pagesizes import letter, A4, landscape
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
@@ -115,19 +115,20 @@ class ExportService:
         return df.to_csv(index=False)
     
     @staticmethod
-    def export_list_to_pdf(users, filename='talents_list.pdf'):
+    def export_list_to_pdf(users, filename='talents_list.pdf', current_user=None):
         """
-        Exporter la liste des talents vers PDF (format tableau)
+        Exporter la liste des talents vers PDF (format tableau paysage)
         
         Args:
             users: Liste d'objets User
             filename: Nom du fichier de sortie
+            current_user: Utilisateur qui télécharge le document
             
         Returns:
             bytes: Données du fichier PDF
         """
         buffer = io.BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=A4)
+        doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), topMargin=0.5*inch, bottomMargin=0.5*inch)
         elements = []
         
         styles = getSampleStyleSheet()
@@ -136,49 +137,65 @@ class ExportService:
             parent=styles['Heading1'],
             fontSize=24,
             textColor=colors.HexColor('#4F46E5'),
-            spaceAfter=30,
+            spaceAfter=20,
             alignment=TA_CENTER
         )
         
-        elements.append(Paragraph("Liste des Talents Talento", title_style))
-        elements.append(Paragraph(f"Généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')}", styles['Normal']))
-        elements.append(Spacer(1, 20))
+        elements.append(Paragraph("Liste de Talent", title_style))
+        elements.append(Spacer(1, 15))
         
-        data = [['Code', 'Nom Complet', 'Talents', 'Pays', 'Score']]
+        data = [['Code', 'Nom Complet', 'Talents', 'Ville au Maroc', 'Pays Origine', 'Téléphone', 'WhatsApp']]
         
-        for user in users[:50]:
-            talents_names = [ut.talent.name for ut in user.talents[:3]] if user.talents else []
+        for user in users:
+            talents_names = [ut.talent.name for ut in user.talents[:2]] if user.talents else []
             talents_str = ', '.join(talents_names)
-            if len(user.talents) > 3:
-                talents_str += f' +{len(user.talents)-3}'
+            if len(user.talents) > 2:
+                talents_str += f' +{len(user.talents)-2}'
             
             data.append([
-                user.unique_code[:10],
-                f"{user.first_name} {user.last_name}"[:25],
-                talents_str[:30],
-                user.country.code if user.country else 'N/A',
-                str(user.profile_score or 0)
+                user.formatted_code,
+                f"{user.first_name} {user.last_name}",
+                talents_str[:35] if talents_str else 'N/A',
+                user.city.name if user.city else 'N/A',
+                user.country.name if user.country else 'N/A',
+                user.phone if user.phone else 'N/A',
+                user.whatsapp if user.whatsapp else 'N/A'
             ])
         
-        table = Table(data, colWidths=[1.5*inch, 2*inch, 2.5*inch, 0.8*inch, 0.6*inch])
+        table = Table(data, colWidths=[1.2*inch, 1.8*inch, 2*inch, 1.3*inch, 1.3*inch, 1.2*inch, 1.2*inch])
         table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4F46E5')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 10),
+            ('FONTSIZE', (0, 0), (-1, 0), 9),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-            ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-            ('GRID', (0, 0), (-1, -1), 1, colors.black),
-            ('FONTSIZE', (0, 1), (-1, -1), 8),
+            ('TOPPADDING', (0, 0), (-1, 0), 8),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ('FONTSIZE', (0, 1), (-1, -1), 7),
             ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.lightgrey]),
+            ('LEFTPADDING', (0, 0), (-1, -1), 4),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 4),
+            ('TOPPADDING', (0, 1), (-1, -1), 5),
+            ('BOTTOMPADDING', (0, 1), (-1, -1), 5),
         ]))
         
         elements.append(table)
+        elements.append(Spacer(1, 20))
         
-        if len(users) > 50:
-            elements.append(Spacer(1, 20))
-            elements.append(Paragraph(f"Note: Affichage limité aux 50 premiers talents (Total: {len(users)})", styles['Italic']))
+        footer_style = ParagraphStyle(
+            'Footer',
+            parent=styles['Normal'],
+            fontSize=9,
+            textColor=colors.HexColor('#6B7280'),
+            alignment=TA_LEFT
+        )
+        
+        footer_text = f"Date: {datetime.now().strftime('%d/%m/%Y à %H:%M')}"
+        if current_user:
+            footer_text += f" | Téléchargé par: {current_user.first_name} {current_user.last_name} ({current_user.formatted_code})"
+        
+        elements.append(Paragraph(footer_text, footer_style))
         
         doc.build(elements)
         buffer.seek(0)

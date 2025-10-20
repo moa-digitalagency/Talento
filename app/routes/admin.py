@@ -101,7 +101,7 @@ def export_csv():
 @admin_required
 def export_pdf():
     users = User.query.filter(User.is_admin == False).all()
-    pdf_bytes = ExportService.export_list_to_pdf(users)
+    pdf_bytes = ExportService.export_list_to_pdf(users, current_user=current_user)
     
     buffer = io.BytesIO(pdf_bytes)
     buffer.seek(0)

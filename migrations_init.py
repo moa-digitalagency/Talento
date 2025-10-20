@@ -9,6 +9,7 @@ from app import create_app, db
 from app.models.user import User
 from app.models.talent import Talent, UserTalent
 from app.models.location import Country, City
+from app.utils.qr_generator import generate_qr_code
 from sqlalchemy import inspect, text
 from datetime import datetime
 
@@ -580,6 +581,35 @@ def create_demo_users():
     
     return True
 
+def generate_qr_codes_for_users():
+    """Générer les QR codes pour tous les utilisateurs qui n'en ont pas"""
+    print("\n🔲 Génération des QR codes pour les utilisateurs...")
+    
+    users_without_qr = User.query.filter(User.qr_code_filename == None).all()
+    
+    if not users_without_qr:
+        print("✅ Tous les utilisateurs ont déjà des QR codes")
+        return True
+    
+    count = 0
+    for user in users_without_qr:
+        try:
+            from flask import current_app
+            upload_folder = current_app.config.get('UPLOAD_FOLDER', 'app/static/uploads')
+            qr_save_path = os.path.join(upload_folder, 'qrcodes')
+            
+            qr_filename = generate_qr_code(user.unique_code, qr_save_path)
+            user.qr_code_filename = qr_filename
+            count += 1
+        except Exception as e:
+            print(f"⚠️  Erreur lors de la génération du QR code pour {user.unique_code}: {e}")
+    
+    if count > 0:
+        db.session.commit()
+        print(f"✅ {count} QR codes générés avec succès")
+    
+    return True
+
 def main():
     """Fonction principale d'initialisation"""
     print("=" * 60)
@@ -597,6 +627,7 @@ def main():
             seed_talents()
             create_admin_user()
             create_demo_users()
+            generate_qr_codes_for_users()
             
             print("\n" + "=" * 60)
             print("✅ INITIALISATION TERMINÉE AVEC SUCCÈS")
