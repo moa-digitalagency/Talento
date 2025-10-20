@@ -100,10 +100,10 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
             
             <!-- Disponibilité -->
-            <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <div class="bg-white rounded-2xl p-8 border-3 border-dotted border-green-400 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-4xl">📊</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Disponibilité</h2>
+                    <h2 class="text-2xl font-bold text-green-700">Disponibilité</h2>
                 </div>
                 <div class="space-y-4">
                     <div>
@@ -144,10 +144,10 @@
             </div>
 
             <!-- Top Talents -->
-            <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <div class="bg-white rounded-2xl p-8 border-3 border-dotted border-purple-400 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-4xl">🏆</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Top 10 Talents</h2>
+                    <h2 class="text-2xl font-bold text-purple-700">Top 10 Talents</h2>
                 </div>
                 <div class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
                     {% for talent in top_talents %}
@@ -173,10 +173,10 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
             
             <!-- Statistiques par catégorie -->
-            <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <div class="bg-white rounded-2xl p-8 border-3 border-dotted border-blue-400 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-4xl">📁</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Par Catégorie</h2>
+                    <h2 class="text-2xl font-bold text-blue-700">Par Catégorie</h2>
                 </div>
                 <div class="space-y-4">
                     {% set category_colors = {
@@ -202,10 +202,10 @@
             </div>
 
             <!-- Modes de travail -->
-            <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <div class="bg-white rounded-2xl p-8 border-3 border-dotted border-indigo-400 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-4xl">💼</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Modes de Travail</h2>
+                    <h2 class="text-2xl font-bold text-indigo-700">Modes de Travail</h2>
                 </div>
                 <div class="space-y-6">
                     {% set work_mode_labels = {
@@ -233,10 +233,10 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
             
             <!-- Top 5 Villes -->
-            <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <div class="bg-white rounded-2xl p-8 border-3 border-dotted border-red-400 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-4xl">🗺️</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Top 5 Villes</h2>
+                    <h2 class="text-2xl font-bold text-red-700">Top 5 Villes</h2>
                 </div>
                 <div class="space-y-4">
                     {% set city_emojis = ['🥇', '🥈', '🥉', '🏅', '🏅'] %}
@@ -257,10 +257,10 @@
             </div>
 
             <!-- Profils Récents -->
-            <div class="bg-white rounded-2xl shadow-2xl p-8">
+            <div class="bg-white rounded-2xl p-8 border-3 border-dotted border-cyan-400 shadow-lg hover:shadow-xl transition-all duration-300">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-4xl">🆕</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Derniers Profils</h2>
+                    <h2 class="text-2xl font-bold text-cyan-700">Derniers Profils</h2>
                 </div>
                 <div class="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
                     {% for user in recent_users %}

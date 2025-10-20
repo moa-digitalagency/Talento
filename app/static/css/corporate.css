@@ -5,36 +5,44 @@
     background: #f9fafb !important;
 }
 
-/* Corporate buttons */
+/* Boutons modernisés - Couleurs légères avec bordures pleines */
 .btn-primary {
-    background: #2563eb !important;
-    color: white !important;
-    font-weight: 500 !important;
-    padding: 0.5rem 1.5rem !important;
-    border-radius: 0.25rem !important;
-    box-shadow: none !important;
+    background: #eff6ff !important; /* bg-blue-50 */
+    color: #1d4ed8 !important; /* text-blue-700 */
+    font-weight: 600 !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 0.75rem !important;
+    border: 2px solid #3b82f6 !important; /* border-blue-500 */
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2) !important;
     transform: none !important;
+    transition: all 0.2s ease !important;
 }
 
 .btn-primary:hover {
-    background: #1d4ed8 !important;
-    transform: none !important;
+    background: #dbeafe !important; /* bg-blue-100 */
+    border-color: #2563eb !important; /* border-blue-600 */
+    box-shadow: 0 6px 10px rgba(59, 130, 246, 0.3) !important;
+    transform: translateY(-2px) !important;
     scale: 1 !important;
 }
 
 .btn-secondary {
-    background: #e5e7eb !important;
-    color: #1f2937 !important;
-    font-weight: 500 !important;
-    padding: 0.5rem 1.5rem !important;
-    border-radius: 0.25rem !important;
-    box-shadow: none !important;
+    background: #f9fafb !important; /* bg-gray-50 */
+    color: #374151 !important; /* text-gray-700 */
+    font-weight: 600 !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 0.75rem !important;
+    border: 2px solid #9ca3af !important; /* border-gray-400 */
+    box-shadow: 0 4px 6px rgba(156, 163, 175, 0.2) !important;
     transform: none !important;
+    transition: all 0.2s ease !important;
 }
 
 .btn-secondary:hover {
-    background: #d1d5db !important;
-    transform: none !important;
+    background: #f3f4f6 !important; /* bg-gray-100 */
+    border-color: #6b7280 !important; /* border-gray-500 */
+    box-shadow: 0 6px 10px rgba(156, 163, 175, 0.3) !important;
+    transform: translateY(-2px) !important;
     scale: 1 !important;
 }
 

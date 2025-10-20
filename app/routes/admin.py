@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, func
 from app import db
 from app.models.user import User
 from app.models.talent import Talent, UserTalent
@@ -242,3 +242,94 @@ def search_by_qr():
     else:
         flash('Aucun talent trouvé avec ce QR code', 'error')
         return redirect(url_for('admin.dashboard'))
+
+# ========== CRUD TALENTS ==========
+
+@bp.route('/talents')
+@login_required
+@admin_required
+def talents_list():
+    """Liste tous les talents avec statistiques"""
+    talents = db.session.query(
+        Talent,
+        func.count(UserTalent.user_id).label('user_count')
+    ).outerjoin(UserTalent).group_by(Talent.id).order_by(Talent.category, Talent.name).all()
+    
+    return render_template('admin/talents_list.html', talents=talents)
+
+@bp.route('/talents/add', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def talent_add():
+    """Ajouter un nouveau talent"""
+    if request.method == 'POST':
+        name = request.form.get('name')
+        emoji = request.form.get('emoji')
+        category = request.form.get('category')
+        
+        if not name or not category:
+            flash('Le nom et la catégorie sont obligatoires', 'error')
+            return redirect(url_for('admin.talent_add'))
+        
+        existing = Talent.query.filter_by(name=name).first()
+        if existing:
+            flash('Un talent avec ce nom existe déjà', 'error')
+            return redirect(url_for('admin.talent_add'))
+        
+        talent = Talent(name=name, emoji=emoji or '⭐', category=category)
+        db.session.add(talent)
+        db.session.commit()
+        
+        flash(f'Talent "{name}" créé avec succès', 'success')
+        return redirect(url_for('admin.talents_list'))
+    
+    categories = db.session.query(Talent.category).distinct().order_by(Talent.category).all()
+    categories = [c[0] for c in categories]
+    return render_template('admin/talent_form.html', talent=None, categories=categories)
+
+@bp.route('/talents/edit/<int:talent_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def talent_edit(talent_id):
+    """Modifier un talent existant"""
+    talent = Talent.query.get_or_404(talent_id)
+    
+    if request.method == 'POST':
+        name = request.form.get('name')
+        emoji = request.form.get('emoji')
+        category = request.form.get('category')
+        
+        if not name or not category:
+            flash('Le nom et la catégorie sont obligatoires', 'error')
+            return redirect(url_for('admin.talent_edit', talent_id=talent_id))
+        
+        talent.name = name
+        talent.emoji = emoji or '⭐'
+        talent.category = category
+        db.session.commit()
+        
+        flash(f'Talent "{name}" modifié avec succès', 'success')
+        return redirect(url_for('admin.talents_list'))
+    
+    categories = db.session.query(Talent.category).distinct().order_by(Talent.category).all()
+    categories = [c[0] for c in categories]
+    return render_template('admin/talent_form.html', talent=talent, categories=categories)
+
+@bp.route('/talents/delete/<int:talent_id>', methods=['POST'])
+@login_required
+@admin_required
+def talent_delete(talent_id):
+    """Supprimer un talent"""
+    talent = Talent.query.get_or_404(talent_id)
+    
+    user_count = UserTalent.query.filter_by(talent_id=talent_id).count()
+    if user_count > 0:
+        flash(f'Impossible de supprimer "{talent.name}" car {user_count} utilisateur(s) l\'utilisent', 'error')
+        return redirect(url_for('admin.talents_list'))
+    
+    name = talent.name
+    db.session.delete(talent)
+    db.session.commit()
+    
+    flash(f'Talent "{name}" supprimé avec succès', 'success')
+    return redirect(url_for('admin.talents_list'))

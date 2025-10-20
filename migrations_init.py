@@ -425,14 +425,20 @@ def create_demo_users():
             'country_id': morocco.id,
             'city_id': casablanca.id,
             'date_of_birth': datetime(1990, 3, 15).date(),
+            'phone': '+212661234567',
+            'whatsapp': '+212661234567',
             'address': '15 Boulevard Zerktouni, Casablanca',
             'bio': 'Développeur web full-stack passionné avec 5 ans d\'expérience dans la création d\'applications web modernes. Spécialisé en React, Node.js et Python. J\'ai travaillé sur plus de 30 projets pour des clients internationaux.',
             'years_experience': 5,
             'availability': 'available',
             'work_mode': 'hybrid',
             'rate_range': '400-600 MAD/heure',
-            'languages': 'Français, Anglais, Arabe',
+            'languages': 'Français,Anglais,Arabe,Darija',
             'education': 'Master en Informatique - ENSIAS',
+            'linkedin': 'https://linkedin.com/in/ahmed-bennani-dev',
+            'github': 'https://github.com/ahmedbennani',
+            'twitter': 'https://twitter.com/ahmed_codes',
+            'portfolio_url': 'https://ahmed-bennani.dev',
             'talents': [t.id for t in [talent_dev_web, talent_dev_mobile] if t]
         },
         {
@@ -452,8 +458,13 @@ def create_demo_users():
             'availability': 'available',
             'work_mode': 'remote',
             'rate_range': '300-500 MAD/heure',
-            'languages': 'Français, Anglais, Arabe',
+            'languages': 'Français,Anglais,Arabe,Darija',
             'education': 'École Supérieure des Beaux-Arts',
+            'linkedin': 'https://linkedin.com/in/fatima-elamrani',
+            'behance': 'https://behance.net/fatimaelamrani',
+            'dribbble': 'https://dribbble.com/fatima_design',
+            'instagram': 'https://instagram.com/fatima.design',
+            'portfolio_url': 'https://fatima-elamrani.com',
             'talents': [t.id for t in [talent_graphisme, talent_uiux] if t]
         },
         {
@@ -473,8 +484,10 @@ def create_demo_users():
             'availability': 'available',
             'work_mode': 'on_site',
             'rate_range': '200-350 MAD/heure',
-            'languages': 'Français, Arabe',
+            'languages': 'Français,Arabe,Darija',
             'education': 'Formation professionnelle OFPPT',
+            'facebook': 'https://facebook.com/youssef.tazi.plomberie',
+            'whatsapp': '+212663456789',
             'talents': [t.id for t in [talent_plomberie, talent_electricite] if t]
         },
         {
@@ -494,8 +507,12 @@ def create_demo_users():
             'availability': 'partially_available',
             'work_mode': 'on_site',
             'rate_range': '250-400 MAD/heure',
-            'languages': 'Français, Anglais, Arabe',
+            'languages': 'Français,Anglais,Arabe,Darija',
             'education': 'Le Cordon Bleu Paris',
+            'instagram': 'https://instagram.com/chef.samira',
+            'facebook': 'https://facebook.com/chefsamirachraibi',
+            'youtube': 'https://youtube.com/@ChefSamira',
+            'tiktok': 'https://tiktok.com/@chef.samira',
             'talents': [t.id for t in [talent_cuisine, talent_patisserie] if t]
         },
         {
@@ -515,8 +532,13 @@ def create_demo_users():
             'availability': 'available',
             'work_mode': 'remote',
             'rate_range': '350-550 MAD/heure',
-            'languages': 'Français, Anglais, Espagnol, Arabe',
+            'languages': 'Français,Anglais,Espagnol,Arabe,Darija',
             'education': 'MBA Digital Marketing',
+            'linkedin': 'https://linkedin.com/in/omar-alaoui-seo',
+            'twitter': 'https://twitter.com/omar_seo',
+            'facebook': 'https://facebook.com/omar.alaoui.marketing',
+            'instagram': 'https://instagram.com/omar.marketing',
+            'portfolio_url': 'https://omar-alaoui-seo.com',
             'talents': [t.id for t in [talent_marketing, talent_seo] if t]
         }
     ]
