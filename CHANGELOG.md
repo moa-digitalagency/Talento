@@ -5,6 +5,105 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-10-20
+
+### 🎨 Design & Interface
+
+#### Refonte Visuelle du Formulaire d'Inscription
+- **Contours en pointillé colorés** pour chaque section du formulaire
+  - Chaque section a maintenant un contour en pointillé (3px) avec une couleur unique
+  - Fonds légèrement colorés avec dégradés subtils pour une meilleure distinction visuelle
+  - 9 couleurs thématiques : bleu, vert, rouge, violet, orange, cyan, rose, jaune, indigo
+  - Effet hover avec élévation pour une meilleure interactivité
+  
+- **Amélioration de la mise en page** du formulaire
+  - En-têtes de section repensés avec icônes plus grandes (5xl)
+  - Badges d'étapes arrondis avec bordures colorées
+  - Espacement et padding optimisés pour une meilleure lisibilité
+  - Passage de 7 à 9 sections pour une organisation améliorée
+
+### 🗺️ Données Géographiques
+
+#### Extension Majeure des Villes Marocaines
+- **80 villes marocaines** disponibles (contre 30 précédemment)
+  - Ajout de 50+ nouvelles villes couvrant l'ensemble du territoire
+  - **Tri alphabétique** complet de toutes les villes
+  - Nouvelles villes ajoutées :
+    - Régions du Nord : Al Hoceïma, Asilah, Chefchaouen, Fnideq, Martil, Mdiq, Ouezzane
+    - Régions du Centre : Azemmour, Ben Guerir, Benslimane, El Hajeb, El Kelaa des Sraghna, Nouaceur, Skhirat, Témara, Tiflet
+    - Régions de l'Est : Berkane, Figuig, Guercif, Jerada, Taourirt, Zaïo
+    - Régions du Sud : Boujdour, Kelaat MGouna, Ouarzazate, Smara, Tafraout, Taghazout, Tan-Tan, Tarfaya, Taroudant, Tata, Tinghir, Tiznit, Zagora
+    - Atlas & Montagne : Azrou, Ifrane, Imouzzer Kandar, Khenifra, Midelt, Sefrou
+    - Atlantique : Oualidia, Sidi Bennour, Sidi Ifni
+    - Autres : Oued Zem, Sidi Kacem, Sidi Slimane, Youssoufia
+
+### 💼 Nouvelles Fonctionnalités Formulaire
+
+#### Section 8 : Disponibilité (Nouveau)
+- **Champ Disponibilité** avec options complètes :
+  - ⏰ Temps plein (35-40h/semaine)
+  - 🕐 Temps partiel (15-30h/semaine)
+  - ⏳ Mi-temps (20h/semaine)
+  - 🔄 Flexible
+  - 📅 Week-end uniquement
+  - 🌙 Soir uniquement
+  - 📌 Ponctuel / Missions courtes
+  - ❌ Actuellement indisponible
+  
+- **Champs tarifaires** :
+  - 💰 Tarif horaire souhaité (MAD)
+  - 💵 Tarif mensuel souhaité (MAD)
+
+#### Section 9 : Mode de Travail (Nouveau)
+- **Champ Mode de Travail** avec options détaillées :
+  - 🏠 Télétravail complet (100% à distance)
+  - 🏢 Sur site (100% au bureau)
+  - 🔄 Hybride (télétravail + bureau)
+  - 🌍 Nomade digital (travail depuis n'importe où)
+  - ✈️ Déplacement fréquent
+  - 👥 Chez le client
+  - 💫 Flexible / À discuter
+  
+- **Message informatif** expliquant l'importance de ces informations pour les recruteurs
+
+### 🎯 Améliorations CSS
+
+#### Styles Professionnels avec Contours en Pointillé
+- Classes CSS pour chaque section :
+  - `.section-blue` - Identité (bleu)
+  - `.section-green` - Contact (vert)
+  - `.section-red` - Localisation (rouge)
+  - `.section-purple` - Expérience & Bio (violet)
+  - `.section-orange` - Talents (orange)
+  - `.section-cyan` - Documents (cyan)
+  - `.section-pink` - Réseaux Sociaux (rose)
+  - `.section-yellow` - Disponibilité (jaune)
+  - `.section-indigo` - Mode de Travail (indigo)
+  
+- **Effets visuels** :
+  - Dégradés subtils pour les fonds (opacity 0.05)
+  - Ombres portées colorées
+  - Transitions fluides sur hover (300ms)
+  - Effet d'élévation au survol
+
+### 📊 Impact Utilisateur
+
+- **Expérience améliorée** :
+  - Formulaire plus attrayant visuellement
+  - Navigation plus claire entre les sections
+  - Meilleure compréhension des informations demandées
+  
+- **Données enrichies** :
+  - Profils plus complets avec disponibilité et mode de travail
+  - Meilleure correspondance talents-opportunités
+  - Tarification transparente
+
+- **Couverture géographique étendue** :
+  - 80 villes marocaines pour une couverture nationale complète
+  - Meilleure représentation des talents de toutes les régions
+
+---
+
 ## [2.0.0] - 2025-10-19
 
 ### 🚀 Ajouts Majeurs

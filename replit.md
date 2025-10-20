@@ -6,20 +6,38 @@ Talento is a professional web application designed to centralize and showcase ta
 
 ## Recent Changes
 
-**October 20, 2025**
-1. **Database Expansion**: Extended Moroccan cities from 12 to 30 cities covering major urban centers
-2. **Enhanced User Model**: Added `languages` (TEXT) and `education` (TEXT) fields with proper database migration
-3. **Enriched Demo Profiles**: All 5 demo users now include complete information:
+**October 20, 2025 - Version 2.1.0**
+1. **Beautiful Registration Form Redesign** with dotted borders:
+   - 9 sections with unique colored dotted borders (3px)
+   - Each section has a subtle gradient background
+   - Color themes: blue (Identity), green (Contact), red (Location), purple (Experience), orange (Talents), cyan (Documents), pink (Social), yellow (Availability), indigo (Work Mode)
+   - Hover effects with elevation
+   - Step indicators (1/9 through 9/9)
+
+2. **Extended Moroccan Cities Database**:
+   - Expanded from 30 to 79+ cities
+   - All cities sorted alphabetically
+   - Unique city codes (3-letter codes)
+   - Coverage of all major Moroccan regions
+
+3. **New Form Sections**:
+   - **Section 8 - Availability**: Work time preferences (full-time, part-time, flexible, etc.) with hourly/monthly rate fields
+   - **Section 9 - Work Mode**: Remote, on-site, hybrid, nomadic, etc.
+
+**Earlier October 20, 2025**
+4. **Database Expansion**: Extended Moroccan cities from 12 to 30 cities covering major urban centers
+5. **Enhanced User Model**: Added `languages` (TEXT) and `education` (TEXT) fields with proper database migration
+6. **Enriched Demo Profiles**: All 5 demo users now include complete information:
    - Personal details: dates of birth, phone numbers, WhatsApp contacts
    - Professional info: addresses, work preferences, hourly/monthly rates
    - Skills: languages spoken and education history
    - Work modes and availability status
-4. **Redesigned Registration Form**: Complete UI/UX overhaul with:
+7. **Redesigned Registration Form**: Complete UI/UX overhaul with:
    - 7 color-coded sections (blue, green, red, violet, orange, cyan, pink)
    - Centered, responsive layout for all screen sizes
    - Visual step indicators (1/7, 2/7, etc.)
    - Modern gradient backgrounds and improved spacing
-5. **Elaborate Homepage Dashboard**: New comprehensive metrics display:
+8. **Elaborate Homepage Dashboard**: New comprehensive metrics display:
    - Real-time statistics cards (users, talents, cities, countries)
    - Availability breakdowns with progress bars
    - Top 10 talents with usage counts
@@ -27,7 +45,7 @@ Talento is a professional web application designed to centralize and showcase ta
    - Work mode statistics (remote, on-site, hybrid)
    - Top 5 cities by user count
    - Recent user profiles showcase
-6. **Migration Safety**: Implemented `SKIP_AUTO_MIGRATION` environment variable to prevent recursive initialization loops
+9. **Migration Safety**: Implemented `SKIP_AUTO_MIGRATION` environment variable to prevent recursive initialization loops
 
 ## User Preferences
 

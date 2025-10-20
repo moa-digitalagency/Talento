@@ -26,118 +26,113 @@
         <form method="POST" action="{{ url_for('auth.register') }}" enctype="multipart/form-data" id="registerForm" class="space-y-8">
             
             <!-- Section 1: Identité (Bleu) -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-[1.02] transition-all duration-300 border-l-8 border-blue-500">
-                <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6">
-                    <div class="flex items-center justify-between">
+            <div class="section-blue dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl">👤</span>
                         <div>
-                            <span class="text-4xl mb-2 block">👤</span>
-                            <h2 class="text-2xl font-bold text-white">Identité</h2>
-                            <p class="text-blue-100 text-sm mt-1">Informations personnelles</p>
-                        </div>
-                        <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-                            <span class="text-white font-semibold">Étape 1/7</span>
+                            <h2 class="text-2xl font-bold text-blue-700">Identité</h2>
+                            <p class="text-blue-600 text-sm mt-1">Informations personnelles</p>
                         </div>
                     </div>
+                    <div class="bg-blue-100 rounded-full px-5 py-2 border-2 border-blue-400">
+                        <span class="text-blue-700 font-bold">Étape 1/9</span>
+                    </div>
                 </div>
-                <div class="p-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label for="first_name" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                                Prénom <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="first_name" name="first_name" required 
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
-                        </div>
-                        <div class="space-y-2">
-                            <label for="last_name" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                                Nom <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text" id="last_name" name="last_name" required 
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
-                        </div>
-                        <div class="space-y-2">
-                            <label for="date_of_birth" class="block text-gray-700 font-semibold text-sm">Date de naissance</label>
-                            <input type="date" id="date_of_birth" name="date_of_birth" 
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
-                        </div>
-                        <div class="space-y-2">
-                            <label for="gender" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                                Genre <span class="text-red-500">*</span>
-                            </label>
-                            <select id="gender" name="gender" required 
-                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
-                                <option value="">Sélectionner...</option>
-                                <option value="M">👨 Homme</option>
-                                <option value="F">👩 Femme</option>
-                                <option value="N">⚧️ Non précisé</option>
-                            </select>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="first_name" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            Prénom <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="first_name" name="first_name" required 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="last_name" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            Nom <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="last_name" name="last_name" required 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="date_of_birth" class="block text-gray-700 font-semibold text-sm">Date de naissance</label>
+                        <input type="date" id="date_of_birth" name="date_of_birth" 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="gender" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            Genre <span class="text-red-500">*</span>
+                        </label>
+                        <select id="gender" name="gender" required 
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                            <option value="">Sélectionner...</option>
+                            <option value="M">👨 Homme</option>
+                            <option value="F">👩 Femme</option>
+                            <option value="N">⚧️ Non précisé</option>
+                        </select>
                     </div>
                 </div>
             </div>
 
             <!-- Section 2: Contact (Vert) -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-[1.02] transition-all duration-300 border-l-8 border-green-500">
-                <div class="bg-gradient-to-r from-green-500 to-green-600 p-6">
-                    <div class="flex items-center justify-between">
+            <div class="section-green dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl">📞</span>
                         <div>
-                            <span class="text-4xl mb-2 block">📞</span>
-                            <h2 class="text-2xl font-bold text-white">Contact</h2>
-                            <p class="text-green-100 text-sm mt-1">Vos coordonnées</p>
-                        </div>
-                        <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-                            <span class="text-white font-semibold">Étape 2/7</span>
+                            <h2 class="text-2xl font-bold text-green-700">Contact</h2>
+                            <p class="text-green-600 text-sm mt-1">Vos coordonnées</p>
                         </div>
                     </div>
+                    <div class="bg-green-100 rounded-full px-5 py-2 border-2 border-green-400">
+                        <span class="text-green-700 font-bold">Étape 2/9</span>
+                    </div>
                 </div>
-                <div class="p-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label for="email" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                                📧 Email <span class="text-red-500">*</span>
-                            </label>
-                            <input type="email" id="email" name="email" required 
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
-                        </div>
-                        <div class="space-y-2">
-                            <label for="phone" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                                📱 Téléphone <span class="text-red-500">*</span>
-                            </label>
-                            <input type="tel" id="phone" name="phone" placeholder="+212..." required 
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
-                        </div>
-                        <div class="space-y-2">
-                            <label for="whatsapp" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                                💬 WhatsApp <span class="text-red-500">*</span>
-                            </label>
-                            <input type="tel" id="whatsapp" name="whatsapp" placeholder="+212..." required 
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
-                        </div>
-                        <div class="space-y-2">
-                            <label for="address" class="block text-gray-700 font-semibold text-sm">🏠 Adresse</label>
-                            <input type="text" id="address" name="address" 
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="email" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            📧 Email <span class="text-red-500">*</span>
+                        </label>
+                        <input type="email" id="email" name="email" required 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="phone" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            📱 Téléphone <span class="text-red-500">*</span>
+                        </label>
+                        <input type="tel" id="phone" name="phone" placeholder="+212..." required 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="whatsapp" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            💬 WhatsApp <span class="text-red-500">*</span>
+                        </label>
+                        <input type="tel" id="whatsapp" name="whatsapp" placeholder="+212..." required 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="address" class="block text-gray-700 font-semibold text-sm">🏠 Adresse</label>
+                        <input type="text" id="address" name="address" 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
                     </div>
                 </div>
             </div>
 
             <!-- Section 3: Localisation (Rouge) -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-[1.02] transition-all duration-300 border-l-8 border-red-500">
-                <div class="bg-gradient-to-r from-red-500 to-red-600 p-6">
-                    <div class="flex items-center justify-between">
+            <div class="section-red dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl">📍</span>
                         <div>
-                            <span class="text-4xl mb-2 block">📍</span>
-                            <h2 class="text-2xl font-bold text-white">Localisation</h2>
-                            <p class="text-red-100 text-sm mt-1">Pays et ville</p>
-                        </div>
-                        <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-                            <span class="text-white font-semibold">Étape 3/7</span>
+                            <h2 class="text-2xl font-bold text-red-700">Localisation</h2>
+                            <p class="text-red-600 text-sm mt-1">Pays et ville</p>
                         </div>
                     </div>
+                    <div class="bg-red-100 rounded-full px-5 py-2 border-2 border-red-400">
+                        <span class="text-red-700 font-bold">Étape 3/9</span>
+                    </div>
                 </div>
-                <div class="p-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label for="country_id" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
                                 🌍 Pays d'origine (Afrique) <span class="text-red-500">*</span>
@@ -161,21 +156,20 @@
             </div>
 
             <!-- Section 4: Expérience & Bio (Violet) -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-[1.02] transition-all duration-300 border-l-8 border-purple-500">
-                <div class="bg-gradient-to-r from-purple-500 to-purple-600 p-6">
-                    <div class="flex items-center justify-between">
+            <div class="section-purple dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl">💼</span>
                         <div>
-                            <span class="text-4xl mb-2 block">💼</span>
-                            <h2 class="text-2xl font-bold text-white">Expérience & Bio</h2>
-                            <p class="text-purple-100 text-sm mt-1">Votre parcours professionnel</p>
-                        </div>
-                        <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-                            <span class="text-white font-semibold">Étape 4/7</span>
+                            <h2 class="text-2xl font-bold text-purple-700">Expérience & Bio</h2>
+                            <p class="text-purple-600 text-sm mt-1">Votre parcours professionnel</p>
                         </div>
                     </div>
+                    <div class="bg-purple-100 rounded-full px-5 py-2 border-2 border-purple-400">
+                        <span class="text-purple-700 font-bold">Étape 4/9</span>
+                    </div>
                 </div>
-                <div class="p-8">
-                    <div class="space-y-6">
+                <div class="space-y-6">
                         <div class="space-y-2">
                             <label for="years_experience" class="block text-gray-700 font-semibold text-sm">🎯 Années d'expérience</label>
                             <select id="years_experience" name="years_experience" 
@@ -200,21 +194,20 @@
             </div>
 
             <!-- Section 5: Talents (Orange) -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-[1.02] transition-all duration-300 border-l-8 border-orange-500">
-                <div class="bg-gradient-to-r from-orange-500 to-orange-600 p-6">
-                    <div class="flex items-center justify-between">
+            <div class="section-orange dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl">⭐</span>
                         <div>
-                            <span class="text-4xl mb-2 block">⭐</span>
-                            <h2 class="text-2xl font-bold text-white">Mes Talents</h2>
-                            <p class="text-orange-100 text-sm mt-1">Maximum 5 talents</p>
-                        </div>
-                        <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-                            <span class="text-white font-semibold">Étape 5/7</span>
+                            <h2 class="text-2xl font-bold text-orange-700">Mes Talents</h2>
+                            <p class="text-orange-600 text-sm mt-1">Maximum 5 talents</p>
                         </div>
                     </div>
+                    <div class="bg-orange-100 rounded-full px-5 py-2 border-2 border-orange-400">
+                        <span class="text-orange-700 font-bold">Étape 5/9</span>
+                    </div>
                 </div>
-                <div class="p-8">
-                    <div class="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-6 mb-6 border-2 border-orange-200">
+                <div class="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-6 mb-6 border-2 border-orange-200">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-sm text-gray-600 mb-2">Sélectionnez jusqu'à 5 talents qui vous représentent le mieux</p>
@@ -237,21 +230,20 @@
             </div>
 
             <!-- Section 6: Documents (Cyan) -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-[1.02] transition-all duration-300 border-l-8 border-cyan-500">
-                <div class="bg-gradient-to-r from-cyan-500 to-cyan-600 p-6">
-                    <div class="flex items-center justify-between">
+            <div class="section-cyan dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl">📄</span>
                         <div>
-                            <span class="text-4xl mb-2 block">📄</span>
-                            <h2 class="text-2xl font-bold text-white">Documents & Portfolio</h2>
-                            <p class="text-cyan-100 text-sm mt-1">CV, photo et portfolio</p>
-                        </div>
-                        <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-                            <span class="text-white font-semibold">Étape 6/7</span>
+                            <h2 class="text-2xl font-bold text-cyan-700">Documents & Portfolio</h2>
+                            <p class="text-cyan-600 text-sm mt-1">CV, photo et portfolio</p>
                         </div>
                     </div>
+                    <div class="bg-cyan-100 rounded-full px-5 py-2 border-2 border-cyan-400">
+                        <span class="text-cyan-700 font-bold">Étape 6/9</span>
+                    </div>
                 </div>
-                <div class="p-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label for="photo" class="block text-gray-700 font-semibold text-sm">📸 Photo de profil (max 5 MB)</label>
                             <input type="file" id="photo" name="photo" accept="image/*" 
@@ -272,21 +264,20 @@
             </div>
 
             <!-- Section 7: Réseaux Sociaux (Rose) -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden transform hover:scale-[1.02] transition-all duration-300 border-l-8 border-pink-500">
-                <div class="bg-gradient-to-r from-pink-500 to-pink-600 p-6">
-                    <div class="flex items-center justify-between">
+            <div class="section-pink dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl">🔗</span>
                         <div>
-                            <span class="text-4xl mb-2 block">🔗</span>
-                            <h2 class="text-2xl font-bold text-white">Réseaux Sociaux</h2>
-                            <p class="text-pink-100 text-sm mt-1">Partagez vos profils (optionnel)</p>
-                        </div>
-                        <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
-                            <span class="text-white font-semibold">Étape 7/7</span>
+                            <h2 class="text-2xl font-bold text-pink-700">Réseaux Sociaux</h2>
+                            <p class="text-pink-600 text-sm mt-1">Partagez vos profils (optionnel)</p>
                         </div>
                     </div>
+                    <div class="bg-pink-100 rounded-full px-5 py-2 border-2 border-pink-400">
+                        <span class="text-pink-700 font-bold">Étape 7/9</span>
+                    </div>
                 </div>
-                <div class="p-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
                             <label class="block text-gray-700 font-semibold text-sm">💼 LinkedIn</label>
                             <input type="url" name="linkedin" placeholder="https://linkedin.com/in/..." 
@@ -347,6 +338,86 @@
                             <input type="url" name="telegram" placeholder="https://t.me/..." 
                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 8: Disponibilité (Jaune) -->
+            <div class="section-yellow dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl">⏰</span>
+                        <div>
+                            <h2 class="text-2xl font-bold text-yellow-700">Disponibilité</h2>
+                            <p class="text-yellow-600 text-sm mt-1">Temps de travail souhaité</p>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-100 rounded-full px-5 py-2 border-2 border-yellow-400">
+                        <span class="text-yellow-700 font-bold">Étape 8/9</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="availability" class="block text-gray-700 font-semibold text-sm">📅 Disponibilité</label>
+                        <select id="availability" name="availability" 
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 outline-none">
+                            <option value="">Sélectionner...</option>
+                            <option value="Temps plein">⏰ Temps plein (35-40h/semaine)</option>
+                            <option value="Temps partiel">🕐 Temps partiel (15-30h/semaine)</option>
+                            <option value="Mi-temps">⏳ Mi-temps (20h/semaine)</option>
+                            <option value="Flexible">🔄 Flexible</option>
+                            <option value="Week-end uniquement">📅 Week-end uniquement</option>
+                            <option value="Soir uniquement">🌙 Soir uniquement</option>
+                            <option value="Ponctuel">📌 Ponctuel / Missions courtes</option>
+                            <option value="Indisponible">❌ Actuellement indisponible</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label for="hourly_rate" class="block text-gray-700 font-semibold text-sm">💰 Tarif horaire souhaité (MAD)</label>
+                        <input type="number" id="hourly_rate" name="hourly_rate" placeholder="Ex: 150" min="0" 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="monthly_rate" class="block text-gray-700 font-semibold text-sm">💵 Tarif mensuel souhaité (MAD)</label>
+                        <input type="number" id="monthly_rate" name="monthly_rate" placeholder="Ex: 8000" min="0" 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 9: Mode de Travail (Indigo) -->
+            <div class="section-indigo dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl">🏢</span>
+                        <div>
+                            <h2 class="text-2xl font-bold text-indigo-700">Mode de Travail</h2>
+                            <p class="text-indigo-600 text-sm mt-1">Préférence de lieu de travail</p>
+                        </div>
+                    </div>
+                    <div class="bg-indigo-100 rounded-full px-5 py-2 border-2 border-indigo-400">
+                        <span class="text-indigo-700 font-bold">Étape 9/9</span>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="space-y-2">
+                        <label for="work_mode" class="block text-gray-700 font-semibold text-sm">💼 Mode de travail préféré</label>
+                        <select id="work_mode" name="work_mode" 
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
+                            <option value="">Sélectionner...</option>
+                            <option value="Télétravail">🏠 Télétravail complet (100% à distance)</option>
+                            <option value="Sur site">🏢 Sur site (100% au bureau)</option>
+                            <option value="Hybride">🔄 Hybride (télétravail + bureau)</option>
+                            <option value="Nomade">🌍 Nomade digital (travail depuis n'importe où)</option>
+                            <option value="Déplacement fréquent">✈️ Déplacement fréquent</option>
+                            <option value="Chez le client">👥 Chez le client</option>
+                            <option value="Flexible">💫 Flexible / À discuter</option>
+                        </select>
+                    </div>
+                    <div class="bg-indigo-50 rounded-xl p-6 border-2 border-indigo-200">
+                        <p class="text-sm text-indigo-700">
+                            ℹ️ <strong>Conseil :</strong> Indiquer vos préférences de disponibilité et de mode de travail aide les recruteurs à trouver des opportunités qui correspondent à vos attentes.
+                        </p>
                     </div>
                 </div>
             </div>
