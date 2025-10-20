@@ -16,14 +16,17 @@ class CinemaTalent(db.Model):
     id_document_type = db.Column(db.String(50), nullable=False)
     id_document_number_encrypted = db.Column(db.Text, nullable=False)
     
-    # Location
-    ethnicity = db.Column(db.String(100))
+    # Origins
+    ethnicities = db.Column(db.Text)  # JSON list of multiple ethnicities
+    country_of_origin = db.Column(db.String(100))
     nationality = db.Column(db.String(100), nullable=False)
+    
+    # Location
     country_of_residence = db.Column(db.String(100), nullable=False)
     city_of_residence = db.Column(db.String(100), nullable=False)
     
-    # Languages & Experience
-    languages_spoken = db.Column(db.Text)
+    # Languages & Experience (multiple choices stored as JSON)
+    languages_spoken = db.Column(db.Text)  # JSON list
     years_of_experience = db.Column(db.Integer, default=0)
     
     # Physical Characteristics
@@ -34,8 +37,8 @@ class CinemaTalent(db.Model):
     skin_tone = db.Column(db.String(50))
     build = db.Column(db.String(50))
     
-    # Other Talents
-    other_talents = db.Column(db.Text)
+    # Other Talents (multiple choices stored as JSON)
+    other_talents = db.Column(db.Text)  # JSON list
     
     # Photos
     profile_photo_filename = db.Column(db.String(255))
