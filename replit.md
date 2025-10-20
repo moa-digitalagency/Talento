@@ -6,15 +6,14 @@ Talento is a professional web application designed to centralize and showcase ta
 
 ## Recent Changes (October 20, 2025)
 
+- **SendGrid Email Integration (v2.14.0)**: Integrated SendGrid for automated email notifications. New candidates receive two emails: (1) application confirmation with profile link and optional PDF attachment, and (2) login credentials with unique code and randomly generated password.
+- **OpenRouter AI Integration (v2.14.0)**: Added intelligent CV analysis using OpenRouter API. System automatically analyzes uploaded CVs, extracts skills, generates professional summaries, and assigns profile scores (0-100).
+- **Dual Authentication (v2.14.0)**: Users can now login with either email OR unique code, making access easier for candidates who prefer using their unique identifier.
+- **Candidate Self-Service (v2.14.0)**: Candidates can now edit their own profiles, update information, upload new CVs (which triggers automatic re-analysis), and manage their talents.
+- **Profile Scoring & Analysis Display (v2.14.0)**: Profile view now shows AI-generated analysis with circular score indicator, detected skills, strengths, recommendations, and experience years.
 - **QR Code Fix (v2.13.0)**: Fixed QR code generation to use proper HTTPS URLs that open profile pages in browsers instead of displaying text. QR codes are automatically regenerated on app restart.
 - **Navigation Improvements (v2.13.0)**: Fixed back button on profile pages to return to `/talents` list. Added responsive hamburger menu for mobile/tablet navigation while keeping Talento logo always visible.
 - **Responsive Design (v2.13.0)**: QR codes are now hidden on mobile and tablet devices (visible only on desktop) to optimize space and improve mobile experience.
-- **Availability Harmonization**: Replaced legacy availability values ('available', 'partially_available', 'unavailable') with French labels ('Temps plein', 'Temps partiel', 'Mi-temps', 'Flexible', 'Occasionnel', 'Indisponible') across all forms, filters, and displays.
-- **Data Migration**: Created `migrate_availability.py` to convert existing user data from legacy to new availability values. This script must be run on deployment.
-- **Dashboard Statistics Update**: Replaced availability-based statistics with talent category statistics, showing top 5 talent categories by user count.
-- **Talent Page Optimization**: Improved filtering to display only talent categories that are actively used by registered users.
-- **Export Fix**: Corrected PDF/Excel export functionality by properly wrapping byte streams in BytesIO objects.
-- **UI Text Update**: Changed login page registration link from "Créer un compte gratuitement" to "Déposer votre candidature".
 
 ## User Preferences
 
@@ -36,9 +35,9 @@ Preferred communication style: Simple, everyday language.
 - **Validation**: Regex-based validation and uniqueness checks.
 
 ### Authentication & Authorization
-- **User Authentication**: Flask-Login for session management, email-based login, and password hashing.
-- **Access Control**: Role-based (admin vs. regular users) with protected routes.
-- **Password Management**: Random generation for new users, secure bcrypt hashing, and email delivery of credentials.
+- **User Authentication**: Flask-Login for session management with dual login support (email OR unique code), secure password hashing.
+- **Access Control**: Role-based (admin vs. regular users) with protected routes. Candidates can edit their own profiles; admins can manage all users.
+- **Password Management**: Random generation for new users, secure bcrypt hashing, email delivery of credentials via SendGrid.
 
 ### File Management
 - **Upload Handling**: Supports photos (PNG, JPG, JPEG up to 5MB) and CVs (PDF, DOC, DOCX up to 10MB).
@@ -46,14 +45,14 @@ Preferred communication style: Simple, everyday language.
 - **Document Processing**: PyPDF2 for PDF, python-docx for DOCX, Pillow for image optimization.
 
 ### AI Integration
-- **CV Analysis Service**: Integration with OpenRouter AI API for automated CV analysis, skill extraction, profile scoring (0-100), and personalized recommendations.
+- **CV Analysis Service**: OpenRouter AI integration for intelligent CV analysis. Automatically triggered on CV upload (registration or profile update). Analyzes CV content, extracts skills, calculates profile score (0-100), identifies strengths/weaknesses, and generates recruiter-style recommendations. Results stored in JSON format and displayed in profile view with visual score indicator.
 
 ### Data Export System
 - **Export Formats**: Excel (XLSX) using openpyxl, CSV using pandas, and PDF using ReportLab.
 - **PDF Export**: Supports list views and detailed individual talent sheets with photos and QR codes.
 
 ### Email System
-- **Email Service**: Flask-Mail with SendGrid support for sending confirmation emails and credentials using HTML templates.
+- **Email Service**: Integrated SendGrid API for professional email delivery. Two automated emails sent during registration: application confirmation (with profile URL and optional PDF) and login credentials (unique code + password). HTML templates with responsive design and professional styling.
 
 ### Frontend Architecture
 - **Template Engine**: Jinja2.
@@ -81,11 +80,8 @@ Preferred communication style: Simple, everyday language.
 
 ### Core Services
 - **Database**: PostgreSQL (production) / SQLite (development).
-- **AI Service**: OpenRouter API for CV analysis (requires `OPENROUTER_API_KEY`).
-
-### Email Delivery
-- **SendGrid**: Optional professional email delivery (requires `SENDGRID_API_KEY`).
-- **SMTP**: Alternative standard email protocol for secure transmission.
+- **AI Service**: OpenRouter API for intelligent CV analysis and profile scoring (requires `OPENROUTER_API_KEY`).
+- **Email Service**: SendGrid API for transactional email delivery (requires `SENDGRID_API_KEY`).
 
 ### Python Libraries
 - **Web Framework**: Flask ecosystem (Flask, Flask-SQLAlchemy, Flask-Login, Flask-Mail, Flask-Migrate).
@@ -93,11 +89,12 @@ Preferred communication style: Simple, everyday language.
 - **Security**: `cryptography`, `bcrypt`.
 - **File Processing**: Pillow, PyPDF2, `python-docx`.
 - **Data Export**: `pandas`, `openpyxl`, ReportLab.
+- **Email**: `sendgrid` for transactional email delivery.
 - **Utilities**: `qrcode`, `requests`, `email-validator`, `python-dotenv`.
 
 ### Configuration Requirements
-- **Required Environment Variables**: `SECRET_KEY`, `DATABASE_URL`, `ENCRYPTION_KEY`.
-- **Optional Environment Variables**: `OPENROUTER_API_KEY`, `MAIL_SERVER`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD`, `SENDGRID_API_KEY`, `REPLIT_DEV_DOMAIN`.
+- **Required Environment Variables**: `SECRET_KEY`, `DATABASE_URL`, `ENCRYPTION_KEY`, `SENDGRID_API_KEY`, `OPENROUTER_API_KEY`.
+- **Optional Environment Variables**: `SENDGRID_FROM_EMAIL` (default: noreply@talento.com), `REPLIT_DEV_DOMAIN` (auto-detected in Replit environment).
 
 ### Static Assets
 - **Tailwind CSS**: CDN-delivered.

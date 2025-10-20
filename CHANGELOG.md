@@ -5,6 +5,151 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.14.0] - 2025-10-20
+
+### 📧 Intégration SendGrid pour Notifications Email
+
+#### Emails Automatiques lors de l'Inscription
+- **Deux emails envoyés automatiquement** aux nouveaux candidats :
+  1. **Email de confirmation de candidature** :
+     - Confirmation de réception de la candidature
+     - Code unique du candidat mis en avant
+     - Lien vers le profil public
+     - PDF du profil en pièce jointe (optionnel)
+     - Design HTML professionnel et responsive
+  
+  2. **Email des identifiants de connexion** :
+     - Code unique comme identifiant
+     - Mot de passe généré aléatoirement
+     - Lien direct vers la page de connexion
+     - Instructions claires pour l'accès
+     - Recommandations de sécurité
+
+#### Service Email Professionnel
+- **Nouveau service** : `app/services/email_service.py`
+  - Intégration SendGrid API pour envoi professionnel
+  - Templates HTML responsive avec design moderne
+  - Support des pièces jointes (PDF)
+  - Gestion des erreurs et logging
+  - Configuration via variable d'environnement `SENDGRID_API_KEY`
+
+### 🤖 Analyse Intelligente de CV avec OpenRouter AI
+
+#### Analyse Automatique des CV
+- **Déclenchement automatique** lors de l'upload d'un CV :
+  - À l'inscription d'un nouveau candidat
+  - Lors de la mise à jour du profil par le candidat
+  - Analyse du contenu du CV (PDF, DOCX)
+  - Extraction automatique des compétences
+
+#### Scoring et Recommandations
+- **Score du profil (0-100)** calculé automatiquement :
+  - Complétude du profil (30%)
+  - Cohérence CV/profil (30%)
+  - Pertinence des compétences (40%)
+  
+- **Analyse détaillée** incluant :
+  - Points forts identifiés
+  - Compétences détectées dans le CV
+  - Recommandations d'amélioration
+  - Années d'expérience estimées
+
+#### Affichage de l'Analyse
+- **Nouvelle section "Analyse du Profil"** dans la vue profil :
+  - Indicateur circulaire du score (vert/orange/rouge)
+  - Années d'expérience détectées
+  - Date de la dernière analyse
+  - Points forts sous forme de liste
+  - Compétences détectées en badges
+  - Recommandations pour améliorer le profil
+
+### 👤 Authentification Améliorée
+
+#### Connexion Flexible
+- **Double identification** : Les utilisateurs peuvent se connecter avec :
+  - Leur adresse email (comme avant)
+  - Leur code unique (nouveau)
+  - Exemple : `MARAB0001N` ou `ahmed@email.com`
+  
+- **Interface mise à jour** :
+  - Label changé de "Email" à "Email ou Code unique"
+  - Placeholder : "votre.email@exemple.com ou MARAB0001N"
+  - Type de champ passé de `email` à `text` pour accepter les deux formats
+
+### ✏️ Candidats Autonomes
+
+#### Auto-Édition des Profils
+- **Route `/profile/edit`** : Les candidats peuvent modifier leur propre profil
+  - Modification des informations personnelles
+  - Mise à jour des coordonnées
+  - Gestion des talents et compétences
+  - Upload d'une nouvelle photo
+  - Upload d'un nouveau CV (déclenche une nouvelle analyse)
+  - Mise à jour des réseaux sociaux
+
+#### Workflow d'Édition
+- **Formulaire complet** avec toutes les sections :
+  - Informations personnelles
+  - Contact (téléphone, WhatsApp)
+  - Localisation (pays, ville)
+  - Profil professionnel
+  - Talents multiples
+  - Biographie et portfolio
+  - Réseaux sociaux
+  
+- **Validation et sécurité** :
+  - Seul le propriétaire peut modifier son profil
+  - Les données sensibles restent chiffrées
+  - Redirection vers le dashboard après sauvegarde
+
+### 🔧 Modifications Techniques
+
+#### Backend
+- **Nouveau service email** : `app/services/email_service.py`
+  - Classe `EmailService` avec méthodes pour chaque type d'email
+  - Support SendGrid API
+  - Templates HTML intégrés
+  
+- **Service CV existant utilisé** : `app/services/cv_analyzer.py`
+  - Intégration OpenRouter API
+  - Extraction de texte PDF/DOCX
+  - Parsing des réponses JSON de l'IA
+  
+- **Routes modifiées** :
+  - `app/routes/auth.py` : Connexion avec code unique, envoi d'emails, analyse CV
+  - `app/routes/profile.py` : Édition de profil candidat, affichage analyse CV
+  
+- **Template mis à jour** :
+  - `app/templates/auth/login.html` : Champ pour email OU code unique
+  - `app/templates/profile/view.html` : Affichage de l'analyse CV avec score
+
+#### Dépendances
+- **Nouvelle bibliothèque** : `sendgrid==6.12.5`
+- **Variables d'environnement requises** :
+  - `SENDGRID_API_KEY` : Clé API SendGrid pour l'envoi d'emails
+  - `OPENROUTER_API_KEY` : Clé API OpenRouter pour l'analyse IA
+  
+- **Variables optionnelles** :
+  - `SENDGRID_FROM_EMAIL` : Email expéditeur (défaut: noreply@talento.com)
+
+### 📊 Impact Utilisateur
+
+#### Expérience Candidat Améliorée
+- **Notifications automatiques** : Emails professionnels dès l'inscription
+- **Accès facilité** : Connexion avec code unique mémorisable
+- **Autonomie totale** : Modification du profil sans intervention admin
+- **Feedback IA** : Score et recommandations pour améliorer le profil
+
+#### Administration Simplifiée
+- **Envoi automatique** : Plus besoin d'envoyer les identifiants manuellement
+- **Analyse automatique** : Score et insights sur chaque profil
+- **Traçabilité** : Historique des analyses avec timestamps
+
+#### Professionnalisme Accru
+- **Emails branded** : Design professionnel et cohérent
+- **Scoring objectif** : Évaluation basée sur l'IA
+- **Recommandations personnalisées** : Conseils adaptés à chaque profil
+
 ## [2.13.0] - 2025-10-20
 
 ### 🔧 Corrections et Améliorations UX
