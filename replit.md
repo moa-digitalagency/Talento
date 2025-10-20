@@ -6,35 +6,49 @@ Talento is a professional web application designed to centralize and showcase ta
 
 ## Recent Changes
 
+**October 20, 2025 - Version 2.4.0 - SOCIAL MEDIA, LANGUAGE CHECKBOXES & COMPLETE GRADIENT REMOVAL**
+1. **Social Media Section Added**:
+   - New Section 10 at the end of registration form (pink theme)
+   - 6 social media platforms: LinkedIn, Facebook, Instagram, Twitter/X, GitHub, YouTube
+   - All fields optional with professional guidance
+   - Helps talents showcase their online presence
+
+2. **Language Selection Modernized**:
+   - Changed from select multiple to checkbox multi-selection (like talents)
+   - 3 organized categories with 44 languages:
+     * 🌍 Langues Internationales (10): Arabe, Français, Anglais, Espagnol, etc.
+     * 🇲🇦 Langues Marocaines (5): Darija, Amazigh, Tariffit, Tachelhit, Tamazight
+     * 🌍 Langues Africaines (29): Swahili, Haoussa, Yoruba, Wolof, etc.
+   - More intuitive: simple click instead of Ctrl/Cmd + click
+   - Consistent checkbox design with talent selection
+   - African languages section scrollable for space optimization
+
+3. **Complete Gradient Removal**:
+   - **index.html fully refactored**: All gradients replaced with solid colors
+     * Hero section: solid blue text instead of gradient
+     * CTA buttons: solid blue with hover instead of gradient
+     * Statistics cards: solid colors (blue, purple, green, orange)
+     * Progress bars: solid colors instead of gradients
+     * Top talents, categories, work modes: solid backgrounds
+     * Scrollbar: solid purple instead of gradient
+   - **register.html cleaned**: Custom scrollbar now solid orange
+   - **Uniform professional design** across entire platform
+   - Better performance and accessibility
+
+4. **Registration Form - 10 Steps**:
+   - Step numbering updated to 1/10 through 10/10
+   - New flow: 1. Identité → 2. Contact → 3. Localisation → 4. Expérience, Bio & Formation → 5. Langues (checkboxes) → 6. Disponibilité → 7. Mode de Travail → 8. Talents → 9. Documents → 10. Réseaux Sociaux
+   - All sections use solid colors with dotted borders
+   - Consistent professional appearance throughout
+
 **October 20, 2025 - Version 2.3.0 - DESIGN MODERNIZATION (NO GRADIENTS)**
-1. **Complete Gradient Removal**:
-   - All gradients removed from registration form and CSS
+1. **Complete Gradient Removal (CSS)**:
+   - All gradients removed from CSS classes
    - 10 `.section-*` classes modernized: `linear-gradient()` → solid `rgba()` colors
    - Submit button: gradient removed → solid blue (bg-blue-600) with professional hover
    - Talent selection: all gradient hover states → solid color backgrounds
    - Progress bar: gradient removed → solid orange
    - Uniform dotted-border design throughout
-
-2. **Registration Form Restructured** (9 steps instead of 10):
-   - **Formation integrated into Section 4** (Expérience, Bio & Formation)
-   - **Languages promoted to Section 5** with multi-select dropdown:
-     * 44 languages total: International (10) + African (15) + Moroccan (5) + Others (14)
-     * Includes: Swahili, Haoussa, Yoruba, Darija, Amazigh/Berbère, Tariffit, etc.
-     * Multi-select interface with clear instructions (Ctrl/Cmd)
-   - **Section Réseaux Sociaux removed** from registration (moved to profile edit)
-   - **New flow**: 1. Identité → 2. Contact → 3. Localisation → 4. Expérience & Formation → 5. Langues → 6. Disponibilité → 7. Mode de Travail → 8. Talents → 9. Documents
-
-3. **CSS Completely Cleaned**:
-   - All 10 section classes use solid transparent backgrounds
-   - No `linear-gradient()` anywhere in corporate.css
-   - Wrapper uses explicit `bg-gray-50` instead of gradient-bg
-   - JavaScript cleaned: no gradient classes in talent interactions
-
-4. **Professional Design**:
-   - Clean, modern appearance without visual distractions
-   - Better readability and accessibility
-   - Consistent color scheme throughout
-   - Badge-style buttons with solid colors
 
 **October 20, 2025 - Version 2.1.0**
 5. **Beautiful Registration Form Redesign** with dotted borders:
