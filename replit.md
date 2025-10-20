@@ -6,6 +6,7 @@ Talento is a professional web application designed to centralize and showcase ta
 
 ## Recent Changes (October 20, 2025)
 
+- **Database-Driven Settings (v2.16.0)**: Complete redesign of settings management. API keys (SendGrid, OpenRouter) and configuration are now stored in the database (`app_settings` table) instead of environment variables. Admin settings page includes: (1) API key input fields with secure masking, (2) configurable sender email (default: noreply@myoneart.com), (3) live email testing functionality, and (4) integrated admin user creation. The system reads from database with automatic fallback to environment variables for backward compatibility.
 - **Admin Settings Page (v2.15.0)**: New `/admin/settings` page for administrators with API key status monitoring (SendGrid, OpenRouter), admin user management (promote/demote users), and system configuration overview.
 - **Enhanced CV Analysis Display (v2.15.0)**: Profile view now intelligently displays three states: (1) "Aucun CV disponible" with upload button when no CV exists, (2) "CV en cours de traitement" when CV uploaded but not analyzed, (3) Full analysis with score when available.
 - **Navigation Menu Update (v2.15.0)**: Added "Paramètres" (Settings) link in navigation menu for admin users (desktop and mobile), providing quick access to system configuration.
@@ -30,7 +31,8 @@ Preferred communication style: Simple, everyday language.
 
 ### Database Architecture
 - **ORM**: SQLAlchemy with Flask-SQLAlchemy 3.1.1, supporting SQLite (development) and PostgreSQL (production).
-- **Data Models**: User, Talent, UserTalent, Country, and City entities.
+- **Data Models**: User, Talent, UserTalent, Country, City, and AppSettings entities.
+- **Settings Storage**: AppSettings model stores application configuration (API keys, email sender) in encrypted database table with get/set class methods.
 - **Security**: Encrypted storage for sensitive data using Fernet, password hashing with Werkzeug.
 
 ### Unique Identification System
@@ -56,7 +58,8 @@ Preferred communication style: Simple, everyday language.
 - **PDF Export**: Supports list views and detailed individual talent sheets with photos and QR codes.
 
 ### Email System
-- **Email Service**: Integrated SendGrid API for professional email delivery. Two automated emails sent during registration: application confirmation (with profile URL and optional PDF) and login credentials (unique code + password). HTML templates with responsive design and professional styling.
+- **Email Service**: Integrated SendGrid API for professional email delivery. Supports configurable API keys and sender email (stored in database). Two automated emails sent during registration: application confirmation (with profile URL and optional PDF) and login credentials (unique code + password). HTML templates with responsive design and professional styling. Admin can test email configuration with send_test_email functionality.
+- **Default Sender**: noreply@myoneart.com (configurable via admin settings page).
 
 ### Frontend Architecture
 - **Template Engine**: Jinja2.
@@ -97,8 +100,9 @@ Preferred communication style: Simple, everyday language.
 - **Utilities**: `qrcode`, `requests`, `email-validator`, `python-dotenv`.
 
 ### Configuration Requirements
-- **Required Environment Variables**: `SECRET_KEY`, `DATABASE_URL`, `ENCRYPTION_KEY`, `SENDGRID_API_KEY`, `OPENROUTER_API_KEY`.
-- **Optional Environment Variables**: `SENDGRID_FROM_EMAIL` (default: noreply@talento.com), `REPLIT_DEV_DOMAIN` (auto-detected in Replit environment).
+- **Required Environment Variables**: `SECRET_KEY`, `DATABASE_URL`, `ENCRYPTION_KEY`.
+- **Optional Environment Variables**: `SENDGRID_API_KEY`, `OPENROUTER_API_KEY` (can be configured via admin settings page instead), `SENDGRID_FROM_EMAIL` (default: noreply@myoneart.com), `REPLIT_DEV_DOMAIN` (auto-detected in Replit environment).
+- **Database-Stored Settings**: SendGrid API key, OpenRouter API key, and sender email are stored in the database and configurable through the admin interface.
 
 ### Static Assets
 - **Tailwind CSS**: CDN-delivered.
