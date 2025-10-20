@@ -6,23 +6,48 @@ Talento is a professional web application designed to centralize and showcase ta
 
 ## Recent Changes
 
+**October 20, 2025 - Version 2.2.0**
+1. **Registration Form Complete Reorganization** (10 steps):
+   - Sections reordered for better user flow:
+     1. Identité (Blue), 2. Contact (Green), 3. Localisation (Red), 4. Expérience & Bio (Purple)
+     5. Disponibilité (Yellow) - MOVED from position 8
+     6. Mode de Travail (Indigo) - MOVED from position 9
+     7. Talents (Orange), 8. Documents (Cyan), 9. Réseaux Sociaux (Pink)
+     10. Langues & Formation (Emerald) - NEW SECTION
+   - All step indicators updated to show 1/10 through 10/10
+   - Improved logical flow: personal info → professional preferences → skills → documents → education
+
+2. **New Section 10 - Langues & Formation** (Emerald):
+   - Languages spoken field with proficiency levels
+   - Education & diplomas field (most recent to oldest)
+   - Emerald-colored dotted border design
+   - Contextual help messages and examples
+   - Enriches profiles with academic and linguistic qualifications
+
+3. **Harmonized Talent Categories Design**:
+   - All talent categories now use dotted-border style matching form sections
+   - Color-coded by category: Tech (Blue), Design (Purple), Services (Green), Craft (Orange), Personal Services (Pink)
+   - Consistent hover effects and transitions throughout
+   - Better visual coherence across the entire form
+
+4. **Uniform Layout & Spacing**:
+   - All sections constrained to max-w-4xl for consistent width
+   - Standardized padding (p-8) across all sections
+   - Uniform spacing between sections (space-y-8)
+   - Responsive grid layouts with consistent gaps
+
 **October 20, 2025 - Version 2.1.0**
-1. **Beautiful Registration Form Redesign** with dotted borders:
+5. **Beautiful Registration Form Redesign** with dotted borders:
    - 9 sections with unique colored dotted borders (3px)
    - Each section has a subtle gradient background
    - Color themes: blue (Identity), green (Contact), red (Location), purple (Experience), orange (Talents), cyan (Documents), pink (Social), yellow (Availability), indigo (Work Mode)
    - Hover effects with elevation
-   - Step indicators (1/9 through 9/9)
 
-2. **Extended Moroccan Cities Database**:
+6. **Extended Moroccan Cities Database**:
    - Expanded from 30 to 79+ cities
    - All cities sorted alphabetically
    - Unique city codes (3-letter codes)
    - Coverage of all major Moroccan regions
-
-3. **New Form Sections**:
-   - **Section 8 - Availability**: Work time preferences (full-time, part-time, flexible, etc.) with hourly/monthly rate fields
-   - **Section 9 - Work Mode**: Remote, on-site, hybrid, nomadic, etc.
 
 **Earlier October 20, 2025**
 4. **Database Expansion**: Extended Moroccan cities from 12 to 30 cities covering major urban centers
