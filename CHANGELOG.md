@@ -5,6 +5,99 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0] - 2025-10-20
+
+### 📊 Statistiques Basées sur les Données Réelles
+
+#### Dashboard Admin - Statistiques Dynamiques
+- **Statistiques recalculées** pour refléter les données utilisateurs actifs :
+  - **Compétences** : Nombre de compétences sélectionnées par les utilisateurs (au lieu du total disponible)
+  - **Villes** : Nombre de villes où il y a des talents inscrits (au lieu du total)
+  - **Pays** : Nombre de pays où il y a des utilisateurs (au lieu du total africain)
+  - Labels mis à jour : "Sélectionnées", "Avec talents" pour plus de clarté
+  
+- **Nouveaux filtres ajoutés** :
+  - 🔄 **Mode de travail** : Sur site, À distance, Hybride
+  - ⭐ **Talents** : Filtre par compétence spécifique
+  - Ajout des filtres dans une nouvelle ligne pour meilleure organisation
+
+#### Visualisations Améliorées
+- **Suppression des sections** "Top 10 Talents" et "Top Catégories"
+- **Nouvelle section combinée** avec deux widgets :
+  - 🏆 **Top Compétences** : Les 10 compétences les plus sélectionnées par les utilisateurs actifs
+  - 🏙️ **Top Villes du Maroc** : Les 10 villes marocaines avec le plus de talents inscrits
+  - Affichage optimisé avec scroll pour navigation fluide
+  - Données filtrées par utilisateurs actifs uniquement
+
+### 🎯 Page Talents Optimisée
+
+#### Filtres Complets Ajoutés
+- **Duplication des filtres** du dashboard admin :
+  - 📝 Recherche par nom de talent
+  - 📁 Filtrage par catégorie
+  - ⏰ **Disponibilité** : Temps plein, Temps partiel, Mi-temps, Flexible, Occasionnel
+  - 🔄 **Mode de travail** : Sur site, À distance, Hybride
+  - 🏙️ **Ville** : Filtrage géographique
+  
+- **Interface cohérente** : 
+  - Organisation en grilles responsive (2 colonnes puis 3 colonnes)
+  - Sélecteurs avec icônes et labels clairs
+  - Boutons de recherche et réinitialisation
+
+#### Affichage Intelligent des Catégories
+- **Catégories filtrées dynamiquement** :
+  - Affichage uniquement des catégories avec talents actifs (user_count > 0)
+  - Suppression automatique des catégories vides
+  - Mise à jour en temps réel selon les filtres appliqués
+  
+- **Talents filtrés par utilisateurs** :
+  - Seuls les talents avec au moins 1 utilisateur actif sont affichés
+  - Compteur de profils pour chaque talent
+  - Filtrage croisé avec disponibilité, mode de travail et ville
+
+### 🔧 Améliorations Backend
+
+#### Requêtes SQL Optimisées
+- **Statistiques calculées dynamiquement** :
+  - Utilisation de `func.count(func.distinct())` pour compter les sélections uniques
+  - Jointures avec filtre sur utilisateurs actifs (`account_active=True`)
+  - Exclusion automatique des comptes admin
+  
+- **Top villes marocaines** :
+  - Requête filtrée par code pays `MA` (Maroc)
+  - Jointure User → City → Country
+  - Tri par nombre d'utilisateurs décroissant
+  - Limite à 10 villes
+
+#### Page Talents - Nouvelle Logique
+- **Query builder intelligent** :
+  - Construction de requête avec talents ayant au moins 1 utilisateur
+  - Support des filtres multiples combinés (AND)
+  - Comptage des utilisateurs par talent avec `group_by`
+  
+- **Catégories actives uniquement** :
+  - Query distinct sur catégories avec UserTalent JOIN
+  - Filtrage automatique des catégories sans talents
+  - Tri alphabétique pour navigation facile
+
+### 📊 Impact Utilisateur
+
+#### Données Plus Pertinentes
+- **Statistiques réalistes** reflétant l'activité réelle de la plateforme
+- **Visualisations utiles** : top compétences et villes les plus actives
+- **Filtrage puissant** pour trouver exactement le profil recherché
+
+#### Navigation Améliorée
+- **Page talents optimisée** : seulement les talents réellement disponibles
+- **Filtres cohérents** entre dashboard admin et page publique
+- **Catégories dynamiques** s'adaptant aux données existantes
+
+### 🎨 Design Cohérent
+- **Sections conservées** avec bordures pointillées colorées
+- **Grilles responsive** optimisées pour tous les écrans
+- **Couleurs thématiques** : violet pour compétences, vert pour villes
+- **Scroll personnalisé** pour navigation fluide dans les listes longues
+
 ## [2.5.0] - 2025-10-20
 
 ### ✨ Nouvelles Fonctionnalités
