@@ -6,6 +6,10 @@ Talento is a professional web application designed to centralize and showcase ta
 
 ## Recent Changes (October 20, 2025)
 
+- **Admin Settings Page (v2.15.0)**: New `/admin/settings` page for administrators with API key status monitoring (SendGrid, OpenRouter), admin user management (promote/demote users), and system configuration overview.
+- **Enhanced CV Analysis Display (v2.15.0)**: Profile view now intelligently displays three states: (1) "Aucun CV disponible" with upload button when no CV exists, (2) "CV en cours de traitement" when CV uploaded but not analyzed, (3) Full analysis with score when available.
+- **Navigation Menu Update (v2.15.0)**: Added "Paramètres" (Settings) link in navigation menu for admin users (desktop and mobile), providing quick access to system configuration.
+- **Admin Management Features (v2.15.0)**: Admins can now promote regular users to admin status and demote other admins (with safeguards: cannot self-demote, cannot remove last admin).
 - **SendGrid Email Integration (v2.14.0)**: Integrated SendGrid for automated email notifications. New candidates receive two emails: (1) application confirmation with profile link and optional PDF attachment, and (2) login credentials with unique code and randomly generated password.
 - **OpenRouter AI Integration (v2.14.0)**: Added intelligent CV analysis using OpenRouter API. System automatically analyzes uploaded CVs, extracts skills, generates professional summaries, and assigns profile scores (0-100).
 - **Dual Authentication (v2.14.0)**: Users can now login with either email OR unique code, making access easier for candidates who prefer using their unique identifier.
