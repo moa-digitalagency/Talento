@@ -5,6 +5,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="flex flex-col lg:flex-row gap-6">
             
+            {% if current_user.is_authenticated %}
             <!-- Barre latérale -->
             <aside class="lg:w-64 flex-shrink-0">
                 <div class="bg-white rounded-lg border-2 border-dotted border-purple-500 p-6 sticky top-8">
@@ -63,6 +64,7 @@
                     </div>
                 </div>
             </aside>
+            {% endif %}
             
             <!-- Contenu principal -->
             <main class="flex-1 min-w-0">
