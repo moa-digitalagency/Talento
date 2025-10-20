@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-6">
+            
+            <!-- Barre latérale -->
+            <aside class="lg:w-64 flex-shrink-0">
+                <div class="bg-white rounded-lg border-2 border-dotted border-purple-500 p-6 sticky top-8">
+                    <!-- Titre du module -->
+                    <div class="flex items-center gap-3 mb-6 pb-4 border-b-2 border-dotted border-purple-300">
+                        <span class="text-4xl">🎬</span>
+                        <h2 class="text-2xl font-bold text-gray-800">CINEMA</h2>
+                    </div>
+                    
+                    <!-- Menu de navigation -->
+                    <nav class="space-y-2">
+                        <a href="{{ url_for('cinema.dashboard') }}" 
+                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.endpoint == 'cinema.dashboard' %}bg-purple-100 text-purple-700 font-bold border-2 border-purple-500{% else %}text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent{% endif %}">
+                            <span class="text-2xl">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                        
+                        <a href="{{ url_for('cinema.talents') }}" 
+                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.endpoint == 'cinema.talents' %}bg-purple-100 text-purple-700 font-bold border-2 border-purple-500{% else %}text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent{% endif %}">
+                            <span class="text-2xl">🎭</span>
+                            <span>Talents</span>
+                        </a>
+                    </nav>
+                    
+                    <!-- Info utilisateur -->
+                    <div class="mt-6 pt-6 border-t-2 border-dotted border-gray-300">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">
+                                {{ current_user.first_name[0] }}{{ current_user.last_name[0] }}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold text-gray-800 truncate">
+                                    {{ current_user.first_name }} {{ current_user.last_name }}
+                                </p>
+                                <p class="text-xs text-gray-500 truncate">{{ current_user.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Contenu principal -->
+            <main class="flex-1 min-w-0">
+                {% block cinema_content %}{% endblock %}
+            </main>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
