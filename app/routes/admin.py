@@ -11,6 +11,8 @@ from app.models.settings import AppSettings
 from app.services.export_service import ExportService
 from app.services.cv_analyzer import CVAnalyzerService
 from app.services.email_service import EmailService
+from app.services.database_service import DatabaseService
+from app.services.update_service import UpdateService
 import io
 import os
 import secrets
@@ -299,7 +301,11 @@ def settings():
         'database_type': 'PostgreSQL' if 'postgresql' in current_app.config.get('SQLALCHEMY_DATABASE_URI', '').lower() else 'SQLite'
     }
     
-    return render_template('admin/settings.html', admin_users=admin_users, config=config_info)
+    db_diagnostics = DatabaseService.get_full_diagnostics()
+    git_info = UpdateService.get_git_info()
+    update_history = UpdateService.get_update_history(5)
+    
+    return render_template('admin/settings.html', admin_users=admin_users, config=config_info, db_diagnostics=db_diagnostics, git_info=git_info, update_history=update_history)
 
 @bp.route('/user/<int:user_id>/promote-admin', methods=['POST'])
 @login_required
@@ -452,3 +458,159 @@ def create_admin_user():
     cities = City.query.order_by(City.name).all()
     
     return render_template('admin/create_admin.html', countries=countries, cities=cities)
+
+@bp.route('/perform-update', methods=['POST'])
+@login_required
+@admin_required
+def perform_update():
+    if not UpdateService.check_git_available():
+        flash('Git n\'est pas disponible sur ce système.', 'error')
+        return redirect(url_for('admin.settings'))
+    
+    try:
+        success, log_entry = UpdateService.perform_full_update()
+        
+        if success:
+            flash('✅ Mise à jour effectuée avec succès! L\'application va redémarrer pour appliquer les changements.', 'success')
+        else:
+            failed_step = next((step['name'] for step in log_entry['steps'] if not step['success']), 'Unknown')
+            flash(f'❌ Échec de la mise à jour à l\'étape: {failed_step}. Consultez les logs pour plus de détails.', 'error')
+    except Exception as e:
+        flash(f'Erreur lors de la mise à jour: {str(e)}', 'error')
+    
+    return redirect(url_for('admin.settings'))
+
+@bp.route('/check-updates', methods=['POST'])
+@login_required
+@admin_required
+def check_updates():
+    if not UpdateService.check_git_available():
+        return jsonify({'error': 'Git non disponible'}), 400
+    
+    try:
+        has_updates, count = UpdateService.check_updates_available()
+        recent_commits = UpdateService.get_commit_logs(5)
+        
+        return jsonify({
+            'has_updates': has_updates,
+            'count': count,
+            'recent_commits': recent_commits
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@bp.route('/bulk/export')
+@login_required
+@admin_required
+def bulk_export():
+    format_type = request.args.get('format', 'excel')
+    ids_str = request.args.get('ids', '')
+    
+    if not ids_str:
+        flash('Aucun utilisateur sélectionné.', 'error')
+        return redirect(url_for('main.index'))
+    
+    try:
+        user_ids = [int(id_str) for id_str in ids_str.split(',')]
+        users = User.query.filter(User.id.in_(user_ids)).all()
+        
+        if not users:
+            flash('Aucun utilisateur trouvé.', 'error')
+            return redirect(url_for('main.index'))
+        
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        
+        if format_type == 'excel':
+            excel_bytes = ExportService.export_to_excel(users)
+            buffer = io.BytesIO(excel_bytes)
+            buffer.seek(0)
+            return send_file(
+                buffer,
+                mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                as_attachment=True,
+                download_name=f'talents_selection_{timestamp}.xlsx'
+            )
+        
+        elif format_type == 'csv':
+            csv_data = ExportService.export_to_csv(users)
+            buffer = io.BytesIO(csv_data.encode('utf-8'))
+            buffer.seek(0)
+            return send_file(
+                buffer,
+                mimetype='text/csv',
+                as_attachment=True,
+                download_name=f'talents_selection_{timestamp}.csv'
+            )
+        
+        elif format_type == 'pdf':
+            pdf_bytes = ExportService.export_list_to_pdf(users, current_user=current_user)
+            buffer = io.BytesIO(pdf_bytes)
+            buffer.seek(0)
+            return send_file(
+                buffer,
+                mimetype='application/pdf',
+                as_attachment=True,
+                download_name=f'talents_selection_{timestamp}.pdf'
+            )
+        
+        else:
+            flash('Format non supporté.', 'error')
+            return redirect(url_for('main.index'))
+    
+    except Exception as e:
+        current_app.logger.error(f'Erreur lors de l\'export en masse: {e}')
+        flash(f'Erreur lors de l\'export: {str(e)}', 'error')
+        return redirect(url_for('main.index'))
+
+@bp.route('/bulk/delete', methods=['POST'])
+@login_required
+@admin_required
+def bulk_delete():
+    try:
+        data = request.get_json()
+        user_ids = data.get('ids', [])
+        
+        if not user_ids:
+            return jsonify({'success': False, 'error': 'Aucun utilisateur sélectionné'}), 400
+        
+        users = User.query.filter(
+            User.id.in_(user_ids),
+            User.is_admin == False
+        ).all()
+        
+        if len(users) != len(user_ids):
+            admin_count = len(user_ids) - len(users)
+            return jsonify({
+                'success': False, 
+                'error': f'{admin_count} administrateur(s) ne peuvent pas être supprimés. Seuls les utilisateurs non-admin peuvent être supprimés en masse.'
+            }), 400
+        
+        deleted_count = 0
+        errors = []
+        
+        for user in users:
+            try:
+                db.session.delete(user)
+                deleted_count += 1
+            except Exception as e:
+                db.session.rollback()
+                errors.append(f'Erreur lors de la suppression de {user.full_name}: {str(e)}')
+        
+        if deleted_count > 0:
+            db.session.commit()
+        
+        response = {
+            'success': True,
+            'deleted_count': deleted_count,
+            'errors': errors
+        }
+        
+        if errors:
+            response['warning'] = f'{len(errors)} utilisateur(s) n\'ont pas pu être supprimés'
+        
+        return jsonify(response)
+    
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f'Erreur lors de la suppression en masse: {e}')
+        return jsonify({'success': False, 'error': str(e)}), 500

@@ -273,14 +273,229 @@
             </div>
         </div>
 
+        <!-- GitHub Update Section -->
+        <div class="section-cyan p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">🔄</span>
+                <h2 class="text-2xl font-bold text-gray-800">Mise à jour depuis GitHub</h2>
+            </div>
+            
+            {% if git_info.git_available %}
+                <!-- Git Status -->
+                <div class="bg-white p-6 rounded-lg border-2 border-cyan-300 mb-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                            <span>📦</span>
+                            <span>État du repository</span>
+                        </h3>
+                        {% if git_info.has_updates %}
+                        <span class="px-3 py-1 rounded-full text-sm font-semibold bg-orange-100 text-orange-700">
+                            ⚠️ {{ git_info.update_count }} mise(s) à jour disponible(s)
+                        </span>
+                        {% else %}
+                        <span class="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700">
+                            ✅ À jour
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-sm text-gray-600">Branche actuelle</p>
+                            <p class="font-mono text-sm font-semibold text-gray-800">{{ git_info.current_branch }}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">Commit actuel</p>
+                            <p class="font-mono text-sm font-semibold text-gray-800">{{ git_info.current_commit }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-600 mb-1">Repository distant</p>
+                        <p class="font-mono text-xs text-gray-700 break-all bg-gray-50 p-2 rounded">{{ git_info.remote_url }}</p>
+                    </div>
+                    
+                    <div class="flex gap-3">
+                        <form method="POST" action="{{ url_for('admin.perform_update') }}" class="inline" 
+                              onsubmit="return confirm('⚠️ Cette action va mettre à jour l\'application depuis GitHub, installer les dépendances et exécuter les migrations. L\'application redémarrera. Continuer ?');">
+                            <button type="submit" 
+                                    {% if not git_info.has_updates %}disabled{% endif %}
+                                    class="px-6 py-3 {% if git_info.has_updates %}bg-cyan-600 hover:bg-cyan-700{% else %}bg-gray-400 cursor-not-allowed{% endif %} text-white font-bold rounded-lg transition-all flex items-center gap-2">
+                                <span>🚀</span>
+                                <span>Mettre à jour maintenant</span>
+                            </button>
+                        </form>
+                        <button onclick="checkForUpdates()" 
+                                class="px-6 py-3 bg-blue-100 text-blue-700 font-bold rounded-lg border-2 border-blue-400 hover:bg-blue-200 transition-all flex items-center gap-2">
+                            <span>🔍</span>
+                            <span>Vérifier les mises à jour</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Commits -->
+                {% if git_info.recent_commits %}
+                <div class="bg-white p-6 rounded-lg border-2 border-cyan-300 mb-4">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <span>📝</span>
+                        <span>Commits récents</span>
+                    </h3>
+                    <div class="space-y-2">
+                        {% for commit in git_info.recent_commits %}
+                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <p class="text-sm font-semibold text-gray-800">{{ commit.message }}</p>
+                                    <p class="text-xs text-gray-600 mt-1">
+                                        <span class="font-mono">{{ commit.hash }}</span> • 
+                                        {{ commit.author }} • 
+                                        {{ commit.date }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Update History -->
+                {% if update_history %}
+                <div class="bg-white p-6 rounded-lg border-2 border-cyan-300">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <span>📜</span>
+                        <span>Historique des mises à jour</span>
+                    </h3>
+                    <div class="space-y-2">
+                        {% for update in update_history|reverse %}
+                        <div class="bg-gray-50 p-3 rounded-lg border {% if update.success %}border-green-200{% else %}border-red-200{% endif %}">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs font-mono text-gray-600">{{ update.timestamp[:19] }}</span>
+                                <span class="px-2 py-1 rounded text-xs font-semibold {% if update.success %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                                    {% if update.success %}✅ Succès{% else %}❌ Échec{% endif %}
+                                </span>
+                            </div>
+                            <div class="text-xs text-gray-700">
+                                {% for step in update.steps %}
+                                <span class="{% if step.success %}text-green-600{% else %}text-red-600{% endif %}">
+                                    {{ step.name }}{% if not loop.last %} → {% endif %}
+                                </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <script>
+                    function checkForUpdates() {
+                        fetch('{{ url_for("admin.check_updates") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.error) {
+                                alert('Erreur: ' + data.error);
+                            } else {
+                                if (data.has_updates) {
+                                    alert(`✅ ${data.count} mise(s) à jour disponible(s)! Rechargez la page pour voir les détails.`);
+                                    location.reload();
+                                } else {
+                                    alert('✅ Aucune mise à jour disponible. Vous êtes à jour!');
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            alert('Erreur lors de la vérification: ' + error);
+                        });
+                    }
+                </script>
+            {% else %}
+                <div class="bg-orange-50 p-6 rounded-lg border-2 border-orange-300">
+                    <p class="text-orange-800 font-semibold mb-2">⚠️ Git n'est pas disponible sur ce système</p>
+                    <p class="text-sm text-orange-700">La fonctionnalité de mise à jour automatique depuis GitHub nécessite Git.</p>
+                </div>
+            {% endif %}
+        </div>
+
         <!-- Database Info -->
         <div class="section-gray p-8 mb-8">
-            <div class="flex items-center gap-3 mb-4">
+            <div class="flex items-center gap-3 mb-6">
                 <span class="text-4xl">💾</span>
                 <h2 class="text-2xl font-bold text-gray-800">Base de données</h2>
             </div>
+            
+            <!-- Connection Status -->
+            <div class="bg-white p-6 rounded-lg border-2 {% if db_diagnostics.connection_status %}border-green-300{% else %}border-red-300{% endif %} mb-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span>🔌</span>
+                        <span>État de la connexion</span>
+                    </h3>
+                    <span class="px-3 py-1 rounded-full text-sm font-semibold {% if db_diagnostics.connection_status %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                        {% if db_diagnostics.connection_status %}✅ Connecté{% else %}❌ Déconnecté{% endif %}
+                    </span>
+                </div>
+                <div class="space-y-2 text-sm">
+                    <p class="text-gray-700"><strong>Type :</strong> {{ db_diagnostics.connection.type }}</p>
+                    <p class="text-gray-700 font-mono text-xs break-all"><strong>URI :</strong> {{ db_diagnostics.connection.uri_masked }}</p>
+                </div>
+            </div>
+
+            <!-- Database Statistics -->
+            <div class="bg-white p-6 rounded-lg border-2 border-blue-300 mb-4">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>📊</span>
+                    <span>Statistiques</span>
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                        <p class="text-xs text-gray-600 mb-1">Utilisateurs</p>
+                        <p class="text-2xl font-bold text-blue-600">{{ db_diagnostics.table_stats.users }}</p>
+                        <p class="text-xs text-gray-500 mt-1">{{ db_diagnostics.table_stats.users_active }} actifs</p>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                        <p class="text-xs text-gray-600 mb-1">Administrateurs</p>
+                        <p class="text-2xl font-bold text-purple-600">{{ db_diagnostics.table_stats.users_admin }}</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                        <p class="text-xs text-gray-600 mb-1">Talents</p>
+                        <p class="text-2xl font-bold text-green-600">{{ db_diagnostics.table_stats.talents }}</p>
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                        <p class="text-xs text-gray-600 mb-1">Pays / Villes</p>
+                        <p class="text-2xl font-bold text-orange-600">{{ db_diagnostics.table_stats.countries }} / {{ db_diagnostics.table_stats.cities }}</p>
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-4 border-t border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-sm text-gray-700"><strong>Taille de la base :</strong> {{ db_diagnostics.size }}</p>
+                            <p class="text-sm text-gray-700"><strong>Dernière migration :</strong> <span class="font-mono">{{ db_diagnostics.last_migration }}</span></p>
+                        </div>
+                        <div class="text-xs text-gray-500">
+                            <p>{{ db_diagnostics.table_stats.user_talents }} associations talents</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables List -->
             <div class="bg-white p-6 rounded-lg border-2 border-gray-300">
-                <p class="text-gray-700"><strong>Type :</strong> {{ config.database_type }}</p>
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>📋</span>
+                    <span>Tables ({{ db_diagnostics.tables|length }})</span>
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                    {% for table in db_diagnostics.tables %}
+                    <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-mono border border-gray-300">{{ table }}</span>
+                    {% endfor %}
+                </div>
             </div>
         </div>
 
