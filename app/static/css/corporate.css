@@ -105,68 +105,75 @@ h2 {
     font-weight: 500 !important;
 }
 
-/* Beautiful dotted border sections for registration form */
+/* Beautiful dotted border sections for registration form - SOLID COLORS ONLY */
 .section-blue {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 197, 253, 0.05) 100%);
+    background: rgba(59, 130, 246, 0.05);
     border: 3px dotted #3b82f6;
     border-radius: 1rem;
     box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
 }
 
 .section-green {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(134, 239, 172, 0.05) 100%);
+    background: rgba(34, 197, 94, 0.05);
     border: 3px dotted #22c55e;
     border-radius: 1rem;
     box-shadow: 0 4px 6px rgba(34, 197, 94, 0.1);
 }
 
 .section-red {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(252, 165, 165, 0.05) 100%);
+    background: rgba(239, 68, 68, 0.05);
     border: 3px dotted #ef4444;
     border-radius: 1rem;
     box-shadow: 0 4px 6px rgba(239, 68, 68, 0.1);
 }
 
 .section-purple {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(216, 180, 254, 0.05) 100%);
+    background: rgba(168, 85, 247, 0.05);
     border: 3px dotted #a855f7;
     border-radius: 1rem;
     box-shadow: 0 4px 6px rgba(168, 85, 247, 0.1);
 }
 
 .section-orange {
-    background: linear-gradient(135deg, rgba(249, 115, 22, 0.05) 0%, rgba(251, 191, 36, 0.05) 100%);
+    background: rgba(249, 115, 22, 0.05);
     border: 3px dotted #f97316;
     border-radius: 1rem;
     box-shadow: 0 4px 6px rgba(249, 115, 22, 0.1);
 }
 
 .section-cyan {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.05) 0%, rgba(103, 232, 249, 0.05) 100%);
+    background: rgba(6, 182, 212, 0.05);
     border: 3px dotted #06b6d4;
     border-radius: 1rem;
     box-shadow: 0 4px 6px rgba(6, 182, 212, 0.1);
 }
 
 .section-pink {
-    background: linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(251, 207, 232, 0.05) 100%);
+    background: rgba(236, 72, 153, 0.05);
     border: 3px dotted #ec4899;
     border-radius: 1rem;
     box-shadow: 0 4px 6px rgba(236, 72, 153, 0.1);
 }
 
 .section-yellow {
-    background: linear-gradient(135deg, rgba(234, 179, 8, 0.05) 0%, rgba(250, 204, 21, 0.05) 100%);
+    background: rgba(234, 179, 8, 0.05);
     border: 3px dotted #eab308;
     border-radius: 1rem;
     box-shadow: 0 4px 6px rgba(234, 179, 8, 0.1);
 }
 
 .section-indigo {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(165, 180, 252, 0.05) 100%);
+    background: rgba(99, 102, 241, 0.05);
     border: 3px dotted #6366f1;
     border-radius: 1rem;
     box-shadow: 0 4px 6px rgba(99, 102, 241, 0.1);
+}
+
+.section-emerald {
+    background: rgba(16, 185, 129, 0.05);
+    border: 3px dotted #10b981;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(16, 185, 129, 0.1);
 }
 
 /* Hover effect for dotted sections */
@@ -178,8 +185,14 @@ h2 {
 .section-cyan:hover,
 .section-pink:hover,
 .section-yellow:hover,
-.section-indigo:hover {
+.section-indigo:hover,
+.section-emerald:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
+}
+
+/* Dotted section class - applies to any element */
+.dotted-section {
+    border-radius: 1rem;
 }

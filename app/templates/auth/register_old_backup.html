@@ -3,7 +3,7 @@
 {% block title %}Inscription - Talento{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gray-50 py-12 px-4">
+<div class="min-h-screen gradient-bg py-12 px-4">
     <div class="max-w-4xl mx-auto">
         <!-- Header Section -->
         <div class="text-center mb-12 animate-fadeIn">
@@ -17,9 +17,9 @@
                 Rejoignez la communauté Talento et montrez vos compétences au monde entier
             </p>
             <div class="mt-6 flex items-center justify-center gap-2">
-                <div class="h-1 w-20 bg-blue-500 rounded-full"></div>
-                <div class="h-1 w-20 bg-purple-500 rounded-full"></div>
-                <div class="h-1 w-20 bg-pink-500 rounded-full"></div>
+                <div class="h-1 w-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+                <div class="h-1 w-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                <div class="h-1 w-20 bg-gradient-to-r from-pink-500 to-red-500 rounded-full"></div>
             </div>
         </div>
         
@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     <div class="bg-blue-100 rounded-full px-5 py-2 border-2 border-blue-400">
-                        <span class="text-blue-700 font-bold">Étape 1/9</span>
+                        <span class="text-blue-700 font-bold">Étape 1/10</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -85,7 +85,7 @@
                         </div>
                     </div>
                     <div class="bg-green-100 rounded-full px-5 py-2 border-2 border-green-400">
-                        <span class="text-green-700 font-bold">Étape 2/9</span>
+                        <span class="text-green-700 font-bold">Étape 2/10</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -129,7 +129,7 @@
                         </div>
                     </div>
                     <div class="bg-red-100 rounded-full px-5 py-2 border-2 border-red-400">
-                        <span class="text-red-700 font-bold">Étape 3/9</span>
+                        <span class="text-red-700 font-bold">Étape 3/10</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -154,18 +154,18 @@
                 </div>
             </div>
 
-            <!-- Section 4: Expérience, Bio & Formation (Violet) - MOVED Formation HERE -->
+            <!-- Section 4: Expérience & Bio (Violet) -->
             <div class="section-purple dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-4">
                         <span class="text-5xl">💼</span>
                         <div>
-                            <h2 class="text-2xl font-bold text-purple-700">Expérience, Bio & Formation</h2>
-                            <p class="text-purple-600 text-sm mt-1">Votre parcours professionnel et académique</p>
+                            <h2 class="text-2xl font-bold text-purple-700">Expérience & Bio</h2>
+                            <p class="text-purple-600 text-sm mt-1">Votre parcours professionnel</p>
                         </div>
                     </div>
                     <div class="bg-purple-100 rounded-full px-5 py-2 border-2 border-purple-400">
-                        <span class="text-purple-700 font-bold">Étape 4/9</span>
+                        <span class="text-purple-700 font-bold">Étape 4/10</span>
                     </div>
                 </div>
                 <div class="space-y-6">
@@ -188,99 +188,10 @@
                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200 outline-none resize-none"></textarea>
                         <p class="text-sm text-gray-500 mt-1">💡 Conseil : Une bio captivante augmente vos chances d'être contacté</p>
                     </div>
-                    <div class="space-y-2">
-                        <label for="education" class="block text-gray-700 font-semibold text-sm">📚 Formation & Diplômes</label>
-                        <textarea id="education" name="education" rows="4" 
-                                  placeholder="Ex: Master en Marketing Digital - Université Mohammed V (2020)&#10;Licence en Commerce - ISCAE (2018)&#10;Baccalauréat Sciences Économiques (2015)" 
-                                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200 outline-none resize-none"></textarea>
-                        <p class="text-sm text-gray-500 mt-1">📝 Listez vos diplômes du plus récent au plus ancien</p>
-                    </div>
                 </div>
             </div>
 
-            <!-- Section 5: Langues (Émeraude) - MOVED UP, NOW WITH SELECT -->
-            <div class="section-emerald dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center gap-4">
-                        <span class="text-5xl">🗣️</span>
-                        <div>
-                            <h2 class="text-2xl font-bold text-emerald-700">Langues Parlées</h2>
-                            <p class="text-emerald-600 text-sm mt-1">Sélectionnez toutes vos langues</p>
-                        </div>
-                    </div>
-                    <div class="bg-emerald-100 rounded-full px-5 py-2 border-2 border-emerald-400">
-                        <span class="text-emerald-700 font-bold">Étape 5/9</span>
-                    </div>
-                </div>
-                <div class="space-y-6">
-                    <div class="space-y-2">
-                        <label for="languages" class="block text-gray-700 font-semibold text-sm">🌍 Sélectionnez vos langues (maintenir Ctrl/Cmd pour plusieurs)</label>
-                        <select id="languages" name="languages" multiple size="10"
-                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 outline-none">
-                            <optgroup label="🌍 Langues Internationales">
-                                <option value="Arabe">العربية Arabe</option>
-                                <option value="Français">🇫🇷 Français</option>
-                                <option value="Anglais">🇬🇧 Anglais</option>
-                                <option value="Espagnol">🇪🇸 Espagnol</option>
-                                <option value="Portugais">🇵🇹 Portugais</option>
-                                <option value="Chinois">🇨🇳 Chinois</option>
-                                <option value="Allemand">🇩🇪 Allemand</option>
-                                <option value="Italien">🇮🇹 Italien</option>
-                                <option value="Russe">🇷🇺 Russe</option>
-                                <option value="Turc">🇹🇷 Turc</option>
-                            </optgroup>
-                            <optgroup label="🌍 Langues Africaines Principales">
-                                <option value="Swahili">🇰🇪 Swahili (Afrique de l'Est)</option>
-                                <option value="Haoussa">🇳🇬 Haoussa (Nigéria, Niger)</option>
-                                <option value="Yoruba">🇳🇬 Yoruba (Nigéria, Bénin)</option>
-                                <option value="Igbo">🇳🇬 Igbo (Nigéria)</option>
-                                <option value="Amharique">🇪🇹 Amharique (Éthiopie)</option>
-                                <option value="Oromo">🇪🇹 Oromo (Éthiopie)</option>
-                                <option value="Somali">🇸🇴 Somali (Somalie)</option>
-                                <option value="Zoulou">🇿🇦 Zoulou (Afrique du Sud)</option>
-                                <option value="Xhosa">🇿🇦 Xhosa (Afrique du Sud)</option>
-                                <option value="Afrikaans">🇿🇦 Afrikaans (Afrique du Sud)</option>
-                                <option value="Lingala">🇨🇩 Lingala (RD Congo)</option>
-                                <option value="Kinyarwanda">🇷🇼 Kinyarwanda (Rwanda)</option>
-                                <option value="Kirundi">🇧🇮 Kirundi (Burundi)</option>
-                                <option value="Shona">🇿🇼 Shona (Zimbabwe)</option>
-                                <option value="Ndebele">🇿🇼 Ndebele (Zimbabwe)</option>
-                            </optgroup>
-                            <optgroup label="🇲🇦 Langues Marocaines">
-                                <option value="Darija">Darija (Arabe marocain)</option>
-                                <option value="Amazigh">ⵜⴰⵎⴰⵣⵉⵖⵜ Amazigh/Berbère</option>
-                                <option value="Tariffit">Tariffit (Rifain)</option>
-                                <option value="Tachelhit">Tachelhit (Souss)</option>
-                                <option value="Tamazight">Tamazight (Atlas)</option>
-                            </optgroup>
-                            <optgroup label="🌍 Autres Langues Africaines">
-                                <option value="Wolof">🇸🇳 Wolof (Sénégal)</option>
-                                <option value="Fulani">Peul/Fulani (Afrique de l'Ouest)</option>
-                                <option value="Bambara">🇲🇱 Bambara (Mali)</option>
-                                <option value="Akan">🇬🇭 Akan/Twi (Ghana)</option>
-                                <option value="Ewe">🇹🇬 Ewe (Togo, Ghana)</option>
-                                <option value="Tigrinya">🇪🇷 Tigrinya (Érythrée)</option>
-                                <option value="Chichewa">🇲🇼 Chichewa (Malawi)</option>
-                                <option value="Bemba">🇿🇲 Bemba (Zambie)</option>
-                                <option value="Tswana">🇧🇼 Tswana (Botswana)</option>
-                                <option value="Sotho">🇱🇸 Sotho (Lesotho)</option>
-                                <option value="Kikuyu">🇰🇪 Kikuyu (Kenya)</option>
-                                <option value="Luo">🇰🇪 Luo (Kenya)</option>
-                                <option value="Luganda">🇺🇬 Luganda (Ouganda)</option>
-                                <option value="Malgache">🇲🇬 Malgache (Madagascar)</option>
-                            </optgroup>
-                        </select>
-                        <p class="text-sm text-gray-500 mt-1">💡 Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs langues</p>
-                    </div>
-                    <div class="bg-emerald-50 rounded-xl p-6 border-2 border-emerald-200">
-                        <p class="text-sm text-emerald-700">
-                            ✅ <strong>Conseil :</strong> Mentionner vos langues augmente considérablement vos opportunités professionnelles internationales.
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section 6: Disponibilité (Jaune) -->
+            <!-- Section 5: Disponibilité (Jaune) - MOVED UP -->
             <div class="section-yellow dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-4">
@@ -291,7 +202,7 @@
                         </div>
                     </div>
                     <div class="bg-yellow-100 rounded-full px-5 py-2 border-2 border-yellow-400">
-                        <span class="text-yellow-700 font-bold">Étape 6/9</span>
+                        <span class="text-yellow-700 font-bold">Étape 5/10</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -323,7 +234,7 @@
                 </div>
             </div>
 
-            <!-- Section 7: Mode de Travail (Indigo) -->
+            <!-- Section 6: Mode de Travail (Indigo) - MOVED UP -->
             <div class="section-indigo dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-4">
@@ -334,7 +245,7 @@
                         </div>
                     </div>
                     <div class="bg-indigo-100 rounded-full px-5 py-2 border-2 border-indigo-400">
-                        <span class="text-indigo-700 font-bold">Étape 7/9</span>
+                        <span class="text-indigo-700 font-bold">Étape 6/10</span>
                     </div>
                 </div>
                 <div class="space-y-6">
@@ -360,7 +271,7 @@
                 </div>
             </div>
 
-            <!-- Section 8: Talents (Orange) -->
+            <!-- Section 7: Talents (Orange) - MOVED DOWN -->
             <div class="section-orange dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-4">
@@ -371,10 +282,10 @@
                         </div>
                     </div>
                     <div class="bg-orange-100 rounded-full px-5 py-2 border-2 border-orange-400">
-                        <span class="text-orange-700 font-bold">Étape 8/9</span>
+                        <span class="text-orange-700 font-bold">Étape 7/10</span>
                     </div>
                 </div>
-                <div class="bg-orange-50 rounded-xl p-6 mb-6 border-3 border-dotted border-orange-400">
+                <div class="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-6 mb-6 border-2 border-orange-200">
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm text-gray-600 mb-2">Sélectionnez jusqu'à 5 talents qui vous représentent le mieux</p>
@@ -386,7 +297,7 @@
                     </div>
                     <div class="mt-4">
                         <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                            <div id="progressBar" class="bg-orange-500 h-full transition-all duration-300" style="width: 0%"></div>
+                            <div id="progressBar" class="bg-gradient-to-r from-orange-500 to-yellow-500 h-full transition-all duration-300" style="width: 0%"></div>
                         </div>
                     </div>
                 </div>
@@ -394,7 +305,7 @@
                 </div>
             </div>
 
-            <!-- Section 9: Documents (Cyan) -->
+            <!-- Section 8: Documents (Cyan) - MOVED DOWN -->
             <div class="section-cyan dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-4">
@@ -405,7 +316,7 @@
                         </div>
                     </div>
                     <div class="bg-cyan-100 rounded-full px-5 py-2 border-2 border-cyan-400">
-                        <span class="text-cyan-700 font-bold">Étape 9/9</span>
+                        <span class="text-cyan-700 font-bold">Étape 8/10</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -427,16 +338,130 @@
                 </div>
             </div>
 
-            <!-- REMOVED Section 10: Réseaux Sociaux - déplacé dans profil edit -->
+            <!-- Section 9: Réseaux Sociaux (Rose) - MOVED DOWN -->
+            <div class="section-pink dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl">🔗</span>
+                        <div>
+                            <h2 class="text-2xl font-bold text-pink-700">Réseaux Sociaux</h2>
+                            <p class="text-pink-600 text-sm mt-1">Partagez vos profils (optionnel)</p>
+                        </div>
+                    </div>
+                    <div class="bg-pink-100 rounded-full px-5 py-2 border-2 border-pink-400">
+                        <span class="text-pink-700 font-bold">Étape 9/10</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold text-sm">💼 LinkedIn</label>
+                        <input type="url" name="linkedin" placeholder="https://linkedin.com/in/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold text-sm">📷 Instagram</label>
+                        <input type="url" name="instagram" placeholder="https://instagram.com/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold text-sm">🐦 Twitter/X</label>
+                        <input type="url" name="twitter" placeholder="https://twitter.com/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold text-sm">👥 Facebook</label>
+                        <input type="url" name="facebook" placeholder="https://facebook.com/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold text-sm">🎵 TikTok</label>
+                        <input type="url" name="tiktok" placeholder="https://tiktok.com/@..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold text-sm">📺 YouTube</label>
+                        <input type="url" name="youtube" placeholder="https://youtube.com/@..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold text-sm">💻 GitHub</label>
+                        <input type="url" name="github" placeholder="https://github.com/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold text-sm">🎨 Behance</label>
+                        <input type="url" name="behance" placeholder="https://behance.net/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold text-sm">🏀 Dribbble</label>
+                        <input type="url" name="dribbble" placeholder="https://dribbble.com/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold text-sm">📌 Pinterest</label>
+                        <input type="url" name="pinterest" placeholder="https://pinterest.com/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold text-sm">👻 Snapchat</label>
+                        <input type="url" name="snapchat" placeholder="https://snapchat.com/add/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-gray-700 font-semibold text-sm">✈️ Telegram</label>
+                        <input type="url" name="telegram" placeholder="https://t.me/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                </div>
+            </div>
 
-            <!-- Bouton de soumission - MODERN STYLE NO GRADIENT -->
+            <!-- Section 10: Langues & Formation (Vert émeraude) - NOUVELLE -->
+            <div class="section-emerald dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl">🎓</span>
+                        <div>
+                            <h2 class="text-2xl font-bold text-emerald-700">Langues & Formation</h2>
+                            <p class="text-emerald-600 text-sm mt-1">Compétences linguistiques et académiques</p>
+                        </div>
+                    </div>
+                    <div class="bg-emerald-100 rounded-full px-5 py-2 border-2 border-emerald-400">
+                        <span class="text-emerald-700 font-bold">Étape 10/10</span>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="space-y-2">
+                        <label for="languages" class="block text-gray-700 font-semibold text-sm">🗣️ Langues parlées</label>
+                        <textarea id="languages" name="languages" rows="3" 
+                                  placeholder="Ex: Arabe (natif), Français (courant), Anglais (intermédiaire), Espagnol (débutant)..." 
+                                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 outline-none resize-none"></textarea>
+                        <p class="text-sm text-gray-500 mt-1">💡 Indiquez votre niveau pour chaque langue</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label for="education" class="block text-gray-700 font-semibold text-sm">📚 Formation & Diplômes</label>
+                        <textarea id="education" name="education" rows="4" 
+                                  placeholder="Ex: Master en Marketing Digital - Université Mohammed V (2020)&#10;Licence en Commerce - ISCAE (2018)&#10;Baccalauréat Sciences Économiques (2015)" 
+                                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 outline-none resize-none"></textarea>
+                        <p class="text-sm text-gray-500 mt-1">📝 Listez vos diplômes du plus récent au plus ancien</p>
+                    </div>
+                    <div class="bg-emerald-50 rounded-xl p-6 border-2 border-emerald-200">
+                        <p class="text-sm text-emerald-700">
+                            ✅ <strong>Conseil :</strong> Mentionner vos langues et votre formation renforce votre profil et augmente vos opportunités professionnelles.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bouton de soumission -->
             <div class="flex justify-center pt-8 pb-12">
-                <button type="submit" class="px-12 py-5 bg-blue-600 text-white text-xl font-bold rounded-2xl shadow-lg hover:bg-blue-700 hover:shadow-xl transform hover:scale-105 transition-all duration-300 border-2 border-blue-700">
-                    <span class="flex items-center gap-3">
+                <button type="submit" class="group relative px-12 py-5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white text-xl font-bold rounded-2xl shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 overflow-hidden">
+                    <span class="relative z-10 flex items-center gap-3">
                         <span>🚀</span>
                         <span>Créer mon profil de talent</span>
                         <span>✨</span>
                     </span>
+                    <div class="absolute inset-0 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </button>
             </div>
         </form>
@@ -546,7 +571,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 categories[category].forEach(talent => {
                     const talentDiv = document.createElement('div');
-                    talentDiv.className = `flex items-center bg-white p-4 rounded-xl hover:bg-${color}-50 transition-all duration-200 cursor-pointer border-2 border-transparent hover:${catData.border} shadow-sm hover:shadow-md`;
+                    talentDiv.className = `flex items-center bg-white p-4 rounded-xl hover:bg-gradient-to-r hover:from-${color}-50 hover:to-${color}-100 transition-all duration-200 cursor-pointer border-2 border-transparent hover:${catData.border} shadow-sm hover:shadow-md`;
                     
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
@@ -563,10 +588,10 @@ document.addEventListener('DOMContentLoaded', function() {
                                 return;
                             }
                             selectedTalents.add(talent.id);
-                            talentDiv.classList.add(`bg-${color}-100`, catData.border, 'shadow-lg', 'scale-105');
+                            talentDiv.classList.add('bg-gradient-to-r', `from-${color}-100`, `to-${color}-200`, catData.border, 'shadow-lg', 'scale-105');
                         } else {
                             selectedTalents.delete(talent.id);
-                            talentDiv.classList.remove(`bg-${color}-100`, catData.border, 'shadow-lg', 'scale-105');
+                            talentDiv.classList.remove('bg-gradient-to-r', `from-${color}-100`, `to-${color}-200`, catData.border, 'shadow-lg', 'scale-105');
                         }
                         updateCount();
                     });
@@ -607,8 +632,7 @@ function updateCount() {
     } else {
         countText.textContent = `${count} talents sélectionnés (${count}/${MAX_TALENTS})`;
         countText.className = 'text-2xl font-bold text-orange-600';
-    }
-}
+    } }
 
 function getCountryFlag(code) {
     const codePoints = code
@@ -629,7 +653,7 @@ form.addEventListener('submit', function(e) {
         return false;
     }
     
-    submitButton.innerHTML = '<span class="flex items-center gap-3"><span>⏳</span><span>Création en cours...</span><span>✨</span></span>';
+    submitButton.innerHTML = '<span class="relative z-10 flex items-center gap-3"><span>⏳</span><span>Création en cours...</span><span>✨</span></span>';
     submitButton.disabled = true;
 });
 </script>
