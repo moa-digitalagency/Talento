@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from app import db
 from app.models.cinema_talent import CinemaTalent
+from app.models import Country
 from app.utils.file_handler import save_file
 from datetime import datetime
 import json
@@ -44,10 +45,14 @@ def team():
 @bp.route('/register', methods=['GET', 'POST'])
 def register_talent():
     """Inscription d'un nouveau talent CINEMA"""
+    # Get countries for dropdowns
+    countries = Country.query.order_by(Country.name).all()
+    
     if request.method == 'POST':
         try:
             talent = CinemaTalent()
             
+            # Basic Info
             talent.first_name = request.form.get('first_name')
             talent.last_name = request.form.get('last_name')
             talent.gender = request.form.get('gender')
@@ -56,6 +61,7 @@ def register_talent():
             if date_of_birth:
                 talent.date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date()
             
+            # ID Document
             talent.id_document_type = request.form.get('id_document_type')
             
             id_doc_number = request.form.get('id_document_number')
@@ -63,15 +69,27 @@ def register_talent():
                 from app.utils.encryption import encrypt_data
                 talent.id_document_number_encrypted = encrypt_data(id_doc_number)
             
-            talent.ethnicity = request.form.get('ethnicity')
+            # Origins - Multiple ethnicities
+            ethnicities = request.form.getlist('ethnicities')
+            if ethnicities:
+                talent.ethnicities = json.dumps(ethnicities)
+            
+            talent.country_of_origin = request.form.get('country_of_origin')
             talent.nationality = request.form.get('nationality')
+            
+            # Residence
             talent.country_of_residence = request.form.get('country_of_residence')
             talent.city_of_residence = request.form.get('city_of_residence')
             
-            talent.languages_spoken = request.form.get('languages_spoken')
+            # Languages - Multiple choices
+            languages = request.form.getlist('languages')
+            if languages:
+                talent.languages_spoken = json.dumps(languages)
+            
             years_exp = request.form.get('years_of_experience')
             talent.years_of_experience = int(years_exp) if years_exp else 0
             
+            # Physical Characteristics
             talent.eye_color = request.form.get('eye_color')
             talent.hair_color = request.form.get('hair_color')
             talent.hair_type = request.form.get('hair_type')
@@ -80,7 +98,10 @@ def register_talent():
             talent.skin_tone = request.form.get('skin_tone')
             talent.build = request.form.get('build')
             
-            talent.other_talents = request.form.get('other_talents')
+            # Other Talents - Multiple choices
+            other_talents = request.form.getlist('other_talents')
+            if other_talents:
+                talent.other_talents = json.dumps(other_talents)
             
             if 'profile_photo' in request.files:
                 photo = request.files['profile_photo']
@@ -112,7 +133,7 @@ def register_talent():
             existing_talent = CinemaTalent.query.filter_by(email=talent.email).first()
             if existing_talent:
                 flash('Cet email est déjà utilisé dans CINEMA.', 'error')
-                return render_template('cinema/register_talent.html')
+                return render_template('cinema/register_talent.html', countries=countries)
             
             phone = request.form.get('phone')
             if phone:
@@ -148,6 +169,6 @@ def register_talent():
         except Exception as e:
             db.session.rollback()
             flash(f'Erreur lors de l\'enregistrement: {str(e)}', 'error')
-            return render_template('cinema/register_talent.html')
+            return render_template('cinema/register_talent.html', countries=countries)
     
-    return render_template('cinema/register_talent.html')
+    return render_template('cinema/register_talent.html', countries=countries)
