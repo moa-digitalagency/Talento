@@ -5,6 +5,128 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.8.0] - 2025-10-20
+
+### 🎯 Gestion Avancée des Talents
+
+#### Page Talents avec Recherche & Filtres
+- **Nouveaux filtres complets** ajoutés à la page `/talents` :
+  - 📝 Recherche par nom/email des utilisateurs
+  - 🎯 Recherche par nom de talent
+  - ⏰ Filtrage par disponibilité (Temps plein, Temps partiel, Mi-temps, Flexible, Occasionnel, Indisponible)
+  - 🔄 Filtrage par mode de travail (Sur site, À distance, Hybride)
+  - 🏙️ Filtrage par ville
+  - Section "Recherche & Filtres" avec design indigo cohérent avec le reste de l'application
+  
+- **Liste des utilisateurs affichée** :
+  - Tableau complet avec photos, noms, codes uniques, villes, disponibilité et mode de travail
+  - Affichage sous les cartes de talents
+  - Filtrage dynamique selon les critères sélectionnés
+  - Compteur total de profils trouvés
+
+#### Menu de Gestion des Profils
+- **Nouveau menu déroulant "Gérer"** pour les administrateurs :
+  - ✏️ **Modifier** : Accès direct à la page d'édition du profil
+  - ⏸️ **Désactiver** / ▶️ **Activer** : Toggle du statut du compte
+  - 🗑️ **Supprimer** : Suppression du profil avec confirmation
+  - Menu accessible sur :
+    - Page talents (`/talents`)
+    - Page profils par talent (`/talents/users/<talent_id>`)
+    - Dashboard administrateur
+  - Interaction JavaScript fluide avec fermeture automatique des autres menus
+
+### ✏️ Modification des Profils Utilisateurs
+
+#### Nouvelle Page d'Édition
+- **Route `/admin/user/<user_id>/edit`** : Formulaire complet de modification
+- **Sections organisées** avec le même design que le reste de l'application :
+  - 👤 Informations personnelles (Bleu) : Prénom, nom, email, date de naissance, genre
+  - 📞 Contact (Vert) : Téléphone, WhatsApp, adresse
+  - 🌍 Localisation (Violet) : Pays d'origine, ville au Maroc
+  - 💼 Profil professionnel (Orange) : Disponibilité, mode de travail, fourchette tarifaire, années d'expérience
+  - 🎯 Talents et compétences (Indigo) : Sélection multiple avec checkboxes
+  - 📝 Biographie et Portfolio (Cyan) : Description et URL du portfolio
+  - 🌐 Réseaux sociaux (Rose) : LinkedIn, Instagram, Twitter, Facebook, GitHub, Behance, Dribbble, YouTube
+
+#### Fonctionnalités d'Édition
+- **Code unique non modifiable** : Affiché mais désactivé pour préserver l'intégrité
+- **Sélection des talents** : Interface checkbox cohérente avec le formulaire d'inscription
+- **Validation côté serveur** : Mise à jour sécurisée de toutes les informations
+- **Gestion des talents** : Suppression et recréation automatique des associations UserTalent
+- **Redirection automatique** : Retour vers la fiche détaillée après enregistrement
+- **Message de confirmation** : Flash message indiquant le succès de la modification
+
+### 🔧 Améliorations Backend
+
+#### Routes Administrateur
+- **GET `/admin/user/<user_id>/edit`** : Affichage du formulaire de modification
+- **POST `/admin/user/<user_id>/edit`** : Traitement de la modification
+- **Mise à jour complète** :
+  - Informations personnelles
+  - Coordonnées (chiffrées pour téléphone, WhatsApp)
+  - Localisation
+  - Profil professionnel
+  - Biographie et portfolio
+  - Réseaux sociaux (chiffrés)
+  - Associations de talents
+
+#### Requêtes Optimisées
+- **Page talents améliorée** :
+  - Filtrage combiné des talents et utilisateurs
+  - Recherche par nom/email avec pattern matching
+  - Application de multiples filtres (AND logic)
+  - Comptage dynamique des résultats
+  - Données pour les sélecteurs de filtres (villes, etc.)
+
+### 🎨 Cohérence du Design
+
+#### Interface Unifiée
+- **Sections colorées identiques** sur toutes les pages :
+  - Bordures pointillées 3px
+  - Fonds colorés transparents
+  - Effets hover avec élévation
+  - Palette de couleurs cohérente (bleu, vert, rouge, violet, orange, cyan, rose, jaune, indigo, émeraude)
+
+#### Interactions Utilisateur
+- **Dropdowns JavaScript** :
+  - Fermeture automatique des autres menus
+  - Fermeture au clic extérieur
+  - Animations fluides
+  - États actifs visuels
+  
+- **Formulaires améliorés** :
+  - Champs avec bordures colorées au focus
+  - Labels avec icônes
+  - Boutons d'action avec effets hover
+  - Boutons "Annuler" et "Enregistrer" alignés
+
+### 📊 Impact Utilisateur
+
+#### Administration Simplifiée
+- **Gestion centralisée** : Modification rapide depuis n'importe quelle page de listing
+- **Actions groupées** : Activer/désactiver/supprimer sans quitter la page
+- **Workflow optimisé** : Moins de clics pour gérer les profils
+- **Confirmation de sécurité** : Dialogue avant suppression pour éviter les erreurs
+
+#### Recherche Améliorée
+- **Filtrage multicritères** : Combinaison de plusieurs filtres pour affiner les résultats
+- **Résultats instantanés** : Affichage immédiat des profils correspondants
+- **Interface intuitive** : Design cohérent avec le reste de l'application
+- **Navigation fluide** : Passage facile entre la vue talents et la vue utilisateurs
+
+### 🔒 Sécurité et Validation
+
+#### Protection des Données
+- **Chiffrement maintenu** : Téléphone, WhatsApp, adresse et réseaux sociaux restent chiffrés
+- **Validation des entrées** : Nettoyage et validation côté serveur
+- **Code unique protégé** : Non modifiable via l'interface
+- **Suppression confirmée** : Double vérification avant suppression définitive
+
+#### Contrôle d'Accès
+- **Réservé aux administrateurs** : Toutes les fonctions de gestion nécessitent is_admin
+- **Redirection automatique** : Non-admins redirigés vers la page appropriée
+- **Flash messages** : Notifications claires des actions et erreurs
+
 ## [2.7.0] - 2025-10-20
 
 ### 🎨 Améliorations Visuelles

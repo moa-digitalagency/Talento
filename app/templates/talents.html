@@ -21,29 +21,83 @@
             </div>
         </div>
 
-        <!-- Barre de recherche -->
-        <div class="section-blue p-6 mb-8">
-            <form method="GET" action="{{ url_for('main.talents') }}" class="flex gap-4">
-                <div class="flex-1">
-                    <input type="text" 
-                           name="search" 
-                           value="{{ request.args.get('search', '') }}" 
-                           placeholder="Rechercher un talent par nom..."
-                           class="w-full px-6 py-4 text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
+        <!-- Recherche & Filtres -->
+        <div class="section-indigo p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">🔍</span>
+                <h2 class="text-2xl font-bold text-gray-800">Recherche & Filtres</h2>
+            </div>
+            
+            <form method="GET" action="{{ url_for('main.talents') }}" class="space-y-6">
+                <!-- Recherche rapide -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+                            <span>📝</span>
+                            <span>Recherche par nom/email</span>
+                        </label>
+                        <input type="text" name="search" value="{{ request.args.get('search', '') }}" 
+                               placeholder="Nom, prénom ou email..."
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+                            <span>🎯</span>
+                            <span>Recherche par talent</span>
+                        </label>
+                        <input type="text" name="talent_search" value="{{ request.args.get('talent_search', '') }}" 
+                               placeholder="Nom du talent..."
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                    </div>
                 </div>
-                <button type="submit" class="btn-primary px-8 text-lg">
-                    🔍 Rechercher
-                </button>
-                {% if request.args.get('search') %}
-                <a href="{{ url_for('main.talents') }}" class="btn-secondary px-6">
-                    ❌ Réinitialiser
-                </a>
-                {% endif %}
+
+                <!-- Filtres avancés -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Disponibilité</label>
+                        <select name="availability" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Toutes</option>
+                            <option value="Temps plein" {% if request.args.get('availability') == 'Temps plein' %}selected{% endif %}>⏰ Temps plein</option>
+                            <option value="Temps partiel" {% if request.args.get('availability') == 'Temps partiel' %}selected{% endif %}>🕐 Temps partiel</option>
+                            <option value="Mi-temps" {% if request.args.get('availability') == 'Mi-temps' %}selected{% endif %}>⏳ Mi-temps</option>
+                            <option value="Flexible" {% if request.args.get('availability') == 'Flexible' %}selected{% endif %}>🔄 Flexible</option>
+                            <option value="Occasionnel" {% if request.args.get('availability') == 'Occasionnel' %}selected{% endif %}>📅 Occasionnel</option>
+                            <option value="Indisponible" {% if request.args.get('availability') == 'Indisponible' %}selected{% endif %}>❌ Indisponible</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Mode de travail</label>
+                        <select name="work_mode" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Tous</option>
+                            <option value="Sur site" {% if request.args.get('work_mode') == 'Sur site' %}selected{% endif %}>🏢 Sur site</option>
+                            <option value="À distance" {% if request.args.get('work_mode') == 'À distance' %}selected{% endif %}>💻 À distance</option>
+                            <option value="Hybride" {% if request.args.get('work_mode') == 'Hybride' %}selected{% endif %}>🔄 Hybride</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Ville</label>
+                        <select name="city" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Toutes</option>
+                            {% for city in cities %}
+                            <option value="{{ city.id }}" {% if request.args.get('city') == city.id|string %}selected{% endif %}>{{ city.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="btn-primary flex-1">
+                        🔍 Rechercher
+                    </button>
+                    <a href="{{ url_for('main.talents') }}" class="btn-secondary px-6">
+                        ❌ Réinitialiser
+                    </a>
+                </div>
             </form>
         </div>
 
         <!-- Liste des talents -->
-        <div class="section-green p-8">
+        <div class="section-green p-8 mb-8">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
                     <span class="text-4xl">🎯</span>
@@ -77,6 +131,143 @@
                 {% endfor %}
             </div>
         </div>
+
+        <!-- Liste des utilisateurs -->
+        <div class="section-cyan p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">👥</span>
+                <h2 class="text-2xl font-bold text-gray-800">Profils ({{ total_users }})</h2>
+            </div>
+
+            {% if users %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                    <thead class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
+                        <tr>
+                            <th class="px-6 py-4 text-left">Photo</th>
+                            <th class="px-6 py-4 text-left">Nom</th>
+                            <th class="px-6 py-4 text-left">Code</th>
+                            <th class="px-6 py-4 text-left">Ville</th>
+                            <th class="px-6 py-4 text-left">Disponibilité</th>
+                            <th class="px-6 py-4 text-left">Mode de travail</th>
+                            <th class="px-6 py-4 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for user in users %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                {% if user.photo_filename %}
+                                <img src="{{ url_for('static', filename='uploads/photos/' + user.photo_filename) }}" 
+                                     alt="{{ user.full_name }}"
+                                     class="w-12 h-12 rounded-full object-cover border-2 border-blue-200">
+                                {% else %}
+                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-lg border-2 border-blue-200">
+                                    {{ user.first_name[0] if user.first_name else '?' }}{{ user.last_name[0] if user.last_name else '' }}
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="font-semibold text-gray-800">{{ user.full_name }}</div>
+                                <div class="text-sm text-gray-500">{{ user.email }}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <code class="bg-gray-100 px-2 py-1 rounded text-sm">{{ user.formatted_code }}</code>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="text-gray-700">{{ user.city.name if user.city else '-' }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                {% if user.availability %}
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                                    {{ user.availability }}
+                                </span>
+                                {% else %}
+                                <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4">
+                                {% if user.work_mode %}
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+                                    {{ user.work_mode }}
+                                </span>
+                                {% else %}
+                                <span class="text-gray-400">-</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="relative inline-block text-left">
+                                    {% if current_user.is_admin %}
+                                    <button onclick="toggleDropdown({{ user.id }})" 
+                                            class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                        ⚙️ Gérer ▼
+                                    </button>
+                                    <div id="dropdown-{{ user.id }}" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                        <div class="py-1">
+                                            <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" 
+                                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                ✏️ Modifier
+                                            </a>
+                                            <form action="{{ url_for('admin.toggle_active', user_id=user.id) }}" method="POST" class="block">
+                                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                    {% if user.account_active %}
+                                                    ⏸️ Désactiver
+                                                    {% else %}
+                                                    ▶️ Activer
+                                                    {% endif %}
+                                                </button>
+                                            </form>
+                                            <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST" class="block" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce profil ?');">
+                                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                                                    🗑️ Supprimer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <a href="{{ url_for('profile.view_profile', user_id=user.id) }}" 
+                                       class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm font-semibold">
+                                        👁️ Voir
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <div class="text-6xl mb-4">🔍</div>
+                <p class="text-xl font-semibold text-gray-700">Aucun profil trouvé</p>
+                <p class="text-sm text-gray-500">Essayez de modifier vos critères de recherche</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <script>
+        function toggleDropdown(userId) {
+            const dropdown = document.getElementById(`dropdown-${userId}`);
+            // Fermer tous les autres dropdowns
+            document.querySelectorAll('[id^="dropdown-"]').forEach(el => {
+                if (el.id !== `dropdown-${userId}`) {
+                    el.classList.add('hidden');
+                }
+            });
+            // Toggle le dropdown actuel
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Fermer les dropdowns quand on clique ailleurs
+        document.addEventListener('click', function(event) {
+            if (!event.target.matches('button')) {
+                document.querySelectorAll('[id^="dropdown-"]').forEach(el => {
+                    el.classList.add('hidden');
+                });
+            }
+        });
+        </script>
 
     </div>
 </div>

@@ -202,3 +202,73 @@ def delete_talent(talent_id):
     db.session.commit()
     flash('Talent supprimé avec succès.', 'success')
     return redirect(url_for('admin.talents_list'))
+
+@bp.route('/user/<int:user_id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_user(user_id):
+    user = User.query.get_or_404(user_id)
+    
+    if request.method == 'POST':
+        user.first_name = request.form.get('first_name', '').strip()
+        user.last_name = request.form.get('last_name', '').strip()
+        user.email = request.form.get('email', '').strip()
+        
+        dob_str = request.form.get('date_of_birth')
+        if dob_str:
+            try:
+                from datetime import datetime as dt
+                user.date_of_birth = dt.strptime(dob_str, '%Y-%m-%d').date()
+            except ValueError:
+                pass
+        
+        user.gender = request.form.get('gender')
+        user.phone = request.form.get('phone', '').strip() or None
+        user.whatsapp = request.form.get('whatsapp', '').strip() or None
+        user.address = request.form.get('address', '').strip() or None
+        
+        country_id = request.form.get('country_id')
+        user.country_id = int(country_id) if country_id else None
+        
+        city_id = request.form.get('city_id')
+        user.city_id = int(city_id) if city_id else None
+        
+        user.availability = request.form.get('availability')
+        user.work_mode = request.form.get('work_mode')
+        user.rate_range = request.form.get('rate_range', '').strip() or None
+        user.years_experience = request.form.get('years_experience') or None
+        
+        user.bio = request.form.get('bio', '').strip() or None
+        user.portfolio_url = request.form.get('portfolio_url', '').strip() or None
+        
+        user.linkedin = request.form.get('linkedin', '').strip() or None
+        user.instagram = request.form.get('instagram', '').strip() or None
+        user.twitter = request.form.get('twitter', '').strip() or None
+        user.facebook = request.form.get('facebook', '').strip() or None
+        user.github = request.form.get('github', '').strip() or None
+        user.behance = request.form.get('behance', '').strip() or None
+        user.dribbble = request.form.get('dribbble', '').strip() or None
+        user.youtube = request.form.get('youtube', '').strip() or None
+        
+        talent_ids = request.form.getlist('talents')
+        UserTalent.query.filter_by(user_id=user.id).delete()
+        for talent_id in talent_ids:
+            if talent_id:
+                user_talent = UserTalent(user_id=user.id, talent_id=int(talent_id))
+                db.session.add(user_talent)
+        
+        db.session.commit()
+        flash('Profil mis à jour avec succès.', 'success')
+        return redirect(url_for('admin.user_detail', user_id=user.id))
+    
+    countries = Country.query.order_by(Country.name).all()
+    cities = City.query.order_by(City.name).all()
+    all_talents = Talent.query.order_by(Talent.category, Talent.name).all()
+    user_talent_ids = [ut.talent_id for ut in user.talents]
+    
+    return render_template('admin/user_edit.html', 
+                         user=user, 
+                         countries=countries, 
+                         cities=cities,
+                         all_talents=all_talents,
+                         user_talent_ids=user_talent_ids)
