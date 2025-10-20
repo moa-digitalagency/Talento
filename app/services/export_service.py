@@ -305,25 +305,34 @@ class ExportService:
             spaceAfter=10
         )
         
-        info_content = [
-            Paragraph(f"{user.first_name} {user.last_name}", info_name_style),
-            Paragraph(f"Code: {user.formatted_code}", info_code_style),
+        # Créer une sous-table pour les informations nom et code
+        info_data_main = [
+            [Paragraph(f"{user.first_name} {user.last_name}", info_name_style)],
+            [Paragraph(f"Code: {user.formatted_code}", info_code_style)],
         ]
+        info_table_main = Table(info_data_main, colWidths=[2.5*inch])
+        info_table_main.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ]))
         
         # QR Code
-        qr_element = Spacer(1, 1)
+        qr_element = None
         if user.qr_code_filename:
             try:
                 qr_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'qrcodes', user.qr_code_filename)
                 if os.path.exists(qr_path):
                     qr_element = Image(qr_path, width=1.5*inch, height=1.5*inch)
             except:
-                qr_label = ParagraphStyle('QRLabel', parent=styles['Normal'], fontSize=10, alignment=TA_CENTER)
-                qr_element = Paragraph("QR Code<br/>Non disponible", qr_label)
+                pass
+        
+        if not qr_element:
+            qr_label_style = ParagraphStyle('QRLabel', parent=styles['Normal'], fontSize=40, alignment=TA_CENTER, textColor=color_gray)
+            qr_element = Paragraph("📱<br/><font size='8'>QR Code<br/>non disponible</font>", qr_label_style)
         
         # Table principale avec photo, info et QR
         main_table = Table(
-            [[photo_element, info_content, qr_element]], 
+            [[photo_element, info_table_main, qr_element]], 
             colWidths=[2*inch, 2.5*inch, 2*inch]
         )
         main_table.setStyle(TableStyle([
@@ -516,18 +525,7 @@ class ExportService:
             elements.append(Spacer(1, 15))
         
         # ==== SECTION RÉSEAUX SOCIAUX ====
-        social_title = Table([['🌐  RÉSEAUX SOCIAUX']], colWidths=[6.5*inch])
-        social_title.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EC4899')),
-            ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
-            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 14),
-            ('TOPPADDING', (0, 0), (-1, -1), 8),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-            ('LEFTPADDING', (0, 0), (-1, -1), 10),
-        ]))
-        elements.append(social_title)
-        
+        # Collecter uniquement les réseaux sociaux remplis
         social_links = []
         social_platforms = {
             'LinkedIn': 'linkedin',
@@ -546,24 +544,39 @@ class ExportService:
         
         for display_name, platform in social_platforms.items():
             value = getattr(user, platform, None)
-            social_links.append([display_name, value or 'Information non disponible'])
+            if value:  # N'ajouter que si la valeur existe
+                social_links.append([display_name, value])
         
-        social_table = Table(social_links, colWidths=[2*inch, 4.5*inch])
-        social_table.setStyle(TableStyle([
-            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-            ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
-            ('FONTSIZE', (0, 0), (-1, -1), 9),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-            ('LEFTPADDING', (0, 0), (-1, -1), 10),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
-            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#FCE7F3')),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-            ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
-            ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
-        ]))
-        elements.append(social_table)
-        elements.append(Spacer(1, 15))
+        # N'afficher la section que s'il y a au moins un réseau social rempli
+        if social_links:
+            social_title = Table([['🌐  RÉSEAUX SOCIAUX']], colWidths=[6.5*inch])
+            social_title.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EC4899')),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 14),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(social_title)
+            
+            social_table = Table(social_links, colWidths=[2*inch, 4.5*inch])
+            social_table.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+                ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 9),
+                ('TOPPADDING', (0, 0), (-1, -1), 6),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#FCE7F3')),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+                ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
+            ]))
+            elements.append(social_table)
+            elements.append(Spacer(1, 15))
         
         # ==== FOOTER ====
         elements.append(Spacer(1, 20))
