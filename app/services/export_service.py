@@ -229,7 +229,7 @@ class ExportService:
         )
         
         elements.append(Paragraph("🌍 TALENTO - FICHE DE TALENT", header_style))
-        elements.append(Paragraph("Plateforme de Centralisation des Talents Africains", subtitle_header_style))
+        elements.append(Paragraph("Plateforme de Centralisation des Talents Africain Subsahrien aux Maroc", subtitle_header_style))
         
         # Ligne de séparation
         line_table = Table([['']],  colWidths=[6.5*inch])
@@ -263,21 +263,21 @@ class ExportService:
                 pass
         
         if not photo_element:
-            # Placeholder selon le sexe
+            # Placeholder silhouette selon le sexe
             if user.gender == 'M':
-                placeholder_text = f"👨<br/><b>{initials}</b>"
+                placeholder_text = f"<b>👤</b><br/><font size='20'>{initials}</font><br/><font size='10'>Photo non<br/>disponible</font>"
                 placeholder_color = color_blue
             elif user.gender == 'F':
-                placeholder_text = f"👩<br/><b>{initials}</b>"
+                placeholder_text = f"<b>👤</b><br/><font size='20'>{initials}</font><br/><font size='10'>Photo non<br/>disponible</font>"
                 placeholder_color = color_purple
             else:
-                placeholder_text = f"👤<br/><b>{initials}</b>"
+                placeholder_text = f"<b>👤</b><br/><font size='20'>{initials}</font><br/><font size='10'>Photo non<br/>disponible</font>"
                 placeholder_color = color_cyan
             
             placeholder_style = ParagraphStyle(
                 'Placeholder',
                 parent=styles['Normal'],
-                fontSize=40,
+                fontSize=50,
                 textColor=placeholder_color,
                 alignment=TA_CENTER,
                 fontName='Helvetica-Bold'
@@ -366,13 +366,17 @@ class ExportService:
         elements.append(identity_title)
         
         info_data = [
-            ['Email', user.email],
-            ['Téléphone', user.phone or 'Non renseigné'],
-            ['WhatsApp', user.whatsapp or 'Non renseigné'],
-            ['Date de naissance', user.date_of_birth.strftime('%d/%m/%Y') if user.date_of_birth else 'Non renseignée'],
-            ['Genre', {'M': 'Masculin', 'F': 'Féminin', 'N': 'Non précisé'}.get(user.gender, 'Non précisé')],
-            ['Pays d\'origine', user.country.name if user.country else 'Non renseigné'],
-            ['Ville au Maroc', user.city.name if user.city else 'Non renseignée'],
+            ['Email', user.email or 'Information non disponible'],
+            ['Téléphone', user.phone or 'Information non disponible'],
+            ['WhatsApp', user.whatsapp or 'Information non disponible'],
+            ['Adresse', user.address or 'Information non disponible'],
+            ['Date de naissance', user.date_of_birth.strftime('%d/%m/%Y') if user.date_of_birth else 'Information non disponible'],
+            ['Genre', {'M': 'Masculin', 'F': 'Féminin', 'N': 'Non précisé'}.get(user.gender, 'Information non disponible')],
+            ['Pays d\'origine', user.country.name if user.country else 'Information non disponible'],
+            ['Ville au Maroc', user.city.name if user.city else 'Information non disponible'],
+            ['Langues', user.languages or 'Information non disponible'],
+            ['Années d\'expérience', str(user.years_experience) + ' ans' if user.years_experience else 'Information non disponible'],
+            ['Éducation', user.education or 'Information non disponible'],
         ]
         
         info_table = Table(info_data, colWidths=[2*inch, 4.5*inch])
@@ -450,12 +454,13 @@ class ExportService:
         elements.append(prof_title)
         
         prof_data = [
-            ['Disponibilité', user.availability or 'Non renseigné'],
-            ['Mode de travail', user.work_mode or 'Non renseigné'],
-            ['Fourchette tarifaire', user.rate_range or 'Non renseigné'],
+            ['Disponibilité', user.availability or 'Information non disponible'],
+            ['Mode de travail', user.work_mode or 'Information non disponible'],
+            ['Fourchette tarifaire', user.rate_range or 'Information non disponible'],
             ['Score de profil', f"{user.profile_score or 0}/100"],
             ['CV disponible', '✓ Oui' if user.cv_filename else '✗ Non'],
-            ['Portfolio', user.portfolio_url if user.portfolio_url else '✗ Non renseigné'],
+            ['Portfolio', user.portfolio_url if user.portfolio_url else 'Information non disponible'],
+            ['Date d\'inscription', user.created_at.strftime('%d/%m/%Y') if user.created_at else 'Information non disponible'],
         ]
         
         prof_table = Table(prof_data, colWidths=[2*inch, 4.5*inch])
@@ -511,41 +516,54 @@ class ExportService:
             elements.append(Spacer(1, 15))
         
         # ==== SECTION RÉSEAUX SOCIAUX ====
-        social_links = []
-        for platform in ['linkedin', 'instagram', 'twitter', 'facebook', 'github', 'behance', 'dribbble', 'youtube']:
-            value = getattr(user, platform, None)
-            if value:
-                social_links.append([platform.capitalize(), value])
+        social_title = Table([['🌐  RÉSEAUX SOCIAUX']], colWidths=[6.5*inch])
+        social_title.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EC4899')),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 14),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(social_title)
         
-        if social_links:
-            social_title = Table([['🌐  RÉSEAUX SOCIAUX']], colWidths=[6.5*inch])
-            social_title.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EC4899')),
-                ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
-                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, -1), 14),
-                ('TOPPADDING', (0, 0), (-1, -1), 8),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-                ('LEFTPADDING', (0, 0), (-1, -1), 10),
-            ]))
-            elements.append(social_title)
-            
-            social_table = Table(social_links, colWidths=[2*inch, 4.5*inch])
-            social_table.setStyle(TableStyle([
-                ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
-                ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
-                ('FONTSIZE', (0, 0), (-1, -1), 9),
-                ('TOPPADDING', (0, 0), (-1, -1), 6),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-                ('LEFTPADDING', (0, 0), (-1, -1), 10),
-                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
-                ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#FCE7F3')),
-                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-                ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
-                ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
-            ]))
-            elements.append(social_table)
-            elements.append(Spacer(1, 15))
+        social_links = []
+        social_platforms = {
+            'LinkedIn': 'linkedin',
+            'Instagram': 'instagram', 
+            'Twitter': 'twitter',
+            'Facebook': 'facebook',
+            'TikTok': 'tiktok',
+            'YouTube': 'youtube',
+            'GitHub': 'github',
+            'Behance': 'behance',
+            'Dribbble': 'dribbble',
+            'Pinterest': 'pinterest',
+            'Snapchat': 'snapchat',
+            'Telegram': 'telegram'
+        }
+        
+        for display_name, platform in social_platforms.items():
+            value = getattr(user, platform, None)
+            social_links.append([display_name, value or 'Information non disponible'])
+        
+        social_table = Table(social_links, colWidths=[2*inch, 4.5*inch])
+        social_table.setStyle(TableStyle([
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('TOPPADDING', (0, 0), (-1, -1), 6),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#FCE7F3')),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+            ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
+        ]))
+        elements.append(social_table)
+        elements.append(Spacer(1, 15))
         
         # ==== FOOTER ====
         elements.append(Spacer(1, 20))
