@@ -263,18 +263,28 @@ class ExportService:
                 pass
         
         if not photo_element:
-            # Placeholder silhouette simple
+            # Placeholder avec initiales
             placeholder_color = color_blue if user.gender == 'M' else (color_purple if user.gender == 'F' else color_cyan)
             
             placeholder_style = ParagraphStyle(
                 'Placeholder',
                 parent=styles['Normal'],
-                fontSize=90,
-                textColor=placeholder_color,
+                fontSize=60,
+                textColor=colors.white,
                 alignment=TA_CENTER,
-                fontName='Helvetica-Bold'
+                fontName='Helvetica-Bold',
+                leading=72
             )
-            photo_element = Paragraph("👤", placeholder_style)
+            
+            # Créer une table pour le placeholder avec fond coloré
+            placeholder_table = Table([[Paragraph(initials, placeholder_style)]], colWidths=[1.8*inch], rowHeights=[1.8*inch])
+            placeholder_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), placeholder_color),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('BOX', (0, 0), (-1, -1), 2, colors.white),
+            ]))
+            photo_element = placeholder_table
         
         # Informations principales dans une carte
         info_name_style = ParagraphStyle(
@@ -320,8 +330,24 @@ class ExportService:
         
         # Placeholder simple pour QR code si vraiment absent
         if not qr_element:
-            qr_placeholder_style = ParagraphStyle('QRPlaceholder', parent=styles['Normal'], fontSize=90, alignment=TA_CENTER, textColor=color_gray)
-            qr_element = Paragraph("⬜", qr_placeholder_style)
+            qr_placeholder_style = ParagraphStyle(
+                'QRPlaceholder', 
+                parent=styles['Normal'], 
+                fontSize=10, 
+                alignment=TA_CENTER, 
+                textColor=colors.white,
+                leading=12
+            )
+            
+            # Créer un placeholder gris pour le QR code
+            qr_placeholder_table = Table([[Paragraph("QR Code", qr_placeholder_style)]], colWidths=[1.5*inch], rowHeights=[1.5*inch])
+            qr_placeholder_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), color_gray),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('BOX', (0, 0), (-1, -1), 2, colors.white),
+            ]))
+            qr_element = qr_placeholder_table
         
         # Table principale avec photo, info et QR
         main_table = Table(
