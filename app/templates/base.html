@@ -6,7 +6,7 @@
     <title>{% block title %}Talento - Plateforme de Centralisation des Talents{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/corporate.css') }}">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⭐</text></svg>">
+    <link rel="icon" href="{{ url_for('static', filename='img/logo.svg') }}">
 </head>
 <body class="h-full bg-gray-50">
     <nav class="bg-white border-b-3 border-dotted border-blue-300 shadow-md">
@@ -15,7 +15,7 @@
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
                         <a href="{{ url_for('main.index') }}" class="text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-2">
-                            <span>⭐</span>
+                            <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Talento Logo" class="w-8 h-8">
                             <span>Talento</span>
                         </a>
                     </div>
@@ -23,9 +23,10 @@
                 <div class="flex items-center">
                     {% if current_user.is_authenticated %}
                         <div class="flex items-center space-x-4">
-                            <a href="{{ url_for('main.index') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-semibold">
+                            <a href="{{ url_for('main.index') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-semibold flex items-center gap-2">
                                 {% if current_user.is_admin %}
-                                    ⭐ Dashboard
+                                    <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="" class="w-5 h-5">
+                                    Dashboard
                                 {% else %}
                                     👤 Mon Profil
                                 {% endif %}

@@ -10,7 +10,7 @@
             <a href="{{ url_for('admin.dashboard') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
                 ← Retour
             </a>
-            <a href="{{ url_for('admin.export_user_pdf', user_id=user.id) }}" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+            <a href="{{ url_for('admin.export_pdf', user_id=user.id) }}" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
                 📄 Exporter PDF
             </a>
         </div>
@@ -100,7 +100,10 @@
 
         {% if user.talents %}
         <div class="p-6 bg-gray-50">
-            <h3 class="text-xl font-bold text-indigo-600 mb-4">⭐ Talents & Compétences</h3>
+            <h3 class="text-xl font-bold text-indigo-600 mb-4 flex items-center gap-2">
+                <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="" class="w-6 h-6">
+                Talents & Compétences
+            </h3>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {% for ut in user.talents %}
                 <div class="bg-white border-2 border-indigo-200 rounded-lg p-3 text-center hover:shadow-md transition">

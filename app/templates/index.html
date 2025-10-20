@@ -10,7 +10,7 @@
         <div class="section-blue p-8 mb-8">
             <div class="text-center">
                 <div class="inline-block mb-4">
-                    <span class="text-7xl">⭐</span>
+                    <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Talento Logo" class="w-24 h-24 mx-auto">
                 </div>
                 <h1 class="text-5xl font-bold text-gray-800 mb-4">
                     Dashboard Talento
@@ -43,7 +43,7 @@
                         <p class="text-purple-700 text-sm font-semibold uppercase">Compétences</p>
                         <p class="text-gray-800 text-4xl font-bold mt-2">{{ total_talents_selected }}</p>
                     </div>
-                    <div class="text-6xl opacity-30">⭐</div>
+                    <div class="text-6xl opacity-30">🎯</div>
                 </div>
                 <div class="flex items-center gap-2 text-purple-600">
                     <span class="text-2xl">🎯</span>
@@ -105,7 +105,7 @@
                             <span>Recherche par code unique</span>
                         </label>
                         <input type="text" name="search_code" value="{{ request.args.get('search_code', '') }}" 
-                               placeholder="Ex: MA-RAB-0001-M"
+                               placeholder="Ex: MARAB0001M"
                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
                     </div>
                 </div>
