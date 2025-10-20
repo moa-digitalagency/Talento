@@ -5,6 +5,91 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.7.0] - 2025-10-20
+
+### 🎨 Améliorations Visuelles
+
+#### Nouveau Logo SVG
+- **Remplacement de l'émoji ⭐** par un logo SVG professionnel et moderne
+  - Logo créé avec dégradé bleu → violet → rose
+  - Utilisation cohérente dans toute l'application :
+    - Favicon du site
+    - Logo dans la navigation
+    - Icônes dans les dashboards
+    - En-têtes de page
+  - Design adaptatif : tailles 8h-8w, 20h-20w, 24h-24w selon le contexte
+
+#### Corrections d'Interface
+- **Placeholder de recherche** : "MARAB0001M" au lieu de "MA-RAB-0001-M"
+- **Bouton "Gérer"** : correction de la route admin.export_pdf (au lieu de export_user_pdf)
+
+### 🔄 Refonte de la Page Talents
+
+#### Nouvelle Architecture en Deux Niveaux
+- **Page principale /talents** :
+  - Affichage en grille de tous les talents disponibles
+  - Carte pour chaque talent avec :
+    - Émoji représentatif
+    - Nom et catégorie
+    - Compteur de profils actifs
+    - Bouton "👁️ Voir les profils"
+  - Barre de recherche simple par nom de talent
+  - Design optimisé avec bordures vertes et cartes interactives
+
+- **Page de résultats /talents/users/<talent_id>** :
+  - Liste filtrée des utilisateurs ayant le talent sélectionné
+  - En-tête avec émoji, nom et compteur de profils
+  - Filtres complets :
+    - 📝 Recherche par nom/email
+    - 🏙️ Ville au Maroc
+    - ⏰ Disponibilité
+    - 🔄 Mode de travail
+    - 👥 Genre
+  - Tableau détaillé avec :
+    - Photo/avatar
+    - Nom, email, code unique
+    - Ville, disponibilité, mode de travail
+    - Bouton "Gérer" (admin) ou "Voir" (utilisateur)
+  - Bouton "← Retour aux talents" pour navigation facile
+
+#### Simplification de l'Architecture
+- **Suppression de la section "Catégories"** : focus sur les talents individuels
+- **Navigation améliorée** : flux à deux niveaux plus intuitif
+- **Filtrage optimisé** : recherche ciblée par talent spécifique
+
+### 🔧 Corrections Backend
+
+#### Profils de Démonstration
+- **Mise à jour des disponibilités** vers les valeurs françaises :
+  - `'available'` → `'Temps plein'`
+  - `'partially_available'` → `'Temps partiel'`
+  - Ajout de `'Flexible'`
+  
+- **Mise à jour des modes de travail** :
+  - `'hybrid'` → `'Hybride'`
+  - `'remote'` → `'À distance'`
+  - `'on_site'` → `'Sur site'`
+
+#### Nouvelles Routes
+- **GET /talents** : affiche le catalogue de talents
+- **GET /talents/users/<talent_id>** : affiche les profils filtrés par talent
+
+### 📊 Impact Utilisateur
+
+#### Expérience Améliorée
+- **Identité visuelle cohérente** avec logo SVG professionnel
+- **Navigation simplifiée** : 2 clics pour trouver un profil par talent
+- **Recherche ciblée** : filtrage précis sur les profils d'un talent spécifique
+- **Design épuré** : suppression des sections redondantes
+
+#### Performance
+- **Requêtes optimisées** : filtrage SQL direct au lieu de calculs côté application
+- **Chargement plus rapide** : pages simplifiées avec moins de données
+
+#### Données Cohérentes
+- **Profils démo alignés** avec les options du formulaire d'inscription
+- **Valeurs standardisées** en français pour disponibilité et mode de travail
+
 ## [2.6.0] - 2025-10-20
 
 ### 📊 Statistiques Basées sur les Données Réelles
