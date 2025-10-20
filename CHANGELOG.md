@@ -5,6 +5,97 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2025-10-20
+
+### 🎨 Modernisation Complète du Design - Sans Dégradés
+
+#### Suppression Totale des Dégradés
+- **Tous les dégradés supprimés** du formulaire d'inscription et du CSS
+- **Design uniforme** avec couleurs solides et bordures pointillées
+- **10 classes `.section-*` modernisées** (blue, green, red, purple, orange, cyan, pink, yellow, indigo, emerald)
+  - Avant : `background: linear-gradient(135deg, ...)`
+  - Après : `background: rgba(..., 0.05)` - couleurs solides transparentes
+- **Bouton de soumission modernisé** : dégradé remplacé par bleu solide (bg-blue-600)
+  - Style badge professionnel avec hover et bordure
+  - Effet hover simple et élégant (bg-blue-700)
+
+#### Restructuration du Formulaire (9 étapes au lieu de 10)
+- **Formation intégrée dans Section 4** (Expérience, Bio & Formation)
+  - Champ "Formation & Diplômes" (textarea) maintenant dans le bloc Expérience
+  - Meilleur regroupement des informations professionnelles et académiques
+  
+- **Langues promue en Section 5** avec sélection multiple
+  - Nouveau champ **select multiple** avec liste complète de langues :
+    - 🌍 Langues internationales (10) : Arabe, Français, Anglais, Espagnol, Portugais, Chinois, Allemand, Italien, Russe, Turc
+    - 🌍 Langues africaines principales (15) : Swahili, Haoussa, Yoruba, Igbo, Amharique, Oromo, Somali, Zoulou, Xhosa, Afrikaans, Lingala, Kinyarwanda, Kirundi, Shona, Ndebele
+    - 🇲🇦 Langues marocaines (5) : Darija, Amazigh/Berbère, Tariffit (Rifain), Tachelhit (Souss), Tamazight (Atlas)
+    - 🌍 Autres langues africaines (14) : Wolof, Fulani, Bambara, Akan, Ewe, Tigrinya, etc.
+  - **Total : 44 langues** couvrant toute l'Afrique et les langues internationales
+  - Interface multi-sélection avec instructions claires (Ctrl/Cmd pour sélection multiple)
+
+- **Nouvelle numérotation** :
+  1. Identité (Bleu) → 2. Contact (Vert) → 3. Localisation (Rouge)
+  4. Expérience, Bio & Formation (Violet) → 5. Langues (Émeraude)
+  6. Disponibilité (Jaune) → 7. Mode de Travail (Indigo)
+  8. Talents (Orange) → 9. Documents (Cyan)
+  
+- **Section Réseaux Sociaux supprimée** du formulaire d'inscription (sera dans l'édition de profil)
+
+#### Design CSS Uniforme
+- **Toutes les sections** utilisent maintenant le même style :
+  - Fond solide coloré transparent
+  - Bordure pointillée 3px colorée
+  - Ombre portée légère
+  - Hover avec élévation subtile
+  
+- **JavaScript nettoyé** :
+  - Dégradés supprimés des hover states des talents
+  - Dégradés supprimés de la sélection des talents
+  - Barre de progression : orange solide (au lieu de dégradé orange → jaune)
+  - Zone de comptage : fond orange solide avec border-dotted
+
+#### Améliorations Visuelles
+- **Wrapper principal** : `bg-gray-50` (au lieu de gradient-bg)
+- **Indicateurs d'étapes** : badges colorés cohérents (1/9 à 9/9)
+- **Section émeraude ajoutée** pour les Langues avec style cohérent
+- **Tous les éléments interactifs** : fonds solides avec transitions fluides
+
+### 📊 Impact Utilisateur
+
+#### Meilleure Lisibilité
+- **Design épuré** sans distractions visuelles
+- **Couleurs cohérentes** et professionnelles
+- **Contraste amélioré** pour une meilleure accessibilité
+
+#### Flux Optimisé
+- **9 étapes logiques** au lieu de 10
+- **Langues valorisées** avec sélection structurée
+- **Formation regroupée** avec l'expérience professionnelle
+
+#### Internationalisation
+- **44 langues disponibles** couvrant :
+  - Langues internationales majeures
+  - Toutes les langues africaines importantes
+  - Langues marocaines et berbères
+- **Sélection multiple** pour profils multilingues
+
+### 🔧 Changements Techniques
+
+#### CSS
+- Suppression de tous les `linear-gradient()` dans `corporate.css`
+- Conversion des 10 classes `.section-*` en couleurs solides
+- Ajout de `.section-emerald` pour la nouvelle section Langues
+
+#### HTML/JavaScript
+- Suppression des classes gradient du formulaire
+- Nettoyage du JavaScript (talents, progressBar)
+- Optimisation des classes Tailwind pour fonds solides
+
+### ✨ Résultat
+Un formulaire d'inscription **100% sans dégradés**, moderne, épuré et professionnel, avec une meilleure structure en 9 étapes et une valorisation des compétences linguistiques.
+
+---
+
 ## [2.2.0] - 2025-10-20
 
 ### 🎨 Refonte Complète du Formulaire d'Inscription
