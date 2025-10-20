@@ -36,12 +36,6 @@ def users():
     all_users = User.query.filter(User.is_admin == False).order_by(User.created_at.desc()).all()
     return render_template('admin/users.html', users=all_users)
 
-@bp.route('/user/<int:user_id>')
-@login_required
-@admin_required
-def user_detail(user_id):
-    user = User.query.get_or_404(user_id)
-    return render_template('admin/user_detail.html', user=user)
 
 @bp.route('/user/<int:user_id>/toggle-active', methods=['POST'])
 @login_required
