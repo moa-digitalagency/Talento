@@ -32,8 +32,8 @@
             <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs font-bold">Enregistrés</span>
         </div>
         <h3 class="text-sm text-gray-600 mb-1">Acteurs</h3>
-        <p class="text-3xl font-bold text-purple-600">0</p>
-        <p class="text-xs text-gray-500 mt-2">Base de données vide</p>
+        <p class="text-3xl font-bold text-purple-600">{{ total_talents or 0 }}</p>
+        <p class="text-xs text-gray-500 mt-2">{% if total_talents > 0 %}Talents enregistrés{% else %}Base de données vide{% endif %}</p>
     </div>
     
     <!-- Stat 3 - Projets -->

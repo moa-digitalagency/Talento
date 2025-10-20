@@ -1,0 +1,395 @@
+{% extends "cinema/base_cinema.html" %}
+
+{% block title %}Inscription Talent CINEMA - Talento{% endblock %}
+
+{% block cinema_content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+        <div class="inline-block mb-4">
+            <span class="text-6xl">🎬</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Inscription Talent CINEMA
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+            Rejoignez notre base de données de talents cinématographiques
+        </p>
+        <div class="mt-6 flex items-center justify-center gap-2">
+            <div class="h-1 w-20 bg-purple-500 rounded-full"></div>
+            <div class="h-1 w-20 bg-pink-500 rounded-full"></div>
+            <div class="h-1 w-20 bg-orange-500 rounded-full"></div>
+        </div>
+    </div>
+    
+    <form method="POST" action="{{ url_for('cinema.register_talent') }}" enctype="multipart/form-data" id="cinemaRegisterForm" class="space-y-8">
+        
+        <!-- Section 1: Identité (Bleu) -->
+        <div class="section-blue p-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-5xl">👤</span>
+                    <div>
+                        <h2 class="text-2xl font-bold text-blue-700">Identité</h2>
+                        <p class="text-blue-600 text-sm mt-1">Informations personnelles</p>
+                    </div>
+                </div>
+                <div class="bg-blue-100 rounded-full px-5 py-2 border-2 border-blue-400">
+                    <span class="text-blue-700 font-bold">Section 1/7</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label for="first_name" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        Prénom <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="first_name" name="first_name" required 
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="last_name" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        Nom <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="last_name" name="last_name" required 
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="date_of_birth" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        Date de naissance <span class="text-red-500">*</span>
+                    </label>
+                    <input type="date" id="date_of_birth" name="date_of_birth" required 
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="gender" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        Genre <span class="text-red-500">*</span>
+                    </label>
+                    <select id="gender" name="gender" required 
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                        <option value="">Sélectionner...</option>
+                        <option value="M">👨 Homme</option>
+                        <option value="F">👩 Femme</option>
+                        <option value="N">⚧️ Non précisé</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label for="ethnicity" class="block text-gray-700 font-semibold text-sm">Ethnicité</label>
+                    <input type="text" id="ethnicity" name="ethnicity" 
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Document d'identité (Green) -->
+        <div class="section-green p-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-5xl">📋</span>
+                    <div>
+                        <h2 class="text-2xl font-bold text-green-700">Document d'identité</h2>
+                        <p class="text-green-600 text-sm mt-1">Pièce d'identité officielle</p>
+                    </div>
+                </div>
+                <div class="bg-green-100 rounded-full px-5 py-2 border-2 border-green-400">
+                    <span class="text-green-700 font-bold">Section 2/7</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label for="id_document_type" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        Type de document <span class="text-red-500">*</span>
+                    </label>
+                    <select id="id_document_type" name="id_document_type" required 
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
+                        <option value="">Sélectionner...</option>
+                        <option value="passport">📘 Passeport</option>
+                        <option value="national_id">🪪 Carte d'identité nationale</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label for="id_document_number" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        Numéro du document <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="id_document_number" name="id_document_number" required 
+                           placeholder="Ex: AB1234567"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3: Localisation (Rouge) -->
+        <div class="section-red p-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-5xl">📍</span>
+                    <div>
+                        <h2 class="text-2xl font-bold text-red-700">Localisation</h2>
+                        <p class="text-red-600 text-sm mt-1">Nationalité et résidence</p>
+                    </div>
+                </div>
+                <div class="bg-red-100 rounded-full px-5 py-2 border-2 border-red-400">
+                    <span class="text-red-700 font-bold">Section 3/7</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label for="nationality" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        Nationalité <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="nationality" name="nationality" required 
+                           placeholder="Ex: Marocaine"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="country_of_residence" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        Pays de résidence <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="country_of_residence" name="country_of_residence" required 
+                           placeholder="Ex: Maroc"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="city_of_residence" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        Ville de résidence <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="city_of_residence" name="city_of_residence" required 
+                           placeholder="Ex: Casablanca"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Langues & Expérience (Violet) -->
+        <div class="section-purple p-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-5xl">💼</span>
+                    <div>
+                        <h2 class="text-2xl font-bold text-purple-700">Langues & Expérience</h2>
+                        <p class="text-purple-600 text-sm mt-1">Compétences linguistiques et années d'expérience</p>
+                    </div>
+                </div>
+                <div class="bg-purple-100 rounded-full px-5 py-2 border-2 border-purple-400">
+                    <span class="text-purple-700 font-bold">Section 4/7</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label for="languages_spoken" class="block text-gray-700 font-semibold text-sm">
+                        Langues parlées <small class="text-gray-500">(séparées par des virgules)</small>
+                    </label>
+                    <input type="text" id="languages_spoken" name="languages_spoken" 
+                           placeholder="Ex: Français, Arabe, Anglais"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="years_of_experience" class="block text-gray-700 font-semibold text-sm">
+                        Années d'expérience
+                    </label>
+                    <input type="number" id="years_of_experience" name="years_of_experience" min="0" 
+                           placeholder="Ex: 5"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2 md:col-span-2">
+                    <label for="other_talents" class="block text-gray-700 font-semibold text-sm">
+                        Autres talents <small class="text-gray-500">(musicien, chanteur, peintre, etc.)</small>
+                    </label>
+                    <textarea id="other_talents" name="other_talents" rows="3"
+                              placeholder="Décrivez vos autres talents..."
+                              class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200 outline-none"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 5: Caractéristiques physiques (Cyan) -->
+        <div class="section-cyan p-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-5xl">👁️</span>
+                    <div>
+                        <h2 class="text-2xl font-bold text-cyan-700">Caractéristiques physiques</h2>
+                        <p class="text-cyan-600 text-sm mt-1">Apparence physique</p>
+                    </div>
+                </div>
+                <div class="bg-cyan-100 rounded-full px-5 py-2 border-2 border-cyan-400">
+                    <span class="text-cyan-700 font-bold">Section 5/7</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="space-y-2">
+                    <label for="eye_color" class="block text-gray-700 font-semibold text-sm">Couleur des yeux</label>
+                    <input type="text" id="eye_color" name="eye_color" 
+                           placeholder="Ex: Marron"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="hair_color" class="block text-gray-700 font-semibold text-sm">Couleur des cheveux</label>
+                    <input type="text" id="hair_color" name="hair_color" 
+                           placeholder="Ex: Noir"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="hair_type" class="block text-gray-700 font-semibold text-sm">Type de cheveux</label>
+                    <input type="text" id="hair_type" name="hair_type" 
+                           placeholder="Ex: Bouclés"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="height" class="block text-gray-700 font-semibold text-sm">Taille (cm)</label>
+                    <input type="number" id="height" name="height" min="100" max="250" 
+                           placeholder="Ex: 175"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="skin_tone" class="block text-gray-700 font-semibold text-sm">Teint de peau</label>
+                    <input type="text" id="skin_tone" name="skin_tone" 
+                           placeholder="Ex: Clair, Moyen, Foncé"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="build" class="block text-gray-700 font-semibold text-sm">Corpulence</label>
+                    <input type="text" id="build" name="build" 
+                           placeholder="Ex: Athlétique, Mince, Musclé"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all duration-200 outline-none">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Photos & Contact (Orange) -->
+        <div class="section-orange p-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-5xl">📸</span>
+                    <div>
+                        <h2 class="text-2xl font-bold text-orange-700">Photos & Contact</h2>
+                        <p class="text-orange-600 text-sm mt-1">Photos et coordonnées</p>
+                    </div>
+                </div>
+                <div class="bg-orange-100 rounded-full px-5 py-2 border-2 border-orange-400">
+                    <span class="text-orange-700 font-bold">Section 6/7</span>
+                </div>
+            </div>
+            <div class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="profile_photo" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            Photo de profil <span class="text-red-500">*</span>
+                        </label>
+                        <input type="file" id="profile_photo" name="profile_photo" accept="image/*" required 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none">
+                        <p class="text-sm text-gray-500">Photo non retouchée</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label for="id_photo" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            Photo d'identité <span class="text-red-500">*</span>
+                        </label>
+                        <input type="file" id="id_photo" name="id_photo" accept="image/*" required 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none">
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label for="gallery_photos" class="block text-gray-700 font-semibold text-sm">
+                        Galerie de photos <small class="text-gray-500">(plusieurs fichiers possibles)</small>
+                    </label>
+                    <input type="file" id="gallery_photos" name="gallery_photos" accept="image/*" multiple 
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none">
+                </div>
+                
+                <div class="border-t-2 border-dotted border-orange-300 pt-6 mt-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Coordonnées</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="email" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                                📧 Email <span class="text-red-500">*</span>
+                            </label>
+                            <input type="email" id="email" name="email" required 
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="phone" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                                📱 Téléphone <span class="text-red-500">*</span>
+                            </label>
+                            <input type="tel" id="phone" name="phone" placeholder="+212..." required 
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="whatsapp" class="block text-gray-700 font-semibold text-sm">
+                                💬 WhatsApp
+                            </label>
+                            <input type="tel" id="whatsapp" name="whatsapp" placeholder="+212..." 
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 7: Réseaux sociaux & Expériences (Pink) -->
+        <div class="section-pink p-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-5xl">🌐</span>
+                    <div>
+                        <h2 class="text-2xl font-bold text-pink-700">Réseaux sociaux & Expériences</h2>
+                        <p class="text-pink-600 text-sm mt-1">Présence en ligne et productions antérieures</p>
+                    </div>
+                </div>
+                <div class="bg-pink-100 rounded-full px-5 py-2 border-2 border-pink-400">
+                    <span class="text-pink-700 font-bold">Section 7/7</span>
+                </div>
+            </div>
+            <div class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="facebook" class="block text-gray-700 font-semibold text-sm">Facebook</label>
+                        <input type="url" id="facebook" name="facebook" placeholder="https://facebook.com/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="instagram" class="block text-gray-700 font-semibold text-sm">Instagram</label>
+                        <input type="url" id="instagram" name="instagram" placeholder="https://instagram.com/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="linkedin" class="block text-gray-700 font-semibold text-sm">LinkedIn</label>
+                        <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="twitter" class="block text-gray-700 font-semibold text-sm">Twitter / X</label>
+                        <input type="url" id="twitter" name="twitter" placeholder="https://twitter.com/..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="youtube" class="block text-gray-700 font-semibold text-sm">YouTube</label>
+                        <input type="url" id="youtube" name="youtube" placeholder="https://youtube.com/@..." 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                </div>
+                
+                <div class="border-t-2 border-dotted border-pink-300 pt-6 mt-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Expériences dans les productions</h3>
+                    <div class="space-y-2">
+                        <label for="previous_productions" class="block text-gray-700 font-semibold text-sm">
+                            Productions antérieures <small class="text-gray-500">(avec rôle si applicable)</small>
+                        </label>
+                        <textarea id="previous_productions" name="previous_productions" rows="4"
+                                  placeholder="Ex: Film 'Titre' - Rôle principal (2023)&#10;Série 'Nom' - Acteur secondaire (2022)"
+                                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-center pt-6 pb-12">
+            <button type="submit" 
+                    class="px-12 py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl font-bold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3">
+                <span>✨</span>
+                <span>Enregistrer le talent</span>
+                <span>🎬</span>
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

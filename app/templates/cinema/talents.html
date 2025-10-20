@@ -68,23 +68,71 @@
             <span class="text-4xl">👥</span>
             <h2 class="text-2xl font-bold text-gray-800">Base de Données des Talents</h2>
         </div>
-        <button class="px-6 py-3 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition-all flex items-center gap-2">
+        <a href="{{ url_for('cinema.register_talent') }}" class="px-6 py-3 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition-all flex items-center gap-2">
             <span>➕</span>
             <span>Ajouter un Talent</span>
-        </button>
+        </a>
     </div>
     
     <div class="bg-white p-6 rounded-lg border-2 border-dotted border-purple-500">
-        <!-- Message vide -->
-        <div class="text-center py-16">
-            <span class="text-6xl mb-4 block">🎭</span>
-            <p class="text-gray-600 text-lg font-semibold mb-2">Aucun talent enregistré</p>
-            <p class="text-gray-500 mb-6">Commencez par ajouter vos premiers acteurs à la base de données CINEMA</p>
-            <button class="px-8 py-4 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition-all inline-flex items-center gap-2">
-                <span>➕</span>
-                <span>Ajouter le premier talent</span>
-            </button>
-        </div>
+        {% if talents and talents|length > 0 %}
+            <!-- Liste des talents -->
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b-2 border-purple-300">
+                            <th class="text-left py-3 px-4 font-bold text-gray-700">Photo</th>
+                            <th class="text-left py-3 px-4 font-bold text-gray-700">Nom</th>
+                            <th class="text-left py-3 px-4 font-bold text-gray-700">Email</th>
+                            <th class="text-left py-3 px-4 font-bold text-gray-700">Expérience</th>
+                            <th class="text-left py-3 px-4 font-bold text-gray-700">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for talent in talents %}
+                        <tr class="border-b border-gray-200 hover:bg-purple-50 transition-all">
+                            <td class="py-3 px-4">
+                                {% if talent.profile_photo_filename %}
+                                <img src="{{ url_for('static', filename='uploads/cinema_photos/' + talent.profile_photo_filename) }}" 
+                                     alt="Photo" class="w-12 h-12 rounded-full object-cover">
+                                {% else %}
+                                <div class="w-12 h-12 rounded-full bg-purple-200 flex items-center justify-center text-purple-700 font-bold">
+                                    {{ talent.first_name[0] }}{{ talent.last_name[0] }}
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td class="py-3 px-4">
+                                <p class="font-semibold text-gray-800">{{ talent.first_name }} {{ talent.last_name }}</p>
+                                <p class="text-sm text-gray-500">{{ talent.city_of_residence }}</p>
+                            </td>
+                            <td class="py-3 px-4 text-gray-600">{{ talent.email }}</td>
+                            <td class="py-3 px-4">
+                                <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-semibold">
+                                    {{ talent.years_of_experience or 0 }} ans
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <a href="#" class="text-purple-600 hover:text-purple-800 font-semibold">
+                                    Voir profil
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <!-- Message vide -->
+            <div class="text-center py-16">
+                <span class="text-6xl mb-4 block">🎭</span>
+                <p class="text-gray-600 text-lg font-semibold mb-2">Aucun talent enregistré</p>
+                <p class="text-gray-500 mb-6">Commencez par ajouter vos premiers acteurs à la base de données CINEMA</p>
+                <a href="{{ url_for('cinema.register_talent') }}" class="px-8 py-4 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition-all inline-flex items-center gap-2">
+                    <span>➕</span>
+                    <span>Ajouter le premier talent</span>
+                </a>
+            </div>
+        {% endif %}
     </div>
 </div>
 
