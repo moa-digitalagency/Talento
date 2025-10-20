@@ -42,7 +42,6 @@ def team():
     return render_template('cinema/team.html')
 
 @bp.route('/register', methods=['GET', 'POST'])
-@login_required
 def register_talent():
     """Inscription d'un nouveau talent CINEMA"""
     if request.method == 'POST':
