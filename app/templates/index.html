@@ -200,6 +200,11 @@
                 <table class="min-w-full">
                     <thead>
                         <tr class="bg-cyan-100 border-b-2 border-cyan-500">
+                            {% if current_user.is_admin %}
+                            <th class="px-3 py-3 sm:py-4 text-center">
+                                <input type="checkbox" id="select-all-checkbox" class="w-4 h-4 text-cyan-600 bg-gray-100 border-gray-300 rounded focus:ring-cyan-500 cursor-pointer">
+                            </th>
+                            {% endif %}
                             <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-gray-700 uppercase">Code</th>
                             <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-gray-700 uppercase">Nom</th>
                             <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-gray-700 uppercase hidden md:table-cell">Email</th>
@@ -211,6 +216,11 @@
                     <tbody class="divide-y divide-gray-200">
                         {% for user in users %}
                         <tr class="hover:bg-cyan-50 transition-colors">
+                            {% if current_user.is_admin %}
+                            <td class="px-3 py-3 sm:py-4 text-center">
+                                <input type="checkbox" class="user-checkbox w-4 h-4 text-cyan-600 bg-gray-100 border-gray-300 rounded focus:ring-cyan-500 cursor-pointer" value="{{ user.id }}">
+                            </td>
+                            {% endif %}
                             <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                                 <span class="font-mono text-xs sm:text-sm font-bold text-gray-900">{{ user.formatted_code }}</span>
                             </td>
@@ -262,7 +272,7 @@
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="6" class="px-3 sm:px-6 py-8 sm:py-12 text-center text-gray-500">
+                            <td colspan="{% if current_user.is_admin %}7{% else %}6{% endif %}" class="px-3 sm:px-6 py-8 sm:py-12 text-center text-gray-500">
                                 <div class="text-6xl mb-4">🔍</div>
                                 <p class="text-xl font-semibold">Aucun talent trouvé</p>
                                 <p class="text-sm">Essayez de modifier vos filtres de recherche</p>
