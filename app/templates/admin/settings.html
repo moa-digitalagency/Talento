@@ -417,6 +417,86 @@
             {% endif %}
         </div>
 
+        <!-- Database Info -->
+        <div class="section-gray p-8 mb-8">
+            <!-- Bloc avec bordure pointillée cyan -->
+            <div class="bg-white p-6 rounded-lg border-2 border-dotted border-cyan-500">
+                
+                <!-- Titre avec icône DANS le bloc -->
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-4xl">🗄️</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Base de données</h2>
+                </div>
+                
+                <!-- Connection Status -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-gray-800">État de la connexion</h3>
+                        <span class="px-3 py-1 rounded-full text-sm font-semibold {% if db_diagnostics.connection_status %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                            {% if db_diagnostics.connection_status %}Connecté{% else %}Déconnecté{% endif %}
+                        </span>
+                    </div>
+                    <div class="space-y-2 text-sm">
+                        <p class="text-gray-700"><strong>Type :</strong> {{ db_diagnostics.connection.type }}</p>
+                        <p class="text-gray-700 font-mono text-xs break-all"><strong>URI :</strong> {{ db_diagnostics.connection.uri_masked }}</p>
+                    </div>
+                </div>
+
+                <!-- Séparateur -->
+                <div class="border-t border-gray-200 my-6"></div>
+
+                <!-- Database Statistics -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Statistiques</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <p class="text-xs text-gray-600 mb-1">Utilisateurs</p>
+                            <p class="text-2xl font-bold text-blue-600">{{ db_diagnostics.table_stats.users }}</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ db_diagnostics.table_stats.users_active }} actifs</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                            <p class="text-xs text-gray-600 mb-1">Administrateurs</p>
+                            <p class="text-2xl font-bold text-purple-600">{{ db_diagnostics.table_stats.users_admin }}</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <p class="text-xs text-gray-600 mb-1">Talents</p>
+                            <p class="text-2xl font-bold text-green-600">{{ db_diagnostics.table_stats.talents }}</p>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <p class="text-xs text-gray-600 mb-1">Pays / Villes</p>
+                            <p class="text-2xl font-bold text-orange-600">{{ db_diagnostics.table_stats.countries }} / {{ db_diagnostics.table_stats.cities }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="text-sm text-gray-700"><strong>Taille de la base :</strong> {{ db_diagnostics.size }}</p>
+                                <p class="text-sm text-gray-700"><strong>Dernière migration :</strong> <span class="font-mono">{{ db_diagnostics.last_migration }}</span></p>
+                            </div>
+                            <div class="text-xs text-gray-500">
+                                <p>{{ db_diagnostics.table_stats.user_talents }} associations talents</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Séparateur -->
+                <div class="border-t border-gray-200 my-6"></div>
+
+                <!-- Tables List -->
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Tables ({{ db_diagnostics.tables|length }})</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for table in db_diagnostics.tables %}
+                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-mono border border-gray-300">{{ table }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
         <!-- Backup & Restore Section -->
         <div class="section-orange p-8 mb-8">
             <div class="flex items-center gap-3 mb-6">
@@ -527,86 +607,6 @@
                         La restauration est une opération irréversible. Assurez-vous d'avoir créé une sauvegarde de vos données actuelles avant de procéder à une restauration.
                     </p>
                 </div>
-            </div>
-        </div>
-
-        <!-- Database Info -->
-        <div class="section-gray p-8 mb-8">
-            <!-- UN SEUL GRAND BLOC avec bordure pointillée -->
-            <div class="bg-white p-6 rounded-lg border-2 border-dotted border-gray-500">
-                
-                <!-- Titre avec icône DANS le bloc -->
-                <div class="flex items-center gap-3 mb-6">
-                    <span class="text-4xl">💾</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Base de données</h2>
-                </div>
-                
-                <!-- Connection Status -->
-                <div class="mb-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-gray-800">État de la connexion</h3>
-                        <span class="px-3 py-1 rounded-full text-sm font-semibold {% if db_diagnostics.connection_status %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
-                            {% if db_diagnostics.connection_status %}Connecté{% else %}Déconnecté{% endif %}
-                        </span>
-                    </div>
-                    <div class="space-y-2 text-sm">
-                        <p class="text-gray-700"><strong>Type :</strong> {{ db_diagnostics.connection.type }}</p>
-                        <p class="text-gray-700 font-mono text-xs break-all"><strong>URI :</strong> {{ db_diagnostics.connection.uri_masked }}</p>
-                    </div>
-                </div>
-
-                <!-- Séparateur -->
-                <div class="border-t border-gray-200 my-6"></div>
-
-                <!-- Database Statistics -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Statistiques</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                            <p class="text-xs text-gray-600 mb-1">Utilisateurs</p>
-                            <p class="text-2xl font-bold text-blue-600">{{ db_diagnostics.table_stats.users }}</p>
-                            <p class="text-xs text-gray-500 mt-1">{{ db_diagnostics.table_stats.users_active }} actifs</p>
-                        </div>
-                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                            <p class="text-xs text-gray-600 mb-1">Administrateurs</p>
-                            <p class="text-2xl font-bold text-purple-600">{{ db_diagnostics.table_stats.users_admin }}</p>
-                        </div>
-                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-                            <p class="text-xs text-gray-600 mb-1">Talents</p>
-                            <p class="text-2xl font-bold text-green-600">{{ db_diagnostics.table_stats.talents }}</p>
-                        </div>
-                        <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                            <p class="text-xs text-gray-600 mb-1">Pays / Villes</p>
-                            <p class="text-2xl font-bold text-orange-600">{{ db_diagnostics.table_stats.countries }} / {{ db_diagnostics.table_stats.cities }}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-sm text-gray-700"><strong>Taille de la base :</strong> {{ db_diagnostics.size }}</p>
-                                <p class="text-sm text-gray-700"><strong>Dernière migration :</strong> <span class="font-mono">{{ db_diagnostics.last_migration }}</span></p>
-                            </div>
-                            <div class="text-xs text-gray-500">
-                                <p>{{ db_diagnostics.table_stats.user_talents }} associations talents</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Séparateur -->
-                <div class="border-t border-gray-200 my-6"></div>
-
-                <!-- Tables List -->
-                <div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Tables ({{ db_diagnostics.tables|length }})</h3>
-                    <div class="flex flex-wrap gap-2">
-                        {% for table in db_diagnostics.tables %}
-                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-mono border border-gray-300">{{ table }}</span>
-                        {% endfor %}
-                    </div>
-                </div>
-                
             </div>
         </div>
 
