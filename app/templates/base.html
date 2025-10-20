@@ -63,6 +63,10 @@
                     {% else %}
                         <!-- Desktop Navigation (Not Authenticated) -->
                         <div class="hidden md:flex items-center space-x-4">
+                            <a href="{{ url_for('cinema.register_talent') }}" class="px-4 py-2 text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all font-semibold">
+                                <span>🎬</span>
+                                <span>CINEMA</span>
+                            </a>
                             <a href="{{ url_for('auth.login') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-semibold">
                                 <span>🔐</span>
                                 <span>Connexion</span>
@@ -113,6 +117,10 @@
                         <span class="ml-2">Déconnexion</span>
                     </a>
                 {% else %}
+                    <a href="{{ url_for('cinema.register_talent') }}" class="block px-4 py-3 text-gray-700 hover:bg-orange-50 rounded-lg transition-all font-semibold">
+                        <span>🎬</span>
+                        <span class="ml-2">CINEMA</span>
+                    </a>
                     <a href="{{ url_for('auth.login') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-all font-semibold">
                         <span>🔐</span>
                         <span class="ml-2">Connexion</span>
