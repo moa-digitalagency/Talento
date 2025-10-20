@@ -177,56 +177,56 @@
         </div>
 
         <!-- Liste des utilisateurs -->
-        <div class="section-cyan p-8 mb-8">
-            <div class="flex items-center justify-between mb-6">
+        <div class="section-cyan p-4 sm:p-8 mb-8">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                 <div class="flex items-center gap-3">
-                    <span class="text-4xl">👥</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Talents ({{ stats.filtered_count }})</h2>
+                    <span class="text-3xl sm:text-4xl">👥</span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Talents ({{ stats.filtered_count }})</h2>
                 </div>
-                <div class="flex gap-2">
-                    <a href="{{ url_for('admin.export_excel') }}" class="px-4 py-2 bg-green-100 text-green-700 font-semibold rounded-lg border-2 border-green-500 hover:bg-green-200 transition-all">
-                        📊 Excel
+                <div class="flex flex-wrap gap-2">
+                    <a href="{{ url_for('admin.export_excel') }}" class="px-3 sm:px-4 py-2 bg-green-100 text-green-700 font-semibold rounded-lg border-2 border-green-500 hover:bg-green-200 transition-all text-sm sm:text-base">
+                        📊 <span class="hidden xs:inline">Excel</span>
                     </a>
-                    <a href="{{ url_for('admin.export_csv') }}" class="px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg border-2 border-blue-500 hover:bg-blue-200 transition-all">
-                        📄 CSV
+                    <a href="{{ url_for('admin.export_csv') }}" class="px-3 sm:px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg border-2 border-blue-500 hover:bg-blue-200 transition-all text-sm sm:text-base">
+                        📄 <span class="hidden xs:inline">CSV</span>
                     </a>
-                    <a href="{{ url_for('admin.export_pdf') }}" class="px-4 py-2 bg-red-100 text-red-700 font-semibold rounded-lg border-2 border-red-500 hover:bg-red-200 transition-all">
-                        📑 PDF
+                    <a href="{{ url_for('admin.export_pdf') }}" class="px-3 sm:px-4 py-2 bg-red-100 text-red-700 font-semibold rounded-lg border-2 border-red-500 hover:bg-red-200 transition-all text-sm sm:text-base">
+                        📑 <span class="hidden xs:inline">PDF</span>
                     </a>
                 </div>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto -mx-4 sm:mx-0">
                 <table class="min-w-full">
                     <thead>
                         <tr class="bg-cyan-100 border-b-2 border-cyan-500">
-                            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase">Code</th>
-                            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase">Nom</th>
-                            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase">Email</th>
-                            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase">Ville</th>
-                            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase">Disponibilité</th>
-                            <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase">Actions</th>
+                            <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-gray-700 uppercase">Code</th>
+                            <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-gray-700 uppercase">Nom</th>
+                            <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-gray-700 uppercase hidden md:table-cell">Email</th>
+                            <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-gray-700 uppercase hidden lg:table-cell">Ville</th>
+                            <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-gray-700 uppercase hidden sm:table-cell">Disponibilité</th>
+                            <th class="px-3 sm:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-gray-700 uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         {% for user in users %}
                         <tr class="hover:bg-cyan-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="font-mono text-sm font-bold text-gray-900">{{ user.formatted_code }}</span>
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                <span class="font-mono text-xs sm:text-sm font-bold text-gray-900">{{ user.formatted_code }}</span>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-cyan-600 rounded-full flex items-center justify-center text-white font-bold">
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
+                                <div class="flex items-center gap-2 sm:gap-3">
+                                    <div class="w-8 h-8 sm:w-10 sm:h-10 bg-cyan-600 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-base">
                                         {{ user.first_name[0] if user.first_name else '?' }}{{ user.last_name[0] if user.last_name else '?' }}
                                     </div>
-                                    <span class="font-semibold text-gray-900">{{ user.full_name }}</span>
+                                    <span class="font-semibold text-gray-900 text-sm sm:text-base">{{ user.full_name }}</span>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ user.email }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-600 hidden md:table-cell">{{ user.email }}</td>
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-600 hidden lg:table-cell">
                                 {{ user.city.name if user.city else 'N/A' }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap hidden sm:table-cell">
                                 {% if user.availability == 'Temps plein' %}
                                 <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-500">
                                     ⏰ Temps plein
@@ -253,16 +253,16 @@
                                 </span>
                                 {% endif %}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm">
                                 <a href="{{ url_for('profile.view', unique_code=user.unique_code) }}" 
-                                   class="px-3 py-1 bg-blue-100 text-blue-700 font-semibold rounded-lg border border-blue-500 hover:bg-blue-200 transition-all">
-                                    👁️ Voir
+                                   class="px-2 sm:px-3 py-1 bg-blue-100 text-blue-700 font-semibold rounded-lg border border-blue-500 hover:bg-blue-200 transition-all text-xs sm:text-sm">
+                                    👁️ <span class="hidden sm:inline">Voir</span>
                                 </a>
                             </td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                            <td colspan="6" class="px-3 sm:px-6 py-8 sm:py-12 text-center text-gray-500">
                                 <div class="text-6xl mb-4">🔍</div>
                                 <p class="text-xl font-semibold">Aucun talent trouvé</p>
                                 <p class="text-sm">Essayez de modifier vos filtres de recherche</p>
