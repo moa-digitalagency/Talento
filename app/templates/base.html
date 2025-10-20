@@ -16,7 +16,7 @@
                     <div class="flex-shrink-0 flex items-center">
                         <a href="{{ url_for('main.index') }}" class="text-xl sm:text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-2">
                             <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="Talento Logo" class="w-6 h-6 sm:w-8 sm:h-8">
-                            <span class="hidden xs:inline">Talento</span>
+                            <span class="hidden sm:inline">Talento</span>
                         </a>
                     </div>
                 </div>
@@ -48,8 +48,7 @@
                                 <span class="hidden sm:inline">Connexion</span>
                             </a>
                             <a href="{{ url_for('auth.register') }}" class="btn-primary text-sm sm:text-base px-2 sm:px-4">
-                                <span>✨</span>
-                                <span class="hidden xs:inline">S'inscrire</span>
+                                ✨ <span class="hidden sm:inline">S'inscrire</span>
                             </a>
                         </div>
                     {% endif %}

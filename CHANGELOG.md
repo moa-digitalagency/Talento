@@ -5,6 +5,86 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.12.0] - 2025-10-20
+
+### 🔧 Corrections et Améliorations
+
+#### Format QR Code Corrigé
+- **QR codes sans tirets** : Correction du format des liens QR codes
+  - Format ancien : `/profile/view/MA-RAB-0002-F`
+  - Format nouveau : `/profile/view/MARAB0002F`
+  - Cohérence avec le format du code unique utilisé partout dans l'application
+  - Modification dans `app/utils/qr_generator.py`
+
+#### Bouton Retour Corrigé
+- **Route de retour optimisée** sur la page de détail du profil
+  - Redirection vers le dashboard principal (`main.index`) au lieu d'une route inexistante
+  - Navigation plus intuitive pour les administrateurs
+  - Cohérence avec le flux de navigation de l'application
+
+#### Export PDF Liste Amélioré
+- **Affichage complet des compétences** dans la colonne talents
+  - Toutes les compétences sont maintenant affichées avec retour à la ligne automatique
+  - Suppression de la limitation à 2 compétences + "+N"
+  - Utilisation de `Paragraph` de ReportLab pour gestion intelligente du texte
+  - Meilleure lisibilité et information complète pour chaque candidat
+
+### 📱 Optimisation Responsive Mobile & Tablette
+
+#### Navigation Responsive
+- **Barre de navigation adaptative** :
+  - Réduction de la taille du logo et du texte sur mobile (w-6 h-6 vs w-8 h-8)
+  - Masquage du nom "Talento" sur petits écrans (hidden sm:inline)
+  - Espacement réduit entre les boutons sur mobile (space-x-1 vs space-x-4)
+  - Texte des boutons caché sur mobile, visible sur tablette+ (hidden sm:inline)
+  - Tailles de police adaptatives (text-sm sm:text-base)
+
+#### Page de Profil Mobile-Friendly
+- **Boutons d'action optimisés** :
+  - Layout flexible : colonnes sur mobile, lignes sur desktop (flex-col sm:flex-row)
+  - Tailles adaptatives de padding (px-4 sm:px-6, py-2 sm:py-3)
+  - Boutons pleine largeur sur mobile (w-full sm:w-auto)
+  - Texte raccourci sur mobile pour "Télécharger PDF" → "PDF"
+  - Centrage des icônes et texte (justify-center)
+
+#### Dashboard Admin Responsive
+- **Boutons d'export adaptés** :
+  - Textes masqués sur mobile, visibles sur tablette+ (hidden sm:inline)
+  - Emojis uniquement sur mobile pour gagner de l'espace
+  - Layout flexible avec flex-wrap pour éviter le débordement
+  
+- **Tableau responsive** :
+  - Colonnes cachées progressivement selon la taille d'écran :
+    - Email : caché sur mobile, visible sur tablette+ (hidden md:table-cell)
+    - Ville : caché sur tablette, visible sur desktop (hidden lg:table-cell)
+    - Disponibilité : caché sur mobile (hidden sm:table-cell)
+  - Padding réduit sur mobile (px-3 vs px-6)
+  - Tailles de police adaptatives (text-xs sm:text-sm)
+  - Bouton "Voir" raccourci sur mobile (emoji uniquement)
+  
+- **Sections optimisées** :
+  - Padding adaptatif des sections (p-4 sm:p-8)
+  - Titres et icônes redimensionnés (text-3xl sm:text-4xl)
+  - Headers en colonnes sur mobile, lignes sur desktop
+
+### 📊 Impact Utilisateur
+
+#### Expérience Mobile Améliorée
+- **Navigation fluide** sur smartphones et tablettes
+- **Interface épurée** avec emojis pour économiser l'espace
+- **Tableaux lisibles** sans scroll horizontal excessif
+- **Boutons accessibles** avec zones de toucher optimales
+
+#### Cohérence Visuelle
+- **Transitions fluides** entre breakpoints (mobile → tablette → desktop)
+- **Information progressive** : éléments cachés intelligemment selon l'espace disponible
+- **Design professionnel** maintenu sur tous les appareils
+
+#### QR Codes Fonctionnels
+- **Liens corrects** pour tous les QR codes générés
+- **Scan direct** vers les profils sans erreur 404
+- **Compatibilité totale** avec le système de routage
+
 ## [2.11.0] - 2025-10-20
 
 ### 🔲 Génération Automatique des QR Codes
