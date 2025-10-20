@@ -5,6 +5,108 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.11.0] - 2025-10-20
+
+### 🔲 Génération Automatique des QR Codes
+
+#### Initialisation Améliorée
+- **Génération automatique des QR codes** pour tous les utilisateurs lors de l'initialisation
+  - Nouvelle fonction `generate_qr_codes_for_users()` dans `migrations_init.py`
+  - Exécutée automatiquement après la création des utilisateurs de démonstration
+  - Génère les QR codes pour tous les utilisateurs qui n'en ont pas encore
+  - Garantit que chaque profil possède un QR code dès sa création
+  - QR codes générés pour les profils admin et démo lors du déploiement
+
+#### Fonctionnement
+- **Détection intelligente** : Vérifie les utilisateurs sans QR code (`qr_code_filename == None`)
+- **Génération en masse** : Crée les QR codes manquants pour tous les utilisateurs existants
+- **Sauvegarde automatique** : QR codes enregistrés dans `app/static/uploads/qrcodes/`
+- **Gestion d'erreurs** : Messages d'avertissement en cas d'échec de génération
+
+### 📄 Export PDF Liste de Talents Amélioré
+
+#### Format Paysage (Landscape)
+- **Nouvelle orientation** : PDF en format paysage (landscape A4) au lieu de portrait
+  - Meilleure utilisation de l'espace horizontal pour les tableaux larges
+  - Permet d'afficher plus de colonnes sans rétrécir le texte
+  - Optimisé pour l'impression et l'affichage sur écran
+
+#### Colonnes Optimisées
+- **Colonnes mises à jour** selon les besoins métier :
+  - **Code** : Code unique formaté du talent
+  - **Nom Complet** : Prénom et nom de l'utilisateur
+  - **Talents** : Liste des compétences (max 2, puis +N)
+  - **Ville au Maroc** : Ville de résidence au Maroc
+  - **Pays Origine** : Pays d'origine complet
+  - **Téléphone** : Numéro de téléphone de contact
+  - **WhatsApp** : Numéro WhatsApp
+
+#### Informations de Traçabilité
+- **Pied de page enrichi** :
+  - **Date et heure** de génération du document (format: DD/MM/YYYY à HH:MM)
+  - **Utilisateur** qui a téléchargé le PDF (nom complet et code unique)
+  - Exemple: `Date: 20/10/2025 à 15:45 | Téléchargé par: Ahmed Bennani (MA-CAS-0002-M)`
+
+#### Titre Simplifié
+- **Nouveau titre** : "Liste de Talent" (au lieu de "Liste des Talents Talento")
+- Design centré, couleur indigo (#4F46E5)
+- Format professionnel et épuré
+
+#### Optimisations de Mise en Page
+- **Largeurs de colonnes ajustées** pour maximiser la lisibilité
+- **Taille de police réduite** (7pt pour contenu, 9pt pour en-têtes) pour plus de données
+- **Padding optimisé** pour une meilleure densité d'information
+- **Alternance de couleurs** (blanc/gris) pour faciliter la lecture des lignes
+
+### 🔙 Navigation Améliorée
+
+#### Bouton Retour sur Page de Profil
+- **Nouveau bouton "◀️ Retour"** ajouté sur la page de détail du profil (`/profile/view/<unique_code>`)
+  - Positionné à gauche, séparé des autres boutons d'action
+  - Style cohérent : fond gris léger avec bordure (bg-gray-100, border-gray-500)
+  - Redirige vers `/admin/talents_list` pour retourner à la liste des talents
+  - Améliore la navigation et l'expérience utilisateur
+
+#### Réorganisation des Boutons
+- **Layout en deux groupes** :
+  - **Gauche** : Bouton "Retour"
+  - **Droite** : Boutons d'action (Modifier, Suspendre/Activer, Supprimer, Télécharger PDF)
+  - Utilisation de `justify-between` pour séparation claire
+
+### 🔧 Modifications Techniques
+
+#### Backend
+- **Service d'export** (`app/services/export_service.py`) :
+  - Ajout du paramètre `current_user` à `export_list_to_pdf()`
+  - Import de `landscape` depuis `reportlab.lib.pagesizes`
+  - Passage à format paysage avec `pagesize=landscape(A4)`
+  
+- **Routes admin** (`app/routes/admin.py`) :
+  - Mise à jour de `export_pdf()` pour passer `current_user` au service d'export
+  
+- **Script d'initialisation** (`migrations_init.py`) :
+  - Import de `generate_qr_code` depuis `app.utils.qr_generator`
+  - Nouvelle fonction `generate_qr_codes_for_users()` pour génération en masse
+  - Appel automatique dans la fonction `main()` après `create_demo_users()`
+
+#### Frontend
+- **Template de profil** (`app/templates/profile/view.html`) :
+  - Ajout du bouton "Retour" avec lien vers `admin.talents_list`
+  - Réorganisation des boutons d'action en deux groupes (gauche/droite)
+
+### 📊 Impact Utilisateur
+
+#### Expérience Améliorée
+- **QR codes universels** : Tous les profils possèdent maintenant un QR code dès leur création
+- **Navigation fluide** : Retour facile à la liste des talents depuis le profil
+- **PDF professionnel** : Export optimisé en format paysage avec toutes les informations essentielles
+- **Traçabilité** : Savoir qui a téléchargé le PDF et quand
+
+#### Administration Simplifiée
+- **Déploiement automatisé** : QR codes générés automatiquement lors de l'initialisation
+- **Export complet** : Toutes les informations de contact dans un seul document
+- **Format imprimable** : PDF paysage optimisé pour impression et partage
+
 ## [2.10.0] - 2025-10-20
 
 ### 📄 Améliorations de l'Export PDF Individuel
