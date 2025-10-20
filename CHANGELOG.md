@@ -5,6 +5,79 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.10.0] - 2025-10-20
+
+### 📄 Améliorations de l'Export PDF Individuel
+
+#### Mise en Page du Bloc Principal Optimisée
+- **Disposition 3 colonnes** améliorée pour le bloc principal :
+  - 📸 **Colonne gauche** : Photo de profil ou silhouette simple (👤) sans texte
+  - 📝 **Colonne centrale** : Nom complet et code unique
+  - 📱 **Colonne droite** : QR Code (généré automatiquement avec le code unique)
+  - Tous les éléments alignés horizontalement dans une même ligne
+  - Plus de textes "non disponible" sous les placeholders
+
+#### Placeholder Photo Simplifié
+- **Silhouette minimaliste** : Émoji 👤 simple et élégant
+- **Taille augmentée** : Icône plus visible (fontSize: 90)
+- **Couleurs adaptatives** selon le genre :
+  - Bleu pour masculin
+  - Violet pour féminin
+  - Cyan pour non précisé
+- **Suppression** du texte "Photo non disponible"
+
+#### Affichage QR Code Optimisé
+- **Toujours présent** : Le QR code est généré automatiquement lors de la création du code unique
+- **Placeholder minimal** : Simple carré (⬜) si QR code vraiment absent
+- **Suppression** du texte "QR Code non disponible"
+- **Taille optimale** : 1.5 inch pour meilleure scannabilité
+
+#### Titre Actualisé
+- **Nouveau titre** : "Plateforme de Centralisation des Talents Africain Subsahrien aux Maroc"
+- Remplace l'ancien : "Plateforme de Centralisation des Talents Africains"
+- Meilleure précision géographique
+
+#### Section Réseaux Sociaux Intelligente
+- **Affichage conditionnel** : La section n'apparaît que si au moins un réseau social est renseigné
+- **Filtrage automatique** : Seuls les réseaux sociaux remplis sont affichés
+- **12 plateformes supportées** : LinkedIn, Instagram, Twitter, Facebook, TikTok, YouTube, GitHub, Behance, Dribbble, Pinterest, Snapchat, Telegram
+- **Section masquée** si aucun réseau social n'est renseigné
+
+#### Champs Complets Affichés
+- **Section Identité enrichie** :
+  - Adresse ajoutée
+  - Langues parlées
+  - Années d'expérience
+  - Éducation/Formation
+- **Section Profil Professionnel** :
+  - Date d'inscription ajoutée
+- **Affichage systématique** : "Information non disponible" pour les champs vides
+
+### 🎨 Design PDF Professionnel
+
+#### Mise en Page Épurée
+- **Structure claire** : 3 colonnes équilibrées dans le bloc principal
+- **Alignement vertical** : Tous les éléments (photo, nom, QR code) centrés verticalement
+- **Espacement optimisé** : Padding cohérent pour une meilleure lisibilité
+
+#### Minimalisme
+- **Placeholders simples** : Pas de texte superflu
+- **Design épuré** : Focus sur l'information essentielle
+- **Icônes élégantes** : Émojis utilisés avec parcimonie
+
+### 📊 Impact Utilisateur
+
+#### PDF Plus Professionnel
+- **Présentation optimale** : Layout 3 colonnes clair et équilibré
+- **Informations complètes** : Tous les champs du profil inclus
+- **QR Code toujours présent** : Facilite le scan et la vérification
+- **Sections dynamiques** : Réseaux sociaux affichés uniquement si remplis
+
+#### Meilleure Lisibilité
+- **Design épuré** : Moins de distractions visuelles
+- **Placeholders minimalistes** : Pas de textes redondants
+- **Structure cohérente** : Organisation claire des informations
+
 ## [2.9.0] - 2025-10-20
 
 ### 🎨 Harmonisation du Design et Simplification de la Navigation

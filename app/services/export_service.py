@@ -263,26 +263,18 @@ class ExportService:
                 pass
         
         if not photo_element:
-            # Placeholder silhouette selon le sexe
-            if user.gender == 'M':
-                placeholder_text = f"<b>👤</b><br/><font size='20'>{initials}</font><br/><font size='10'>Photo non<br/>disponible</font>"
-                placeholder_color = color_blue
-            elif user.gender == 'F':
-                placeholder_text = f"<b>👤</b><br/><font size='20'>{initials}</font><br/><font size='10'>Photo non<br/>disponible</font>"
-                placeholder_color = color_purple
-            else:
-                placeholder_text = f"<b>👤</b><br/><font size='20'>{initials}</font><br/><font size='10'>Photo non<br/>disponible</font>"
-                placeholder_color = color_cyan
+            # Placeholder silhouette simple
+            placeholder_color = color_blue if user.gender == 'M' else (color_purple if user.gender == 'F' else color_cyan)
             
             placeholder_style = ParagraphStyle(
                 'Placeholder',
                 parent=styles['Normal'],
-                fontSize=50,
+                fontSize=90,
                 textColor=placeholder_color,
                 alignment=TA_CENTER,
                 fontName='Helvetica-Bold'
             )
-            photo_element = Paragraph(placeholder_text, placeholder_style)
+            photo_element = Paragraph("👤", placeholder_style)
         
         # Informations principales dans une carte
         info_name_style = ParagraphStyle(
@@ -316,7 +308,7 @@ class ExportService:
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ]))
         
-        # QR Code
+        # QR Code - devrait toujours exister car généré avec le code unique
         qr_element = None
         if user.qr_code_filename:
             try:
@@ -326,9 +318,10 @@ class ExportService:
             except:
                 pass
         
+        # Placeholder simple pour QR code si vraiment absent
         if not qr_element:
-            qr_label_style = ParagraphStyle('QRLabel', parent=styles['Normal'], fontSize=40, alignment=TA_CENTER, textColor=color_gray)
-            qr_element = Paragraph("📱<br/><font size='8'>QR Code<br/>non disponible</font>", qr_label_style)
+            qr_placeholder_style = ParagraphStyle('QRPlaceholder', parent=styles['Normal'], fontSize=90, alignment=TA_CENTER, textColor=color_gray)
+            qr_element = Paragraph("⬜", qr_placeholder_style)
         
         # Table principale avec photo, info et QR
         main_table = Table(
