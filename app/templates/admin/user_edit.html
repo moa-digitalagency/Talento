@@ -9,7 +9,7 @@
         <!-- En-tête -->
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-4xl font-bold text-indigo-600">✏️ Modifier le Profil</h1>
-            <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" 
+            <a href="{{ url_for('profile.view', unique_code=user.unique_code) }}" 
                class="btn-secondary px-6">
                 ← Retour
             </a>
@@ -275,7 +275,7 @@
                 <button type="submit" class="btn-primary flex-1 py-4 text-lg font-semibold">
                     💾 Enregistrer les modifications
                 </button>
-                <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" 
+                <a href="{{ url_for('profile.view', unique_code=user.unique_code) }}" 
                    class="btn-secondary px-8 py-4 text-lg font-semibold">
                     ❌ Annuler
                 </a>
