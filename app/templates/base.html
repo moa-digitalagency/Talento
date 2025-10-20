@@ -37,6 +37,10 @@
                                 <span>🎯</span>
                                 <span>Talents</span>
                             </a>
+                            <a href="{{ url_for('cinema.dashboard') }}" class="px-4 py-2 text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all font-semibold">
+                                <span>🎬</span>
+                                <span>CINEMA</span>
+                            </a>
                             {% if current_user.is_admin %}
                             <a href="{{ url_for('admin.settings') }}" class="px-4 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all font-semibold">
                                 <span>⚙️</span>
@@ -93,6 +97,10 @@
                     <a href="{{ url_for('main.talents') }}" class="block px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-lg transition-all font-semibold">
                         <span>🎯</span>
                         <span class="ml-2">Talents</span>
+                    </a>
+                    <a href="{{ url_for('cinema.dashboard') }}" class="block px-4 py-3 text-gray-700 hover:bg-orange-50 rounded-lg transition-all font-semibold">
+                        <span>🎬</span>
+                        <span class="ml-2">CINEMA</span>
                     </a>
                     {% if current_user.is_admin %}
                     <a href="{{ url_for('admin.settings') }}" class="block px-4 py-3 text-gray-700 hover:bg-green-50 rounded-lg transition-all font-semibold">
