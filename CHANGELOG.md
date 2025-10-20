@@ -5,6 +5,85 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.13.0] - 2025-10-20
+
+### 🔧 Corrections et Améliorations UX
+
+#### Navigation Corrigée
+- **Bouton Retour sur Page de Profil** : Correction de la redirection
+  - Le bouton "◀️ Retour" redirige maintenant vers `/talents` au lieu de `/`
+  - Navigation plus logique pour revenir à la liste des talents
+  - Modification dans `app/templates/profile/view.html`
+
+#### QR Codes Fonctionnels
+- **Format URL HTTPS Corrigé** : Les QR codes ouvrent maintenant correctement les pages dans un navigateur
+  - Ajout du préfixe `https://` pour les domaines Replit
+  - Gestion intelligente du domaine avec `REPLIT_DEV_DOMAIN`
+  - Format : `https://{domain}/profile/view/{unique_code}` au lieu du texte brut
+  - Les QR codes générés sont maintenant scannables et ouvrent directement la page du profil
+  - Modification dans `app/utils/qr_generator.py`
+  - Les QR codes existants seront automatiquement régénérés au prochain démarrage via `migrations_init.py`
+
+### 📱 Design Responsive Mobile & Tablette
+
+#### QR Code Responsive
+- **QR Code caché sur mobile et tablette** :
+  - Visible uniquement sur desktop (écrans larges ≥ 1024px)
+  - Classe CSS ajoutée : `hidden lg:block`
+  - Optimisation de l'espace sur petits écrans
+  - Modification dans `app/templates/profile/view.html`
+
+#### Menu Hamburger Mobile
+- **Navigation mobile améliorée** :
+  - Menu hamburger pour mobile et tablette (< 768px)
+  - Navigation desktop complète pour écrans moyens et grands (≥ 768px)
+  - Logo "Talento" toujours visible sur tous les écrans
+  - Menu déroulant avec JavaScript pour basculer l'affichage
+  - Icône hamburger (☰) en SVG pour une meilleure qualité
+  - Modification dans `app/templates/base.html`
+
+#### Organisation du Menu
+- **Desktop (≥ 768px)** :
+  - Navigation horizontale complète avec textes
+  - Boutons : Dashboard/Mon Profil, Talents, Déconnexion
+  - Connexion et S'inscrire pour visiteurs non authentifiés
+
+- **Mobile/Tablette (< 768px)** :
+  - Icône hamburger à droite
+  - Menu déroulant vertical au clic
+  - Tous les liens accessibles avec textes complets
+  - Fermeture automatique au clic sur un lien
+  - Design adapté avec padding et hover states
+
+### 📊 Impact Utilisateur
+
+#### Expérience QR Code Améliorée
+- **Scan fonctionnel** : Les QR codes ouvrent maintenant les profils directement dans le navigateur
+- **Compatibilité universelle** : Fonctionne avec tous les lecteurs de QR codes
+- **Navigation logique** : Retour facile vers la liste des talents après consultation
+
+#### Interface Mobile Optimisée
+- **Navigation intuitive** : Menu hamburger standard sur mobile
+- **Gain d'espace** : QR code masqué sur petits écrans
+- **Expérience cohérente** : Même fonctionnalité sur tous les appareils
+- **Performance** : Chargement optimisé sans éléments inutiles sur mobile
+
+### 🔧 Modifications Techniques
+
+#### Frontend
+- **Templates modifiés** :
+  - `app/templates/base.html` : Ajout du menu hamburger avec JavaScript
+  - `app/templates/profile/view.html` : Correction du lien retour + QR code responsive
+
+#### Backend
+- **Services modifiés** :
+  - `app/utils/qr_generator.py` : Correction du format URL pour HTTPS
+
+#### Migration
+- **Régénération automatique** :
+  - Les QR codes existants seront automatiquement régénérés au prochain démarrage
+  - Utilisation de la fonction `generate_qr_codes_for_users()` dans `migrations_init.py`
+
 ## [2.12.0] - 2025-10-20
 
 ### 🔧 Corrections et Améliorations

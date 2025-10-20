@@ -9,7 +9,7 @@
         <!-- Boutons d'action en haut -->
         {% if current_user.is_authenticated and current_user.is_admin %}
         <div class="mb-6 flex flex-col sm:flex-row gap-3 sm:justify-between">
-            <a href="{{ url_for('main.index') }}" 
+            <a href="{{ url_for('main.talents') }}" 
                class="px-4 sm:px-6 py-2 sm:py-3 bg-gray-100 text-gray-700 font-bold rounded-lg border-2 border-gray-500 hover:bg-gray-200 transition-all flex items-center justify-center gap-2 text-sm sm:text-base">
                 <span>◀️</span>
                 <span>Retour</span>
@@ -62,7 +62,7 @@
                         
                         <!-- QR Code -->
                         {% if user.qr_code_filename %}
-                        <div class="bg-white p-4 rounded-xl border-2 border-blue-300 inline-block">
+                        <div class="bg-white p-4 rounded-xl border-2 border-blue-300 inline-block hidden lg:block">
                             <img src="{{ url_for('static', filename='uploads/qrcodes/' + user.qr_code_filename) }}" 
                                  alt="QR Code" 
                                  class="w-40 h-40 mx-auto">
