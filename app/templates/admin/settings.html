@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block title %}Paramètres - Administration - Talento{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-6xl mx-auto">
+        
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">⚙️ Paramètres</h1>
+            <p class="text-gray-600">Configuration de l'application et gestion des administrateurs</p>
+        </div>
+
+        <!-- Configuration API Keys -->
+        <div class="section-blue p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">🔑</span>
+                <h2 class="text-2xl font-bold text-gray-800">Clés API et Configuration</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- SendGrid Status -->
+                <div class="bg-white p-6 rounded-lg border-2 {% if config.sendgrid %}border-green-300{% else %}border-red-300{% endif %}">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">📧</span>
+                            <h3 class="text-lg font-bold text-gray-800">SendGrid</h3>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-sm font-semibold {% if config.sendgrid %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                            {% if config.sendgrid %}✅ Configuré{% else %}❌ Non configuré{% endif %}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-2">Envoi automatique des emails :</p>
+                    <ul class="text-sm text-gray-700 space-y-1 ml-4 list-disc">
+                        <li>Confirmation de candidature</li>
+                        <li>Identifiants de connexion</li>
+                    </ul>
+                    {% if config.sendgrid %}
+                    <div class="mt-4 p-3 bg-blue-50 rounded border border-blue-200">
+                        <p class="text-xs text-gray-700"><strong>Email expéditeur :</strong> {{ config.sendgrid_from }}</p>
+                    </div>
+                    {% else %}
+                    <div class="mt-4 p-3 bg-yellow-50 rounded border border-yellow-200">
+                        <p class="text-xs text-gray-700">Ajoutez SENDGRID_API_KEY dans les secrets Replit pour activer cette fonctionnalité.</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- OpenRouter Status -->
+                <div class="bg-white p-6 rounded-lg border-2 {% if config.openrouter %}border-green-300{% else %}border-red-300{% endif %}">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">🤖</span>
+                            <h3 class="text-lg font-bold text-gray-800">OpenRouter AI</h3>
+                        </div>
+                        <span class="px-3 py-1 rounded-full text-sm font-semibold {% if config.openrouter %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                            {% if config.openrouter %}✅ Configuré{% else %}❌ Non configuré{% endif %}
+                        </span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-2">Analyse intelligente des CV :</p>
+                    <ul class="text-sm text-gray-700 space-y-1 ml-4 list-disc">
+                        <li>Analyse automatique du CV</li>
+                        <li>Score du profil (0-100)</li>
+                        <li>Détection des compétences</li>
+                        <li>Recommandations IA</li>
+                    </ul>
+                    {% if not config.openrouter %}
+                    <div class="mt-4 p-3 bg-yellow-50 rounded border border-yellow-200">
+                        <p class="text-xs text-gray-700">Ajoutez OPENROUTER_API_KEY dans les secrets Replit pour activer cette fonctionnalité.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Database Info -->
+            <div class="mt-6 bg-white p-6 rounded-lg border-2 border-blue-300">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-2xl">💾</span>
+                    <h3 class="text-lg font-bold text-gray-800">Base de données</h3>
+                </div>
+                <p class="text-gray-700"><strong>Type :</strong> {{ config.database_type }}</p>
+            </div>
+        </div>
+
+        <!-- Administrateurs -->
+        <div class="section-purple p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">👥</span>
+                <h2 class="text-2xl font-bold text-gray-800">Utilisateurs Administrateurs</h2>
+            </div>
+            
+            <div class="bg-white rounded-lg border-2 border-purple-300 overflow-hidden">
+                <table class="min-w-full divide-y divide-purple-200">
+                    <thead class="bg-purple-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Nom complet</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Code unique</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date de création</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-purple-100">
+                        {% for admin in admin_users %}
+                        <tr class="hover:bg-purple-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    {% if admin.photo_filename %}
+                                    <img src="{{ url_for('static', filename='uploads/photos/' + admin.photo_filename) }}" 
+                                         alt="{{ admin.full_name }}" 
+                                         class="w-10 h-10 rounded-full mr-3 object-cover border-2 border-purple-300">
+                                    {% else %}
+                                    <div class="w-10 h-10 rounded-full mr-3 bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-sm font-bold border-2 border-purple-300">
+                                        {{ admin.first_name[0] if admin.first_name else '?' }}{{ admin.last_name[0] if admin.last_name else '?' }}
+                                    </div>
+                                    {% endif %}
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">{{ admin.full_name }}</div>
+                                        {% if admin.id == current_user.id %}
+                                        <div class="text-xs text-purple-600 font-semibold">Vous</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ admin.email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">{{ admin.formatted_code }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ admin.created_at.strftime('%d/%m/%Y') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                {% if admin.id != current_user.id and admin_users|length > 1 %}
+                                <form method="POST" action="{{ url_for('admin.demote_admin', user_id=admin.id) }}" 
+                                      onsubmit="return confirm('Êtes-vous sûr de vouloir retirer les droits administrateur à {{ admin.full_name }} ?');" 
+                                      class="inline">
+                                    <button type="submit" class="px-3 py-1 bg-red-100 text-red-700 rounded border border-red-300 hover:bg-red-200 transition-all text-xs font-semibold">
+                                        Retirer admin
+                                    </button>
+                                </form>
+                                {% else %}
+                                <span class="text-xs text-gray-400 italic">Actions indisponibles</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Ajouter un nouvel administrateur -->
+            <div class="mt-6 bg-purple-50 p-6 rounded-lg border-2 border-purple-300">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>➕</span>
+                    <span>Promouvoir un utilisateur en administrateur</span>
+                </h3>
+                <p class="text-sm text-gray-600 mb-4">Sélectionnez un utilisateur existant dans la liste pour lui donner les droits administrateur.</p>
+                
+                <form method="POST" action="#" id="promote-form" onsubmit="return confirmPromotion();">
+                    <div class="flex gap-3">
+                        <select name="user_id" id="user-select" class="flex-1 px-4 py-2 border-2 border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                            <option value="">-- Sélectionnez un utilisateur --</option>
+                        </select>
+                        <button type="button" onclick="loadNonAdminUsers()" class="px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg border-2 border-blue-300 hover:bg-blue-200 transition-all">
+                            📋 Charger les utilisateurs
+                        </button>
+                        <button type="submit" class="px-6 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all">
+                            ✨ Promouvoir
+                        </button>
+                    </div>
+                </form>
+
+                <script>
+                    function loadNonAdminUsers() {
+                        fetch('/admin/users')
+                            .then(response => response.text())
+                            .then(html => {
+                                const parser = new DOMParser();
+                                const doc = parser.parseFromString(html, 'text/html');
+                                const select = document.getElementById('user-select');
+                                select.innerHTML = '<option value="">-- Sélectionnez un utilisateur --</option>';
+                                
+                                const rows = doc.querySelectorAll('tbody tr');
+                                rows.forEach(row => {
+                                    const cells = row.querySelectorAll('td');
+                                    if (cells.length >= 3) {
+                                        const code = cells[0].textContent.trim();
+                                        const name = cells[1].textContent.trim();
+                                        const userId = row.querySelector('a[href*="edit"]')?.href.match(/\/(\d+)\/edit/)?.[1];
+                                        
+                                        if (userId) {
+                                            const option = document.createElement('option');
+                                            option.value = userId;
+                                            option.textContent = `${name} (${code})`;
+                                            select.appendChild(option);
+                                        }
+                                    }
+                                });
+                                
+                                if (select.options.length === 1) {
+                                    alert('Aucun utilisateur non-admin trouvé');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erreur:', error);
+                                alert('Impossible de charger les utilisateurs');
+                            });
+                    }
+
+                    function confirmPromotion() {
+                        const select = document.getElementById('user-select');
+                        const selectedOption = select.options[select.selectedIndex];
+                        
+                        if (!select.value) {
+                            alert('Veuillez sélectionner un utilisateur');
+                            return false;
+                        }
+                        
+                        const confirmed = confirm(`Êtes-vous sûr de vouloir promouvoir ${selectedOption.text} en administrateur ?`);
+                        if (confirmed) {
+                            document.getElementById('promote-form').action = `/admin/user/${select.value}/promote-admin`;
+                            return true;
+                        }
+                        return false;
+                    }
+                </script>
+            </div>
+        </div>
+
+        <!-- Bouton Retour -->
+        <div class="mb-6">
+            <a href="{{ url_for('main.index') }}" 
+               class="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-lg border-2 border-gray-500 hover:bg-gray-200 transition-all inline-flex items-center gap-2">
+                <span>◀️</span>
+                <span>Retour au Dashboard</span>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

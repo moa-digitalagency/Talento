@@ -37,6 +37,12 @@
                                 <span>🎯</span>
                                 <span>Talents</span>
                             </a>
+                            {% if current_user.is_admin %}
+                            <a href="{{ url_for('admin.settings') }}" class="px-4 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all font-semibold">
+                                <span>⚙️</span>
+                                <span>Paramètres</span>
+                            </a>
+                            {% endif %}
                             <a href="{{ url_for('auth.logout') }}" class="btn-secondary px-4">
                                 <span>🚪</span>
                                 <span>Déconnexion</span>
@@ -88,6 +94,12 @@
                         <span>🎯</span>
                         <span class="ml-2">Talents</span>
                     </a>
+                    {% if current_user.is_admin %}
+                    <a href="{{ url_for('admin.settings') }}" class="block px-4 py-3 text-gray-700 hover:bg-green-50 rounded-lg transition-all font-semibold">
+                        <span>⚙️</span>
+                        <span class="ml-2">Paramètres</span>
+                    </a>
+                    {% endif %}
                     <a href="{{ url_for('auth.logout') }}" class="block px-4 py-3 text-gray-700 hover:bg-red-50 rounded-lg transition-all font-semibold">
                         <span>🚪</span>
                         <span class="ml-2">Déconnexion</span>

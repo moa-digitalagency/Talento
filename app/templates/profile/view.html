@@ -129,12 +129,26 @@
         </div>
 
         <!-- Score et Analyse CV -->
-        {% if user.profile_score or cv_analysis %}
         <div class="section-yellow p-8 mb-8">
             <div class="flex items-center gap-3 mb-6">
                 <span class="text-4xl">🎯</span>
                 <h2 class="text-2xl font-bold text-gray-800">Analyse du Profil</h2>
             </div>
+            
+            {% if not user.cv_filename %}
+            <!-- Aucun CV uploadé -->
+            <div class="bg-orange-50 p-8 rounded-lg border-2 border-orange-300 text-center">
+                <div class="text-6xl mb-4">📄</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Aucun CV disponible</h3>
+                <p class="text-gray-600 mb-4">Ce profil n'a pas encore de CV uploadé. L'analyse intelligente sera disponible après l'ajout d'un CV.</p>
+                {% if current_user.is_authenticated and (current_user.id == user.id or current_user.is_admin) %}
+                <a href="{% if current_user.is_admin %}{{ url_for('admin.edit_user', user_id=user.id) }}{% else %}{{ url_for('profile.edit') }}{% endif %}" 
+                   class="inline-block px-6 py-3 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition-all">
+                    📎 Ajouter un CV
+                </a>
+                {% endif %}
+            </div>
+            {% elif user.profile_score or cv_analysis %}
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 {% if user.profile_score %}
@@ -222,9 +236,15 @@
                 </div>
                 {% endif %}
             </div>
+            {% else %}
+            <!-- CV uploadé mais pas encore analysé -->
+            <div class="bg-blue-50 p-8 rounded-lg border-2 border-blue-300 text-center">
+                <div class="text-6xl mb-4">⏳</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">CV en cours de traitement</h3>
+                <p class="text-gray-600">Le CV a été uploadé mais n'a pas encore été analysé par l'intelligence artificielle.</p>
+            </div>
             {% endif %}
         </div>
-        {% endif %}
 
         <!-- Talents -->
         <div class="section-purple p-8 mb-8">

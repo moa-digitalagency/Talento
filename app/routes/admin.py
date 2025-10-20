@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, jsonify
+from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file, jsonify, current_app
 from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime
@@ -10,6 +10,7 @@ from app.models.location import Country, City
 from app.services.export_service import ExportService
 from app.services.cv_analyzer import CVAnalyzerService
 import io
+import os
 
 bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -266,3 +267,60 @@ def edit_user(user_id):
                          cities=cities,
                          all_talents=all_talents,
                          user_talent_ids=user_talent_ids)
+
+@bp.route('/settings')
+@login_required
+@admin_required
+def settings():
+    admin_users = User.query.filter(User.is_admin == True).order_by(User.created_at).all()
+    
+    sendgrid_configured = bool(os.environ.get('SENDGRID_API_KEY'))
+    openrouter_configured = bool(os.environ.get('OPENROUTER_API_KEY'))
+    
+    config_info = {
+        'sendgrid': sendgrid_configured,
+        'openrouter': openrouter_configured,
+        'sendgrid_from': os.environ.get('SENDGRID_FROM_EMAIL', 'noreply@talento.com'),
+        'database_type': 'PostgreSQL' if 'postgresql' in current_app.config.get('SQLALCHEMY_DATABASE_URI', '').lower() else 'SQLite'
+    }
+    
+    return render_template('admin/settings.html', admin_users=admin_users, config=config_info)
+
+@bp.route('/user/<int:user_id>/promote-admin', methods=['POST'])
+@login_required
+@admin_required
+def promote_admin(user_id):
+    user = User.query.get_or_404(user_id)
+    
+    if user.is_admin:
+        flash('Cet utilisateur est déjà administrateur.', 'error')
+        return redirect(url_for('admin.settings'))
+    
+    user.is_admin = True
+    db.session.commit()
+    flash(f'{user.full_name} est maintenant administrateur.', 'success')
+    return redirect(url_for('admin.settings'))
+
+@bp.route('/user/<int:user_id>/demote-admin', methods=['POST'])
+@login_required
+@admin_required
+def demote_admin(user_id):
+    user = User.query.get_or_404(user_id)
+    
+    if not user.is_admin:
+        flash('Cet utilisateur n\'est pas administrateur.', 'error')
+        return redirect(url_for('admin.settings'))
+    
+    if user.id == current_user.id:
+        flash('Vous ne pouvez pas retirer vos propres droits d\'administrateur.', 'error')
+        return redirect(url_for('admin.settings'))
+    
+    admin_count = User.query.filter(User.is_admin == True).count()
+    if admin_count <= 1:
+        flash('Impossible de retirer les droits du dernier administrateur.', 'error')
+        return redirect(url_for('admin.settings'))
+    
+    user.is_admin = False
+    db.session.commit()
+    flash(f'{user.full_name} n\'est plus administrateur.', 'success')
+    return redirect(url_for('admin.settings'))
