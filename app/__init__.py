@@ -258,12 +258,13 @@ def create_app(config_class=Config):
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Veuillez vous connecter pour accéder à cette page.'
     
-    from app.routes import auth, profile, admin, main, api
+    from app.routes import auth, profile, admin, main, api, cinema
     app.register_blueprint(auth.bp)
     app.register_blueprint(profile.bp)
     app.register_blueprint(admin.bp)
     app.register_blueprint(main.bp)
     app.register_blueprint(api.bp)
+    app.register_blueprint(cinema.bp)
     
     with app.app_context():
         db.create_all()
