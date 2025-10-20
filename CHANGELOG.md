@@ -5,6 +5,78 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2025-10-20
+
+### ✨ Nouvelles Fonctionnalités
+
+#### Page Catalogue des Talents
+- **Nouvelle route `/talents`** : Catalogue complet des compétences disponibles
+  - Filtres de recherche par nom et catégorie
+  - Affichage en grille avec emojis et compteurs d'utilisateurs
+  - Statistiques de répartition par catégorie
+  - Design avec bordures pointillées (section-purple, section-blue, section-green, section-orange)
+  - Lien ajouté dans la navigation principale (🎯 Talents)
+
+#### Dashboard Unifié
+- **Route `/` adaptative** selon le type d'utilisateur :
+  - **Administrateurs** : Dashboard complet avec statistiques et liste des utilisateurs
+  - **Utilisateurs normaux** : Redirection vers leur profil personnel
+- **Suppression de `/admin/dashboard`** : Redirection automatique vers `/`
+- **Navigation simplifiée** : Bouton "⭐ Dashboard" pour admin, "👤 Mon Profil" pour utilisateurs
+
+### 🎨 Améliorations du Design
+
+#### Page de Connexion Modernisée
+- **Design attractif** avec bordures pointillées bleues et vertes
+- **En-tête accueillant** : Grande étoile ⭐ et message "Bon retour !"
+- **Icônes visuelles** : 📧 pour email, 🔒 pour mot de passe
+- **Champs améliorés** : Bordures arrondies, placeholders, effets de focus
+- **Section inscription** : Mise en valeur avec bordure verte
+- **Info admin** : Affichage des identifiants par défaut
+
+#### Dashboard Admin Redesigné
+- **Sections colorées** à bordures pointillées :
+  - Statistiques principales (section-blue, section-purple, section-green, section-orange)
+  - Filtres de recherche (section-indigo)
+  - Liste des utilisateurs (section-cyan)
+  - Visualisations (section-purple, section-green)
+- **Boutons d'export** : Excel, CSV, PDF avec codes couleur
+- **Tableau amélioré** : Badges de disponibilité, avatars avec initiales
+- **Filtres avancés** : Recherche par nom/email/code, filtres multiples
+
+#### Page de Profil Individuel Complète
+- **Placeholder photo** : Initiales dans un cercle coloré si photo manquante
+- **Affichage QR Code** : Visible directement sur le profil
+- **Design organisé en sections** :
+  - Informations principales avec photo et QR Code (section-blue)
+  - Compétences et talents en grille (section-purple)
+  - Coordonnées complètes (section-green)
+  - Formation et langues (section-orange)
+  - Réseaux sociaux et portfolio (section-pink)
+- **Bouton d'export PDF** : En haut de page pour les admins
+- **Badges visuels** : Disponibilité, mode de travail, expérience, tarifs
+
+### 🔧 Corrections Techniques
+
+#### Codification Simplifiée
+- **Format sans tirets** : `MARAB0001N` au lieu de `MA-RAB-0001-N`
+- Modification de la propriété `formatted_code` dans le modèle User
+- Suppression du formatage avec tirets dans le filtre `format_code`
+- Cohérence dans toute l'application
+
+#### Export PDF Amélioré
+- **Inclusion du QR Code** : Photo et QR Code affichés côte à côte dans le PDF
+- **Placeholder photo** : Initiales en grand format si photo manquante
+- **Tableau amélioré** : Disposition photo + QR Code en colonnes
+- **Gestion d'erreurs** : Meilleur traitement des fichiers manquants
+- **Design professionnel** : En-têtes colorés, sections bien définies
+
+### 📝 Autres Changements
+
+- **Profils démo** : Déjà complets avec toutes les informations du formulaire
+- **Cohérence visuelle** : Design unifié avec bordures pointillées sur toute la plateforme
+- **Navigation** : Ajout du lien "🎯 Talents" dans la barre de navigation
+
 ## [2.4.0] - 2025-10-20
 
 ### ✨ Nouvelles Fonctionnalités

@@ -3,62 +3,284 @@
 {% block title %}Profil de {{ user.full_name }} - Talento{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4">
-    <div class="card">
-        <div class="text-center mb-6">
-            {% if user.photo_filename %}
-            <img src="{{ url_for('static', filename='uploads/photos/' + user.photo_filename) }}" alt="{{ user.full_name }}" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
-            {% endif %}
-            <h1 class="text-3xl font-bold">{{ user.full_name }}</h1>
-            <p class="text-gray-600">{{ user.formatted_code }}</p>
-        </div>
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-5xl mx-auto">
         
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-2">Talents</h3>
-            <div class="flex flex-wrap gap-2">
+        <!-- Boutons d'action en haut -->
+        {% if current_user.is_authenticated and current_user.is_admin %}
+        <div class="mb-6 flex gap-3 justify-end">
+            <a href="{{ url_for('admin.export_pdf_individual', user_id=user.id) }}" 
+               class="px-6 py-3 bg-red-100 text-red-700 font-bold rounded-lg border-2 border-red-500 hover:bg-red-200 transition-all flex items-center gap-2">
+                <span>📑</span>
+                <span>Télécharger PDF</span>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Carte principale du profil -->
+        <div class="section-blue p-8 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Colonne gauche: Photo et QR Code -->
+                <div class="lg:col-span-1">
+                    <div class="text-center">
+                        <!-- Photo de profil -->
+                        {% if user.photo_filename %}
+                        <img src="{{ url_for('static', filename='uploads/photos/' + user.photo_filename) }}" 
+                             alt="{{ user.full_name }}" 
+                             class="w-48 h-48 rounded-full mx-auto mb-6 object-cover border-4 border-blue-500 shadow-xl">
+                        {% else %}
+                        <div class="w-48 h-48 rounded-full mx-auto mb-6 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-6xl font-bold border-4 border-blue-500 shadow-xl">
+                            {{ user.first_name[0] if user.first_name else '?' }}{{ user.last_name[0] if user.last_name else '?' }}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- QR Code -->
+                        {% if user.qr_code_filename %}
+                        <div class="bg-white p-4 rounded-xl border-2 border-blue-300 inline-block">
+                            <img src="{{ url_for('static', filename='uploads/qrcodes/' + user.qr_code_filename) }}" 
+                                 alt="QR Code" 
+                                 class="w-40 h-40 mx-auto">
+                            <p class="text-xs text-gray-600 mt-2">Scannez pour voir le profil</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Colonne droite: Informations principales -->
+                <div class="lg:col-span-2">
+                    <h1 class="text-4xl font-bold text-gray-800 mb-2">{{ user.full_name }}</h1>
+                    <p class="text-xl text-blue-600 font-mono font-bold mb-4">{{ user.formatted_code }}</p>
+                    
+                    {% if user.bio %}
+                    <div class="bg-blue-50 p-4 rounded-lg mb-6">
+                        <p class="text-gray-700 leading-relaxed">{{ user.bio }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Informations clés -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        {% if user.years_experience %}
+                        <div class="bg-white p-4 rounded-lg border-2 border-blue-200">
+                            <p class="text-sm text-gray-600">Expérience</p>
+                            <p class="text-2xl font-bold text-blue-600">{{ user.years_experience }} ans</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if user.availability %}
+                        <div class="bg-white p-4 rounded-lg border-2 border-blue-200">
+                            <p class="text-sm text-gray-600">Disponibilité</p>
+                            <p class="text-lg font-bold {% if user.availability == 'available' %}text-green-600{% elif user.availability == 'partially_available' %}text-yellow-600{% else %}text-red-600{% endif %}">
+                                {% if user.availability == 'available' %}✅ Disponible
+                                {% elif user.availability == 'partially_available' %}⚠️ Partiel
+                                {% else %}❌ Indisponible{% endif %}
+                            </p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if user.work_mode %}
+                        <div class="bg-white p-4 rounded-lg border-2 border-blue-200">
+                            <p class="text-sm text-gray-600">Mode de travail</p>
+                            <p class="text-lg font-bold text-gray-800">
+                                {% if user.work_mode == 'remote' %}🏠 Télétravail
+                                {% elif user.work_mode == 'on_site' %}🏢 Sur site
+                                {% else %}🔄 Hybride{% endif %}
+                            </p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if user.rate_range %}
+                        <div class="bg-white p-4 rounded-lg border-2 border-blue-200">
+                            <p class="text-sm text-gray-600">Tarifs</p>
+                            <p class="text-lg font-bold text-green-600">{{ user.rate_range }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Talents -->
+        <div class="section-purple p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">⭐</span>
+                <h2 class="text-2xl font-bold text-gray-800">Compétences & Talents</h2>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {% for user_talent in user.talents %}
-                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                    {{ user_talent.talent.emoji }} {{ user_talent.talent.name }}
-                </span>
+                <div class="bg-purple-50 p-4 rounded-xl border-2 border-purple-300 hover:shadow-lg transition-all text-center">
+                    <div class="text-4xl mb-2">{{ user_talent.talent.emoji }}</div>
+                    <p class="font-semibold text-gray-800">{{ user_talent.talent.name }}</p>
+                    <p class="text-xs text-gray-500">{{ user_talent.talent.category }}</p>
+                </div>
                 {% endfor %}
             </div>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
-                <p class="text-gray-600 mb-2"><strong>Email:</strong> {{ user.email }}</p>
-                <p class="text-gray-600 mb-2"><strong>Téléphone:</strong> {{ user.phone }}</p>
-                {% if user.whatsapp %}
-                <p class="text-gray-600 mb-2"><strong>WhatsApp:</strong> {{ user.whatsapp }}</p>
-                {% endif %}
+
+        <!-- Coordonnées -->
+        <div class="section-green p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">📞</span>
+                <h2 class="text-2xl font-bold text-gray-800">Coordonnées</h2>
             </div>
             
-            <div>
-                {% if user.country %}
-                <p class="text-gray-600 mb-2"><strong>Pays:</strong> {{ user.country.name }}</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600 mb-1">📧 Email</p>
+                    <p class="font-semibold text-gray-800">{{ user.email }}</p>
+                </div>
+                
+                {% if user.phone %}
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600 mb-1">📱 Téléphone</p>
+                    <p class="font-semibold text-gray-800">{{ user.phone }}</p>
+                </div>
                 {% endif %}
+                
+                {% if user.whatsapp %}
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600 mb-1">💬 WhatsApp</p>
+                    <p class="font-semibold text-gray-800">{{ user.whatsapp }}</p>
+                </div>
+                {% endif %}
+                
+                {% if user.address %}
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600 mb-1">📍 Adresse</p>
+                    <p class="font-semibold text-gray-800">{{ user.address }}</p>
+                </div>
+                {% endif %}
+                
                 {% if user.city %}
-                <p class="text-gray-600 mb-2"><strong>Ville:</strong> {{ user.city.name }}</p>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600 mb-1">🏙️ Ville</p>
+                    <p class="font-semibold text-gray-800">{{ user.city.name }}</p>
+                </div>
+                {% endif %}
+                
+                {% if user.country %}
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600 mb-1">🌍 Pays</p>
+                    <p class="font-semibold text-gray-800">{{ user.country.name }}</p>
+                </div>
                 {% endif %}
             </div>
         </div>
-        
-        {% if user.portfolio_url or user.linkedin or user.github %}
-        <div class="mb-6">
-            <h3 class="text-lg font-semibold mb-2">Liens</h3>
-            <div class="space-y-2">
-                {% if user.portfolio_url %}
-                <p><a href="{{ user.portfolio_url }}" target="_blank" class="text-primary hover:underline">Portfolio</a></p>
+
+        <!-- Informations professionnelles -->
+        {% if user.education or user.languages %}
+        <div class="section-orange p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">🎓</span>
+                <h2 class="text-2xl font-bold text-gray-800">Formation & Langues</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% if user.education %}
+                <div class="bg-orange-50 p-6 rounded-lg border-2 border-orange-300">
+                    <p class="text-sm text-gray-600 mb-2 font-semibold">📚 Formation</p>
+                    <p class="text-gray-800">{{ user.education }}</p>
+                </div>
                 {% endif %}
-                {% if user.linkedin %}
-                <p><a href="{{ user.linkedin }}" target="_blank" class="text-primary hover:underline">LinkedIn</a></p>
-                {% endif %}
-                {% if user.github %}
-                <p><a href="{{ user.github }}" target="_blank" class="text-primary hover:underline">GitHub</a></p>
+                
+                {% if user.languages %}
+                <div class="bg-orange-50 p-6 rounded-lg border-2 border-orange-300">
+                    <p class="text-sm text-gray-600 mb-3 font-semibold">🌐 Langues parlées</p>
+                    <div class="flex flex-wrap gap-2">
+                        {% for lang in user.languages.split(',') %}
+                        <span class="bg-orange-200 px-3 py-1 rounded-full text-sm font-semibold text-orange-800">
+                            {{ lang.strip() }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
                 {% endif %}
             </div>
         </div>
         {% endif %}
+
+        <!-- Réseaux sociaux & Portfolio -->
+        {% if user.portfolio_url or user.linkedin or user.github or user.behance or user.dribbble or user.instagram or user.twitter or user.facebook or user.youtube or user.tiktok %}
+        <div class="section-pink p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">🔗</span>
+                <h2 class="text-2xl font-bold text-gray-800">Liens & Réseaux Sociaux</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {% if user.portfolio_url %}
+                <a href="{{ user.portfolio_url }}" target="_blank" class="bg-pink-50 p-4 rounded-lg border-2 border-pink-300 hover:shadow-lg transition-all text-center">
+                    <p class="text-3xl mb-1">🌐</p>
+                    <p class="font-semibold text-gray-800 text-sm">Portfolio</p>
+                </a>
+                {% endif %}
+                
+                {% if user.linkedin %}
+                <a href="{{ user.linkedin }}" target="_blank" class="bg-pink-50 p-4 rounded-lg border-2 border-pink-300 hover:shadow-lg transition-all text-center">
+                    <p class="text-3xl mb-1">💼</p>
+                    <p class="font-semibold text-gray-800 text-sm">LinkedIn</p>
+                </a>
+                {% endif %}
+                
+                {% if user.github %}
+                <a href="{{ user.github }}" target="_blank" class="bg-pink-50 p-4 rounded-lg border-2 border-pink-300 hover:shadow-lg transition-all text-center">
+                    <p class="text-3xl mb-1">💻</p>
+                    <p class="font-semibold text-gray-800 text-sm">GitHub</p>
+                </a>
+                {% endif %}
+                
+                {% if user.behance %}
+                <a href="{{ user.behance }}" target="_blank" class="bg-pink-50 p-4 rounded-lg border-2 border-pink-300 hover:shadow-lg transition-all text-center">
+                    <p class="text-3xl mb-1">🎨</p>
+                    <p class="font-semibold text-gray-800 text-sm">Behance</p>
+                </a>
+                {% endif %}
+                
+                {% if user.dribbble %}
+                <a href="{{ user.dribbble }}" target="_blank" class="bg-pink-50 p-4 rounded-lg border-2 border-pink-300 hover:shadow-lg transition-all text-center">
+                    <p class="text-3xl mb-1">🏀</p>
+                    <p class="font-semibold text-gray-800 text-sm">Dribbble</p>
+                </a>
+                {% endif %}
+                
+                {% if user.instagram %}
+                <a href="{{ user.instagram }}" target="_blank" class="bg-pink-50 p-4 rounded-lg border-2 border-pink-300 hover:shadow-lg transition-all text-center">
+                    <p class="text-3xl mb-1">📸</p>
+                    <p class="font-semibold text-gray-800 text-sm">Instagram</p>
+                </a>
+                {% endif %}
+                
+                {% if user.twitter %}
+                <a href="{{ user.twitter }}" target="_blank" class="bg-pink-50 p-4 rounded-lg border-2 border-pink-300 hover:shadow-lg transition-all text-center">
+                    <p class="text-3xl mb-1">🐦</p>
+                    <p class="font-semibold text-gray-800 text-sm">Twitter/X</p>
+                </a>
+                {% endif %}
+                
+                {% if user.facebook %}
+                <a href="{{ user.facebook }}" target="_blank" class="bg-pink-50 p-4 rounded-lg border-2 border-pink-300 hover:shadow-lg transition-all text-center">
+                    <p class="text-3xl mb-1">👥</p>
+                    <p class="font-semibold text-gray-800 text-sm">Facebook</p>
+                </a>
+                {% endif %}
+                
+                {% if user.youtube %}
+                <a href="{{ user.youtube }}" target="_blank" class="bg-pink-50 p-4 rounded-lg border-2 border-pink-300 hover:shadow-lg transition-all text-center">
+                    <p class="text-3xl mb-1">📺</p>
+                    <p class="font-semibold text-gray-800 text-sm">YouTube</p>
+                </a>
+                {% endif %}
+                
+                {% if user.tiktok %}
+                <a href="{{ user.tiktok }}" target="_blank" class="bg-pink-50 p-4 rounded-lg border-2 border-pink-300 hover:shadow-lg transition-all text-center">
+                    <p class="text-3xl mb-1">🎵</p>
+                    <p class="font-semibold text-gray-800 text-sm">TikTok</p>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
     </div>
 </div>
 {% endblock %}

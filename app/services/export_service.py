@@ -232,16 +232,53 @@ class ExportService:
         elements.append(Paragraph(f"Code: {user.formatted_code}", subtitle_style))
         elements.append(Spacer(1, 20))
         
+        # Photo et QR Code côte à côte
+        photo_qr_data = []
+        
+        # Photo de profil ou placeholder
+        # Générer les initiales de manière sécurisée
+        def get_initial(name):
+            """Extraire l'initiale de manière sécurisée"""
+            if not name:
+                return '?'
+            clean_name = str(name).strip()
+            return clean_name[0].upper() if clean_name else '?'
+        
+        first_initial = get_initial(user.first_name)
+        last_initial = get_initial(user.last_name)
+        initials = f"{first_initial}{last_initial}"
+        
         if user.photo_filename:
             try:
                 photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'photos', user.photo_filename)
                 if os.path.exists(photo_path):
                     img = Image(photo_path, width=2*inch, height=2*inch)
-                    img.hAlign = 'CENTER'
-                    elements.append(img)
-                    elements.append(Spacer(1, 20))
+                else:
+                    img = Paragraph(f"<para align=center fontSize=60><b>{initials}</b></para>", styles['Normal'])
+            except:
+                img = Paragraph(f"<para align=center fontSize=60><b>{initials}</b></para>", styles['Normal'])
+        else:
+            img = Paragraph(f"<para align=center fontSize=60><b>{initials}</b></para>", styles['Normal'])
+        
+        # QR Code si disponible
+        qr_element = Spacer(1, 1)
+        if user.qr_code_filename:
+            try:
+                qr_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'qrcodes', user.qr_code_filename)
+                if os.path.exists(qr_path):
+                    qr_element = Image(qr_path, width=1.5*inch, height=1.5*inch)
             except:
                 pass
+        
+        # Créer un tableau pour photo et QR code
+        photo_qr_table = Table([[img, qr_element]], colWidths=[3*inch, 2*inch])
+        photo_qr_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (0, 0), 'CENTER'),
+            ('ALIGN', (1, 0), (1, 0), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ]))
+        elements.append(photo_qr_table)
+        elements.append(Spacer(1, 20))
         
         elements.append(Paragraph("IDENTITÉ", section_style))
         info_data = [

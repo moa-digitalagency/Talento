@@ -167,3 +167,40 @@ def admin_dashboard():
 @bp.route('/about')
 def about():
     return render_template('about.html')
+
+@bp.route('/talents')
+@login_required
+def talents():
+    """Page de recherche et visualisation des talents"""
+    search_query = request.args.get('search', '').strip()
+    category_filter = request.args.get('category', '').strip()
+    
+    # Base query
+    query = Talent.query.filter_by(is_active=True)
+    
+    # Filtres
+    if search_query:
+        query = query.filter(Talent.name.ilike(f'%{search_query}%'))
+    
+    if category_filter:
+        query = query.filter_by(category=category_filter)
+    
+    talents_list = query.order_by(Talent.category, Talent.name).all()
+    
+    # Compter les utilisateurs par talent
+    talent_stats = []
+    for talent in talents_list:
+        user_count = UserTalent.query.filter_by(talent_id=talent.id).count()
+        talent_stats.append({
+            'talent': talent,
+            'user_count': user_count
+        })
+    
+    # Catégories disponibles
+    categories = db.session.query(Talent.category).distinct().order_by(Talent.category).all()
+    categories = [c[0] for c in categories]
+    
+    return render_template('talents.html', 
+                         talent_stats=talent_stats,
+                         categories=categories,
+                         total_talents=len(talents_list))

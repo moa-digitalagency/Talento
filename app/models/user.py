@@ -80,8 +80,7 @@ class User(UserMixin, db.Model):
     
     @property
     def formatted_code(self):
-        if len(self.unique_code) == 10:
-            return f"{self.unique_code[:2]}-{self.unique_code[2:5]}-{self.unique_code[5:9]}-{self.unique_code[9]}"
+        """Retourner le code unique sans tirets"""
         return self.unique_code
     
     @property

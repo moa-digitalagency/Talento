@@ -104,7 +104,7 @@ def export_csv():
 @admin_required
 def export_pdf():
     users = User.query.filter(User.is_admin == False).all()
-    buffer = ExportService.export_to_pdf_list(users)
+    buffer = ExportService.export_list_to_pdf(users)
     
     return send_file(
         buffer,
@@ -118,7 +118,7 @@ def export_pdf():
 @admin_required
 def export_pdf_individual(user_id):
     user = User.query.get_or_404(user_id)
-    buffer = ExportService.export_to_pdf_individual(user)
+    buffer = ExportService.export_talent_card_pdf(user)
     
     filename = f'talento_{user.unique_code}_{datetime.now().strftime("%Y%m%d")}.pdf'
     
