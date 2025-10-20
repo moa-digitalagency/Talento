@@ -1,46 +1,336 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="text-center">
-        <h1 class="text-4xl font-bold text-gray-900 sm:text-5xl md:text-6xl">
-            Bienvenue sur <span class="text-primary">Talento</span>
-        </h1>
-        <p class="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-            Plateforme de centralisation des profils de talents. Inscrivez-vous, partagez vos compétences et connectez-vous avec des opportunités.
-        </p>
-        <div class="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
-            <div class="rounded-md shadow">
-                <a href="{{ url_for('auth.register') }}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-blue-700 md:py-4 md:text-lg md:px-10">
-                    Créer mon profil
-                </a>
-            </div>
-            <div class="mt-3 rounded-md shadow sm:mt-0 sm:ml-3">
-                <a href="{{ url_for('auth.login') }}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary bg-white hover:bg-gray-50 md:py-4 md:text-lg md:px-10">
-                    Se connecter
-                </a>
-            </div>
-        </div>
-    </div>
+{% block title %}Dashboard - Talento{% endblock %}
 
-    <div class="mt-16">
-        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <div class="card">
-                <div class="text-3xl mb-4">📝</div>
-                <h3 class="text-lg font-semibold mb-2">Inscription Simple</h3>
-                <p class="text-gray-600">Créez votre profil en quelques minutes et recevez votre identifiant unique.</p>
+{% block content %}
+<div class="min-h-screen gradient-bg py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- Hero Section -->
+        <div class="text-center mb-12 animate-fadeIn">
+            <div class="inline-block mb-4">
+                <span class="text-7xl">🌟</span>
             </div>
-            <div class="card">
-                <div class="text-3xl mb-4">🎯</div>
-                <h3 class="text-lg font-semibold mb-2">Multiples Talents</h3>
-                <p class="text-gray-600">Présentez tous vos talents et compétences en un seul endroit.</p>
-            </div>
-            <div class="card">
-                <div class="text-3xl mb-4">📱</div>
-                <h3 class="text-lg font-semibold mb-2">QR Code Personnel</h3>
-                <p class="text-gray-600">Partagez facilement votre profil grâce à votre QR code unique.</p>
+            <h1 class="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+                Bienvenue sur Talento
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
+                La plateforme qui connecte les talents africains avec le monde entier
+            </p>
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <a href="{{ url_for('auth.register') }}" class="group px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-lg font-bold rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+                    <span class="flex items-center gap-2">
+                        <span>🚀</span>
+                        <span>Créer mon profil</span>
+                    </span>
+                </a>
+                <a href="{{ url_for('auth.login') }}" class="px-8 py-4 bg-white text-purple-600 text-lg font-bold rounded-2xl shadow-lg hover:shadow-xl border-2 border-purple-200 hover:border-purple-400 transform hover:scale-105 transition-all duration-300">
+                    <span class="flex items-center gap-2">
+                        <span>🔐</span>
+                        <span>Se connecter</span>
+                    </span>
+                </a>
             </div>
         </div>
+
+        <!-- Statistiques principales -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <!-- Total Users -->
+            <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 shadow-2xl transform hover:scale-105 transition-all duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-blue-100 text-sm font-semibold uppercase">Talents inscrits</p>
+                        <p class="text-white text-4xl font-bold mt-2">{{ total_users }}</p>
+                    </div>
+                    <div class="text-6xl opacity-20">👥</div>
+                </div>
+                <div class="flex items-center gap-2 text-blue-100">
+                    <span class="text-2xl">📈</span>
+                    <span class="text-sm">Profils actifs</span>
+                </div>
+            </div>
+
+            <!-- Total Talents -->
+            <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl p-6 shadow-2xl transform hover:scale-105 transition-all duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-purple-100 text-sm font-semibold uppercase">Compétences</p>
+                        <p class="text-white text-4xl font-bold mt-2">{{ total_talents_unique }}</p>
+                    </div>
+                    <div class="text-6xl opacity-20">⭐</div>
+                </div>
+                <div class="flex items-center gap-2 text-purple-100">
+                    <span class="text-2xl">🎯</span>
+                    <span class="text-sm">Talents disponibles</span>
+                </div>
+            </div>
+
+            <!-- Total Cities -->
+            <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 shadow-2xl transform hover:scale-105 transition-all duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-green-100 text-sm font-semibold uppercase">Villes</p>
+                        <p class="text-white text-4xl font-bold mt-2">{{ total_cities }}</p>
+                    </div>
+                    <div class="text-6xl opacity-20">🏙️</div>
+                </div>
+                <div class="flex items-center gap-2 text-green-100">
+                    <span class="text-2xl">📍</span>
+                    <span class="text-sm">Au Maroc</span>
+                </div>
+            </div>
+
+            <!-- Total Countries -->
+            <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 shadow-2xl transform hover:scale-105 transition-all duration-300">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-orange-100 text-sm font-semibold uppercase">Pays</p>
+                        <p class="text-white text-4xl font-bold mt-2">{{ total_countries }}</p>
+                    </div>
+                    <div class="text-6xl opacity-20">🌍</div>
+                </div>
+                <div class="flex items-center gap-2 text-orange-100">
+                    <span class="text-2xl">🗺️</span>
+                    <span class="text-sm">Pays africains</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disponibilité et Top Talents -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+            
+            <!-- Disponibilité -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-4xl">📊</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Disponibilité</h2>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-gray-700 font-semibold flex items-center gap-2">
+                                <span class="w-4 h-4 bg-green-500 rounded-full"></span>
+                                Disponible maintenant
+                            </span>
+                            <span class="text-2xl font-bold text-green-600">{{ available_users }}</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                            <div class="bg-gradient-to-r from-green-500 to-green-600 h-full transition-all duration-500" 
+                                 style="width: {% if total_users > 0 %}{{ (available_users / total_users * 100) | round | int }}%{% else %}0%{% endif %}"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-gray-700 font-semibold flex items-center gap-2">
+                                <span class="w-4 h-4 bg-yellow-500 rounded-full"></span>
+                                Partiellement disponible
+                            </span>
+                            <span class="text-2xl font-bold text-yellow-600">{{ partially_available_users }}</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                            <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 h-full transition-all duration-500" 
+                                 style="width: {% if total_users > 0 %}{{ (partially_available_users / total_users * 100) | round | int }}%{% else %}0%{% endif %}"></div>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-6 border-t-2 border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-600 font-semibold">Taux de disponibilité</span>
+                            <span class="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                                {% if total_users > 0 %}{{ ((available_users + partially_available_users) / total_users * 100) | round | int }}%{% else %}0%{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Talents -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-4xl">🏆</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Top 10 Talents</h2>
+                </div>
+                <div class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
+                    {% for talent in top_talents %}
+                    <div class="flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl hover:from-blue-100 hover:to-purple-100 transition-all duration-200 border-l-4 border-purple-500">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">{{ talent.emoji }}</span>
+                            <div>
+                                <p class="font-semibold text-gray-800">{{ talent.name }}</p>
+                                <p class="text-xs text-gray-500">{{ talent.category }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl font-bold text-purple-600">{{ talent.count }}</span>
+                            <span class="text-gray-500 text-sm">profils</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Catégories et Modes de travail -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+            
+            <!-- Statistiques par catégorie -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-4xl">📁</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Par Catégorie</h2>
+                </div>
+                <div class="space-y-4">
+                    {% set category_colors = {
+                        'Technologies & Informatique': 'from-blue-500 to-blue-600',
+                        'Design & Création': 'from-purple-500 to-purple-600',
+                        'Services Professionnels': 'from-green-500 to-green-600',
+                        'Artisanat & Construction': 'from-orange-500 to-orange-600',
+                        'Services à la Personne': 'from-pink-500 to-pink-600'
+                    } %}
+                    {% for cat in category_stats %}
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-gray-700 font-semibold text-sm">{{ cat.category }}</span>
+                            <span class="text-xl font-bold text-gray-800">{{ cat.user_count }}</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                            <div class="bg-gradient-to-r {{ category_colors.get(cat.category, 'from-gray-500 to-gray-600') }} h-full transition-all duration-500" 
+                                 style="width: {% if total_users > 0 %}{{ (cat.user_count / total_users * 100) | round | int }}%{% else %}0%{% endif %}"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Modes de travail -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-4xl">💼</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Modes de Travail</h2>
+                </div>
+                <div class="space-y-6">
+                    {% set work_mode_labels = {
+                        'remote': {'label': 'Télétravail', 'emoji': '🏠', 'color': 'blue'},
+                        'on_site': {'label': 'Sur site', 'emoji': '🏢', 'color': 'green'},
+                        'hybrid': {'label': 'Hybride', 'emoji': '🔄', 'color': 'purple'}
+                    } %}
+                    {% for mode in work_mode_stats %}
+                    {% set mode_info = work_mode_labels.get(mode.work_mode, {'label': mode.work_mode, 'emoji': '💼', 'color': 'gray'}) %}
+                    <div class="bg-gradient-to-r from-{{ mode_info.color }}-50 to-{{ mode_info.color }}-100 rounded-xl p-4 border-l-4 border-{{ mode_info.color }}-500">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-3xl">{{ mode_info.emoji }}</span>
+                                <span class="font-semibold text-gray-800">{{ mode_info.label }}</span>
+                            </div>
+                            <span class="text-3xl font-bold text-{{ mode_info.color }}-600">{{ mode.count }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Villes et Profils Récents -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+            
+            <!-- Top 5 Villes -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-4xl">🗺️</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Top 5 Villes</h2>
+                </div>
+                <div class="space-y-4">
+                    {% set city_emojis = ['🥇', '🥈', '🥉', '🏅', '🏅'] %}
+                    {% for city in top_cities %}
+                    <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl border-l-4 border-red-500 hover:shadow-lg transition-all duration-200">
+                        <span class="text-4xl">{{ city_emojis[loop.index0] }}</span>
+                        <div class="flex-1">
+                            <p class="font-bold text-gray-800 text-lg">{{ city.name }}</p>
+                            <p class="text-sm text-gray-600">Ville marocaine</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-3xl font-bold text-red-600">{{ city.user_count }}</p>
+                            <p class="text-xs text-gray-500">talents</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Profils Récents -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-4xl">🆕</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Derniers Profils</h2>
+                </div>
+                <div class="space-y-4 max-h-96 overflow-y-auto custom-scrollbar">
+                    {% for user in recent_users %}
+                    <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border-l-4 border-cyan-500 hover:shadow-lg transition-all duration-200">
+                        <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                            {{ user.first_name[0] }}{{ user.last_name[0] }}
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-bold text-gray-800">{{ user.full_name }}</p>
+                            <p class="text-sm text-gray-600">
+                                {% if user.city %}{{ user.city.name }}{% else %}Non spécifié{% endif %}
+                                {% if user.years_experience %} • {{ user.years_experience }} ans d'exp.{% endif %}
+                            </p>
+                        </div>
+                        <span class="text-2xl">✨</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 rounded-3xl shadow-2xl p-12 text-center text-white">
+            <h2 class="text-4xl font-bold mb-4">🚀 Prêt à rejoindre la communauté ?</h2>
+            <p class="text-xl mb-8 opacity-90">Créez votre profil en quelques minutes et montrez vos talents au monde entier</p>
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <a href="{{ url_for('auth.register') }}" class="px-10 py-5 bg-white text-purple-600 text-xl font-bold rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300">
+                    ✨ Créer mon profil maintenant
+                </a>
+                <a href="{{ url_for('auth.login') }}" class="px-10 py-5 bg-purple-800/50 backdrop-blur-sm text-white text-xl font-bold rounded-2xl border-2 border-white/30 hover:bg-purple-800/70 transform hover:scale-105 transition-all duration-300">
+                    🔐 J'ai déjà un compte
+                </a>
+            </div>
+        </div>
+
     </div>
 </div>
+
+<style>
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.8s ease-out;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #8b5cf6, #ec4899);
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #7c3aed, #db2777);
+}
+</style>
 {% endblock %}

@@ -15,11 +15,20 @@ def seed_database():
     Seed the database with initial data (idempotent)
     DEPRECATED: Utiliser migrations_init.py à la place
     """
+    import os
+    
+    # Ne pas lancer migrations_init.py si on est déjà dedans
+    if os.environ.get('SKIP_AUTO_MIGRATION') == '1':
+        return
+    
     import subprocess
     import sys
     try:
         print("🔄 Exécution du script de migration...")
-        subprocess.run([sys.executable, 'migrations_init.py'], check=True)
+        # Empêcher la récursion infinie
+        env = os.environ.copy()
+        env['SKIP_AUTO_MIGRATION'] = '1'
+        subprocess.run([sys.executable, 'migrations_init.py'], check=True, env=env)
     except subprocess.CalledProcessError as e:
         print(f"⚠️  Erreur lors de la migration: {e}")
         print("Utilisation du seeding interne de secours...")
