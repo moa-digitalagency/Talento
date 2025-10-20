@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="section-blue p-6 mb-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">⭐ Gestion des Talents</h1>
+                    <p class="text-gray-600">Gérer la liste des talents disponibles sur la plateforme</p>
+                </div>
+                <a href="{{ url_for('admin.talent_add') }}" class="btn-primary">
+                    ➕ Ajouter un Talent
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="section-green p-6">
+                <div class="text-center">
+                    <p class="text-4xl font-bold text-green-600">{{ talents|length }}</p>
+                    <p class="text-gray-600 mt-2">Talents disponibles</p>
+                </div>
+            </div>
+            <div class="section-purple p-6">
+                <div class="text-center">
+                    <p class="text-4xl font-bold text-purple-600">{{ talents|selectattr('1')|list|length }}</p>
+                    <p class="text-gray-600 mt-2">Talents utilisés</p>
+                </div>
+            </div>
+            <div class="section-orange p-6">
+                <div class="text-center">
+                    {% set categories = talents|map(attribute='0.category')|unique|list %}
+                    <p class="text-4xl font-bold text-orange-600">{{ categories|length }}</p>
+                    <p class="text-gray-600 mt-2">Catégories</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des talents par catégorie -->
+        {% set current_category = namespace(value='') %}
+        {% for talent, user_count in talents %}
+            {% if talent.category != current_category.value %}
+                {% set current_category.value = talent.category %}
+                {% if not loop.first %}</div></div>{% endif %}
+                <div class="section-cyan p-6 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">📁 {{ talent.category }}</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% endif %}
+            
+            <div class="bg-white rounded-lg border-2 border-gray-200 p-4 hover:shadow-lg transition-all">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-3xl">{{ talent.emoji }}</span>
+                        <div>
+                            <h3 class="font-bold text-gray-900">{{ talent.name }}</h3>
+                            <p class="text-sm text-gray-500">{{ user_count }} utilisateur(s)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-2">
+                    <a href="{{ url_for('admin.talent_edit', talent_id=talent.id) }}" 
+                       class="flex-1 bg-blue-50 text-blue-700 px-3 py-2 rounded-lg border-2 border-blue-400 hover:bg-blue-100 transition-all text-center text-sm font-semibold">
+                        ✏️ Modifier
+                    </a>
+                    <form method="POST" action="{{ url_for('admin.talent_delete', talent_id=talent.id) }}" 
+                          onsubmit="return confirm('Supprimer ce talent ?');" class="flex-1">
+                        <button type="submit" 
+                                {% if user_count > 0 %}disabled{% endif %}
+                                class="w-full bg-red-50 text-red-700 px-3 py-2 rounded-lg border-2 border-red-400 hover:bg-red-100 transition-all text-sm font-semibold
+                                       {% if user_count > 0 %}opacity-50 cursor-not-allowed{% endif %}">
+                            🗑️ Supprimer
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            {% if loop.last %}</div></div>{% endif %}
+        {% endfor %}
+        
+        <!-- Retour -->
+        <div class="mt-8 text-center">
+            <a href="{{ url_for('admin.dashboard') }}" class="btn-secondary">
+                ← Retour au Dashboard Admin
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
