@@ -186,7 +186,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex gap-2">
-                                    <a href="{{ url_for('profile.view_profile', user_id=user.id) }}" 
+                                    <a href="{{ url_for('profile.view', unique_code=user.formatted_code) }}" 
                                        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-semibold transition-all">
                                         👁️ Voir
                                     </a>
