@@ -7,7 +7,7 @@ def generate_qr_code(unique_code, save_path):
     Generate QR code for user profile
     Returns the filename of saved QR code
     """
-    profile_url = f"{os.environ.get('REPLIT_DEV_DOMAIN', 'http://localhost:5000')}/profile/view/{unique_code[:2]}-{unique_code[2:5]}-{unique_code[5:9]}-{unique_code[9]}"
+    profile_url = f"{os.environ.get('REPLIT_DEV_DOMAIN', 'http://localhost:5000')}/profile/view/{unique_code}"
     
     qr = qrcode.QRCode(
         version=1,

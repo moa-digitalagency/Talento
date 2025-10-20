@@ -146,16 +146,22 @@ class ExportService:
         
         data = [['Code', 'Nom Complet', 'Talents', 'Ville au Maroc', 'Pays Origine', 'Téléphone', 'WhatsApp']]
         
+        cell_style = ParagraphStyle(
+            'CellStyle',
+            parent=styles['Normal'],
+            fontSize=7,
+            leading=9,
+            alignment=TA_LEFT
+        )
+        
         for user in users:
-            talents_names = [ut.talent.name for ut in user.talents[:2]] if user.talents else []
-            talents_str = ', '.join(talents_names)
-            if len(user.talents) > 2:
-                talents_str += f' +{len(user.talents)-2}'
+            talents_names = [ut.talent.name for ut in user.talents] if user.talents else []
+            talents_str = ', '.join(talents_names) if talents_names else 'N/A'
             
             data.append([
                 user.formatted_code,
                 f"{user.first_name} {user.last_name}",
-                talents_str[:35] if talents_str else 'N/A',
+                Paragraph(talents_str, cell_style),
                 user.city.name if user.city else 'N/A',
                 user.country.name if user.country else 'N/A',
                 user.phone if user.phone else 'N/A',
