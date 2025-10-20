@@ -87,9 +87,8 @@
 
                 <!-- Save Button -->
                 <div class="flex justify-end">
-                    <button type="submit" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all flex items-center gap-2">
-                        <span>💾</span>
-                        <span>Enregistrer les paramètres</span>
+                    <button type="submit" class="px-8 py-3 bg-white text-blue-600 font-bold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all">
+                        Enregistrer les paramètres
                     </button>
                 </div>
             </form>
@@ -115,9 +114,8 @@
                 </div>
                 <button type="submit" 
                         {% if not config.sendgrid %}disabled{% endif %}
-                        class="px-6 py-3 {% if config.sendgrid %}bg-green-600 hover:bg-green-700{% else %}bg-gray-400 cursor-not-allowed{% endif %} text-white font-bold rounded-lg transition-all flex items-center gap-2">
-                    <span>📧</span>
-                    <span>Envoyer un email de test</span>
+                        class="px-6 py-3 {% if config.sendgrid %}bg-white text-green-600 border-2 border-green-600 hover:bg-green-50{% else %}bg-gray-100 text-gray-400 border-2 border-gray-300 cursor-not-allowed{% endif %} font-bold rounded-lg transition-all">
+                    Envoyer un email de test
                 </button>
                 {% if not config.sendgrid %}
                 <p class="text-sm text-orange-600">⚠️ Configurez d'abord la clé SendGrid API ci-dessus pour activer cette fonctionnalité</p>
@@ -133,9 +131,8 @@
                     <h2 class="text-2xl font-bold text-gray-800">Utilisateurs Administrateurs</h2>
                 </div>
                 <a href="{{ url_for('admin.create_admin_user') }}" 
-                   class="px-6 py-3 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition-all flex items-center gap-2">
-                    <span>➕</span>
-                    <span>Créer un nouvel admin</span>
+                   class="px-6 py-3 bg-white text-purple-600 font-bold rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition-all">
+                    Créer un nouvel admin
                 </a>
             </div>
             
@@ -207,11 +204,11 @@
                         <select name="user_id" id="user-select" class="flex-1 px-4 py-2 border-2 border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
                             <option value="">-- Sélectionnez un utilisateur --</option>
                         </select>
-                        <button type="button" onclick="loadNonAdminUsers()" class="px-4 py-2 bg-blue-100 text-blue-700 font-semibold rounded-lg border-2 border-blue-300 hover:bg-blue-200 transition-all">
-                            📋 Charger les utilisateurs
+                        <button type="button" onclick="loadNonAdminUsers()" class="px-4 py-2 bg-white text-blue-600 font-semibold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all">
+                            Charger les utilisateurs
                         </button>
-                        <button type="submit" class="px-6 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-all">
-                            ✨ Promouvoir
+                        <button type="submit" class="px-6 py-2 bg-white text-purple-600 font-semibold rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition-all">
+                            Promouvoir
                         </button>
                     </div>
                 </form>
@@ -320,15 +317,13 @@
                               onsubmit="return confirm('⚠️ Cette action va mettre à jour l\'application depuis GitHub, installer les dépendances et exécuter les migrations. L\'application redémarrera. Continuer ?');">
                             <button type="submit" 
                                     {% if not git_info.has_updates %}disabled{% endif %}
-                                    class="px-6 py-3 {% if git_info.has_updates %}bg-cyan-600 hover:bg-cyan-700{% else %}bg-gray-400 cursor-not-allowed{% endif %} text-white font-bold rounded-lg transition-all flex items-center gap-2">
-                                <span>🚀</span>
-                                <span>Mettre à jour maintenant</span>
+                                    class="px-6 py-3 {% if git_info.has_updates %}bg-white text-cyan-600 border-2 border-cyan-600 hover:bg-cyan-50{% else %}bg-gray-100 text-gray-400 border-2 border-gray-300 cursor-not-allowed{% endif %} font-bold rounded-lg transition-all">
+                                Mettre à jour maintenant
                             </button>
                         </form>
                         <button onclick="checkForUpdates()" 
-                                class="px-6 py-3 bg-blue-100 text-blue-700 font-bold rounded-lg border-2 border-blue-400 hover:bg-blue-200 transition-all flex items-center gap-2">
-                            <span>🔍</span>
-                            <span>Vérifier les mises à jour</span>
+                                class="px-6 py-3 bg-white text-blue-600 font-bold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all">
+                            Vérifier les mises à jour
                         </button>
                     </div>
                 </div>
@@ -439,19 +434,16 @@
                 </p>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
                     <a href="{{ url_for('admin.export_excel') }}" 
-                       class="px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-all text-center flex items-center justify-center gap-2">
-                        <span>📊</span>
-                        <span>Excel</span>
+                       class="px-6 py-3 bg-white text-green-600 font-bold rounded-lg border-2 border-green-600 hover:bg-green-50 transition-all text-center">
+                        Excel
                     </a>
                     <a href="{{ url_for('admin.export_csv') }}" 
-                       class="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all text-center flex items-center justify-center gap-2">
-                        <span>📄</span>
-                        <span>CSV</span>
+                       class="px-6 py-3 bg-white text-blue-600 font-bold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all text-center">
+                        CSV
                     </a>
                     <a href="{{ url_for('admin.export_pdf') }}" 
-                       class="px-6 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-all text-center flex items-center justify-center gap-2">
-                        <span>📑</span>
-                        <span>PDF</span>
+                       class="px-6 py-3 bg-white text-red-600 font-bold rounded-lg border-2 border-red-600 hover:bg-red-50 transition-all text-center">
+                        PDF
                     </a>
                 </div>
                 <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
