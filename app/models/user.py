@@ -81,6 +81,24 @@ class User(UserMixin, db.Model):
         return f"{self.first_name} {self.last_name}"
     
     @property
+    def age(self):
+        """Calculer l'âge à partir de la date de naissance"""
+        if not self.date_of_birth:
+            return None
+        from datetime import date
+        today = date.today()
+        age = today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
+        return age
+    
+    @property
+    def gender_display(self):
+        """Afficher le genre de manière lisible"""
+        if not self.gender:
+            return None
+        gender_map = {'M': 'M', 'F': 'F', 'N': 'Non précisé'}
+        return gender_map.get(self.gender, self.gender)
+    
+    @property
     def formatted_code(self):
         """Retourner le code unique sans tirets"""
         return self.unique_code

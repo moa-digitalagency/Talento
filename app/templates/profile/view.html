@@ -74,7 +74,9 @@
                 
                 <!-- Colonne droite: Informations principales -->
                 <div class="lg:col-span-2">
-                    <h1 class="text-4xl font-bold text-gray-800 mb-2">{{ user.full_name }}</h1>
+                    <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                        {{ user.full_name }}{% if user.age %}, {{ user.age }} ans{% endif %}{% if user.gender %}, {{ user.gender }}{% endif %}
+                    </h1>
                     <p class="text-xl text-blue-600 font-mono font-bold mb-4">{{ user.formatted_code }}</p>
                     
                     {% if user.bio %}
