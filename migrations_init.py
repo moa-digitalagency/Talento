@@ -44,7 +44,9 @@ def check_and_add_columns():
         'rate_range': 'VARCHAR(100)',
         'profile_score': 'INTEGER DEFAULT 0',
         'cv_analysis': 'TEXT',
-        'cv_analyzed_at': 'TIMESTAMP'
+        'cv_analyzed_at': 'TIMESTAMP',
+        'languages': 'VARCHAR(255)',
+        'education': 'TEXT'
     }
     
     if 'users' in inspector.get_table_names():
@@ -153,6 +155,24 @@ def seed_cities():
         {'name': 'Salé', 'code': 'SAL'},
         {'name': 'Kenitra', 'code': 'KEN'},
         {'name': 'El Jadida', 'code': 'ELJ'},
+        {'name': 'Essaouira', 'code': 'ESS'},
+        {'name': 'Nador', 'code': 'NAD'},
+        {'name': 'Béni Mellal', 'code': 'BEM'},
+        {'name': 'Khouribga', 'code': 'KHO'},
+        {'name': 'Safi', 'code': 'SAF'},
+        {'name': 'Mohammedia', 'code': 'MOH'},
+        {'name': 'Errachidia', 'code': 'ERR'},
+        {'name': 'Laâyoune', 'code': 'LAA'},
+        {'name': 'Ksar El Kébir', 'code': 'KSA'},
+        {'name': 'Settat', 'code': 'SET'},
+        {'name': 'Taza', 'code': 'TAZ'},
+        {'name': 'Berrechid', 'code': 'BER'},
+        {'name': 'Khémisset', 'code': 'KHE'},
+        {'name': 'Inezgane', 'code': 'INE'},
+        {'name': 'Larache', 'code': 'LAR'},
+        {'name': 'Guelmim', 'code': 'GUE'},
+        {'name': 'Dakhla', 'code': 'DAK'},
+        {'name': 'Bouskoura', 'code': 'BOU'},
     ]
     
     count = 0
@@ -328,16 +348,23 @@ def create_demo_users():
     morocco = Country.query.filter_by(code='MA').first()
     casablanca = City.query.filter_by(code='CAS').first()
     rabat = City.query.filter_by(code='RAB').first()
+    marrakech = City.query.filter_by(code='MAR').first()
+    tanger = City.query.filter_by(code='TNG').first()
     
     if not morocco or not casablanca or not rabat:
         print("⚠️  Pays ou villes manquants, impossible de créer les démos")
         return False
     
     talent_dev_web = Talent.query.filter_by(name='Développement Web').first()
+    talent_dev_mobile = Talent.query.filter_by(name='Développement Mobile').first()
     talent_graphisme = Talent.query.filter_by(name='Graphisme').first()
+    talent_uiux = Talent.query.filter_by(name='UI/UX Design').first()
     talent_plomberie = Talent.query.filter_by(name='Plomberie').first()
+    talent_electricite = Talent.query.filter_by(name='Électricité').first()
     talent_cuisine = Talent.query.filter_by(name='Cuisine').first()
+    talent_patisserie = Talent.query.filter_by(name='Pâtisserie').first()
     talent_marketing = Talent.query.filter_by(name='Marketing digital').first()
+    talent_seo = Talent.query.filter_by(name='SEO/SEA').first()
     
     demo_users = [
         {
@@ -348,9 +375,16 @@ def create_demo_users():
             'gender': 'M',
             'country_id': morocco.id,
             'city_id': casablanca.id,
-            'bio': 'Développeur web full-stack avec 5 ans d\'expérience',
+            'date_of_birth': datetime(1990, 3, 15).date(),
+            'address': '15 Boulevard Zerktouni, Casablanca',
+            'bio': 'Développeur web full-stack passionné avec 5 ans d\'expérience dans la création d\'applications web modernes. Spécialisé en React, Node.js et Python. J\'ai travaillé sur plus de 30 projets pour des clients internationaux.',
             'years_experience': 5,
-            'talents': [talent_dev_web.id] if talent_dev_web else []
+            'availability': 'available',
+            'work_mode': 'hybrid',
+            'rate_range': '400-600 MAD/heure',
+            'languages': 'Français, Anglais, Arabe',
+            'education': 'Master en Informatique - ENSIAS',
+            'talents': [t.id for t in [talent_dev_web, talent_dev_mobile] if t]
         },
         {
             'email': 'demo2@talento.com',
@@ -360,9 +394,18 @@ def create_demo_users():
             'gender': 'F',
             'country_id': morocco.id,
             'city_id': rabat.id,
-            'bio': 'Designer graphique spécialisée en branding',
+            'date_of_birth': datetime(1993, 7, 22).date(),
+            'phone': '+212662345678',
+            'whatsapp': '+212662345678',
+            'address': '28 Avenue Mohammed V, Rabat',
+            'bio': 'Designer graphique créative spécialisée en branding et identité visuelle. Portfolio comprenant des marques nationales et internationales. Passionnée par le design minimaliste et l\'impact visuel fort.',
             'years_experience': 3,
-            'talents': [talent_graphisme.id] if talent_graphisme else []
+            'availability': 'available',
+            'work_mode': 'remote',
+            'rate_range': '300-500 MAD/heure',
+            'languages': 'Français, Anglais, Arabe',
+            'education': 'École Supérieure des Beaux-Arts',
+            'talents': [t.id for t in [talent_graphisme, talent_uiux] if t]
         },
         {
             'email': 'demo3@talento.com',
@@ -372,9 +415,18 @@ def create_demo_users():
             'gender': 'M',
             'country_id': morocco.id,
             'city_id': casablanca.id,
-            'bio': 'Plombier professionnel, interventions rapides',
+            'date_of_birth': datetime(1985, 11, 8).date(),
+            'phone': '+212663456789',
+            'whatsapp': '+212663456789',
+            'address': '42 Rue des Oudayas, Casablanca',
+            'bio': 'Plombier professionnel certifié avec 10 ans d\'expérience. Interventions rapides 24/7, spécialiste en installation sanitaire moderne, détection de fuites et rénovation complète. Plus de 500 chantiers réussis.',
             'years_experience': 10,
-            'talents': [talent_plomberie.id] if talent_plomberie else []
+            'availability': 'available',
+            'work_mode': 'on_site',
+            'rate_range': '200-350 MAD/heure',
+            'languages': 'Français, Arabe',
+            'education': 'Formation professionnelle OFPPT',
+            'talents': [t.id for t in [talent_plomberie, talent_electricite] if t]
         },
         {
             'email': 'demo4@talento.com',
@@ -383,10 +435,19 @@ def create_demo_users():
             'last_name': 'Chraibi',
             'gender': 'F',
             'country_id': morocco.id,
-            'city_id': rabat.id,
-            'bio': 'Chef de cuisine avec spécialité en pâtisserie française',
+            'city_id': marrakech.id if marrakech else rabat.id,
+            'date_of_birth': datetime(1988, 5, 30).date(),
+            'phone': '+212664567890',
+            'whatsapp': '+212664567890',
+            'address': '7 Rue de la Kasbah, Marrakech',
+            'bio': 'Chef de cuisine passionnée avec 7 ans d\'expérience en gastronomie française et marocaine. Spécialiste en pâtisserie fine et cuisine fusion. Diplômée Le Cordon Bleu Paris. Organisatrice d\'événements culinaires.',
             'years_experience': 7,
-            'talents': [talent_cuisine.id] if talent_cuisine else []
+            'availability': 'partially_available',
+            'work_mode': 'on_site',
+            'rate_range': '250-400 MAD/heure',
+            'languages': 'Français, Anglais, Arabe',
+            'education': 'Le Cordon Bleu Paris',
+            'talents': [t.id for t in [talent_cuisine, talent_patisserie] if t]
         },
         {
             'email': 'demo5@talento.com',
@@ -395,10 +456,19 @@ def create_demo_users():
             'last_name': 'Alaoui',
             'gender': 'M',
             'country_id': morocco.id,
-            'city_id': casablanca.id,
-            'bio': 'Expert en marketing digital et SEO',
+            'city_id': tanger.id if tanger else casablanca.id,
+            'date_of_birth': datetime(1992, 9, 12).date(),
+            'phone': '+212665678901',
+            'whatsapp': '+212665678901',
+            'address': '33 Boulevard Pasteur, Tanger',
+            'bio': 'Expert en marketing digital et SEO avec 4 ans d\'expérience. Spécialiste en croissance organique, publicité Google/Facebook, et stratégie de contenu. Résultats prouvés : +250% de trafic pour mes clients.',
             'years_experience': 4,
-            'talents': [talent_marketing.id] if talent_marketing else []
+            'availability': 'available',
+            'work_mode': 'remote',
+            'rate_range': '350-550 MAD/heure',
+            'languages': 'Français, Anglais, Espagnol, Arabe',
+            'education': 'MBA Digital Marketing',
+            'talents': [t.id for t in [talent_marketing, talent_seo] if t]
         }
     ]
     
@@ -407,10 +477,20 @@ def create_demo_users():
         existing = User.query.filter_by(email=demo_data['email']).first()
         if not existing:
             talents = demo_data.pop('talents')
+            phone_val = demo_data.pop('phone', None)
+            whatsapp_val = demo_data.pop('whatsapp', None)
+            address_val = demo_data.pop('address', None)
+            
             user = User(**demo_data)
             user.set_password('demo123')
-            user.phone = '+212600000000'
             user.account_active = True
+            
+            if phone_val:
+                user.phone = phone_val
+            if whatsapp_val:
+                user.whatsapp = whatsapp_val
+            if address_val:
+                user.address = address_val
             
             db.session.add(user)
             db.session.flush()

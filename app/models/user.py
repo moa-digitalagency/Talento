@@ -50,6 +50,9 @@ class User(UserMixin, db.Model):
     work_mode = db.Column(db.String(50))
     rate_range = db.Column(db.String(100))
     
+    languages = db.Column(db.String(255))
+    education = db.Column(db.Text)
+    
     cv_analysis = db.Column(db.Text)
     cv_analyzed_at = db.Column(db.DateTime)
     
