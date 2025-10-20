@@ -4,6 +4,15 @@
 
 Talento is a professional web application designed to centralize and showcase talent profiles across Africa. The platform enables individuals to create comprehensive professional profiles with unique identifiers, QR codes, and multi-talent capabilities. It features advanced administrative tools for managing users, AI-powered CV analysis, and multiple data export formats (Excel, PDF, CSV). The project aims to provide a robust, scalable solution for talent management and discovery, enhancing professional networking and recruitment across the continent.
 
+## Recent Changes (October 20, 2025)
+
+- **Availability Harmonization**: Replaced legacy availability values ('available', 'partially_available', 'unavailable') with French labels ('Temps plein', 'Temps partiel', 'Mi-temps', 'Flexible', 'Occasionnel', 'Indisponible') across all forms, filters, and displays.
+- **Data Migration**: Created `migrate_availability.py` to convert existing user data from legacy to new availability values. This script must be run on deployment.
+- **Dashboard Statistics Update**: Replaced availability-based statistics with talent category statistics, showing top 5 talent categories by user count.
+- **Talent Page Optimization**: Improved filtering to display only talent categories that are actively used by registered users.
+- **Export Fix**: Corrected PDF/Excel export functionality by properly wrapping byte streams in BytesIO objects.
+- **UI Text Update**: Changed login page registration link from "Créer un compte gratuitement" to "Déposer votre candidature".
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
@@ -49,16 +58,21 @@ Preferred communication style: Simple, everyday language.
 - **UI/UX Decisions**:
     - Modern, professional design with consistent use of solid colors and dotted borders.
     - Multi-step registration form with visual progress indicators and color-coded sections.
-    - Unified dashboard experience adapted for user roles.
+    - Unified dashboard experience adapted for user roles showing talent category statistics.
     - Enhanced individual profile pages with secure initials, integrated QR codes, and visual badges.
-    - Streamlined navigation and improved search/filter functionalities.
+    - Streamlined navigation and improved search/filter functionalities with French availability labels.
     - Complete removal of gradients for a cleaner aesthetic.
+    - Dashboard displays top talent categories instead of availability statistics.
 
 ### Routing Structure
 - **Blueprint Organization**: `main`, `auth`, `profile`, `admin`, and `api` for clear separation of concerns.
 
+### Constants & Configuration
+- **Centralized Constants**: `app/constants.py` defines standardized availability options and talent categories for consistency across the application.
+
 ### Migration & Database Initialization
 - **Migration Strategy**: Custom script (`migrations_init.py`) for table creation, column addition, and data seeding (countries, cities, talents) with idempotent operations.
+- **Availability Migration**: Script `migrate_availability.py` converts legacy availability values to new French labels. Must be run on deployment to ensure data compatibility.
 
 ## External Dependencies
 
