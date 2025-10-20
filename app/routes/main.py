@@ -180,30 +180,14 @@ def about():
 @bp.route('/talents')
 @login_required
 def talents():
-    """Page de recherche et visualisation des talents"""
+    """Page de recherche et visualisation des talents - Exactement comme le dashboard"""
     search_query = request.args.get('search', '').strip()
-    talent_search = request.args.get('talent_search', '').strip()
+    search_code = request.args.get('search_code', '').strip()
+    talent_filter = request.args.get('talent')
     availability_filter = request.args.get('availability')
     work_mode_filter = request.args.get('work_mode')
     city_filter = request.args.get('city')
-    
-    # Obtenir uniquement les talents qui ont au moins un utilisateur
-    talents_with_users = db.session.query(
-        Talent.id,
-        Talent.name,
-        Talent.emoji,
-        Talent.category,
-        func.count(UserTalent.user_id).label('user_count')
-    ).join(UserTalent).join(User).filter(
-        User.account_active == True,
-        User.is_admin == False
-    ).group_by(Talent.id, Talent.name, Talent.emoji, Talent.category)
-    
-    # Appliquer le filtre de recherche de talent si présent
-    if talent_search:
-        talents_with_users = talents_with_users.filter(Talent.name.ilike(f'%{talent_search}%'))
-    
-    talent_stats = talents_with_users.order_by(Talent.category, Talent.name).all()
+    gender_filter = request.args.get('gender')
     
     # Obtenir tous les utilisateurs avec filtres
     user_query = User.query.filter(
@@ -211,10 +195,10 @@ def talents():
         User.is_admin == False
     )
     
-    # Filtrer par talent si spécifié
-    if talent_search:
-        user_query = user_query.join(UserTalent).join(Talent).filter(
-            Talent.name.ilike(f'%{talent_search}%')
+    # Filtrer par talent si sélectionné dans le dropdown
+    if talent_filter:
+        user_query = user_query.join(UserTalent).filter(
+            UserTalent.talent_id == int(talent_filter)
         )
     
     # Appliquer les filtres de recherche
@@ -228,6 +212,9 @@ def talents():
             )
         )
     
+    if search_code:
+        user_query = user_query.filter(User.unique_code.ilike(f'%{search_code}%'))
+    
     if availability_filter:
         user_query = user_query.filter(User.availability == availability_filter)
     
@@ -237,17 +224,20 @@ def talents():
     if city_filter:
         user_query = user_query.filter(User.city_id == int(city_filter))
     
+    if gender_filter:
+        user_query = user_query.filter(User.gender == gender_filter)
+    
     users = user_query.distinct().order_by(User.created_at.desc()).all()
     
     # Données pour les filtres
     all_cities = City.query.order_by(City.name).all()
+    all_talents = Talent.query.order_by(Talent.category, Talent.name).all()
     
     return render_template('talents.html', 
-                         talent_stats=talent_stats,
-                         total_talents=len(talent_stats),
                          users=users,
                          total_users=len(users),
-                         cities=all_cities)
+                         cities=all_cities,
+                         all_talents=all_talents)
 
 @bp.route('/talents/users/<int:talent_id>')
 @login_required
