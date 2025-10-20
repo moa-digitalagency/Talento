@@ -5,6 +5,84 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.0] - 2025-10-20
+
+### ✨ Nouvelles Fonctionnalités
+
+#### Section Réseaux Sociaux Ajoutée
+- **Nouvelle Section 10: Réseaux Sociaux** (Rose) ajoutée à la fin du formulaire d'inscription
+  - 💼 LinkedIn - profil professionnel
+  - 📘 Facebook - réseau social
+  - 📷 Instagram - portfolio visuel
+  - 🐦 Twitter/X - microblogging
+  - 💻 GitHub - projets open source
+  - 📹 YouTube - chaîne vidéo
+  - Tous les champs sont optionnels
+  - Conseil intégré pour valoriser la présence en ligne professionnelle
+
+### 🎨 Améliorations UX/UI
+
+#### Langues Parlées - Système de Checkboxes Multi-Sélection
+- **Section 5 modernisée** : select multiple remplacé par des checkboxes
+- **Interface organisée en 3 catégories** :
+  - 🌍 Langues Internationales (10 langues) - Arabe, Français, Anglais, Espagnol, etc.
+  - 🇲🇦 Langues Marocaines (5 langues) - Darija, Amazigh, Tariffit, Tachelhit, Tamazight
+  - 🌍 Langues Africaines (29 langues) - Swahili, Haoussa, Yoruba, Wolof, etc.
+- **Design cohérent** avec le système de sélection des talents
+  - Checkboxes cliquables avec labels interactifs
+  - Hover effect vert émeraude
+  - Section Africaines avec scroll pour optimiser l'espace
+- **Plus intuitif** : clic simple au lieu de Ctrl/Cmd + clic
+- **Total : 44 langues** disponibles
+
+#### Suppression Complète des Dégradés de Couleur
+- **Page d'accueil (index.html)** entièrement refactorée :
+  - Hero section : dégradé remplacé par texte bleu solide
+  - Bouton CTA : dégradé bleu→violet remplacé par bleu solide avec hover
+  - Statistiques : 4 cartes avec couleurs solides (bleu, violet, vert, orange)
+  - Barres de progression : dégradés verts/jaunes remplacés par couleurs solides
+  - Top Talents : fond violet solide au lieu de dégradé bleu→violet
+  - Catégories : barres de progression en couleurs solides
+  - Modes de travail : fonds solides au lieu de dégradés
+  - Villes et profils récents : fonds solides
+  - Section CTA finale : fond violet solide
+  - Scrollbar : pouce violet solide au lieu de dégradé
+
+- **Formulaire d'inscription (register.html)** :
+  - Custom scrollbar : dégradé orange→jaune remplacé par orange solide
+  
+- **Design uniforme** : toutes les couleurs sont maintenant solides et cohérentes
+- **Meilleure lisibilité** et accessibilité sans distractions visuelles
+- **Performance améliorée** : moins de calculs CSS pour les dégradés
+
+### 📊 Restructuration du Formulaire
+
+#### Nouvelle Numérotation - 10 Étapes
+- Les numéros d'étapes ont été mis à jour de 9/9 à 10/10
+  1. Identité (Bleu) - 1/10
+  2. Contact (Vert) - 2/10
+  3. Localisation (Rouge) - 3/10
+  4. Expérience, Bio & Formation (Violet) - 4/10
+  5. Langues Parlées (Émeraude) - 5/10 - CHECKBOXES
+  6. Disponibilité (Jaune) - 6/10
+  7. Mode de Travail (Indigo) - 7/10
+  8. Mes Talents (Orange) - 8/10
+  9. Documents & Portfolio (Cyan) - 9/10
+  10. Réseaux Sociaux (Rose) - 10/10 - NOUVEAU
+
+### 🎯 Impact Utilisateur
+
+#### Expérience Améliorée
+- **Réseaux sociaux** : meilleure visibilité professionnelle en ligne
+- **Langues** : sélection plus intuitive et rapide avec checkboxes
+- **Design épuré** : interface plus professionnelle sans dégradés
+- **Cohérence visuelle** : style uniforme sur toute la plateforme
+
+#### Performance
+- **Temps de rendu réduit** : moins de calculs CSS
+- **Accessibilité accrue** : meilleur contraste avec couleurs solides
+- **Responsive** : design optimisé pour tous les écrans
+
 ## [2.3.0] - 2025-10-20
 
 ### 🎨 Modernisation Complète du Design - Sans Dégradés

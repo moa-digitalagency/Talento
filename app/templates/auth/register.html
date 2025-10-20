@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     <div class="bg-blue-100 rounded-full px-5 py-2 border-2 border-blue-400">
-                        <span class="text-blue-700 font-bold">Étape 1/9</span>
+                        <span class="text-blue-700 font-bold">Étape 1/10</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -85,7 +85,7 @@
                         </div>
                     </div>
                     <div class="bg-green-100 rounded-full px-5 py-2 border-2 border-green-400">
-                        <span class="text-green-700 font-bold">Étape 2/9</span>
+                        <span class="text-green-700 font-bold">Étape 2/10</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -129,7 +129,7 @@
                         </div>
                     </div>
                     <div class="bg-red-100 rounded-full px-5 py-2 border-2 border-red-400">
-                        <span class="text-red-700 font-bold">Étape 3/9</span>
+                        <span class="text-red-700 font-bold">Étape 3/10</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -165,7 +165,7 @@
                         </div>
                     </div>
                     <div class="bg-purple-100 rounded-full px-5 py-2 border-2 border-purple-400">
-                        <span class="text-purple-700 font-bold">Étape 4/9</span>
+                        <span class="text-purple-700 font-bold">Étape 4/10</span>
                     </div>
                 </div>
                 <div class="space-y-6">
@@ -198,7 +198,7 @@
                 </div>
             </div>
 
-            <!-- Section 5: Langues (Émeraude) - MOVED UP, NOW WITH SELECT -->
+            <!-- Section 5: Langues (Émeraude) - CHECKBOXES MULTI-SELECTION -->
             <div class="section-emerald dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-4">
@@ -209,69 +209,207 @@
                         </div>
                     </div>
                     <div class="bg-emerald-100 rounded-full px-5 py-2 border-2 border-emerald-400">
-                        <span class="text-emerald-700 font-bold">Étape 5/9</span>
+                        <span class="text-emerald-700 font-bold">Étape 5/10</span>
                     </div>
                 </div>
                 <div class="space-y-6">
-                    <div class="space-y-2">
-                        <label for="languages" class="block text-gray-700 font-semibold text-sm">🌍 Sélectionnez vos langues (maintenir Ctrl/Cmd pour plusieurs)</label>
-                        <select id="languages" name="languages" multiple size="10"
-                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all duration-200 outline-none">
-                            <optgroup label="🌍 Langues Internationales">
-                                <option value="Arabe">العربية Arabe</option>
-                                <option value="Français">🇫🇷 Français</option>
-                                <option value="Anglais">🇬🇧 Anglais</option>
-                                <option value="Espagnol">🇪🇸 Espagnol</option>
-                                <option value="Portugais">🇵🇹 Portugais</option>
-                                <option value="Chinois">🇨🇳 Chinois</option>
-                                <option value="Allemand">🇩🇪 Allemand</option>
-                                <option value="Italien">🇮🇹 Italien</option>
-                                <option value="Russe">🇷🇺 Russe</option>
-                                <option value="Turc">🇹🇷 Turc</option>
-                            </optgroup>
-                            <optgroup label="🌍 Langues Africaines Principales">
-                                <option value="Swahili">🇰🇪 Swahili (Afrique de l'Est)</option>
-                                <option value="Haoussa">🇳🇬 Haoussa (Nigéria, Niger)</option>
-                                <option value="Yoruba">🇳🇬 Yoruba (Nigéria, Bénin)</option>
-                                <option value="Igbo">🇳🇬 Igbo (Nigéria)</option>
-                                <option value="Amharique">🇪🇹 Amharique (Éthiopie)</option>
-                                <option value="Oromo">🇪🇹 Oromo (Éthiopie)</option>
-                                <option value="Somali">🇸🇴 Somali (Somalie)</option>
-                                <option value="Zoulou">🇿🇦 Zoulou (Afrique du Sud)</option>
-                                <option value="Xhosa">🇿🇦 Xhosa (Afrique du Sud)</option>
-                                <option value="Afrikaans">🇿🇦 Afrikaans (Afrique du Sud)</option>
-                                <option value="Lingala">🇨🇩 Lingala (RD Congo)</option>
-                                <option value="Kinyarwanda">🇷🇼 Kinyarwanda (Rwanda)</option>
-                                <option value="Kirundi">🇧🇮 Kirundi (Burundi)</option>
-                                <option value="Shona">🇿🇼 Shona (Zimbabwe)</option>
-                                <option value="Ndebele">🇿🇼 Ndebele (Zimbabwe)</option>
-                            </optgroup>
-                            <optgroup label="🇲🇦 Langues Marocaines">
-                                <option value="Darija">Darija (Arabe marocain)</option>
-                                <option value="Amazigh">ⵜⴰⵎⴰⵣⵉⵖⵜ Amazigh/Berbère</option>
-                                <option value="Tariffit">Tariffit (Rifain)</option>
-                                <option value="Tachelhit">Tachelhit (Souss)</option>
-                                <option value="Tamazight">Tamazight (Atlas)</option>
-                            </optgroup>
-                            <optgroup label="🌍 Autres Langues Africaines">
-                                <option value="Wolof">🇸🇳 Wolof (Sénégal)</option>
-                                <option value="Fulani">Peul/Fulani (Afrique de l'Ouest)</option>
-                                <option value="Bambara">🇲🇱 Bambara (Mali)</option>
-                                <option value="Akan">🇬🇭 Akan/Twi (Ghana)</option>
-                                <option value="Ewe">🇹🇬 Ewe (Togo, Ghana)</option>
-                                <option value="Tigrinya">🇪🇷 Tigrinya (Érythrée)</option>
-                                <option value="Chichewa">🇲🇼 Chichewa (Malawi)</option>
-                                <option value="Bemba">🇿🇲 Bemba (Zambie)</option>
-                                <option value="Tswana">🇧🇼 Tswana (Botswana)</option>
-                                <option value="Sotho">🇱🇸 Sotho (Lesotho)</option>
-                                <option value="Kikuyu">🇰🇪 Kikuyu (Kenya)</option>
-                                <option value="Luo">🇰🇪 Luo (Kenya)</option>
-                                <option value="Luganda">🇺🇬 Luganda (Ouganda)</option>
-                                <option value="Malgache">🇲🇬 Malgache (Madagascar)</option>
-                            </optgroup>
-                        </select>
-                        <p class="text-sm text-gray-500 mt-1">💡 Maintenez Ctrl (Windows) ou Cmd (Mac) pour sélectionner plusieurs langues</p>
+                    <!-- Langues Internationales -->
+                    <div class="bg-emerald-50 rounded-xl p-6 border-2 border-emerald-200">
+                        <h3 class="text-lg font-bold text-emerald-800 mb-4 pb-2 border-b-2 border-emerald-300">🌍 Langues Internationales</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Arabe" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">العربية Arabe</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Français" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇫🇷 Français</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Anglais" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇬🇧 Anglais</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Espagnol" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇪🇸 Espagnol</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Portugais" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇵🇹 Portugais</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Chinois" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇨🇳 Chinois</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Allemand" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇩🇪 Allemand</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Italien" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇮🇹 Italien</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Russe" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇷🇺 Russe</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Turc" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇹🇷 Turc</span>
+                            </label>
+                        </div>
                     </div>
+
+                    <!-- Langues Marocaines -->
+                    <div class="bg-emerald-50 rounded-xl p-6 border-2 border-emerald-200">
+                        <h3 class="text-lg font-bold text-emerald-800 mb-4 pb-2 border-b-2 border-emerald-300">🇲🇦 Langues Marocaines</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Darija" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">Darija (Arabe marocain)</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Amazigh" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">ⵜⴰⵎⴰⵣⵉⵖⵜ Amazigh/Berbère</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Tariffit" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">Tariffit (Rifain)</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Tachelhit" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">Tachelhit (Souss)</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Tamazight" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">Tamazight (Atlas)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Langues Africaines -->
+                    <div class="bg-emerald-50 rounded-xl p-6 border-2 border-emerald-200 max-h-96 overflow-y-auto custom-scrollbar">
+                        <h3 class="text-lg font-bold text-emerald-800 mb-4 pb-2 border-b-2 border-emerald-300 sticky top-0 bg-emerald-50">🌍 Langues Africaines</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Swahili" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇰🇪 Swahili</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Haoussa" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇳🇬 Haoussa</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Yoruba" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇳🇬 Yoruba</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Igbo" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇳🇬 Igbo</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Amharique" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇪🇹 Amharique</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Oromo" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇪🇹 Oromo</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Somali" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇸🇴 Somali</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Zoulou" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇿🇦 Zoulou</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Xhosa" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇿🇦 Xhosa</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Afrikaans" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇿🇦 Afrikaans</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Lingala" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇨🇩 Lingala</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Kinyarwanda" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇷🇼 Kinyarwanda</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Kirundi" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇧🇮 Kirundi</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Shona" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇿🇼 Shona</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Ndebele" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇿🇼 Ndebele</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Wolof" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇸🇳 Wolof</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Fulani" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">Peul/Fulani</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Bambara" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇲🇱 Bambara</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Akan" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇬🇭 Akan/Twi</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Ewe" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇹🇬 Ewe</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Tigrinya" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇪🇷 Tigrinya</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Chichewa" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇲🇼 Chichewa</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Bemba" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇿🇲 Bemba</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Tswana" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇧🇼 Tswana</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Sotho" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇱🇸 Sotho</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Kikuyu" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇰🇪 Kikuyu</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Luo" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇰🇪 Luo</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Luganda" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇺🇬 Luganda</span>
+                            </label>
+                            <label class="flex items-center bg-white p-3 rounded-lg hover:bg-emerald-100 transition-all cursor-pointer border-2 border-transparent hover:border-emerald-500">
+                                <input type="checkbox" name="languages" value="Malgache" class="mr-3 w-5 h-5 text-emerald-500 rounded focus:ring-emerald-400 cursor-pointer">
+                                <span class="text-sm font-semibold text-gray-700">🇲🇬 Malgache</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="bg-emerald-50 rounded-xl p-6 border-2 border-emerald-200">
                         <p class="text-sm text-emerald-700">
                             ✅ <strong>Conseil :</strong> Mentionner vos langues augmente considérablement vos opportunités professionnelles internationales.
@@ -291,7 +429,7 @@
                         </div>
                     </div>
                     <div class="bg-yellow-100 rounded-full px-5 py-2 border-2 border-yellow-400">
-                        <span class="text-yellow-700 font-bold">Étape 6/9</span>
+                        <span class="text-yellow-700 font-bold">Étape 6/10</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -334,7 +472,7 @@
                         </div>
                     </div>
                     <div class="bg-indigo-100 rounded-full px-5 py-2 border-2 border-indigo-400">
-                        <span class="text-indigo-700 font-bold">Étape 7/9</span>
+                        <span class="text-indigo-700 font-bold">Étape 7/10</span>
                     </div>
                 </div>
                 <div class="space-y-6">
@@ -371,7 +509,7 @@
                         </div>
                     </div>
                     <div class="bg-orange-100 rounded-full px-5 py-2 border-2 border-orange-400">
-                        <span class="text-orange-700 font-bold">Étape 8/9</span>
+                        <span class="text-orange-700 font-bold">Étape 8/10</span>
                     </div>
                 </div>
                 <div class="bg-orange-50 rounded-xl p-6 mb-6 border-3 border-dotted border-orange-400">
@@ -405,7 +543,7 @@
                         </div>
                     </div>
                     <div class="bg-cyan-100 rounded-full px-5 py-2 border-2 border-cyan-400">
-                        <span class="text-cyan-700 font-bold">Étape 9/9</span>
+                        <span class="text-cyan-700 font-bold">Étape 9/10</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -427,7 +565,58 @@
                 </div>
             </div>
 
-            <!-- REMOVED Section 10: Réseaux Sociaux - déplacé dans profil edit -->
+            <!-- Section 10: Réseaux Sociaux (Rose) -->
+            <div class="section-pink dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl">🌐</span>
+                        <div>
+                            <h2 class="text-2xl font-bold text-pink-700">Réseaux Sociaux</h2>
+                            <p class="text-pink-600 text-sm mt-1">Vos profils professionnels</p>
+                        </div>
+                    </div>
+                    <div class="bg-pink-100 rounded-full px-5 py-2 border-2 border-pink-400">
+                        <span class="text-pink-700 font-bold">Étape 10/10</span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="linkedin_url" class="block text-gray-700 font-semibold text-sm">💼 LinkedIn</label>
+                        <input type="url" id="linkedin_url" name="linkedin_url" placeholder="https://linkedin.com/in/votre-profil" 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="facebook_url" class="block text-gray-700 font-semibold text-sm">📘 Facebook</label>
+                        <input type="url" id="facebook_url" name="facebook_url" placeholder="https://facebook.com/votre-profil" 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="instagram_url" class="block text-gray-700 font-semibold text-sm">📷 Instagram</label>
+                        <input type="url" id="instagram_url" name="instagram_url" placeholder="https://instagram.com/votre-profil" 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="twitter_url" class="block text-gray-700 font-semibold text-sm">🐦 Twitter/X</label>
+                        <input type="url" id="twitter_url" name="twitter_url" placeholder="https://twitter.com/votre-profil" 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="github_url" class="block text-gray-700 font-semibold text-sm">💻 GitHub</label>
+                        <input type="url" id="github_url" name="github_url" placeholder="https://github.com/votre-profil" 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="youtube_url" class="block text-gray-700 font-semibold text-sm">📹 YouTube</label>
+                        <input type="url" id="youtube_url" name="youtube_url" placeholder="https://youtube.com/@votre-chaine" 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
+                    </div>
+                </div>
+                <div class="bg-pink-50 rounded-xl p-6 mt-6 border-2 border-pink-200">
+                    <p class="text-sm text-pink-700">
+                        ℹ️ <strong>Conseil :</strong> Ajouter vos réseaux sociaux professionnels permet aux recruteurs de mieux vous connaître et augmente votre visibilité.
+                    </p>
+                </div>
+            </div>
 
             <!-- Bouton de soumission - MODERN STYLE NO GRADIENT -->
             <div class="flex justify-center pt-8 pb-12">
@@ -469,12 +658,12 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #ff6b6b, #f59e0b);
+    background: #f59e0b;
     border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #f59e0b, #ff6b6b);
+    background: #ea580c;
 }
 </style>
 
