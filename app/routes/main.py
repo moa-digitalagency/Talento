@@ -104,9 +104,10 @@ def admin_dashboard():
     # Utilisateurs récents (derniers 6)
     recent_users = User.query.filter_by(account_active=True, is_admin=False).order_by(desc(User.created_at)).limit(6).all()
     
-    # Statistiques par disponibilité
-    available_users = User.query.filter_by(availability='available', account_active=True).count()
-    partially_available_users = User.query.filter_by(availability='partially_available', account_active=True).count()
+    # Statistiques par disponibilité (nouvelles valeurs)
+    temps_plein_users = User.query.filter_by(availability='Temps plein', account_active=True).count()
+    temps_partiel_users = User.query.filter_by(availability='Temps partiel', account_active=True).count()
+    flexible_users = User.query.filter_by(availability='Flexible', account_active=True).count()
     
     # Top talents les plus utilisés (top 10)
     top_talents = db.session.query(
@@ -157,8 +158,9 @@ def admin_dashboard():
                          total_countries=total_countries,
                          total_cities=total_cities,
                          recent_users=recent_users,
-                         available_users=available_users,
-                         partially_available_users=partially_available_users,
+                         temps_plein_users=temps_plein_users,
+                         temps_partiel_users=temps_partiel_users,
+                         flexible_users=flexible_users,
                          top_talents=top_talents,
                          category_stats=category_stats,
                          work_mode_stats=work_mode_stats,
@@ -196,8 +198,8 @@ def talents():
             'user_count': user_count
         })
     
-    # Catégories disponibles
-    categories = db.session.query(Talent.category).distinct().order_by(Talent.category).all()
+    # Catégories disponibles (uniquement celles avec des talents utilisés)
+    categories = db.session.query(Talent.category).join(UserTalent).distinct().order_by(Talent.category).all()
     categories = [c[0] for c in categories]
     
     return render_template('talents.html', 

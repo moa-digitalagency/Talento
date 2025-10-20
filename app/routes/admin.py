@@ -72,7 +72,10 @@ def delete_user(user_id):
 @admin_required
 def export_excel():
     users = User.query.filter(User.is_admin == False).all()
-    buffer = ExportService.export_to_excel(users)
+    excel_bytes = ExportService.export_to_excel(users)
+    
+    buffer = io.BytesIO(excel_bytes)
+    buffer.seek(0)
     
     return send_file(
         buffer,
@@ -104,7 +107,10 @@ def export_csv():
 @admin_required
 def export_pdf():
     users = User.query.filter(User.is_admin == False).all()
-    buffer = ExportService.export_list_to_pdf(users)
+    pdf_bytes = ExportService.export_list_to_pdf(users)
+    
+    buffer = io.BytesIO(pdf_bytes)
+    buffer.seek(0)
     
     return send_file(
         buffer,
@@ -118,7 +124,10 @@ def export_pdf():
 @admin_required
 def export_pdf_individual(user_id):
     user = User.query.get_or_404(user_id)
-    buffer = ExportService.export_talent_card_pdf(user)
+    pdf_bytes = ExportService.export_talent_card_pdf(user)
+    
+    buffer = io.BytesIO(pdf_bytes)
+    buffer.seek(0)
     
     filename = f'talento_{user.unique_code}_{datetime.now().strftime("%Y%m%d")}.pdf'
     

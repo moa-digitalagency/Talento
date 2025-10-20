@@ -70,10 +70,13 @@
                         {% if user.availability %}
                         <div class="bg-white p-4 rounded-lg border-2 border-blue-200">
                             <p class="text-sm text-gray-600">Disponibilité</p>
-                            <p class="text-lg font-bold {% if user.availability == 'available' %}text-green-600{% elif user.availability == 'partially_available' %}text-yellow-600{% else %}text-red-600{% endif %}">
-                                {% if user.availability == 'available' %}✅ Disponible
-                                {% elif user.availability == 'partially_available' %}⚠️ Partiel
-                                {% else %}❌ Indisponible{% endif %}
+                            <p class="text-lg font-bold {% if user.availability == 'Temps plein' %}text-green-600{% elif user.availability in ['Temps partiel', 'Mi-temps'] %}text-yellow-600{% elif user.availability == 'Flexible' %}text-blue-600{% else %}text-purple-600{% endif %}">
+                                {% if user.availability == 'Temps plein' %}⏰ Temps plein
+                                {% elif user.availability == 'Temps partiel' %}🕐 Temps partiel
+                                {% elif user.availability == 'Mi-temps' %}⏳ Mi-temps
+                                {% elif user.availability == 'Flexible' %}🔄 Flexible
+                                {% elif user.availability == 'Occasionnel' %}📅 Occasionnel
+                                {% else %}{{ user.availability }}{% endif %}
                             </p>
                         </div>
                         {% endif %}

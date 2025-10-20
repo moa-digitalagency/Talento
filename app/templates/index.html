@@ -116,9 +116,12 @@
                         <label class="block text-gray-700 font-semibold mb-2">Disponibilité</label>
                         <select name="availability" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
                             <option value="">Toutes</option>
-                            <option value="available" {% if request.args.get('availability') == 'available' %}selected{% endif %}>Disponible</option>
-                            <option value="partially_available" {% if request.args.get('availability') == 'partially_available' %}selected{% endif %}>Partiellement disponible</option>
-                            <option value="unavailable" {% if request.args.get('availability') == 'unavailable' %}selected{% endif %}>Indisponible</option>
+                            <option value="Temps plein" {% if request.args.get('availability') == 'Temps plein' %}selected{% endif %}>⏰ Temps plein</option>
+                            <option value="Temps partiel" {% if request.args.get('availability') == 'Temps partiel' %}selected{% endif %}>🕐 Temps partiel</option>
+                            <option value="Mi-temps" {% if request.args.get('availability') == 'Mi-temps' %}selected{% endif %}>⏳ Mi-temps</option>
+                            <option value="Flexible" {% if request.args.get('availability') == 'Flexible' %}selected{% endif %}>🔄 Flexible</option>
+                            <option value="Occasionnel" {% if request.args.get('availability') == 'Occasionnel' %}selected{% endif %}>📅 Occasionnel</option>
+                            <option value="Indisponible" {% if request.args.get('availability') == 'Indisponible' %}selected{% endif %}>❌ Indisponible</option>
                         </select>
                     </div>
                     <div>
@@ -203,17 +206,29 @@
                                 {{ user.city.name if user.city else 'N/A' }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                {% if user.availability == 'available' %}
+                                {% if user.availability == 'Temps plein' %}
                                 <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-500">
-                                    ✅ Disponible
+                                    ⏰ Temps plein
                                 </span>
-                                {% elif user.availability == 'partially_available' %}
+                                {% elif user.availability in ['Temps partiel', 'Mi-temps'] %}
                                 <span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full border border-yellow-500">
-                                    ⚠️ Partiel
+                                    {{ user.availability }}
                                 </span>
-                                {% else %}
+                                {% elif user.availability == 'Flexible' %}
+                                <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full border border-blue-500">
+                                    🔄 Flexible
+                                </span>
+                                {% elif user.availability == 'Indisponible' %}
                                 <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full border border-red-500">
                                     ❌ Indisponible
+                                </span>
+                                {% elif user.availability %}
+                                <span class="px-3 py-1 bg-purple-100 text-purple-700 text-xs font-bold rounded-full border border-purple-500">
+                                    {{ user.availability }}
+                                </span>
+                                {% else %}
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-full border border-gray-500">
+                                    Non renseigné
                                 </span>
                                 {% endif %}
                             </td>
@@ -272,47 +287,22 @@
                 </div>
             </div>
 
-            <!-- Disponibilité -->
+            <!-- Top Catégories de Talents -->
             <div class="section-green p-8">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-4xl">📊</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Disponibilité</h2>
+                    <h2 class="text-2xl font-bold text-gray-800">Top Catégories</h2>
                 </div>
-                <div class="space-y-4">
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-gray-700 font-semibold flex items-center gap-2">
-                                <span class="w-4 h-4 bg-green-500 rounded-full"></span>
-                                Disponible maintenant
-                            </span>
-                            <span class="text-2xl font-bold text-green-600">{{ available_users }}</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                            <div class="bg-green-600 h-full transition-all" 
-                                 style="width: {% if total_users > 0 %}{{ (available_users / total_users * 100) | round | int }}%{% else %}0%{% endif %}"></div>
+                <div class="space-y-3">
+                    {% for cat_stat in category_stats[:5] %}
+                    <div class="flex items-center justify-between p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-all border-l-4 border-green-500">
+                        <span class="font-semibold text-gray-800">{{ cat_stat.category }}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl font-bold text-green-600">{{ cat_stat.user_count }}</span>
+                            <span class="text-gray-500 text-sm">profils</span>
                         </div>
                     </div>
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-gray-700 font-semibold flex items-center gap-2">
-                                <span class="w-4 h-4 bg-yellow-500 rounded-full"></span>
-                                Partiellement disponible
-                            </span>
-                            <span class="text-2xl font-bold text-yellow-600">{{ partially_available_users }}</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
-                            <div class="bg-yellow-600 h-full transition-all" 
-                                 style="width: {% if total_users > 0 %}{{ (partially_available_users / total_users * 100) | round | int }}%{% else %}0%{% endif %}"></div>
-                        </div>
-                    </div>
-                    <div class="mt-6 pt-6 border-t-2 border-gray-200">
-                        <div class="flex items-center justify-between">
-                            <span class="text-gray-600 font-semibold">Taux de disponibilité</span>
-                            <span class="text-3xl font-bold text-green-600">
-                                {% if total_users > 0 %}{{ ((available_users + partially_available_users) / total_users * 100) | round | int }}%{% else %}0%{% endif %}
-                            </span>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
