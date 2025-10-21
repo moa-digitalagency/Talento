@@ -100,3 +100,63 @@ def get_work_mode_display(value):
         'label': value,
         'emoji': '❓'
     })
+
+LANGUAGES_CINEMA = [
+    'Afrikaans', 'Allemand', 'Amazigh (Berbère)', 'Anglais', 'Arabe', 'Arménien',
+    'Chinois (Mandarin)', 'Chinois (Cantonais)', 'Coréen', 'Créole', 'Espagnol',
+    'Français', 'Grec', 'Haoussa', 'Hébreu', 'Hindi', 'Italien', 'Japonais',
+    'Néerlandais', 'Norvégien', 'Polonais', 'Portugais', 'Roumain', 'Russe',
+    'Suédois', 'Swahili', 'Turc', 'Ukrainien', 'Wolof', 'Yoruba', 'Zoulou', 'Autre'
+]
+
+TALENT_CATEGORIES = [
+    {
+        'name': 'Arts de la scène',
+        'emoji': '🎭',
+        'talents': [
+            'Acteur/Actrice', 'Chanteur', 'Danseur', 'Comédien de doublage',
+            'Humoriste', 'Présentateur/Animateur', 'Conteur'
+        ]
+    },
+    {
+        'name': 'Arts visuels',
+        'emoji': '🎨',
+        'talents': [
+            'Photographe', 'Peintre', 'Sculpteur', 'Illustrateur',
+            'Designer graphique', 'Maquilleur', 'Tatoueur'
+        ]
+    },
+    {
+        'name': 'Musique',
+        'emoji': '🎵',
+        'talents': [
+            'Musicien', 'Compositeur', 'DJ', 'Producteur musical',
+            'Ingénieur du son', 'Beatmaker'
+        ]
+    },
+    {
+        'name': 'Sports & Arts martiaux',
+        'emoji': '⚽',
+        'talents': [
+            'Cascadeur', 'Arts martiaux', 'Acrobate', 'Équitation',
+            'Sports de combat', 'Natation', 'Plongée', 'Parkour',
+            'Gymnastique', 'Danse sportive', 'Autres sports'
+        ]
+    },
+    {
+        'name': 'Techniques & Créatives',
+        'emoji': '🎬',
+        'talents': [
+            'Chorégraphe', 'Metteur en scène', 'Réalisateur',
+            'Scénariste', 'Monteur vidéo', 'Cadreur/Opérateur'
+        ]
+    },
+    {
+        'name': 'Autres',
+        'emoji': '✨',
+        'talents': [
+            'Mannequin', 'Magicien', 'Ventriloque', 'Mime',
+            'Jongleur', 'Clown', 'Marionnettiste', 'Autre'
+        ]
+    }
+]

@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
 from app import db
 from app.models.cinema_talent import CinemaTalent
 from app.models import Country
+from app.constants import LANGUAGES_CINEMA, TALENT_CATEGORIES
+from app.services.movie_service import search_movies
 from app.utils.file_handler import save_file
 from datetime import datetime
 import json
@@ -42,10 +44,21 @@ def team():
     """Équipe Technique CINEMA - Gestion de l'équipe technique"""
     return render_template('cinema/team.html')
 
+@bp.route('/api/search_movies', methods=['GET'])
+def api_search_movies():
+    """API proxy pour rechercher des films via TMDb"""
+    query = request.args.get('query', '').strip()
+    
+    if not query or len(query) < 2:
+        return jsonify({'results': []})
+    
+    result = search_movies(query)
+    return jsonify(result)
+
 @bp.route('/register', methods=['GET', 'POST'])
 def register_talent():
     """Inscription d'un nouveau talent CINEMA"""
-    # Get countries for dropdowns
+    # Get countries for dropdowns, sorted alphabetically
     countries = Country.query.order_by(Country.name).all()
     
     if request.method == 'POST':
@@ -145,12 +158,15 @@ def register_talent():
                 from app.utils.encryption import encrypt_data
                 talent.whatsapp_encrypted = encrypt_data(whatsapp)
             
+            # Social Media (all encrypted)
             social_media = {
                 'facebook': request.form.get('facebook'),
                 'instagram': request.form.get('instagram'),
                 'linkedin': request.form.get('linkedin'),
                 'twitter': request.form.get('twitter'),
-                'youtube': request.form.get('youtube')
+                'youtube': request.form.get('youtube'),
+                'tiktok': request.form.get('tiktok'),
+                'snapchat': request.form.get('snapchat')
             }
             
             from app.utils.encryption import encrypt_data
@@ -158,6 +174,7 @@ def register_talent():
                 if value:
                     setattr(talent, f'{key}_encrypted', encrypt_data(value))
             
+            # Previous Productions (JSON)
             talent.previous_productions = request.form.get('previous_productions')
             
             db.session.add(talent)
@@ -169,6 +186,12 @@ def register_talent():
         except Exception as e:
             db.session.rollback()
             flash(f'Erreur lors de l\'enregistrement: {str(e)}', 'error')
-            return render_template('cinema/register_talent.html', countries=countries)
+            return render_template('cinema/register_talent.html', 
+                                 countries=countries,
+                                 languages=LANGUAGES_CINEMA,
+                                 talent_categories=TALENT_CATEGORIES)
     
-    return render_template('cinema/register_talent.html', countries=countries)
+    return render_template('cinema/register_talent.html', 
+                         countries=countries,
+                         languages=LANGUAGES_CINEMA,
+                         talent_categories=TALENT_CATEGORIES)

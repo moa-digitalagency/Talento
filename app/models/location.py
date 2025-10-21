@@ -7,6 +7,15 @@ class Country(db.Model):
     name = db.Column(db.String(100), nullable=False, unique=True)
     code = db.Column(db.String(2), nullable=False, unique=True)
     
+    @property
+    def flag(self):
+        """Generate flag emoji from ISO-2 country code"""
+        if not self.code or len(self.code) != 2:
+            return '🏳️'
+        
+        code_points = [ord(c) + 127397 for c in self.code.upper()]
+        return ''.join(chr(c) for c in code_points)
+    
     def __repr__(self):
         return f'<Country {self.code} - {self.name}>'
 
