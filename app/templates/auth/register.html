@@ -24,6 +24,7 @@
         </div>
         
         <form method="POST" action="{{ url_for('auth.register') }}" enctype="multipart/form-data" id="registerForm" class="space-y-8 max-w-4xl mx-auto">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             
             <!-- Section 1: Identité (Bleu) -->
             <div class="section-blue dotted-section transform hover:scale-[1.02] transition-all duration-300 p-8">
