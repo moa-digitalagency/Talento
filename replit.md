@@ -57,9 +57,11 @@ Preferred communication style: Simple, everyday language.
 
 ### CINEMA Module Specifics
 - **Registration Form**: Public form (`/cinema/register`) organized into 9 color-coded sections for identity & contact, origins, residence, languages, physical characteristics, talent types (13 options with multi-select), talents (categorized), social networks (encrypted including Telegram), and photos/productions.
+- **Profile View**: Public profile page (`/cinema/profile/{code}`) mirrors the registration form structure with 9 sections, displaying age (not birth date), encrypted document number, separated contact block, and correctly mapped data (ethnicities in Origins, talent types vs. competences separated).
 - **Features**: Country dropdowns with emoji flags, dynamic city loading, multi-select fields for ethnicities, languages, and talents. All physical characteristic dropdowns (eyes, hair color/type, skin tone, build) are populated from constants.
 - **TMDb Integration**: Optional server-side API proxy for movie/TV show search in production history, with real-time search and poster display.
-- **Data Model**: `CinemaTalent` model includes personal info with encrypted ID, origins vs. residence, physical characteristics, JSON arrays for languages/talents, encrypted contact/social media (including Telegram), website field (non-encrypted), photo storage, and previous productions as JSON.
+- **Data Model**: `CinemaTalent` model includes personal info with encrypted ID document number, origins vs. residence, physical characteristics, JSON arrays for languages/talent_types/other_talents, encrypted contact/social media (including Telegram), website field (non-encrypted), photo storage, and previous productions as JSON.
+- **Valid Data Values**: Ethnicities from predefined list (Africaine, Arabe, Berbère, Caucasienne/Blanche, etc.), Talent types from CINEMA_TALENT_TYPES constant (Acteur/Actrice Principal(e), Acteur/Actrice Secondaire, Figurant(e), Silhouette, Doublure, Doublure Lumière, Cascadeur/Cascadeuse, Mannequin, Voix Off, Figurant Spécialisé, Choriste, Danseur/Danseuse de fond, Autre).
 
 ## External Dependencies
 
