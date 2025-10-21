@@ -84,6 +84,15 @@
                             <p class="text-lg font-bold text-purple-600">{{ talent.country_of_origin }}</p>
                         </div>
                         {% endif %}
+                        
+                        {% if talent.id_document_type %}
+                        <div class="bg-white p-4 rounded-lg border-2 border-purple-200">
+                            <p class="text-sm text-gray-600">Type de document</p>
+                            <p class="text-lg font-bold text-purple-600">
+                                {% if talent.id_document_type == 'passport' %}📘 Passeport{% elif talent.id_document_type == 'national_id' %}🪪 Carte d'identité{% else %}{{ talent.id_document_type }}{% endif %}
+                            </p>
+                        </div>
+                        {% endif %}
                     </div>
                     
                     <!-- Contact -->
