@@ -30,8 +30,11 @@ class User(UserMixin, db.Model):
     photo_filename = db.Column(db.String(255))
     cv_filename = db.Column(db.String(255))
     portfolio_url = db.Column(db.String(500))
+    website = db.Column(db.String(500))
     
     linkedin_encrypted = db.Column(db.Text)
+    imdb_url_encrypted = db.Column(db.Text)
+    threads_encrypted = db.Column(db.Text)
     instagram_encrypted = db.Column(db.Text)
     twitter_encrypted = db.Column(db.Text)
     facebook_encrypted = db.Column(db.Text)
@@ -319,6 +322,22 @@ class User(UserMixin, db.Model):
     @telegram.setter
     def telegram(self, value):
         self._set_social_media('telegram', value)
+    
+    @property
+    def imdb_url(self):
+        return self._get_social_media('imdb_url')
+    
+    @imdb_url.setter
+    def imdb_url(self, value):
+        self._set_social_media('imdb_url', value)
+    
+    @property
+    def threads(self):
+        return self._get_social_media('threads')
+    
+    @threads.setter
+    def threads(self, value):
+        self._set_social_media('threads', value)
     
     def __repr__(self):
         return f'<User {self.email}>'

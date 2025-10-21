@@ -63,6 +63,8 @@ class CinemaTalent(db.Model):
     tiktok_encrypted = db.Column(db.Text)
     snapchat_encrypted = db.Column(db.Text)
     telegram_encrypted = db.Column(db.Text)
+    imdb_url_encrypted = db.Column(db.Text)
+    threads_encrypted = db.Column(db.Text)
     
     # Previous Experience
     previous_productions = db.Column(db.Text)
