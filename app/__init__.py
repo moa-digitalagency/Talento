@@ -259,12 +259,14 @@ def create_app(config_class=Config):
     login_manager.login_message = 'Veuillez vous connecter pour accéder à cette page.'
     
     from app.routes import auth, profile, admin, main, api, cinema
+    from app.routes import api_v1
     app.register_blueprint(auth.bp)
     app.register_blueprint(profile.bp)
     app.register_blueprint(admin.bp)
     app.register_blueprint(main.bp)
     app.register_blueprint(api.bp)
     app.register_blueprint(cinema.bp)
+    app.register_blueprint(api_v1.bp)
     
     with app.app_context():
         db.create_all()
