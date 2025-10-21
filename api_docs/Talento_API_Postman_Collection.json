@@ -1,0 +1,395 @@
+{
+  "info": {
+    "name": "Talento API v1",
+    "description": "Complete API collection for Talento platform - Talent management system for African professionals",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "talento-api-v1",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000/api/v1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"admin@talento.com\",\n  \"password\": \"@4dm1n\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Login with email or unique code"
+          }
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Get currently authenticated user"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Logout current user"
+          }
+        }
+      ],
+      "description": "Authentication endpoints"
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "country_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "city_id",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "gender",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "availability",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all users with filters (Admin only)"
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/1",
+              "host": ["{{base_url}}"],
+              "path": ["users", "1"]
+            },
+            "description": "Get user details by ID"
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/1",
+              "host": ["{{base_url}}"],
+              "path": ["users", "1"]
+            },
+            "description": "Delete a user (Admin only)"
+          }
+        },
+        {
+          "name": "Toggle User Active",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/1/toggle-active",
+              "host": ["{{base_url}}"],
+              "path": ["users", "1", "toggle-active"]
+            },
+            "description": "Activate/Deactivate user account (Admin only)"
+          }
+        }
+      ],
+      "description": "User management endpoints"
+    },
+    {
+      "name": "Talents & Location",
+      "item": [
+        {
+          "name": "List Talents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/talents",
+              "host": ["{{base_url}}"],
+              "path": ["talents"]
+            },
+            "description": "Get all available talents"
+          }
+        },
+        {
+          "name": "List Countries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/countries",
+              "host": ["{{base_url}}"],
+              "path": ["countries"]
+            },
+            "description": "Get all countries with flags"
+          }
+        },
+        {
+          "name": "List Cities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cities?country_id=1",
+              "host": ["{{base_url}}"],
+              "path": ["cities"],
+              "query": [
+                {
+                  "key": "country_id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get cities, optionally filtered by country"
+          }
+        }
+      ],
+      "description": "Talents and location data"
+    },
+    {
+      "name": "CINEMA Module",
+      "item": [
+        {
+          "name": "List CINEMA Talents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cinema/talents?page=1&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["cinema", "talents"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "gender",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "country_origin_id",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get CINEMA talents with filters"
+          }
+        },
+        {
+          "name": "Get CINEMA Talent by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cinema/talents/1",
+              "host": ["{{base_url}}"],
+              "path": ["cinema", "talents", "1"]
+            },
+            "description": "Get CINEMA talent details"
+          }
+        },
+        {
+          "name": "CINEMA Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/cinema/stats",
+              "host": ["{{base_url}}"],
+              "path": ["cinema", "stats"]
+            },
+            "description": "Get CINEMA module statistics"
+          }
+        }
+      ],
+      "description": "CINEMA module for film industry talents"
+    },
+    {
+      "name": "Statistics",
+      "item": [
+        {
+          "name": "Overview Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/stats/overview",
+              "host": ["{{base_url}}"],
+              "path": ["stats", "overview"]
+            },
+            "description": "Get platform overview statistics (Admin only)"
+          }
+        },
+        {
+          "name": "Talent Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/stats/talents",
+              "host": ["{{base_url}}"],
+              "path": ["stats", "talents"]
+            },
+            "description": "Get talent category statistics (Admin only)"
+          }
+        }
+      ],
+      "description": "Platform statistics"
+    },
+    {
+      "name": "Data Exports",
+      "item": [
+        {
+          "name": "Export Users to Excel",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/export/users/excel",
+              "host": ["{{base_url}}"],
+              "path": ["export", "users", "excel"]
+            },
+            "description": "Download all users in Excel format (Admin only)"
+          }
+        },
+        {
+          "name": "Export Users to CSV",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/export/users/csv",
+              "host": ["{{base_url}}"],
+              "path": ["export", "users", "csv"]
+            },
+            "description": "Download all users in CSV format (Admin only)"
+          }
+        },
+        {
+          "name": "Export Users to PDF",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_ids\": [1, 2, 3, 4, 5]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/export/users/pdf",
+              "host": ["{{base_url}}"],
+              "path": ["export", "users", "pdf"]
+            },
+            "description": "Download selected users in PDF format (Admin only)"
+          }
+        }
+      ],
+      "description": "Data export endpoints"
+    }
+  ],
+  "auth": {
+    "type": "noauth"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}
