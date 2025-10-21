@@ -887,9 +887,6 @@ class ExportService:
         if cinema_talent.id_document_number_encrypted:
             try:
                 id_document_number = decrypt_sensitive_data(cinema_talent.id_document_number_encrypted)
-                # Masquer partiellement le numéro (montrer seulement les 4 premiers caractères)
-                if id_document_number and len(id_document_number) > 4:
-                    id_document_number = id_document_number[:4] + '...'
             except:
                 id_document_number = 'Non disponible'
         
