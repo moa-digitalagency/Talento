@@ -776,10 +776,15 @@ class ExportService:
         # Colonne centrale: Nom, date de naissance, genre
         full_name = f"{cinema_talent.first_name} {cinema_talent.last_name}"
         
-        # Calculer la date de naissance formatée
+        # Calculer la date de naissance formatée et l'âge
         birth_date_str = 'Non renseignée'
+        age_display = ''
         if cinema_talent.date_of_birth:
             birth_date_str = cinema_talent.date_of_birth.strftime('%d/%m/%Y')
+            from datetime import date
+            today = date.today()
+            age = today.year - cinema_talent.date_of_birth.year - ((today.month, today.day) < (cinema_talent.date_of_birth.month, cinema_talent.date_of_birth.day))
+            age_display = f" ({age} ans)"
         
         gender_str = {'M': 'Homme', 'F': 'Femme', 'N': 'Non précisé'}.get(cinema_talent.gender, 'Non renseigné')
         
@@ -813,7 +818,7 @@ class ExportService:
         
         center_content = [
             [Paragraph(name_text, name_style)],
-            [Paragraph(f"<b>Né(e) le:</b> {birth_date_str}", info_style)],
+            [Paragraph(f"<b>Né(e) le:</b> {birth_date_str}{age_display}", info_style)],
             [Paragraph(f"<b>Genre:</b> {gender_str}", info_style)],
             [Paragraph(f"<b>Code:</b> {cinema_talent.unique_code}", info_style)]
         ]
@@ -875,7 +880,7 @@ class ExportService:
                     flag_nationality = item['flag']
                     break
         
-        # Déchiffrer le téléphone et le numéro de pièce d'identité
+        # Déchiffrer le téléphone, WhatsApp et le numéro de pièce d'identité
         phone_decrypted = 'Non renseigné'
         if cinema_talent.phone_encrypted:
             try:
@@ -883,18 +888,33 @@ class ExportService:
             except:
                 phone_decrypted = 'Non disponible'
         
+        whatsapp_decrypted = 'Non renseigné'
+        if cinema_talent.whatsapp_encrypted:
+            try:
+                whatsapp_decrypted = decrypt_sensitive_data(cinema_talent.whatsapp_encrypted)
+            except:
+                whatsapp_decrypted = 'Non disponible'
+        
         id_document_number = 'Non renseigné'
+        id_document_label = 'Non renseigné'
         if cinema_talent.id_document_number_encrypted:
             try:
                 id_document_number = decrypt_sensitive_data(cinema_talent.id_document_number_encrypted)
             except:
                 id_document_number = 'Non disponible'
         
+        if cinema_talent.id_document_type == 'passport':
+            id_document_label = 'Passeport'
+        elif cinema_talent.id_document_type == 'national_id':
+            id_document_label = 'Carte d\'identité nationale'
+        elif cinema_talent.id_document_type == 'residence_permit':
+            id_document_label = 'Titre de séjour'
+        
         info_data = [
-            ['Pièce d\'identité', f"{cinema_talent.id_document_type or 'Non renseigné'} - {id_document_number}"],
-            ['Âge', age_str],
+            ['Pièce d\'identité', f"{id_document_label} - {id_document_number}" if cinema_talent.id_document_type else 'Non renseigné'],
             ['Email', cinema_talent.email or 'Non renseigné'],
             ['Téléphone', phone_decrypted],
+            ['WhatsApp', whatsapp_decrypted],
             ['Site Web', cinema_talent.website or 'Non renseigné'],
             ['Pays d\'origine', f"{flag_origin} {cinema_talent.country_of_origin}" if cinema_talent.country_of_origin else 'Non renseigné'],
             ['Nationalité', f"{flag_nationality} {cinema_talent.nationality}" if cinema_talent.nationality else 'Non renseigné'],

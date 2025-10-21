@@ -5,6 +5,45 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.28.0] - 2025-10-21
+
+### 📄 Améliorations PDF CINEMA et Masquage QR Code Responsive
+
+#### PDF - Âge à côté de la Date de Naissance
+- **Ajouté** : Âge calculé affiché à côté de la date de naissance dans l'en-tête du PDF
+- **Format** : "Né(e) le: 15/03/1995 (30 ans)"
+- **Calcul automatique** : L'âge est calculé dynamiquement en fonction de la date actuelle
+
+#### PDF - Restructuration du Tableau d'Identité
+- **Supprimé** : Ligne "Âge" du tableau (redondant avec l'en-tête)
+- **Ajouté** : Ligne "WhatsApp" après "Téléphone" dans le tableau
+- **Déchiffrement** : WhatsApp déchiffré avec Fernet (comme le téléphone)
+- **Ordre** : Pièce d'identité, Email, Téléphone, WhatsApp, Site Web, Origines...
+
+#### PDF - Labels de Pièce d'Identité Corrects
+- **Corrigé** : Labels en français au lieu des variables techniques
+- **Mappings** :
+  - `passport` → "Passeport"
+  - `national_id` → "Carte d'identité nationale"
+  - `residence_permit` → "Titre de séjour"
+- **Format** : Label français + numéro complet (ex: "Passeport - AB123456")
+
+#### QR Code - Masqué sur Mobile et Tablette
+- **Modifié** : QR code caché sur mobile et tablette, visible uniquement sur PC
+- **Classes Tailwind** : `hidden lg:block`
+- **Comportement** :
+  - 📱 Mobile (< 768px) : QR code **caché**
+  - 📱 Tablette (768px - 1023px) : QR code **caché**
+  - 💻 PC/Desktop (≥ 1024px) : QR code **visible**
+
+#### Résultat
+- ✅ **PDF plus informatif** : Âge visible en en-tête + WhatsApp dans tableau
+- ✅ **Labels professionnels** : Textes français au lieu de variables techniques
+- ✅ **QR code responsive** : Visible uniquement sur ordinateurs
+- ✅ **Expérience optimale** : Interface adaptée selon l'appareil
+
+---
+
 ## [2.27.0] - 2025-10-21
 
 ### 🛡️ Système de Migration Robuste et Corrections d'Affichage
