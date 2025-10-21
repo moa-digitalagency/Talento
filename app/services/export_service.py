@@ -1203,6 +1203,67 @@ class ExportService:
             elements.append(prod_table)
             elements.append(Spacer(1, 15))
         
+        # ==== GALERIE PHOTO ====
+        gallery_title = Table([['GALERIE PHOTO']], colWidths=[6.5*inch])
+        gallery_title.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#8B5CF6')),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 14),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(gallery_title)
+        
+        # Collecter les photos disponibles
+        photos_list = []
+        if cinema_talent.profile_photo_filename:
+            photos_list.append(f"Photo de profil: {cinema_talent.profile_photo_filename}")
+        if cinema_talent.id_photo_filename:
+            photos_list.append(f"Photo d'identité: {cinema_talent.id_photo_filename}")
+        
+        # Ajouter les photos de la galerie
+        try:
+            gallery = json.loads(cinema_talent.gallery_photos) if cinema_talent.gallery_photos else []
+            for idx, photo in enumerate(gallery, 1):
+                photos_list.append(f"Photo {idx}: {photo}")
+        except:
+            pass
+        
+        if photos_list:
+            photos_data = [[photo] for photo in photos_list]
+            photos_table = Table(photos_data, colWidths=[6.5*inch])
+            photos_table.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EDE9FE')),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+                ('ROWBACKGROUNDS', (0, 0), (-1, -1), [colors.white, colors.HexColor('#EDE9FE')]),
+            ]))
+            elements.append(photos_table)
+        else:
+            no_photos_para = Paragraph("Aucune photo disponible", styles['Normal'])
+            no_photos_table = Table([[no_photos_para]], colWidths=[6.5*inch])
+            no_photos_table.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Oblique'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('TOPPADDING', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F3F4F6')),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
+            ]))
+            elements.append(no_photos_table)
+        elements.append(Spacer(1, 15))
+        
         # ==== FOOTER ====
         elements.append(Spacer(1, 20))
         footer_line = Table([['']],  colWidths=[6.5*inch])
@@ -1220,7 +1281,7 @@ class ExportService:
         )
         elements.append(Spacer(1, 10))
         elements.append(Paragraph(f"Document généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')}", footer_style))
-        elements.append(Paragraph("🎬 Plateforme Talento CINEMA - Talents du Cinéma Africain", footer_style))
+        elements.append(Paragraph("🎬 Plateforme TalentsMaroc.com CINEMA - Talents du Cinéma Africain", footer_style))
         
         doc.build(elements)
         buffer.seek(0)
