@@ -112,9 +112,16 @@
                                 </span>
                             </td>
                             <td class="py-3 px-4">
-                                <a href="#" class="text-purple-600 hover:text-purple-800 font-semibold">
-                                    Voir profil
+                                {% if talent.unique_code %}
+                                <a href="{{ url_for('cinema.view_profile', unique_code=talent.unique_code) }}" 
+                                   class="text-purple-600 hover:text-purple-800 font-semibold flex items-center gap-1"
+                                   target="_blank">
+                                    <span>👁️</span>
+                                    <span>Voir profil</span>
                                 </a>
+                                {% else %}
+                                <span class="text-gray-400 text-sm">Pas de code</span>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endfor %}

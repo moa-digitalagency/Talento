@@ -45,6 +45,13 @@ def generate_cinema_unique_code(country_name, city_name, gender):
     
     Returns:
         str: Code unique de 12 caractères (PPVVVNNNNNNNG)
+    
+    Note:
+        Le numéro séquentiel est incrémenté par PAYS uniquement, 
+        pas par combinaison pays+ville. Ainsi:
+        - SNCAS0001M (Sénégal, Casablanca)
+        - CDCAS0001M (Tchad, Casablanca) 
+        Et non SNCAS0001M puis SNCAS0002M pour deux personnes de la même ville.
     """
     # Obtenir le code pays (2 lettres)
     country_code = get_country_code(country_name)
@@ -52,23 +59,25 @@ def generate_cinema_unique_code(country_name, city_name, gender):
     # Obtenir le code ville (3 lettres)
     city_code = clean_city_code(city_name)
     
-    # Trouver le prochain numéro séquentiel pour ce pays/ville
-    prefix = f"{country_code}{city_code}"
+    # Trouver le prochain numéro séquentiel pour ce PAYS uniquement
+    # On cherche tous les codes qui commencent par le code pays (2 lettres)
+    # et on trouve le numéro séquentiel maximum (pas de tri lexicographique!)
+    all_talents = CinemaTalent.query.filter(
+        CinemaTalent.unique_code.like(f"{country_code}%")
+    ).all()
     
-    # Chercher le dernier code avec ce préfixe
-    last_talent = CinemaTalent.query.filter(
-        CinemaTalent.unique_code.like(f"{prefix}%")
-    ).order_by(CinemaTalent.unique_code.desc()).first()
+    max_sequence = 0
+    if all_talents:
+        for talent in all_talents:
+            if talent.unique_code and len(talent.unique_code) >= 11:
+                try:
+                    # Extraire le numéro séquentiel (positions 5-11)
+                    sequence_num = int(talent.unique_code[5:11])
+                    max_sequence = max(max_sequence, sequence_num)
+                except (ValueError, IndexError):
+                    continue
     
-    if last_talent and last_talent.unique_code:
-        # Extraire le numéro séquentiel du dernier code
-        try:
-            last_number = int(last_talent.unique_code[5:11])
-            next_number = last_number + 1
-        except (ValueError, IndexError):
-            next_number = 1
-    else:
-        next_number = 1
+    next_number = max_sequence + 1
     
     # Formatter le numéro sur 6 chiffres
     sequence = str(next_number).zfill(6)

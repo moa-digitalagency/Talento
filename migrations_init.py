@@ -766,7 +766,9 @@ def generate_codes_for_cinema_talents():
             # Créer le dossier si nécessaire
             os.makedirs(qr_save_path, exist_ok=True)
             
-            qr_filename = generate_qr_code(unique_code, qr_save_path)
+            # Utiliser la fonction spécifique pour les QR codes CINEMA
+            from app.utils.qr_generator import generate_cinema_qr_code
+            qr_filename = generate_cinema_qr_code(unique_code, qr_save_path)
             talent.qr_code_filename = qr_filename
             
             count += 1
