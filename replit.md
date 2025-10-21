@@ -15,6 +15,7 @@ Preferred communication style: Simple, everyday language.
 - **ORM**: SQLAlchemy with Flask-SQLAlchemy, supporting SQLite (development) and PostgreSQL (production).
 - **Data Models**: User, Talent, UserTalent, Country, City, AppSettings, and CinemaTalent, with sensitive data encrypted using Fernet.
 - **Security**: Passwords hashed with Werkzeug. AppSettings stores configurations securely.
+- **Recent Schema Updates (v2.16.0)**: Added website, imdb_url_encrypted, and threads_encrypted fields to User and CinemaTalent models for enhanced profile information.
 
 ### Unique Identification System
 - **Code Format**: PPVVVNNNNG (Country, City, 4 digits, Gender).
