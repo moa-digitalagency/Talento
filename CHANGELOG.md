@@ -5,6 +5,52 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.19.0] - 2025-10-21
+
+### 🎨 Amélioration Visuelle - Page de Profil CINEMA
+
+#### Alignement avec le Formulaire d'Inscription
+- **Corrigé** : La page de visualisation des profils CINEMA reflète maintenant exactement le formulaire d'inscription
+- **Supprimé** : Champ "Années d'expérience" qui n'existe pas dans le formulaire d'inscription
+- **Ajouté** : Affichage du type de document d'identité (Passeport ou Carte d'identité)
+- **Réorganisé** : Les sections sont maintenant dans le même ordre que le formulaire :
+  1. Identité & Contact (Bleu)
+  2. Origines (Vert)
+  3. Résidence (Violet)
+  4. Langues (Cyan)
+  5. Caractéristiques physiques (Orange)
+  6. Types de talent (Jaune)
+  7. Autres talents et compétences (Rose)
+  8. Réseaux sociaux (Indigo)
+  9. Productions précédentes (Rouge)
+
+#### Badges de Couleur
+- **Ajouté** : Classes CSS `badge-green`, `badge-cyan`, `badge-yellow`, `badge-pink` pour améliorer la présentation
+- Les éléments multi-valeurs (origines, langues, types de talent, compétences) s'affichent maintenant en badges colorés clairs et lisibles
+- Chaque badge a :
+  - Fond coloré clair
+  - Bordure de 2px assortie
+  - Padding confortable
+  - Coins arrondis
+  - Texte gras et contrasté
+
+### 🔧 Modifications Techniques
+
+#### CSS (`corporate.css`)
+- Ajout de 4 nouvelles classes de badges avec couleurs distinctives :
+  - `badge-green` : fond vert clair (#dcfce7), bordure verte (#22c55e)
+  - `badge-cyan` : fond cyan clair (#cffafe), bordure cyan (#06b6d4)
+  - `badge-yellow` : fond jaune clair (#fef9c3), bordure jaune (#eab308)
+  - `badge-pink` : fond rose clair (#fce7f3), bordure rose (#ec4899)
+
+#### Template (`profile_view.html`)
+- Suppression du bloc "Années d'expérience"
+- Ajout du type de document d'identité dans les informations clés
+- Réorganisation : section "Réseaux sociaux" maintenant avant "Productions précédentes"
+- Application des classes badge-* aux listes de valeurs multiples
+
+---
+
 ## [2.18.0] - 2025-10-21
 
 ### ✨ Améliorations - Profils CINEMA
