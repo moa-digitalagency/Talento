@@ -62,10 +62,35 @@ class CinemaTalent(db.Model):
     # Previous Experience
     previous_productions = db.Column(db.Text)
     
+    # Unique Identification
+    unique_code = db.Column(db.String(12), unique=True, nullable=True, index=True)
+    qr_code_filename = db.Column(db.String(255))
+    
     # Metadata
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     is_active = db.Column(db.Boolean, default=True)
+    
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+    
+    @property
+    def age(self):
+        """Calculer l'âge à partir de la date de naissance"""
+        if not self.date_of_birth:
+            return None
+        from datetime import date
+        today = date.today()
+        age = today.year - self.date_of_birth.year - ((today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day))
+        return age
+    
+    @property
+    def gender_display(self):
+        """Afficher le genre de manière lisible"""
+        if not self.gender:
+            return None
+        return 'Homme' if self.gender == 'M' else 'Femme'
     
     def __repr__(self):
         return f'<CinemaTalent {self.first_name} {self.last_name}>'

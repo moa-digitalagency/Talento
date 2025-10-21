@@ -70,6 +70,26 @@ def check_and_add_columns():
                 except Exception as e:
                     print(f"⚠️  Colonne {col_name} existe déjà ou erreur: {e}")
     
+    # Vérifier les colonnes de cinema_talents
+    cinema_columns_to_check = {
+        'unique_code': 'VARCHAR(12) UNIQUE',
+        'qr_code_filename': 'VARCHAR(255)'
+    }
+    
+    if 'cinema_talents' in inspector.get_table_names():
+        existing_cinema_columns = [col['name'] for col in inspector.get_columns('cinema_talents')]
+        
+        for col_name, col_type in cinema_columns_to_check.items():
+            if col_name not in existing_cinema_columns:
+                print(f"➕ Ajout de la colonne cinema_talents.{col_name}...")
+                try:
+                    with db.engine.connect() as conn:
+                        conn.execute(text(f'ALTER TABLE cinema_talents ADD COLUMN {col_name} {col_type}'))
+                        conn.commit()
+                    print(f"✅ Colonne {col_name} ajoutée")
+                except Exception as e:
+                    print(f"⚠️  Colonne {col_name} existe déjà ou erreur: {e}")
+    
     print("✅ Vérification des colonnes terminée")
     return True
 
@@ -715,6 +735,51 @@ def create_demo_cinema_talents():
     
     return True
 
+def generate_codes_for_cinema_talents():
+    """Générer les codes uniques et QR codes pour les talents CINEMA"""
+    print("\n🎬 Génération des codes uniques et QR codes CINEMA...")
+    
+    from app.utils.cinema_code_generator import generate_cinema_unique_code
+    from flask import current_app
+    
+    talents_without_code = CinemaTalent.query.filter(CinemaTalent.unique_code == None).all()
+    
+    if not talents_without_code:
+        print("✅ Tous les profils CINEMA ont déjà des codes uniques")
+        return True
+    
+    count = 0
+    for talent in talents_without_code:
+        try:
+            # Générer le code unique
+            unique_code = generate_cinema_unique_code(
+                talent.country_of_residence,
+                talent.city_of_residence,
+                talent.gender
+            )
+            talent.unique_code = unique_code
+            
+            # Générer le QR code
+            upload_folder = current_app.config.get('UPLOAD_FOLDER', 'app/static/uploads')
+            qr_save_path = os.path.join(upload_folder, 'qrcodes')
+            
+            # Créer le dossier si nécessaire
+            os.makedirs(qr_save_path, exist_ok=True)
+            
+            qr_filename = generate_qr_code(unique_code, qr_save_path)
+            talent.qr_code_filename = qr_filename
+            
+            count += 1
+            print(f"  ✓ Code généré pour {talent.full_name}: {unique_code}")
+        except Exception as e:
+            print(f"⚠️  Erreur pour {talent.full_name}: {e}")
+    
+    if count > 0:
+        db.session.commit()
+        print(f"✅ {count} codes et QR codes CINEMA générés avec succès")
+    
+    return True
+
 def generate_qr_codes_for_users():
     """Générer les QR codes pour tous les utilisateurs qui n'en ont pas"""
     print("\n🔲 Génération des QR codes pour les utilisateurs...")
@@ -762,6 +827,7 @@ def main():
             create_admin_user()
             create_demo_users()
             create_demo_cinema_talents()
+            generate_codes_for_cinema_talents()
             generate_qr_codes_for_users()
             
             print("\n" + "=" * 60)

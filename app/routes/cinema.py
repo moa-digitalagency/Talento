@@ -211,3 +211,66 @@ def register_talent():
                          nationalities=nationalities,
                          languages=LANGUAGES_CINEMA,
                          talent_categories=TALENT_CATEGORIES)
+
+@bp.route('/profile/<unique_code>')
+def view_profile(unique_code):
+    """Visualisation publique d'un profil CINEMA via code unique"""
+    talent = CinemaTalent.query.filter_by(unique_code=unique_code, is_active=True).first_or_404()
+    
+    # Décrypter les données sensibles pour l'affichage
+    from app.utils.encryption import decrypt_sensitive_data
+    
+    decrypted_data = {}
+    
+    # Décrypter téléphone et WhatsApp
+    if talent.phone_encrypted:
+        decrypted_data['phone'] = decrypt_sensitive_data(talent.phone_encrypted)
+    if talent.whatsapp_encrypted:
+        decrypted_data['whatsapp'] = decrypt_sensitive_data(talent.whatsapp_encrypted)
+    
+    # Décrypter réseaux sociaux
+    social_fields = ['facebook', 'instagram', 'linkedin', 'twitter', 'youtube', 'tiktok', 'snapchat']
+    for field in social_fields:
+        encrypted_field = f'{field}_encrypted'
+        if hasattr(talent, encrypted_field):
+            encrypted_value = getattr(talent, encrypted_field)
+            if encrypted_value:
+                decrypted_data[field] = decrypt_sensitive_data(encrypted_value)
+    
+    # Parser les données JSON
+    parsed_data = {}
+    
+    if talent.ethnicities:
+        try:
+            parsed_data['ethnicities'] = json.loads(talent.ethnicities)
+        except:
+            parsed_data['ethnicities'] = []
+    
+    if talent.languages_spoken:
+        try:
+            parsed_data['languages'] = json.loads(talent.languages_spoken)
+        except:
+            parsed_data['languages'] = []
+    
+    if talent.other_talents:
+        try:
+            parsed_data['talents'] = json.loads(talent.other_talents)
+        except:
+            parsed_data['talents'] = []
+    
+    if talent.previous_productions:
+        try:
+            parsed_data['productions'] = json.loads(talent.previous_productions)
+        except:
+            parsed_data['productions'] = []
+    
+    if talent.gallery_photos:
+        try:
+            parsed_data['gallery'] = json.loads(talent.gallery_photos)
+        except:
+            parsed_data['gallery'] = []
+    
+    return render_template('cinema/profile_view.html',
+                         talent=talent,
+                         decrypted=decrypted_data,
+                         parsed=parsed_data)

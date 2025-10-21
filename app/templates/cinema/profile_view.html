@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+
+{% block title %}Profil CINEMA de {{ talent.full_name }} - Talento{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-5xl mx-auto">
+        
+        <!-- Boutons d'action en haut -->
+        {% if current_user.is_authenticated and current_user.is_admin %}
+        <div class="mb-6 flex flex-col sm:flex-row gap-3 sm:justify-between">
+            <a href="{{ url_for('cinema.talents') }}" 
+               class="px-4 sm:px-6 py-2 sm:py-3 bg-gray-100 text-gray-700 font-bold rounded-lg border-2 border-gray-500 hover:bg-gray-200 transition-all flex items-center justify-center gap-2 text-sm sm:text-base">
+                <span>◀️</span>
+                <span>Retour</span>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Carte principale du profil -->
+        <div class="section-blue p-8 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Colonne gauche: Photo et QR Code -->
+                <div class="lg:col-span-1">
+                    <div class="text-center">
+                        <!-- Photo de profil ou ID -->
+                        {% if talent.id_photo_filename %}
+                        <img src="{{ url_for('static', filename='uploads/photos/' + talent.id_photo_filename) }}" 
+                             alt="{{ talent.full_name }}" 
+                             class="w-48 h-48 rounded-full mx-auto mb-6 object-cover border-4 border-blue-500 shadow-xl">
+                        {% else %}
+                        <div class="w-48 h-48 rounded-full mx-auto mb-6 bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center text-white text-6xl font-bold border-4 border-purple-500 shadow-xl">
+                            {{ talent.first_name[0] if talent.first_name else '?' }}{{ talent.last_name[0] if talent.last_name else '?' }}
+                        </div>
+                        {% endif %}
+                        
+                        <!-- QR Code CINEMA -->
+                        {% if talent.qr_code_filename %}
+                        <div class="bg-white p-4 rounded-xl border-2 border-purple-300 inline-block">
+                            <img src="{{ url_for('static', filename='uploads/qrcodes/' + talent.qr_code_filename) }}" 
+                                 alt="QR Code CINEMA" 
+                                 class="w-40 h-40 mx-auto">
+                            <p class="text-xs text-gray-600 mt-2 font-mono font-bold">{{ talent.unique_code }}</p>
+                            <p class="text-xs text-gray-500">Scannez pour voir le profil</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Colonne droite: Informations principales -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="text-4xl">🎬</span>
+                        <div>
+                            <h1 class="text-4xl font-bold text-gray-800">
+                                {{ talent.full_name }}
+                            </h1>
+                            <p class="text-lg text-gray-600">{% if talent.age %}{{ talent.age }} ans{% endif %}{% if talent.gender_display %} · {{ talent.gender_display }}{% endif %}</p>
+                        </div>
+                    </div>
+                    
+                    <p class="text-2xl text-purple-600 font-mono font-bold mb-6 tracking-wider">{{ talent.unique_code }}</p>
+                    
+                    <!-- Informations clés -->
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        {% if talent.years_of_experience %}
+                        <div class="bg-white p-4 rounded-lg border-2 border-purple-200">
+                            <p class="text-sm text-gray-600">Expérience</p>
+                            <p class="text-2xl font-bold text-purple-600">{{ talent.years_of_experience }} ans</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if talent.nationality %}
+                        <div class="bg-white p-4 rounded-lg border-2 border-purple-200">
+                            <p class="text-sm text-gray-600">Nationalité</p>
+                            <p class="text-lg font-bold text-purple-600">{{ talent.nationality }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if talent.country_of_residence %}
+                        <div class="bg-white p-4 rounded-lg border-2 border-purple-200">
+                            <p class="text-sm text-gray-600">Résidence</p>
+                            <p class="text-lg font-bold text-purple-600">{{ talent.city_of_residence }}, {{ talent.country_of_residence }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if talent.country_of_origin %}
+                        <div class="bg-white p-4 rounded-lg border-2 border-purple-200">
+                            <p class="text-sm text-gray-600">Origine</p>
+                            <p class="text-lg font-bold text-purple-600">{{ talent.country_of_origin }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Contact -->
+                    {% if decrypted.phone or decrypted.whatsapp or talent.email %}
+                    <div class="bg-purple-50 p-4 rounded-lg">
+                        <h3 class="font-bold text-gray-800 mb-2">📞 Contact</h3>
+                        <div class="space-y-1 text-sm">
+                            {% if talent.email %}
+                            <p><strong>Email:</strong> <a href="mailto:{{ talent.email }}" class="text-purple-600 hover:underline">{{ talent.email }}</a></p>
+                            {% endif %}
+                            {% if decrypted.phone %}
+                            <p><strong>Téléphone:</strong> {{ decrypted.phone }}</p>
+                            {% endif %}
+                            {% if decrypted.whatsapp %}
+                            <p><strong>WhatsApp:</strong> {{ decrypted.whatsapp }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Caractéristiques physiques -->
+        {% if talent.height or talent.eye_color or talent.hair_color or talent.skin_tone or talent.build %}
+        <div class="section-orange p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>👤</span>
+                <span>Caractéristiques physiques</span>
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                {% if talent.height %}
+                <div class="bg-white p-3 rounded-lg border-2 border-orange-200">
+                    <p class="text-xs text-gray-600">Taille</p>
+                    <p class="text-lg font-bold text-orange-600">{{ talent.height }} cm</p>
+                </div>
+                {% endif %}
+                {% if talent.eye_color %}
+                <div class="bg-white p-3 rounded-lg border-2 border-orange-200">
+                    <p class="text-xs text-gray-600">Yeux</p>
+                    <p class="text-sm font-bold text-orange-600">{{ talent.eye_color }}</p>
+                </div>
+                {% endif %}
+                {% if talent.hair_color %}
+                <div class="bg-white p-3 rounded-lg border-2 border-orange-200">
+                    <p class="text-xs text-gray-600">Cheveux</p>
+                    <p class="text-sm font-bold text-orange-600">{{ talent.hair_color }}</p>
+                </div>
+                {% endif %}
+                {% if talent.skin_tone %}
+                <div class="bg-white p-3 rounded-lg border-2 border-orange-200">
+                    <p class="text-xs text-gray-600">Teint</p>
+                    <p class="text-sm font-bold text-orange-600">{{ talent.skin_tone }}</p>
+                </div>
+                {% endif %}
+                {% if talent.build %}
+                <div class="bg-white p-3 rounded-lg border-2 border-orange-200">
+                    <p class="text-xs text-gray-600">Corpulence</p>
+                    <p class="text-sm font-bold text-orange-600">{{ talent.build }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Origines et Ethnicités -->
+        {% if parsed.ethnicities %}
+        <div class="section-green p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🌍</span>
+                <span>Origines</span>
+            </h2>
+            <div class="flex flex-wrap gap-2">
+                {% for ethnicity in parsed.ethnicities %}
+                <span class="badge-green">{{ ethnicity }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Langues -->
+        {% if parsed.languages %}
+        <div class="section-cyan p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🗣️</span>
+                <span>Langues parlées</span>
+            </h2>
+            <div class="flex flex-wrap gap-2">
+                {% for language in parsed.languages %}
+                <span class="badge-cyan">{{ language }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Talents -->
+        {% if parsed.talents %}
+        <div class="section-pink p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>✨</span>
+                <span>Talents</span>
+            </h2>
+            <div class="flex flex-wrap gap-2">
+                {% for talent_name in parsed.talents %}
+                <span class="badge-pink">{{ talent_name }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Productions précédentes -->
+        {% if parsed.productions %}
+        <div class="section-red p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🎥</span>
+                <span>Productions précédentes</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for production in parsed.productions %}
+                <div class="bg-white p-4 rounded-lg border-2 border-red-200">
+                    <h3 class="font-bold text-gray-800">{{ production.title }}</h3>
+                    <p class="text-sm text-gray-600">{{ production.type }} · {{ production.year }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Réseaux sociaux -->
+        {% if decrypted.facebook or decrypted.instagram or decrypted.twitter or decrypted.youtube or decrypted.tiktok or decrypted.snapchat or decrypted.linkedin %}
+        <div class="section-indigo p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>📱</span>
+                <span>Réseaux sociaux</span>
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {% if decrypted.facebook %}
+                <a href="https://facebook.com/{{ decrypted.facebook }}" target="_blank" class="bg-blue-100 hover:bg-blue-200 text-blue-700 p-3 rounded-lg border-2 border-blue-300 flex items-center gap-2 transition-all">
+                    <span class="font-bold">Facebook</span>
+                </a>
+                {% endif %}
+                {% if decrypted.instagram %}
+                <a href="https://instagram.com/{{ decrypted.instagram }}" target="_blank" class="bg-pink-100 hover:bg-pink-200 text-pink-700 p-3 rounded-lg border-2 border-pink-300 flex items-center gap-2 transition-all">
+                    <span class="font-bold">Instagram</span>
+                </a>
+                {% endif %}
+                {% if decrypted.twitter %}
+                <a href="https://twitter.com/{{ decrypted.twitter }}" target="_blank" class="bg-sky-100 hover:bg-sky-200 text-sky-700 p-3 rounded-lg border-2 border-sky-300 flex items-center gap-2 transition-all">
+                    <span class="font-bold">Twitter</span>
+                </a>
+                {% endif %}
+                {% if decrypted.youtube %}
+                <a href="https://youtube.com/@{{ decrypted.youtube }}" target="_blank" class="bg-red-100 hover:bg-red-200 text-red-700 p-3 rounded-lg border-2 border-red-300 flex items-center gap-2 transition-all">
+                    <span class="font-bold">YouTube</span>
+                </a>
+                {% endif %}
+                {% if decrypted.tiktok %}
+                <a href="https://tiktok.com/@{{ decrypted.tiktok }}" target="_blank" class="bg-gray-100 hover:bg-gray-200 text-gray-700 p-3 rounded-lg border-2 border-gray-300 flex items-center gap-2 transition-all">
+                    <span class="font-bold">TikTok</span>
+                </a>
+                {% endif %}
+                {% if decrypted.snapchat %}
+                <a href="https://snapchat.com/add/{{ decrypted.snapchat }}" target="_blank" class="bg-yellow-100 hover:bg-yellow-200 text-yellow-700 p-3 rounded-lg border-2 border-yellow-300 flex items-center gap-2 transition-all">
+                    <span class="font-bold">Snapchat</span>
+                </a>
+                {% endif %}
+                {% if decrypted.linkedin %}
+                <a href="https://linkedin.com/in/{{ decrypted.linkedin }}" target="_blank" class="bg-blue-100 hover:bg-blue-200 text-blue-800 p-3 rounded-lg border-2 border-blue-400 flex items-center gap-2 transition-all">
+                    <span class="font-bold">LinkedIn</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
