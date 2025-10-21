@@ -1227,37 +1227,78 @@ class ExportService:
         ]))
         elements.append(gallery_title)
         
-        # Collecter les photos disponibles
-        photos_list = []
-        if cinema_talent.profile_photo_filename:
-            photos_list.append(f"Photo de profil: {cinema_talent.profile_photo_filename}")
-        if cinema_talent.id_photo_filename:
-            photos_list.append(f"Photo d'identité: {cinema_talent.id_photo_filename}")
+        # Collecter les miniatures de photos
+        photo_thumbnails = []
         
-        # Ajouter les photos de la galerie
+        # Photo de profil
+        if cinema_talent.profile_photo_filename:
+            try:
+                photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'photos', cinema_talent.profile_photo_filename)
+                if os.path.exists(photo_path):
+                    img = Image(photo_path, width=1.5*inch, height=1.5*inch)
+                    label = Paragraph("<b>Photo de profil</b>", styles['Normal'])
+                    photo_thumbnails.append([img, label])
+            except:
+                pass
+        
+        # Photo d'identité
+        if cinema_talent.id_photo_filename:
+            try:
+                photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'photos', cinema_talent.id_photo_filename)
+                if os.path.exists(photo_path):
+                    img = Image(photo_path, width=1.5*inch, height=1.5*inch)
+                    label = Paragraph("<b>Photo d'identité</b>", styles['Normal'])
+                    photo_thumbnails.append([img, label])
+            except:
+                pass
+        
+        # Photos de la galerie
         try:
             gallery = json.loads(cinema_talent.gallery_photos) if cinema_talent.gallery_photos else []
-            for idx, photo in enumerate(gallery, 1):
-                photos_list.append(f"Photo {idx}: {photo}")
+            for idx, photo_filename in enumerate(gallery, 1):
+                try:
+                    photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'photos', photo_filename)
+                    if os.path.exists(photo_path):
+                        img = Image(photo_path, width=1.5*inch, height=1.5*inch)
+                        label = Paragraph(f"<b>Photo {idx}</b>", styles['Normal'])
+                        photo_thumbnails.append([img, label])
+                except:
+                    pass
         except:
             pass
         
-        if photos_list:
-            photos_data = [[photo] for photo in photos_list]
-            photos_table = Table(photos_data, colWidths=[6.5*inch])
-            photos_table.setStyle(TableStyle([
-                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-                ('FONTSIZE', (0, 0), (-1, -1), 10),
-                ('TOPPADDING', (0, 0), (-1, -1), 8),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
-                ('LEFTPADDING', (0, 0), (-1, -1), 10),
-                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+        if photo_thumbnails:
+            # Organiser les photos en grille (3 colonnes)
+            photos_per_row = 3
+            photo_rows = []
+            for i in range(0, len(photo_thumbnails), photos_per_row):
+                row_items = []
+                for j in range(photos_per_row):
+                    if i + j < len(photo_thumbnails):
+                        photo_cell = photo_thumbnails[i + j]
+                        # Créer une cellule avec l'image et le label
+                        cell_content = Table([[photo_cell[0]], [photo_cell[1]]], colWidths=[1.5*inch])
+                        cell_content.setStyle(TableStyle([
+                            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                        ]))
+                        row_items.append(cell_content)
+                    else:
+                        row_items.append('')
+                photo_rows.append(row_items)
+            
+            photos_grid = Table(photo_rows, colWidths=[2.15*inch, 2.15*inch, 2.15*inch])
+            photos_grid.setStyle(TableStyle([
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('TOPPADDING', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                ('LEFTPADDING', (0, 0), (-1, -1), 5),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 5),
                 ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EDE9FE')),
-                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
                 ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
-                ('ROWBACKGROUNDS', (0, 0), (-1, -1), [colors.white, colors.HexColor('#EDE9FE')]),
             ]))
-            elements.append(photos_table)
+            elements.append(photos_grid)
         else:
             no_photos_para = Paragraph("Aucune photo disponible", styles['Normal'])
             no_photos_table = Table([[no_photos_para]], colWidths=[6.5*inch])

@@ -5,6 +5,40 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.26.0] - 2025-10-21
+
+### ✨ Amélioration de l'Affichage - Profil CINEMA et PDF
+
+#### Interface Profil CINEMA (/cinema/profile/)
+- **Amélioré** : Augmentation de la taille de la police pour meilleure lisibilité
+  - Nom complet : `text-3xl` → `text-5xl` (plus imposant et impactant)
+  - Âge et genre : `text-lg` → `text-2xl font-semibold` (plus visible)
+  - Code unique : `text-xl` → `text-3xl` (très visible, facile à lire)
+- **Résultat** : Informations principales du profil plus imposantes et faciles à identifier
+
+#### En-tête PDF CINEMA Restructuré
+- **Modifié** : Titre du PDF avec retours à la ligne pour meilleure clarté :
+  - Ligne 1 : "TalentsMaroc.com" (taille 22, couleur indigo)
+  - Ligne 2 : "CINEMA - FICHE DE TALENT" (taille 18, couleur violet)
+  - Ligne 3 : "Profil Cinématographique - Talents du Cinéma Africain" (taille 12, couleur gris)
+- **Amélioré** : Hiérarchie visuelle plus claire et professionnelle
+
+#### Galerie Photo PDF avec Miniatures
+- **Ajouté** : Affichage des miniatures de photos dans la section Galerie Photo
+  - Photos de profil et d'identité affichées en miniatures (1.5" × 1.5")
+  - Photos de galerie affichées en grille de 3 colonnes
+  - Chaque photo avec son label (Photo de profil, Photo d'identité, Photo 1, 2, 3...)
+- **Maintenu** : Message "Aucune photo disponible" si aucune photo n'est présente
+- **Design** : Grille propre avec fond violet clair, bordures grises
+
+#### Résultat
+- ✅ **Page profil CINEMA plus impactante** : Nom, âge et code très visibles
+- ✅ **PDF plus professionnel** : En-tête en 3 lignes bien structuré
+- ✅ **Galerie photo visuelle** : Miniatures réelles au lieu de noms de fichiers
+- ✅ **Expérience utilisateur améliorée** : Meilleure lisibilité sur web et PDF
+
+---
+
 ## [2.25.0] - 2025-10-21
 
 ### 🎨 Rebranding et Ajout de la Galerie Photo au PDF
