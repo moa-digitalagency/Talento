@@ -204,3 +204,44 @@ h2 {
 .dotted-section {
     border-radius: 1rem;
 }
+
+/* Badge styles for profile display */
+.badge-green {
+    background: #dcfce7 !important;
+    color: #166534 !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 9999px !important;
+    font-weight: 600 !important;
+    border: 2px solid #22c55e !important;
+    display: inline-block !important;
+}
+
+.badge-cyan {
+    background: #cffafe !important;
+    color: #0e7490 !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 9999px !important;
+    font-weight: 600 !important;
+    border: 2px solid #06b6d4 !important;
+    display: inline-block !important;
+}
+
+.badge-yellow {
+    background: #fef9c3 !important;
+    color: #854d0e !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 9999px !important;
+    font-weight: 600 !important;
+    border: 2px solid #eab308 !important;
+    display: inline-block !important;
+}
+
+.badge-pink {
+    background: #fce7f3 !important;
+    color: #9f1239 !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 9999px !important;
+    font-weight: 600 !important;
+    border: 2px solid #ec4899 !important;
+    display: inline-block !important;
+}
