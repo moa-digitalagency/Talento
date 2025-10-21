@@ -25,53 +25,112 @@
     <form method="POST" action="{{ url_for('cinema.register_talent') }}" enctype="multipart/form-data" id="cinemaRegisterForm" class="space-y-8">
         {{ form.hidden_tag() if form }}
         
-        <!-- Section 1: Identité (Bleu) -->
+        <!-- Section 1: Identité + Contact + Document d'identité (Bleu) -->
         <div class="section-blue p-8">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
                     <span class="text-5xl">👤</span>
                     <div>
-                        <h2 class="text-2xl font-bold text-blue-700">Identité</h2>
-                        <p class="text-blue-600 text-sm mt-1">Informations personnelles</p>
+                        <h2 class="text-2xl font-bold text-blue-700">Identité & Contact</h2>
+                        <p class="text-blue-600 text-sm mt-1">Informations personnelles et coordonnées</p>
                     </div>
                 </div>
                 <div class="bg-blue-100 rounded-full px-5 py-2 border-2 border-blue-400">
-                    <span class="text-blue-700 font-bold">Section 1/9</span>
+                    <span class="text-blue-700 font-bold">Section 1/8</span>
                 </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <label for="first_name" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                        Prénom <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="first_name" name="first_name" required 
-                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+            <div class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="first_name" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            Prénom <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="first_name" name="first_name" required 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="last_name" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            Nom <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="last_name" name="last_name" required 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="date_of_birth" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            Date de naissance <span class="text-red-500">*</span>
+                        </label>
+                        <input type="date" id="date_of_birth" name="date_of_birth" required 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="gender" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            Genre <span class="text-red-500">*</span>
+                        </label>
+                        <select id="gender" name="gender" required 
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                            <option value="">Sélectionner...</option>
+                            <option value="M">👨 Homme</option>
+                            <option value="F">👩 Femme</option>
+                            <option value="N">⚧️ Non précisé</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="space-y-2">
-                    <label for="last_name" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                        Nom <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="last_name" name="last_name" required 
-                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+
+                <!-- Document d'identité -->
+                <div class="mt-6 pt-6 border-t-2 border-dotted border-blue-300">
+                    <h3 class="text-lg font-bold text-blue-700 mb-4">📋 Document d'identité</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="id_document_type" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                                Type de document <span class="text-red-500">*</span>
+                            </label>
+                            <select id="id_document_type" name="id_document_type" required 
+                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                                <option value="">Sélectionner...</option>
+                                <option value="passport">📘 Passeport</option>
+                                <option value="national_id">🪪 Carte d'identité nationale</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="id_document_number" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                                Numéro du document <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="id_document_number" name="id_document_number" required 
+                                   placeholder="Ex: AB1234567"
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                        </div>
+                    </div>
                 </div>
-                <div class="space-y-2">
-                    <label for="date_of_birth" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                        Date de naissance <span class="text-red-500">*</span>
-                    </label>
-                    <input type="date" id="date_of_birth" name="date_of_birth" required 
-                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
-                </div>
-                <div class="space-y-2">
-                    <label for="gender" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                        Genre <span class="text-red-500">*</span>
-                    </label>
-                    <select id="gender" name="gender" required 
-                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
-                        <option value="">Sélectionner...</option>
-                        <option value="M">👨 Homme</option>
-                        <option value="F">👩 Femme</option>
-                        <option value="N">⚧️ Non précisé</option>
-                    </select>
+
+                <!-- Contact -->
+                <div class="mt-6 pt-6 border-t-2 border-dotted border-blue-300">
+                    <h3 class="text-lg font-bold text-blue-700 mb-4">📞 Coordonnées</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="email" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                                Email <span class="text-red-500">*</span>
+                            </label>
+                            <input type="email" id="email" name="email" required 
+                                   placeholder="exemple@email.com"
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="phone" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                                Téléphone <span class="text-red-500">*</span>
+                            </label>
+                            <input type="tel" id="phone" name="phone" required 
+                                   placeholder="+212 6 XX XX XX XX"
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="whatsapp" class="block text-gray-700 font-semibold text-sm">
+                                WhatsApp
+                            </label>
+                            <input type="tel" id="whatsapp" name="whatsapp" 
+                                   placeholder="+212 6 XX XX XX XX"
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -87,7 +146,7 @@
                     </div>
                 </div>
                 <div class="bg-green-100 rounded-full px-5 py-2 border-2 border-green-400">
-                    <span class="text-green-700 font-bold">Section 2/9</span>
+                    <span class="text-green-700 font-bold">Section 2/8</span>
                 </div>
             </div>
             <div class="space-y-6">
@@ -122,52 +181,19 @@
                         <label for="nationality" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
                             Nationalité <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" id="nationality" name="nationality" required 
-                               placeholder="Ex: Marocaine"
-                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
+                        <select id="nationality" name="nationality" required 
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
+                            <option value="">Sélectionner...</option>
+                            {% for country in countries %}
+                            <option value="{{ country.name }}">{{ country.flag }} {{ country.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Section 3: Document d'identité (Rouge) -->
-        <div class="section-red p-8">
-            <div class="flex items-center justify-between mb-6">
-                <div class="flex items-center gap-4">
-                    <span class="text-5xl">📋</span>
-                    <div>
-                        <h2 class="text-2xl font-bold text-red-700">Document d'identité</h2>
-                        <p class="text-red-600 text-sm mt-1">Pièce d'identité officielle</p>
-                    </div>
-                </div>
-                <div class="bg-red-100 rounded-full px-5 py-2 border-2 border-red-400">
-                    <span class="text-red-700 font-bold">Section 3/9</span>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="space-y-2">
-                    <label for="id_document_type" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                        Type de document <span class="text-red-500">*</span>
-                    </label>
-                    <select id="id_document_type" name="id_document_type" required 
-                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
-                        <option value="">Sélectionner...</option>
-                        <option value="passport">📘 Passeport</option>
-                        <option value="national_id">🪪 Carte d'identité nationale</option>
-                    </select>
-                </div>
-                <div class="space-y-2">
-                    <label for="id_document_number" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                        Numéro du document <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="id_document_number" name="id_document_number" required 
-                           placeholder="Ex: AB1234567"
-                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 4: Résidence (Violet) -->
+        <!-- Section 3: Résidence (Violet) -->
         <div class="section-purple p-8">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
@@ -178,7 +204,7 @@
                     </div>
                 </div>
                 <div class="bg-purple-100 rounded-full px-5 py-2 border-2 border-purple-400">
-                    <span class="text-purple-700 font-bold">Section 4/9</span>
+                    <span class="text-purple-700 font-bold">Section 3/8</span>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -205,7 +231,7 @@
             </div>
         </div>
 
-        <!-- Section 5: Langues (Cyan) -->
+        <!-- Section 4: Langues (Cyan) -->
         <div class="section-cyan p-8">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
@@ -216,7 +242,7 @@
                     </div>
                 </div>
                 <div class="bg-cyan-100 rounded-full px-5 py-2 border-2 border-cyan-400">
-                    <span class="text-cyan-700 font-bold">Section 5/9</span>
+                    <span class="text-cyan-700 font-bold">Section 4/8</span>
                 </div>
             </div>
             <div class="space-y-2">
@@ -224,7 +250,6 @@
                     Sélectionnez vos langues <small class="text-gray-500">(Choix multiple possible)</small>
                 </label>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-h-64 overflow-y-auto p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
-                    {% set languages = ['Afrikaans', 'Allemand', 'Amazigh (Berbère)', 'Anglais', 'Arabe', 'Chinois (Mandarin)', 'Créole', 'Espagnol', 'Français', 'Haoussa', 'Hindi', 'Italien', 'Japonais', 'Portugais', 'Russe', 'Swahili', 'Turc', 'Wolof', 'Yoruba', 'Zoulou', 'Autre'] %}
                     {% for language in languages %}
                     <label class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-cyan-50 cursor-pointer transition-colors">
                         <input type="checkbox" name="languages" value="{{ language }}" class="w-4 h-4 text-cyan-600 rounded">
@@ -235,7 +260,7 @@
             </div>
         </div>
 
-        <!-- Section 6: Caractéristiques physiques (Orange) -->
+        <!-- Section 5: Caractéristiques physiques (Orange) -->
         <div class="section-orange p-8">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
@@ -246,7 +271,7 @@
                     </div>
                 </div>
                 <div class="bg-orange-100 rounded-full px-5 py-2 border-2 border-orange-400">
-                    <span class="text-orange-700 font-bold">Section 6/9</span>
+                    <span class="text-orange-700 font-bold">Section 5/8</span>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -326,28 +351,29 @@
             </div>
         </div>
 
-        <!-- Section 7: Talents & Expérience (Rose) -->
+        <!-- Section 6: Talents (Rose) -->
         <div class="section-pink p-8">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
                     <span class="text-5xl">⭐</span>
                     <div>
-                        <h2 class="text-2xl font-bold text-pink-700">Talents & Expérience</h2>
+                        <h2 class="text-2xl font-bold text-pink-700">Talents</h2>
                         <p class="text-pink-600 text-sm mt-1">Vos compétences artistiques</p>
                     </div>
                 </div>
                 <div class="bg-pink-100 rounded-full px-5 py-2 border-2 border-pink-400">
-                    <span class="text-pink-700 font-bold">Section 7/9</span>
+                    <span class="text-pink-700 font-bold">Section 6/8</span>
                 </div>
             </div>
             <div class="space-y-6">
-                <div class="space-y-2">
-                    <label class="block text-gray-700 font-semibold text-sm mb-3">
-                        Autres talents <small class="text-gray-500">(Choix multiple possible)</small>
-                    </label>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-64 overflow-y-auto p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
-                        {% set talents = ['Chanteur', 'Danseur', 'Musicien', 'Acrobate', 'Cascadeur', 'Comédien de doublage', 'Arts martiaux', 'Magicien', 'Humoriste', 'Présentateur', 'Mannequin', 'Photographe', 'Peintre', 'Sculpteur', 'Chorégraphe', 'Équitation', 'Sports de combat', 'Natation', 'Plongée', 'Autres sports', 'Autre'] %}
-                        {% for talent in talents %}
+                {% for category in talent_categories %}
+                <div class="space-y-3">
+                    <h3 class="text-md font-bold text-gray-800 flex items-center gap-2">
+                        <span class="text-2xl">{{ category.emoji }}</span>
+                        {{ category.name }}
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+                        {% for talent in category.talents %}
                         <label class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-pink-50 cursor-pointer transition-colors">
                             <input type="checkbox" name="other_talents" value="{{ talent }}" class="w-4 h-4 text-pink-600 rounded">
                             <span class="text-sm text-gray-700">{{ talent }}</span>
@@ -355,154 +381,267 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="space-y-2">
-                    <label for="years_of_experience" class="block text-gray-700 font-semibold text-sm">
-                        Années d'expérience dans le cinéma/audiovisuel
-                    </label>
-                    <input type="number" id="years_of_experience" name="years_of_experience" min="0" 
-                           placeholder="Ex: 5"
-                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all duration-200 outline-none">
-                </div>
+                {% endfor %}
             </div>
         </div>
 
-        <!-- Section 8: Photos & Contact (Indigo) -->
+        <!-- Section 7: Réseaux sociaux (Indigo) -->
         <div class="section-indigo p-8">
-            <div class="flex items-center justify-between mb-6">
-                <div class="flex items-center gap-4">
-                    <span class="text-5xl">📸</span>
-                    <div>
-                        <h2 class="text-2xl font-bold text-indigo-700">Photos & Contact</h2>
-                        <p class="text-indigo-600 text-sm mt-1">Vos photos et coordonnées</p>
-                    </div>
-                </div>
-                <div class="bg-indigo-100 rounded-full px-5 py-2 border-2 border-indigo-400">
-                    <span class="text-indigo-700 font-bold">Section 8/9</span>
-                </div>
-            </div>
-            <div class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label for="profile_photo" class="block text-gray-700 font-semibold text-sm">Photo de profil</label>
-                        <input type="file" id="profile_photo" name="profile_photo" accept="image/*" 
-                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="id_photo" class="block text-gray-700 font-semibold text-sm">Photo d'identité</label>
-                        <input type="file" id="id_photo" name="id_photo" accept="image/*" 
-                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
-                    </div>
-                </div>
-                <div class="space-y-2">
-                    <label for="gallery_photos" class="block text-gray-700 font-semibold text-sm">
-                        Galerie photos <small class="text-gray-500">(Plusieurs photos possibles)</small>
-                    </label>
-                    <input type="file" id="gallery_photos" name="gallery_photos" accept="image/*" multiple 
-                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="space-y-2">
-                        <label for="email" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                            Email <span class="text-red-500">*</span>
-                        </label>
-                        <input type="email" id="email" name="email" required 
-                               placeholder="exemple@mail.com"
-                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="phone" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                            Téléphone <span class="text-red-500">*</span>
-                        </label>
-                        <input type="tel" id="phone" name="phone" required 
-                               placeholder="+212 6XX XXX XXX"
-                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="whatsapp" class="block text-gray-700 font-semibold text-sm">WhatsApp</label>
-                        <input type="tel" id="whatsapp" name="whatsapp" 
-                               placeholder="+212 6XX XXX XXX"
-                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Section 9: Réseaux sociaux & Productions (Teal) -->
-        <div class="section-teal p-8">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
                     <span class="text-5xl">🌐</span>
                     <div>
-                        <h2 class="text-2xl font-bold text-teal-700">Réseaux sociaux & Productions</h2>
-                        <p class="text-teal-600 text-sm mt-1">Vos réseaux et expériences</p>
+                        <h2 class="text-2xl font-bold text-indigo-700">Réseaux sociaux</h2>
+                        <p class="text-indigo-600 text-sm mt-1">Vos profils sur les réseaux sociaux</p>
                     </div>
                 </div>
-                <div class="bg-teal-100 rounded-full px-5 py-2 border-2 border-teal-400">
-                    <span class="text-teal-700 font-bold">Section 9/9</span>
+                <div class="bg-indigo-100 rounded-full px-5 py-2 border-2 border-indigo-400">
+                    <span class="text-indigo-700 font-bold">Section 7/8</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <label for="facebook" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        📘 Facebook
+                    </label>
+                    <input type="url" id="facebook" name="facebook" 
+                           placeholder="https://facebook.com/votre.profil"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="instagram" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        📷 Instagram
+                    </label>
+                    <input type="url" id="instagram" name="instagram" 
+                           placeholder="https://instagram.com/votre.profil"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="tiktok" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        🎵 TikTok
+                    </label>
+                    <input type="url" id="tiktok" name="tiktok" 
+                           placeholder="https://tiktok.com/@votre.profil"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="snapchat" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        👻 Snapchat
+                    </label>
+                    <input type="text" id="snapchat" name="snapchat" 
+                           placeholder="votre.username"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="youtube" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        📺 YouTube
+                    </label>
+                    <input type="url" id="youtube" name="youtube" 
+                           placeholder="https://youtube.com/@votre.chaine"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="twitter" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        🐦 X (Twitter)
+                    </label>
+                    <input type="url" id="twitter" name="twitter" 
+                           placeholder="https://x.com/votre.profil"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
+                </div>
+                <div class="space-y-2">
+                    <label for="linkedin" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        💼 LinkedIn
+                    </label>
+                    <input type="url" id="linkedin" name="linkedin" 
+                           placeholder="https://linkedin.com/in/votre.profil"
+                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 8: Photos & Productions précédentes (Rouge) -->
+        <div class="section-red p-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-5xl">📸</span>
+                    <div>
+                        <h2 class="text-2xl font-bold text-red-700">Photos & Productions</h2>
+                        <p class="text-red-600 text-sm mt-1">Vos photos et expérience cinématographique</p>
+                    </div>
+                </div>
+                <div class="bg-red-100 rounded-full px-5 py-2 border-2 border-red-400">
+                    <span class="text-red-700 font-bold">Section 8/8</span>
                 </div>
             </div>
             <div class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label for="facebook" class="block text-gray-700 font-semibold text-sm">Facebook</label>
-                        <input type="url" id="facebook" name="facebook" 
-                               placeholder="https://facebook.com/votre-profil"
-                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-200 outline-none">
+                <!-- Photos -->
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-red-700">📷 Photos</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="profile_photo" class="block text-gray-700 font-semibold text-sm">Photo de profil</label>
+                            <input type="file" id="profile_photo" name="profile_photo" accept="image/*" 
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="id_photo" class="block text-gray-700 font-semibold text-sm">Photo d'identité</label>
+                            <input type="file" id="id_photo" name="id_photo" accept="image/*" 
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
+                        </div>
                     </div>
                     <div class="space-y-2">
-                        <label for="instagram" class="block text-gray-700 font-semibold text-sm">Instagram</label>
-                        <input type="url" id="instagram" name="instagram" 
-                               placeholder="https://instagram.com/votre-profil"
-                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-200 outline-none">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="linkedin" class="block text-gray-700 font-semibold text-sm">LinkedIn</label>
-                        <input type="url" id="linkedin" name="linkedin" 
-                               placeholder="https://linkedin.com/in/votre-profil"
-                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-200 outline-none">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="twitter" class="block text-gray-700 font-semibold text-sm">Twitter/X</label>
-                        <input type="url" id="twitter" name="twitter" 
-                               placeholder="https://twitter.com/votre-profil"
-                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-200 outline-none">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="youtube" class="block text-gray-700 font-semibold text-sm">YouTube</label>
-                        <input type="url" id="youtube" name="youtube" 
-                               placeholder="https://youtube.com/votre-chaine"
-                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-200 outline-none">
+                        <label for="gallery_photos" class="block text-gray-700 font-semibold text-sm">
+                            Galerie de photos <small class="text-gray-500">(Plusieurs photos possibles)</small>
+                        </label>
+                        <input type="file" id="gallery_photos" name="gallery_photos" accept="image/*" multiple 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
                     </div>
                 </div>
-                <div class="space-y-2">
-                    <label for="previous_productions" class="block text-gray-700 font-semibold text-sm">
-                        Productions précédentes <small class="text-gray-500">(Films, séries, publicités...)</small>
-                    </label>
-                    <textarea id="previous_productions" name="previous_productions" rows="5"
-                              placeholder="Listez vos participations à des productions (films, séries, publicités, théâtre...)&#10;&#10;Exemple:&#10;- Film 'Le Retour' (2022) - Rôle principal&#10;- Série 'Casablanca Stories' (2021) - Rôle secondaire&#10;- Publicité 'Maroc Telecom' (2020)"
-                              class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition-all duration-200 outline-none"></textarea>
+
+                <!-- Productions précédentes -->
+                <div class="mt-6 pt-6 border-t-2 border-dotted border-red-300">
+                    <h3 class="text-lg font-bold text-red-700 mb-4">🎬 Productions précédentes</h3>
+                    
+                    <!-- Search Box -->
+                    <div class="mb-4">
+                        <label for="movie_search" class="block text-gray-700 font-semibold text-sm mb-2">
+                            Rechercher des films/séries
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="movie_search" 
+                                   placeholder="Tapez le titre d'un film ou d'une série..."
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
+                            <div id="search_results" class="absolute z-10 w-full mt-2 bg-white border-2 border-gray-200 rounded-xl shadow-lg hidden max-h-64 overflow-y-auto"></div>
+                        </div>
+                    </div>
+
+                    <!-- Selected Productions -->
+                    <div id="selected_productions" class="space-y-2 mb-4"></div>
+                    
+                    <!-- Hidden field for JSON data -->
+                    <input type="hidden" id="previous_productions" name="previous_productions" value="[]">
+                    
+                    <!-- Or manual text entry -->
+                    <div class="mt-4 p-4 bg-gray-50 rounded-xl border-2 border-dotted border-gray-300">
+                        <p class="text-sm text-gray-600 mb-2">
+                            <strong>Ou décrivez manuellement vos productions :</strong>
+                        </p>
+                        <textarea id="productions_manual" rows="4" 
+                                  placeholder="Ex: - Film ABC (2020) - Rôle principal&#10;- Série XYZ (2022) - Figuration"
+                                  class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none"></textarea>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Submit Button -->
-        <div class="flex justify-center pt-8 pb-12">
-            <button type="submit" class="btn-primary px-12 py-5 text-xl">
-                <span class="flex items-center gap-3">
-                    <span>🎬</span>
-                    <span>Enregistrer mon profil CINEMA</span>
-                    <span>✨</span>
-                </span>
+        <div class="text-center py-8">
+            <button type="submit" class="btn-primary px-12 py-4 text-lg">
+                ✅ Enregistrer mon profil CINEMA
             </button>
         </div>
     </form>
 </div>
 
-<style>
-.section-teal {
-    background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
-    border: 3px dotted #14b8a6;
-    border-radius: 1rem;
+<script>
+// Movie search functionality
+let searchTimeout;
+let selectedMovies = [];
+
+const movieSearch = document.getElementById('movie_search');
+const searchResults = document.getElementById('search_results');
+const selectedProductions = document.getElementById('selected_productions');
+const previousProductionsInput = document.getElementById('previous_productions');
+
+movieSearch.addEventListener('input', function(e) {
+    clearTimeout(searchTimeout);
+    const query = e.target.value.trim();
+    
+    if (query.length < 2) {
+        searchResults.classList.add('hidden');
+        return;
+    }
+    
+    searchTimeout = setTimeout(() => {
+        fetch(`/cinema/api/search_movies?query=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    searchResults.innerHTML = `<div class="p-4 text-red-600">${data.error}</div>`;
+                    searchResults.classList.remove('hidden');
+                    return;
+                }
+                
+                if (data.results && data.results.length > 0) {
+                    searchResults.innerHTML = data.results.map(movie => `
+                        <div class="p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 flex items-center gap-3" onclick="addMovie(${JSON.stringify(movie).replace(/"/g, '&quot;')})">
+                            ${movie.poster_url ? `<img src="${movie.poster_url}" class="w-12 h-16 object-cover rounded" alt="">` : '<div class="w-12 h-16 bg-gray-200 rounded flex items-center justify-center text-2xl">🎬</div>'}
+                            <div>
+                                <div class="font-semibold">${movie.title}</div>
+                                <div class="text-sm text-gray-600">${movie.type} ${movie.year ? '(' + movie.year + ')' : ''}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                    searchResults.classList.remove('hidden');
+                } else {
+                    searchResults.innerHTML = '<div class="p-4 text-gray-600">Aucun résultat trouvé</div>';
+                    searchResults.classList.remove('hidden');
+                }
+            })
+            .catch(err => {
+                searchResults.innerHTML = '<div class="p-4 text-red-600">Erreur de recherche</div>';
+                searchResults.classList.remove('hidden');
+            });
+    }, 300);
+});
+
+function addMovie(movie) {
+    if (selectedMovies.find(m => m.tmdb_id === movie.tmdb_id)) {
+        alert('Cette production est déjà ajoutée');
+        return;
+    }
+    
+    selectedMovies.push(movie);
+    updateSelectedMovies();
+    searchResults.classList.add('hidden');
+    movieSearch.value = '';
 }
-</style>
+
+function removeMovie(tmdb_id) {
+    selectedMovies = selectedMovies.filter(m => m.tmdb_id !== tmdb_id);
+    updateSelectedMovies();
+}
+
+function updateSelectedMovies() {
+    if (selectedMovies.length === 0) {
+        selectedProductions.innerHTML = '';
+        previousProductionsInput.value = '[]';
+        return;
+    }
+    
+    selectedProductions.innerHTML = selectedMovies.map(movie => `
+        <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border-2 border-green-200">
+            <div class="flex items-center gap-3">
+                ${movie.poster_url ? `<img src="${movie.poster_url}" class="w-10 h-14 object-cover rounded" alt="">` : '<div class="w-10 h-14 bg-gray-200 rounded flex items-center justify-center">🎬</div>'}
+                <div>
+                    <div class="font-semibold text-gray-800">${movie.title}</div>
+                    <div class="text-sm text-gray-600">${movie.type} ${movie.year ? '(' + movie.year + ')' : ''}</div>
+                </div>
+            </div>
+            <button type="button" onclick="removeMovie(${movie.tmdb_id})" class="text-red-600 hover:text-red-800 px-3 py-1 rounded-lg hover:bg-red-100">
+                ✕
+            </button>
+        </div>
+    `).join('');
+    
+    previousProductionsInput.value = JSON.stringify(selectedMovies);
+}
+
+// Hide search results when clicking outside
+document.addEventListener('click', function(e) {
+    if (!movieSearch.contains(e.target) && !searchResults.contains(e.target)) {
+        searchResults.classList.add('hidden');
+    }
+});
+</script>
 {% endblock %}
