@@ -42,12 +42,12 @@
                         {% endif %}
                         
                         {% if talent.qr_code_filename %}
-                        <div class="bg-white p-4 rounded-xl border-2 border-purple-300 inline-block">
+                        <div class="bg-white p-3 sm:p-4 rounded-xl border-2 border-purple-300 w-full max-w-xs mx-auto shadow-lg">
                             <img src="{{ url_for('static', filename='uploads/qrcodes/' + talent.qr_code_filename) }}" 
                                  alt="QR Code CINEMA" 
-                                 class="w-40 h-40 mx-auto">
-                            <p class="text-xs text-gray-600 mt-2 font-mono font-bold">{{ talent.unique_code }}</p>
-                            <p class="text-xs text-gray-500">Scannez pour voir le profil</p>
+                                 class="w-32 h-32 sm:w-40 sm:h-40 mx-auto">
+                            <p class="text-xs sm:text-sm text-gray-600 mt-2 font-mono font-bold text-center">{{ talent.unique_code }}</p>
+                            <p class="text-xs text-gray-500 text-center">Scannez pour voir le profil</p>
                         </div>
                         {% endif %}
                     </div>
