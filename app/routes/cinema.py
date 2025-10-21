@@ -3,7 +3,10 @@ from flask_login import login_required, current_user
 from app import db
 from app.models.cinema_talent import CinemaTalent
 from app.models import Country
-from app.constants import LANGUAGES_CINEMA, TALENT_CATEGORIES
+from app.constants import (
+    LANGUAGES_CINEMA, TALENT_CATEGORIES, CINEMA_TALENT_TYPES,
+    EYE_COLORS, HAIR_COLORS, HAIR_TYPES, SKIN_TONES, BUILD_TYPES
+)
 from app.services.movie_service import search_movies
 from app.utils.file_handler import save_file
 from app.data.world_countries import NATIONALITIES, NATIONALITIES_WITH_FLAGS
@@ -160,7 +163,17 @@ def register_talent():
             existing_talent = CinemaTalent.query.filter_by(email=talent.email).first()
             if existing_talent:
                 flash('Cet email est déjà utilisé dans CINEMA.', 'error')
-                return render_template('cinema/register_talent.html', countries=countries, nationalities=nationalities, languages=LANGUAGES_CINEMA, talent_categories=TALENT_CATEGORIES)
+                return render_template('cinema/register_talent.html', 
+                                     countries=countries, 
+                                     nationalities=nationalities, 
+                                     languages=LANGUAGES_CINEMA, 
+                                     talent_categories=TALENT_CATEGORIES,
+                                     cinema_talent_types=CINEMA_TALENT_TYPES,
+                                     eye_colors=EYE_COLORS,
+                                     hair_colors=HAIR_COLORS,
+                                     hair_types=HAIR_TYPES,
+                                     skin_tones=SKIN_TONES,
+                                     build_types=BUILD_TYPES)
             
             phone = request.form.get('phone')
             if phone:
@@ -209,13 +222,25 @@ def register_talent():
                                  countries=countries,
                                  nationalities=nationalities,
                                  languages=LANGUAGES_CINEMA,
-                                 talent_categories=TALENT_CATEGORIES)
+                                 talent_categories=TALENT_CATEGORIES,
+                                 cinema_talent_types=CINEMA_TALENT_TYPES,
+                                 eye_colors=EYE_COLORS,
+                                 hair_colors=HAIR_COLORS,
+                                 hair_types=HAIR_TYPES,
+                                 skin_tones=SKIN_TONES,
+                                 build_types=BUILD_TYPES)
     
     return render_template('cinema/register_talent.html', 
                          countries=countries,
                          nationalities=nationalities,
                          languages=LANGUAGES_CINEMA,
-                         talent_categories=TALENT_CATEGORIES)
+                         talent_categories=TALENT_CATEGORIES,
+                         cinema_talent_types=CINEMA_TALENT_TYPES,
+                         eye_colors=EYE_COLORS,
+                         hair_colors=HAIR_COLORS,
+                         hair_types=HAIR_TYPES,
+                         skin_tones=SKIN_TONES,
+                         build_types=BUILD_TYPES)
 
 @bp.route('/profile/<unique_code>')
 def view_profile(unique_code):

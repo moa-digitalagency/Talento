@@ -130,6 +130,14 @@
                                    placeholder="+212 6 XX XX XX XX"
                                    class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
                         </div>
+                        <div class="space-y-2">
+                            <label for="website" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                                🌐 Site Web Personnel
+                            </label>
+                            <input type="url" id="website" name="website" 
+                                   placeholder="https://mon-site-web.com"
+                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -256,8 +264,8 @@
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-h-64 overflow-y-auto p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
                     {% for language in languages %}
                     <label class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-cyan-50 cursor-pointer transition-colors">
-                        <input type="checkbox" name="languages" value="{{ language }}" class="w-4 h-4 text-cyan-600 rounded">
-                        <span class="text-sm text-gray-700">{{ language }}</span>
+                        <input type="checkbox" name="languages" value="{{ language['name'] }}" class="w-4 h-4 text-cyan-600 rounded">
+                        <span class="text-sm text-gray-700">{{ language['flag'] }} {{ language['name'] }}</span>
                     </label>
                     {% endfor %}
                 </div>
@@ -284,13 +292,9 @@
                     <select id="eye_color" name="eye_color" 
                             class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none">
                         <option value="">Sélectionner...</option>
-                        <option value="Marron">Marron</option>
-                        <option value="Noir">Noir</option>
-                        <option value="Bleu">Bleu</option>
-                        <option value="Vert">Vert</option>
-                        <option value="Noisette">Noisette</option>
-                        <option value="Gris">Gris</option>
-                        <option value="Ambre">Ambre</option>
+                        {% for color in eye_colors %}
+                        <option value="{{ color }}">{{ color }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="space-y-2">
@@ -298,14 +302,9 @@
                     <select id="hair_color" name="hair_color" 
                             class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none">
                         <option value="">Sélectionner...</option>
-                        <option value="Noir">Noir</option>
-                        <option value="Brun">Brun</option>
-                        <option value="Châtain">Châtain</option>
-                        <option value="Blond">Blond</option>
-                        <option value="Roux">Roux</option>
-                        <option value="Gris">Gris</option>
-                        <option value="Blanc">Blanc</option>
-                        <option value="Teint">Teint</option>
+                        {% for color in hair_colors %}
+                        <option value="{{ color }}">{{ color }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="space-y-2">
@@ -313,12 +312,9 @@
                     <select id="hair_type" name="hair_type" 
                             class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none">
                         <option value="">Sélectionner...</option>
-                        <option value="Raides">Raides</option>
-                        <option value="Ondulés">Ondulés</option>
-                        <option value="Bouclés">Bouclés</option>
-                        <option value="Crépus">Crépus</option>
-                        <option value="Frisés">Frisés</option>
-                        <option value="Afro">Afro</option>
+                        {% for type in hair_types %}
+                        <option value="{{ type }}">{{ type }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="space-y-2">
@@ -332,12 +328,9 @@
                     <select id="skin_tone" name="skin_tone" 
                             class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none">
                         <option value="">Sélectionner...</option>
-                        <option value="Très clair">Très clair</option>
-                        <option value="Clair">Clair</option>
-                        <option value="Moyen">Moyen</option>
-                        <option value="Mat">Mat</option>
-                        <option value="Foncé">Foncé</option>
-                        <option value="Très foncé">Très foncé</option>
+                        {% for tone in skin_tones %}
+                        <option value="{{ tone }}">{{ tone }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="space-y-2">
@@ -345,17 +338,44 @@
                     <select id="build" name="build" 
                             class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition-all duration-200 outline-none">
                         <option value="">Sélectionner...</option>
-                        <option value="Mince">Mince</option>
-                        <option value="Athlétique">Athlétique</option>
-                        <option value="Moyenne">Moyenne</option>
-                        <option value="Forte">Forte</option>
-                        <option value="Musclé">Musclé</option>
+                        {% for build_type in build_types %}
+                        <option value="{{ build_type }}">{{ build_type }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>
         </div>
 
-        <!-- Section 6: Talents (Rose) -->
+        <!-- Section 6: Type de talent (Violet) -->
+        <div class="section-purple p-8">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-4">
+                    <span class="text-5xl">🎭</span>
+                    <div>
+                        <h2 class="text-2xl font-bold text-purple-700">Type de talent</h2>
+                        <p class="text-purple-600 text-sm mt-1">Votre rôle dans l'industrie du cinéma</p>
+                    </div>
+                </div>
+                <div class="bg-purple-100 rounded-full px-5 py-2 border-2 border-purple-400">
+                    <span class="text-purple-700 font-bold">Section 6/9</span>
+                </div>
+            </div>
+            <div class="space-y-2">
+                <label class="block text-gray-700 font-semibold text-sm mb-3">
+                    Sélectionnez votre(vos) type(s) de talent <small class="text-gray-500">(Choix multiple possible)</small>
+                </label>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+                    {% for talent_type in cinema_talent_types %}
+                    <label class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-purple-50 cursor-pointer transition-colors">
+                        <input type="checkbox" name="talent_types" value="{{ talent_type }}" class="w-4 h-4 text-purple-600 rounded">
+                        <span class="text-sm text-gray-700">{{ talent_type }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 7: Talents (Rose) -->
         <div class="section-pink p-8">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
@@ -366,7 +386,7 @@
                     </div>
                 </div>
                 <div class="bg-pink-100 rounded-full px-5 py-2 border-2 border-pink-400">
-                    <span class="text-pink-700 font-bold">Section 6/8</span>
+                    <span class="text-pink-700 font-bold">Section 7/9</span>
                 </div>
             </div>
             <div class="space-y-6">
@@ -389,7 +409,7 @@
             </div>
         </div>
 
-        <!-- Section 7: Réseaux sociaux (Indigo) -->
+        <!-- Section 8: Réseaux sociaux (Indigo) -->
         <div class="section-indigo p-8">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
@@ -400,7 +420,7 @@
                     </div>
                 </div>
                 <div class="bg-indigo-100 rounded-full px-5 py-2 border-2 border-indigo-400">
-                    <span class="text-indigo-700 font-bold">Section 7/8</span>
+                    <span class="text-indigo-700 font-bold">Section 8/9</span>
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -461,11 +481,11 @@
                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
                 </div>
                 <div class="space-y-2">
-                    <label for="website" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                        🌐 Site Web Personnel
+                    <label for="telegram" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                        ✈️ Telegram
                     </label>
-                    <input type="url" id="website" name="website" 
-                           placeholder="https://mon-site-web.com"
+                    <input type="text" id="telegram" name="telegram" 
+                           placeholder="@votre.username"
                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 outline-none">
                 </div>
                 <div class="space-y-2">
@@ -487,7 +507,7 @@
             </div>
         </div>
 
-        <!-- Section 8: Photos & Productions précédentes (Rouge) -->
+        <!-- Section 9: Photos & Productions précédentes (Rouge) -->
         <div class="section-red p-8">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-4">
@@ -498,7 +518,7 @@
                     </div>
                 </div>
                 <div class="bg-red-100 rounded-full px-5 py-2 border-2 border-red-400">
-                    <span class="text-red-700 font-bold">Section 8/8</span>
+                    <span class="text-red-700 font-bold">Section 9/9</span>
                 </div>
             </div>
             <div class="space-y-6">
