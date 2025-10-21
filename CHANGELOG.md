@@ -5,6 +5,42 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.29.0] - 2025-10-21
+
+### 📚 Documentation du Système de Codification
+
+#### Documentation Mise à Jour
+- **Ajouté** : Explication complète du système de codification dans README.md (EN) et README.fr.md (FR)
+- **Détaillé** : Différences entre codes CINEMA (12 caractères) et codes utilisateurs (10 caractères)
+- **Clarification** : Numérotation séquentielle par pays pour CINEMA, numéros aléatoires pour utilisateurs standards
+
+#### Système de Codification Expliqué
+
+**Codes CINEMA** (`PPVVVNNNNNNNG` - 12 caractères) :
+- Exemple : `MACAS000001F`
+- PP = Code pays ISO-2 (MA = Maroc)
+- VVV = Ville (3 premières lettres, CAS = Casablanca)
+- NNNNNN = Numéro séquentiel **par pays** (000001 = 1er du Maroc)
+- G = Genre (F/M)
+
+**Codes Utilisateurs** (`PPVVVNNNNG` - 10 caractères) :
+- Exemple : `MARAB0001N`
+- PP = Code pays ISO-2 (MA = Maroc)
+- VVV = Ville (3 lettres, RAB = Rabat)
+- NNNN = Numéro **aléatoire** (0001)
+- G = Genre (M/F/N)
+
+#### Ordre d'Affichage Responsive
+- **Corrigé** : Photo s'affiche en premier sur mobile/tablette (ordre naturel restauré)
+- **Supprimé** : Classes `order-1` et `order-2` qui inversaient l'affichage
+
+#### Résultat
+- ✅ **Documentation complète** : Système de codification expliqué en FR et EN
+- ✅ **Exemples clairs** : Tableaux avec composants détaillés
+- ✅ **Photo en premier** : Sur mobile/tablette comme demandé
+
+---
+
 ## [2.28.0] - 2025-10-21
 
 ### 📄 Améliorations PDF CINEMA et Masquage QR Code Responsive

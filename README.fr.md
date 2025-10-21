@@ -88,13 +88,40 @@ talentsmaroc/
 
 ## Fonctionnalités Clés Expliquées
 
-### Système d'ID Unique
-Chaque utilisateur reçoit un code unique de 10 caractères au format:
-`CC-CCC-NNNN-G`
-- CC: Code du pays
-- CCC: Code de la ville
-- NNNN: Numéro séquentiel
-- G: Genre (M/F/N)
+### 🔢 Système de Codification Unique
+
+TalentsMaroc.com utilise **deux systèmes de codes uniques** pour identifier les profils :
+
+#### 1. Codes CINEMA (Profils Cinématographiques)
+Format : **`PPVVVNNNNNNNG`** (12 caractères)
+
+**Exemple** : `MACAS000001F`
+
+| Composant | Description | Exemple |
+|-----------|-------------|---------|
+| **PP** (2 lettres) | Code pays ISO-2 | `MA` = Maroc |
+| **VVV** (3 lettres) | Ville de résidence (3 premières lettres) | `CAS` = Casablanca |
+| **NNNNNN** (6 chiffres) | Numéro séquentiel **par pays** | `000001` = 1er talent du pays |
+| **G** (1 lettre) | Genre | `F` = Femme, `M` = Homme |
+
+**Important** : Le numéro séquentiel est incrémenté **par pays**, pas par ville.
+- `MACAS000001F` = 1ère personne enregistrée au **Maroc**
+- `MARAB000002F` = 2ème personne enregistrée au **Maroc** (de Rabat)
+- `FRPAR000001M` = 1ère personne enregistrée en **France** (de Paris)
+
+#### 2. Codes Utilisateurs (Profils Standards)
+Format : **`PPVVVNNNNG`** (10 caractères)
+
+**Exemple** : `MARAB0001N`
+
+| Composant | Description | Exemple |
+|-----------|-------------|---------|
+| **PP** (2 lettres) | Code pays ISO-2 | `MA` = Maroc |
+| **VVV** (3 lettres) | Ville (3 premières lettres) | `RAB` = Rabat |
+| **NNNN** (4 chiffres) | Numéro **aléatoire** | `0001` |
+| **G** (1 lettre) | Genre | `M`, `F`, ou `N` (non précisé) |
+
+**Important** : Pour les profils standards, le numéro est **aléatoire** et le système vérifie l'unicité dans la base de données.
 
 ### Sécurité
 - Les mots de passe sont hachés avec bcrypt

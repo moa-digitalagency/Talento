@@ -88,13 +88,40 @@ talentsmaroc/
 
 ## Key Features Explained
 
-### Unique ID System
-Each user receives a unique 10-character code in the format:
-`CC-CCC-NNNN-G`
-- CC: Country code
-- CCC: City code
-- NNNN: Sequential number
-- G: Gender (M/F/N)
+### 🔢 Unique Codification System
+
+TalentsMaroc.com uses **two unique code systems** to identify profiles:
+
+#### 1. CINEMA Codes (Cinematographic Profiles)
+Format: **`PPVVVNNNNNNNG`** (12 characters)
+
+**Example**: `MACAS000001F`
+
+| Component | Description | Example |
+|-----------|-------------|---------|
+| **PP** (2 letters) | ISO-2 country code | `MA` = Morocco |
+| **VVV** (3 letters) | City of residence (first 3 letters) | `CAS` = Casablanca |
+| **NNNNNN** (6 digits) | Sequential number **per country** | `000001` = 1st talent from country |
+| **G** (1 letter) | Gender | `F` = Female, `M` = Male |
+
+**Important**: The sequential number increments **per country**, not per city.
+- `MACAS000001F` = 1st person registered in **Morocco**
+- `MARAB000002F` = 2nd person registered in **Morocco** (from Rabat)
+- `FRPAR000001M` = 1st person registered in **France** (from Paris)
+
+#### 2. User Codes (Standard Profiles)
+Format: **`PPVVVNNNNG`** (10 characters)
+
+**Example**: `MARAB0001N`
+
+| Component | Description | Example |
+|-----------|-------------|---------|
+| **PP** (2 letters) | ISO-2 country code | `MA` = Morocco |
+| **VVV** (3 letters) | City (first 3 letters) | `RAB` = Rabat |
+| **NNNN** (4 digits) | **Random** number | `0001` |
+| **G** (1 letter) | Gender | `M`, `F`, or `N` (not specified) |
+
+**Important**: For standard profiles, the number is **random** and the system checks uniqueness in the database.
 
 ### Security
 - Passwords are hashed using bcrypt
