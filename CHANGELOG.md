@@ -5,6 +5,116 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.16.0] - 2025-10-21
+
+### 🎯 Nouvelles Fonctionnalités
+
+#### Profils Utilisateurs et CINEMA Enrichis
+
+**Site Web Personnel** 🌐
+- Nouveau champ **Site Web** ajouté aux profils User et CinemaTalent
+- Permet aux talents de partager leur site web professionnel ou portfolio personnel
+- Champ non chiffré pour faciliter la découvrabilité
+
+**Profil IMDb** 🎬
+- Nouveau champ **IMDb URL** pour les profils d'acteurs et talents du cinéma
+- Ajouté aux modèles User et CinemaTalent
+- Données chiffrées pour protéger la vie privée
+- Permet de lier directement aux profils IMDb officiels
+
+**Réseau Social Threads** 🧵
+- Ajout du nouveau réseau social **Threads** (Meta)
+- Disponible pour tous les profils User et CinemaTalent
+- Données chiffrées pour la sécurité
+- S'ajoute aux 12 réseaux sociaux déjà disponibles
+
+**Total des Réseaux Sociaux** : **15 plateformes disponibles**
+- LinkedIn, Instagram, Twitter/X, Facebook, TikTok, YouTube
+- GitHub, Behance, Dribbble, Pinterest, Snapchat, Telegram
+- Site Web Personnel, IMDb, Threads ✨ (nouveaux)
+
+### 🔧 Modifications Techniques
+
+#### Modèle de Données
+
+**Modèle `User`**
+- **Nouveau champ** : `website` (VARCHAR 500)
+- **Nouveau champ** : `imdb_url_encrypted` (TEXT, chiffré)
+- **Nouveau champ** : `threads_encrypted` (TEXT, chiffré)
+- Propriétés d'accès ajoutées avec chiffrement/déchiffrement automatique
+
+**Modèle `CinemaTalent`**
+- **Nouveau champ** : `imdb_url_encrypted` (TEXT, chiffré)
+- **Nouveau champ** : `threads_encrypted` (TEXT, chiffré)
+- Le champ `website` existait déjà mais est maintenant pleinement intégré
+
+#### Routes et Formulaires
+
+**Inscription Utilisateur (`auth.py`)**
+- Ajout des champs `website_url`, `imdb_url`, `threads_url`
+- Validation et traitement des nouvelles données
+
+**Édition Profil (`profile.py`)**
+- Support des nouveaux champs pour la mise à jour de profil
+- Chiffrement automatique des données sensibles
+
+**CINEMA Registration (`cinema.py`)**
+- Formulaire d'inscription CINEMA mis à jour
+- Traitement des nouveaux champs avec chiffrement
+
+#### Templates
+
+**Template d'inscription (`auth/register.html`)**
+- 3 nouveaux champs dans la section "Réseaux Sociaux"
+- Message mis à jour : "15 réseaux disponibles!"
+
+**Template CINEMA (`cinema/register_talent.html`)**
+- Nouveaux champs ajoutés dans la section "Réseaux sociaux"
+- Interface cohérente avec les autres formulaires
+
+**Vues de Profil**
+- Décryptage automatique des nouveaux champs pour l'affichage
+- Support du nouveau champ `website` non chiffré
+
+#### Migration de Base de Données
+
+**Script de Migration** : `migrate_new_fields_direct.py`
+- Migration PostgreSQL directe sans passer par Flask
+- Ajout de 3 colonnes à la table `users`
+- Ajout de 2 colonnes à la table `cinema_talents`
+- Gestion des erreurs et vérification de colonnes existantes
+- ✅ Migration réussie : 5 colonnes ajoutées au total
+
+### 📋 Résumé des Changements
+
+```
+✨ Nouveaux champs : 5
+   - website (User)
+   - imdb_url_encrypted (User, CinemaTalent)
+   - threads_encrypted (User, CinemaTalent)
+
+🔄 Fichiers modifiés : 8
+   - app/models/user.py
+   - app/models/cinema_talent.py
+   - app/routes/auth.py
+   - app/routes/profile.py
+   - app/routes/cinema.py
+   - app/templates/auth/register.html
+   - app/templates/cinema/register_talent.html
+   - CHANGELOG.md
+
+🗄️ Scripts de migration : 2
+   - migrate_new_fields.py
+   - migrate_new_fields_direct.py
+```
+
+### 🔒 Sécurité
+
+- Tous les liens de réseaux sociaux (IMDb, Threads) sont chiffrés
+- Chiffrement Fernet (clé 256 bits) pour les données sensibles
+- Le site web reste en clair pour améliorer la découvrabilité SEO
+- Conformité avec les standards de protection des données
+
 ## [2.15.0] - 2025-10-21
 
 ### 🎬 Améliorations Majeures Module CINEMA
