@@ -102,16 +102,66 @@ def get_work_mode_display(value):
     })
 
 LANGUAGES_CINEMA = [
-    'Afrikaans', 'Albanais', 'Allemand', 'Amazigh (Berbère)', 'Amharique', 'Anglais', 
-    'Arabe', 'Arménien', 'Bambara', 'Bengali', 'Bulgare', 'Catalan', 
-    'Chinois (Cantonais)', 'Chinois (Mandarin)', 'Coréen', 'Créole', 'Danois', 
-    'Dioula', 'Espagnol', 'Estonien', 'Finnois', 'Français', 'Grec', 
-    'Haoussa', 'Hébreu', 'Hindi', 'Hongrois', 'Igbo', 'Indonésien', 'Italien', 
-    'Japonais', 'Kikuyu', 'Kinyarwanda', 'Lingala', 'Malgache', 'Malinké', 
-    'Néerlandais', 'Norvégien', 'Oromo', 'Peul', 'Polonais', 'Portugais', 
-    'Roumain', 'Russe', 'Sango', 'Serbe', 'Somali', 'Soninké', 'Suédois', 
-    'Swahili', 'Tamoul', 'Tchèque', 'Tigrinya', 'Turc', 'Ukrainien', 
-    'Wolof', 'Xhosa', 'Yoruba', 'Zoulou', 'Autre'
+    {'name': 'Afrikaans', 'flag': '🇿🇦'},
+    {'name': 'Albanais', 'flag': '🇦🇱'},
+    {'name': 'Allemand', 'flag': '🇩🇪'},
+    {'name': 'Amazigh (Berbère)', 'flag': 'ⵣ'},
+    {'name': 'Amharique', 'flag': '🇪🇹'},
+    {'name': 'Anglais', 'flag': '🇬🇧'},
+    {'name': 'Arabe', 'flag': '🇸🇦'},
+    {'name': 'Arménien', 'flag': '🇦🇲'},
+    {'name': 'Bambara', 'flag': '🇲🇱'},
+    {'name': 'Bengali', 'flag': '🇧🇩'},
+    {'name': 'Bulgare', 'flag': '🇧🇬'},
+    {'name': 'Catalan', 'flag': '🇪🇸'},
+    {'name': 'Chinois (Cantonais)', 'flag': '🇭🇰'},
+    {'name': 'Chinois (Mandarin)', 'flag': '🇨🇳'},
+    {'name': 'Coréen', 'flag': '🇰🇷'},
+    {'name': 'Créole', 'flag': '🇭🇹'},
+    {'name': 'Danois', 'flag': '🇩🇰'},
+    {'name': 'Dioula', 'flag': '🇨🇮'},
+    {'name': 'Espagnol', 'flag': '🇪🇸'},
+    {'name': 'Estonien', 'flag': '🇪🇪'},
+    {'name': 'Finnois', 'flag': '🇫🇮'},
+    {'name': 'Français', 'flag': '🇫🇷'},
+    {'name': 'Grec', 'flag': '🇬🇷'},
+    {'name': 'Haoussa', 'flag': '🇳🇬'},
+    {'name': 'Hébreu', 'flag': '🇮🇱'},
+    {'name': 'Hindi', 'flag': '🇮🇳'},
+    {'name': 'Hongrois', 'flag': '🇭🇺'},
+    {'name': 'Igbo', 'flag': '🇳🇬'},
+    {'name': 'Indonésien', 'flag': '🇮🇩'},
+    {'name': 'Italien', 'flag': '🇮🇹'},
+    {'name': 'Japonais', 'flag': '🇯🇵'},
+    {'name': 'Kikuyu', 'flag': '🇰🇪'},
+    {'name': 'Kinyarwanda', 'flag': '🇷🇼'},
+    {'name': 'Lingala', 'flag': '🇨🇩'},
+    {'name': 'Malgache', 'flag': '🇲🇬'},
+    {'name': 'Malinké', 'flag': '🇬🇳'},
+    {'name': 'Néerlandais', 'flag': '🇳🇱'},
+    {'name': 'Norvégien', 'flag': '🇳🇴'},
+    {'name': 'Oromo', 'flag': '🇪🇹'},
+    {'name': 'Peul', 'flag': '🇸🇳'},
+    {'name': 'Polonais', 'flag': '🇵🇱'},
+    {'name': 'Portugais', 'flag': '🇵🇹'},
+    {'name': 'Roumain', 'flag': '🇷🇴'},
+    {'name': 'Russe', 'flag': '🇷🇺'},
+    {'name': 'Sango', 'flag': '🇨🇫'},
+    {'name': 'Serbe', 'flag': '🇷🇸'},
+    {'name': 'Somali', 'flag': '🇸🇴'},
+    {'name': 'Soninké', 'flag': '🇲🇱'},
+    {'name': 'Suédois', 'flag': '🇸🇪'},
+    {'name': 'Swahili', 'flag': '🇰🇪'},
+    {'name': 'Tamoul', 'flag': '🇱🇰'},
+    {'name': 'Tchèque', 'flag': '🇨🇿'},
+    {'name': 'Tigrinya', 'flag': '🇪🇷'},
+    {'name': 'Turc', 'flag': '🇹🇷'},
+    {'name': 'Ukrainien', 'flag': '🇺🇦'},
+    {'name': 'Wolof', 'flag': '🇸🇳'},
+    {'name': 'Xhosa', 'flag': '🇿🇦'},
+    {'name': 'Yoruba', 'flag': '🇳🇬'},
+    {'name': 'Zoulou', 'flag': '🇿🇦'},
+    {'name': 'Autre', 'flag': '🌐'}
 ]
 
 TALENT_CATEGORIES = [
@@ -164,4 +214,99 @@ TALENT_CATEGORIES = [
             'Jongleur', 'Clown', 'Marionnettiste', 'Autre'
         ]
     }
+]
+
+# Types de talents pour CINEMA (choix multiples)
+CINEMA_TALENT_TYPES = [
+    'Acteur/Actrice Principal(e)',
+    'Acteur/Actrice Secondaire',
+    'Figurant(e)',
+    'Silhouette',
+    'Doublure',
+    'Doublure Lumière',
+    'Cascadeur/Cascadeuse',
+    'Mannequin',
+    'Voix Off',
+    'Figurant Spécialisé',
+    'Choriste',
+    'Danseur/Danseuse de fond',
+    'Autre'
+]
+
+# Couleurs des yeux
+EYE_COLORS = [
+    'Marron foncé',
+    'Marron',
+    'Marron clair',
+    'Noisette',
+    'Vert',
+    'Vert clair',
+    'Bleu',
+    'Bleu clair',
+    'Gris',
+    'Ambre',
+    'Noir',
+    'Vairons (deux couleurs)'
+]
+
+# Couleurs de cheveux
+HAIR_COLORS = [
+    'Noir',
+    'Brun foncé',
+    'Brun',
+    'Châtain foncé',
+    'Châtain',
+    'Châtain clair',
+    'Blond foncé',
+    'Blond',
+    'Blond platine',
+    'Roux',
+    'Auburn',
+    'Poivre et sel',
+    'Gris',
+    'Blanc',
+    'Colorés/Fantaisie',
+    'Chauve/Rasé'
+]
+
+# Types de cheveux
+HAIR_TYPES = [
+    'Raides',
+    'Ondulés',
+    'Bouclés',
+    'Frisés',
+    'Crépus',
+    'Afro',
+    'Tressés',
+    'Locks/Dreadlocks',
+    'Rasés',
+    'Chauve'
+]
+
+# Teints de peau
+SKIN_TONES = [
+    'Très clair',
+    'Clair',
+    'Moyen clair',
+    'Moyen',
+    'Olivâtre',
+    'Mat',
+    'Bronzé',
+    'Foncé',
+    'Très foncé',
+    'Noir profond'
+]
+
+# Morphologies
+BUILD_TYPES = [
+    'Très mince',
+    'Mince',
+    'Svelte',
+    'Athlétique',
+    'Musclé',
+    'Moyen',
+    'Fort',
+    'Rond',
+    'Corpulent',
+    'Imposant'
 ]

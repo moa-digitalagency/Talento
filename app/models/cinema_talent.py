@@ -29,6 +29,9 @@ class CinemaTalent(db.Model):
     languages_spoken = db.Column(db.Text)  # JSON list
     years_of_experience = db.Column(db.Integer, default=0)
     
+    # Talent Types (multiple choices stored as JSON)
+    talent_types = db.Column(db.Text)  # JSON list - Acteur Principal, Secondaire, Figurant, etc.
+    
     # Physical Characteristics
     eye_color = db.Column(db.String(50))
     hair_color = db.Column(db.String(50))
@@ -49,6 +52,7 @@ class CinemaTalent(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
     phone_encrypted = db.Column(db.Text, nullable=False)
     whatsapp_encrypted = db.Column(db.Text)
+    website = db.Column(db.String(500))  # Site web personnel/professionnel
     
     # Social Media (encrypted)
     facebook_encrypted = db.Column(db.Text)
@@ -58,6 +62,7 @@ class CinemaTalent(db.Model):
     youtube_encrypted = db.Column(db.Text)
     tiktok_encrypted = db.Column(db.Text)
     snapchat_encrypted = db.Column(db.Text)
+    telegram_encrypted = db.Column(db.Text)
     
     # Previous Experience
     previous_productions = db.Column(db.Text)

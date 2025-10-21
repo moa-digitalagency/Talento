@@ -4,6 +4,24 @@
 Talento is a professional web application designed to centralize and showcase talent profiles across Africa. It enables individuals to create comprehensive profiles with unique identifiers and QR codes. The platform features advanced administrative tools, AI-powered CV analysis, and multiple data export formats. Talento aims to be a robust, scalable solution for talent management and discovery, enhancing professional networking and recruitment across the continent. A key module, CINEMA, provides a dedicated system for talent registration with detailed fields and public accessibility.
 
 ## Recent Changes (October 21, 2025)
+
+### Version 2.15.0 - Module CINEMA Enrichments
+- **Talent Types Selection**: New multi-select field for talent types (Principal Actor, Supporting Actor, Extra, Silhouette, Stunt Double, etc.) - 13 different types available
+- **Website Field**: Added personal/professional website field in contact information
+- **Telegram Integration**: Added Telegram as encrypted social media field alongside existing platforms
+- **Languages with Flags**: All 60+ languages now display with emoji flags (🇫🇷 Français, 🇬🇧 Anglais, etc.) for improved visual recognition
+- **Expanded Physical Characteristics**: 
+  - Eye colors: 12 options (from dark brown to heterochromia)
+  - Hair colors: 16 options (including fantasy colors and bald)
+  - Hair types: 10 options (straight, wavy, curly, afro, dreadlocks, etc.)
+  - Skin tones: 10 nuances (very fair to deep black)
+  - Body types: 10 morphologies (very slim to imposing)
+- **Profile Visibility Fixed**: "View profile" links now functional in /cinema/talents list, profiles publicly accessible via unique code
+- **Country-Based Code Generation**: Fixed incrementation to be strictly per country (not per city) with proper numeric sorting
+- **CINEMA QR Codes**: Dedicated QR code generation pointing to /cinema/profile/{code} URLs with automatic regeneration of existing codes
+- **Database Migration**: Added talent_types, website, and telegram_encrypted columns to cinema_talents table
+
+### Previous Updates
 - **World Countries Database**: Expanded from 54 African countries to 194 world countries with ISO-2 codes and proper nationalities
 - **Nationalities System**: Added comprehensive nationality list (Marocaine, Française, Algérienne, etc.) with emoji flags for proper form display; differentiated Congo nationalities (Congolaise Congo-Brazzaville vs Congolaise RDC)
 - **Dynamic City Loading**: Implemented automatic city dropdown loading based on selected country via `/cinema/api/cities/<country_code>` endpoint with intelligent fallback to text input for countries without predefined cities

@@ -5,6 +5,123 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.15.0] - 2025-10-21
+
+### 🎬 Améliorations Majeures Module CINEMA
+
+#### Nouvelles Fonctionnalités de Profil
+
+**Types de Talents (Choix Multiples)**
+- Nouvelle section permettant de sélectionner plusieurs types :
+  - Acteur/Actrice Principal(e)
+  - Acteur/Actrice Secondaire
+  - Figurant(e)
+  - Silhouette
+  - Doublure / Doublure Lumière
+  - Cascadeur/Cascadeuse
+  - Mannequin
+  - Voix Off
+  - Figurant Spécialisé
+  - Choriste
+  - Danseur/Danseuse de fond
+  - Autre
+
+**Contacts Enrichis**
+- Ajout du champ **Site Web** dans les coordonnées
+- Ajout de **Telegram** dans les réseaux sociaux (avec chiffrement)
+- Tous les contacts sensibles restent chiffrés dans la base de données
+
+**Langues avec Drapeaux** 🌍
+- Toutes les langues affichent maintenant des drapeaux emoji
+- 60+ langues disponibles avec leurs drapeaux représentatifs
+- Exemples : 🇫🇷 Français, 🇬🇧 Anglais, 🇸🇦 Arabe, ⵣ Amazigh, etc.
+- Améliore significativement le repérage visuel des langues
+
+**Caractéristiques Physiques Enrichies**
+
+*Couleurs des Yeux* (12 options):
+- Marron foncé, Marron, Marron clair, Noisette
+- Vert, Vert clair, Bleu, Bleu clair
+- Gris, Ambre, Noir, Vairons (deux couleurs)
+
+*Couleurs de Cheveux* (16 options):
+- Noir, Brun foncé, Brun, Châtain (foncé/moyen/clair)
+- Blond (foncé/moyen/platine), Roux, Auburn
+- Poivre et sel, Gris, Blanc
+- Colorés/Fantaisie, Chauve/Rasé
+
+*Types de Cheveux* (10 options):
+- Raides, Ondulés, Bouclés, Frisés, Crépus
+- Afro, Tressés, Locks/Dreadlocks, Rasés, Chauve
+
+*Teints de Peau* (10 nuances):
+- Très clair, Clair, Moyen clair, Moyen, Olivâtre
+- Mat, Bronzé, Foncé, Très foncé, Noir profond
+
+*Morphologies* (10 types):
+- Très mince, Mince, Svelte, Athlétique, Musclé
+- Moyen, Fort, Rond, Corpulent, Imposant
+
+#### Profils CINEMA Visibles et Accessibles
+
+**Navigation Améliorée**
+- Liens "Voir profil" 👁️ fonctionnels dans la liste des talents CINEMA
+- Profils accessibles publiquement via code unique
+- QR codes pointant vers les profils CINEMA corrects
+
+**Génération de Code par Pays** 🌍
+- Incrémentation numérique stricte par pays (non lexicographique)
+- Exemples corrects :
+  - MA (Maroc) : MACAS000001F, MARAB000002M, MAMAR000003F
+  - SN (Sénégal) : SNCAS000001M, SNDAK000002F
+  - CD (RDC) : CDKIN000001M
+
+**Système de QR Code Amélioré**
+- Fonction dédiée `generate_cinema_qr_code()` pour les QR codes CINEMA
+- URLs correctes vers `/cinema/profile/{code}` au lieu de `/profile/view/{code}`
+- QR codes existants régénérés automatiquement
+
+### 🔧 Modifications Techniques
+
+#### Modèle de Données (`CinemaTalent`)
+- **Nouveau champ** : `talent_types` (TEXT, JSON)
+- **Nouveau champ** : `website` (VARCHAR 500)
+- **Nouveau champ** : `telegram_encrypted` (TEXT, chiffré)
+
+#### Constantes Étendues (`app/constants.py`)
+- `LANGUAGES_CINEMA` : Liste transformée en dictionnaires avec drapeaux
+- `CINEMA_TALENT_TYPES` : 13 types de talents
+- `EYE_COLORS` : 12 couleurs d'yeux
+- `HAIR_COLORS` : 16 couleurs de cheveux
+- `HAIR_TYPES` : 10 types de cheveux
+- `SKIN_TONES` : 10 teints de peau
+- `BUILD_TYPES` : 10 morphologies
+
+#### Générateur de Code CINEMA (`app/utils/cinema_code_generator.py`)
+- **Correction majeure** : Tri numérique au lieu de lexicographique
+- Extraction du maximum numérique pour chaque pays
+- Garantit une incrémentation correcte même avec différentes villes
+
+#### QR Code CINEMA (`app/utils/qr_generator.py`)
+- Fonction `generate_qr_code()` supporte paramètre `profile_type`
+- Nouvelle fonction `generate_cinema_qr_code()` dédiée
+- URLs différenciées pour profils normaux vs CINEMA
+
+#### Migration de Base de Données
+- **Script** : `migrate_cinema_enhancements.py`
+- Ajout des 3 nouvelles colonnes avec gestion des erreurs
+- Compatible SQLite et PostgreSQL
+
+### 📊 Profils de Démonstration Mis à Jour
+- Amina El Fassi (Maroc) : Enrichi avec nouveaux champs
+- Julien Moreau (France) : Enrichi avec nouveaux champs
+- Chukwudi Okonkwo (Nigeria) : Enrichi avec nouveaux champs
+
+### ✅ Bugs Corrigés
+- ✅ Liens "Voir profil" non fonctionnels dans `/cinema/talents`
+- ✅ Tri lexicographique causant des doublons de codes
+- ✅ QR codes pointant vers mauvaises URLs
+
 ## [2.14.0] - 2025-10-20
 
 ### 📧 Intégration SendGrid pour Notifications Email
