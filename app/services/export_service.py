@@ -676,14 +676,24 @@ class ExportService:
         color_gray = colors.HexColor('#6B7280')
         
         # ==== EN-TÊTE ====
-        header_style = ParagraphStyle(
-            'Header',
+        platform_style = ParagraphStyle(
+            'Platform',
             parent=styles['Heading1'],
-            fontSize=24,
+            fontSize=22,
             textColor=color_indigo,
             alignment=TA_CENTER,
             fontName='Helvetica-Bold',
-            spaceAfter=5
+            spaceAfter=8
+        )
+        
+        header_style = ParagraphStyle(
+            'Header',
+            parent=styles['Heading1'],
+            fontSize=18,
+            textColor=color_purple,
+            alignment=TA_CENTER,
+            fontName='Helvetica-Bold',
+            spaceAfter=6
         )
         
         subtitle_header_style = ParagraphStyle(
@@ -695,7 +705,8 @@ class ExportService:
             spaceAfter=20
         )
         
-        elements.append(Paragraph("🎬 TALENTSMAROC.COM CINEMA - FICHE DE TALENT", header_style))
+        elements.append(Paragraph("TalentsMaroc.com", platform_style))
+        elements.append(Paragraph("CINEMA - FICHE DE TALENT", header_style))
         elements.append(Paragraph("Profil Cinématographique - Talents du Cinéma Africain", subtitle_header_style))
         
         # Ligne de séparation
