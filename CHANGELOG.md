@@ -21,9 +21,13 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Icônes distinctives** : 📧 Email, 📱 Téléphone, 💬 WhatsApp, 🌐 Site Web
 - **Meilleure lisibilité** : Grid responsive (1 colonne sur mobile, 2 colonnes sur desktop)
 
-#### Ajout de Drapeaux
-- **Section Origines** : Drapeaux d'émoji affichés pour Pays d'origine et Nationalité (ex: 🇲🇦 Maroc, 🇲🇦 Marocaine)
-- **Section Résidence** : Drapeau affiché pour le Pays de résidence (ex: 🇲🇦)
+#### Uniformisation des Badges - Section Origines
+- **Cohérence visuelle** : Ethnicité, Pays d'origine et Nationalité utilisent maintenant tous le même style de badge vert
+- **Badges avec drapeaux** : 
+  - Pays d'origine : badge vert avec drapeau (ex: 🇲🇦 Maroc, 🇫🇷 France, 🇳🇬 Nigéria)
+  - Nationalité : badge vert avec drapeau (ex: 🇲🇦 Marocaine, 🇫🇷 Française, 🇳🇬 Nigériane)
+  - Ethnicité : badge vert (ex: Africaine, Arabe, Berbère, Caucasienne/Blanche)
+- **Section Résidence** : Drapeau affiché pour le Pays de résidence (ex: Lagos, 🇳🇬 Nigéria)
 - **Génération dynamique** : Les drapeaux sont générés automatiquement à partir des codes ISO-2 des pays
 
 ### 🔧 Modifications Techniques
@@ -36,7 +40,8 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 #### Template (`profile_view.html`)
 - **Restructuration** : Section Identité avec flexbox pour alignement vertical (justify-between)
 - **Nouveau bloc** : Coordonnées séparé avec grid et sous-blocs individuels
-- **Ajout** : Drapeaux affichés conditionnellement avec `country_flags.origin`, `country_flags.nationality`, `country_flags.residence`
+- **Uniformisation** : Pays d'origine et Nationalité utilisent maintenant `badge-green` comme Ethnicité
+- **Ajout** : Drapeaux intégrés dans les badges avec `country_flags.origin`, `country_flags.nationality`, `country_flags.residence`
 
 ---
 
