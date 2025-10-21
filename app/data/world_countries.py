@@ -247,8 +247,33 @@ WORLD_COUNTRIES = [
     {'name': 'Zimbabwe', 'code': 'ZW', 'nationality': 'Zimbabwéenne'},
 ]
 
+# Fonction pour convertir un code ISO en emoji drapeau
+def code_to_flag(code):
+    """Convertit un code pays ISO-2 en emoji drapeau"""
+    if not code or len(code) != 2:
+        return ''
+    return ''.join(chr(127397 + ord(char)) for char in code.upper())
+
 # Dictionnaire de correspondance rapide code -> nationalité
 NATIONALITIES_BY_CODE = {country['code']: country['nationality'] for country in WORLD_COUNTRIES}
 
 # Liste des nationalités uniquement (triée alphabétiquement)
 NATIONALITIES = sorted(set(country['nationality'] for country in WORLD_COUNTRIES))
+
+# Liste des nationalités avec drapeaux (pour affichage dans les dropdowns)
+# Structure: [{'nationality': 'Marocaine', 'flag': '🇲🇦'}, ...]
+NATIONALITIES_WITH_FLAGS = []
+nationality_to_flag = {}
+
+# Construire le dictionnaire nationalité -> drapeau
+for country in WORLD_COUNTRIES:
+    nat = country['nationality']
+    if nat not in nationality_to_flag:
+        nationality_to_flag[nat] = code_to_flag(country['code'])
+
+# Créer la liste avec nationalités et drapeaux (triée alphabétiquement)
+for nationality in NATIONALITIES:
+    NATIONALITIES_WITH_FLAGS.append({
+        'nationality': nationality,
+        'flag': nationality_to_flag.get(nationality, '')
+    })

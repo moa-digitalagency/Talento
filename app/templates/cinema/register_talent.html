@@ -184,8 +184,8 @@
                         <select id="nationality" name="nationality" required 
                                 class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
                             <option value="">Sélectionner...</option>
-                            {% for nationality in nationalities %}
-                            <option value="{{ nationality }}">{{ nationality }}</option>
+                            {% for nat in nationalities %}
+                            <option value="{{ nat.nationality }}">{{ nat.flag }} {{ nat.nationality }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -481,21 +481,14 @@
                 <!-- Photos -->
                 <div class="space-y-4">
                     <h3 class="text-lg font-bold text-red-700">📷 Photos</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label for="profile_photo" class="block text-gray-700 font-semibold text-sm">Photo de profil</label>
-                            <input type="file" id="profile_photo" name="profile_photo" accept="image/*" 
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
-                        </div>
-                        <div class="space-y-2">
-                            <label for="id_photo" class="block text-gray-700 font-semibold text-sm">Photo d'identité</label>
-                            <input type="file" id="id_photo" name="id_photo" accept="image/*" 
-                                   class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
-                        </div>
+                    <div class="space-y-2">
+                        <label for="id_photo" class="block text-gray-700 font-semibold text-sm">📷 Photo d'identité (max 5 MB)</label>
+                        <input type="file" id="id_photo" name="id_photo" accept="image/*" 
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
                     </div>
                     <div class="space-y-2">
                         <label for="gallery_photos" class="block text-gray-700 font-semibold text-sm">
-                            Galerie de photos <small class="text-gray-500">(Plusieurs photos possibles)</small>
+                            📷 Galerie de photos (max 5 MB chacune) <small class="text-gray-500">(Plusieurs photos possibles)</small>
                         </label>
                         <input type="file" id="gallery_photos" name="gallery_photos" accept="image/*" multiple 
                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">

@@ -6,7 +6,7 @@ from app.models import Country
 from app.constants import LANGUAGES_CINEMA, TALENT_CATEGORIES
 from app.services.movie_service import search_movies
 from app.utils.file_handler import save_file
-from app.data.world_countries import NATIONALITIES
+from app.data.world_countries import NATIONALITIES, NATIONALITIES_WITH_FLAGS
 from app.data.world_cities import get_cities_by_country
 from datetime import datetime
 import json
@@ -69,8 +69,8 @@ def register_talent():
     # Get countries for dropdowns, sorted alphabetically
     countries = Country.query.order_by(Country.name).all()
     
-    # Get nationalities list (sorted alphabetically)
-    nationalities = NATIONALITIES
+    # Get nationalities list with flags (sorted alphabetically)
+    nationalities = NATIONALITIES_WITH_FLAGS
     
     if request.method == 'POST':
         try:
