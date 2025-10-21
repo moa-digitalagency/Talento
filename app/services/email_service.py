@@ -101,11 +101,11 @@ class EmailService:
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>⭐ Bienvenue sur Talento !</h1>
+                        <h1>⭐ Bienvenue sur TalentsMaroc.com !</h1>
                     </div>
                     <div class="content">
                         <h2>Bonjour {user.full_name},</h2>
-                        <p>Nous avons bien reçu votre candidature sur la plateforme Talento !</p>
+                        <p>Nous avons bien reçu votre candidature sur la plateforme TalentsMaroc.com !</p>
                         
                         <p>Votre profil de talent a été créé avec succès. Voici votre code unique :</p>
                         <div class="code">{user.unique_code}</div>
@@ -119,7 +119,7 @@ class EmailService:
                            espace personnel et modifier votre profil.</p>
                         
                         <p style="margin-top: 30px;">Cordialement,<br>
-                        <strong>L'équipe Talento</strong></p>
+                        <strong>L'équipe TalentsMaroc.com</strong></p>
                     </div>
                     <div class="footer">
                         <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
@@ -141,7 +141,7 @@ class EmailService:
             
             return self.send_email(
                 to_email=user.email,
-                subject=f"✅ Candidature reçue - Votre code Talento : {user.unique_code}",
+                subject=f"✅ Candidature reçue - Votre code TalentsMaroc.com : {user.unique_code}",
                 html_content=html_content,
                 attachments=attachments if attachments else None
             )
@@ -193,11 +193,11 @@ class EmailService:
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>🔐 Vos identifiants Talento</h1>
+                        <h1>🔐 Vos identifiants TalentsMaroc.com</h1>
                     </div>
                     <div class="content">
                         <h2>Bonjour {user.full_name},</h2>
-                        <p>Voici vos identifiants de connexion pour accéder à votre espace personnel sur Talento :</p>
+                        <p>Voici vos identifiants de connexion pour accéder à votre espace personnel sur TalentsMaroc.com :</p>
                         
                         <div class="credentials">
                             <div class="credential-item">
@@ -228,7 +228,7 @@ class EmailService:
                         </ul>
                         
                         <p style="margin-top: 30px;">Cordialement,<br>
-                        <strong>L'équipe Talento</strong></p>
+                        <strong>L'équipe TalentsMaroc.com</strong></p>
                     </div>
                     <div class="footer">
                         <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
@@ -240,7 +240,7 @@ class EmailService:
             
             return self.send_email(
                 to_email=user.email,
-                subject="🔐 Vos identifiants de connexion Talento",
+                subject="🔐 Vos identifiants de connexion TalentsMaroc.com",
                 html_content=html_content
             )
             
@@ -278,7 +278,7 @@ class EmailService:
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1>✅ Email de Test Talento</h1>
+                        <h1>✅ Email de Test TalentsMaroc.com</h1>
                     </div>
                     <div class="content">
                         <div class="success">
@@ -289,7 +289,7 @@ class EmailService:
                         <ul>
                             <li>✅ La clé API SendGrid est valide</li>
                             <li>✅ L'email expéditeur est correctement configuré</li>
-                            <li>✅ Les emails peuvent être envoyés depuis Talento</li>
+                            <li>✅ Les emails peuvent être envoyés depuis TalentsMaroc.com</li>
                         </ul>
                         
                         <p>Vous pouvez maintenant utiliser l'envoi automatique d'emails pour :</p>
@@ -299,10 +299,10 @@ class EmailService:
                         </ul>
                         
                         <p style="margin-top: 30px;">Cordialement,<br>
-                        <strong>L'équipe Talento</strong></p>
+                        <strong>L'équipe TalentsMaroc.com</strong></p>
                     </div>
                     <div class="footer">
-                        <p>Cet email a été envoyé depuis la page de configuration de Talento.</p>
+                        <p>Cet email a été envoyé depuis la page de configuration de TalentsMaroc.com.</p>
                     </div>
                 </div>
             </body>
@@ -311,7 +311,7 @@ class EmailService:
             
             return self.send_email(
                 to_email=to_email,
-                subject="✅ Test de configuration SendGrid - Talento",
+                subject="✅ Test de configuration SendGrid - TalentsMaroc.com",
                 html_content=html_content
             )
             

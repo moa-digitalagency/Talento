@@ -252,7 +252,7 @@ class ExportService:
             spaceAfter=20
         )
         
-        elements.append(Paragraph("🌍 TALENTO - FICHE DE TALENT", header_style))
+        elements.append(Paragraph("🌍 TALENTSMAROC.COM - FICHE DE TALENT", header_style))
         elements.append(Paragraph("Plateforme de Centralisation des Talents Africain Subsahrien aux Maroc", subtitle_header_style))
         
         # Ligne de séparation
@@ -695,7 +695,7 @@ class ExportService:
             spaceAfter=20
         )
         
-        elements.append(Paragraph("🎬 TALENTO CINEMA - FICHE DE TALENT", header_style))
+        elements.append(Paragraph("🎬 TALENTSMAROC.COM CINEMA - FICHE DE TALENT", header_style))
         elements.append(Paragraph("Profil Cinématographique - Talents du Cinéma Africain", subtitle_header_style))
         
         # Ligne de séparation
@@ -877,7 +877,7 @@ class ExportService:
             try:
                 id_document_number = decrypt_sensitive_data(cinema_talent.id_document_number_encrypted)
                 # Masquer partiellement le numéro (montrer seulement les 4 premiers caractères)
-                if len(id_document_number) > 4:
+                if id_document_number and len(id_document_number) > 4:
                     id_document_number = id_document_number[:4] + '...'
             except:
                 id_document_number = 'Non disponible'

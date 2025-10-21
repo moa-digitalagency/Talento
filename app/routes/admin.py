@@ -691,7 +691,7 @@ def restore_backup():
         
         # Vérifier que c'est un fichier ZIP
         if not backup_file.filename.endswith('.zip'):
-            flash('Le fichier doit être un fichier ZIP de sauvegarde Talento.', 'error')
+            flash('Le fichier doit être un fichier ZIP de sauvegarde TalentsMaroc.com.', 'error')
             return redirect(url_for('admin.settings'))
         
         # Sauvegarder temporairement le fichier

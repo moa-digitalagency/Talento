@@ -13,7 +13,7 @@ def generate_random_password(length=12):
 def send_confirmation_email(user, password):
     """Send confirmation email with login credentials"""
     msg = Message(
-        'Bienvenue sur Talento - Votre profil a été créé',
+        'Bienvenue sur TalentsMaroc.com - Votre profil a été créé',
         recipients=[user.email]
     )
     
@@ -21,7 +21,7 @@ def send_confirmation_email(user, password):
     <html>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
             <div style="max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
-                <h2 style="color: #3B82F6;">Bienvenue sur Talento !</h2>
+                <h2 style="color: #3B82F6;">Bienvenue sur TalentsMaroc.com !</h2>
                 <p>Bonjour {user.full_name},</p>
                 <p>Votre profil de talent a été créé avec succès. Voici vos informations de connexion :</p>
                 
@@ -39,7 +39,7 @@ def send_confirmation_email(user, password):
                 </p>
                 
                 <p>Merci de votre confiance !</p>
-                <p>L'équipe Talento</p>
+                <p>L'équipe TalentsMaroc.com</p>
             </div>
         </body>
     </html>

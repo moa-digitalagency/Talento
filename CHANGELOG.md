@@ -1,9 +1,39 @@
-# Changelog - Talento
+# Changelog - TalentsMaroc.com
 
 Toutes les modifications notables du projet sont documentées dans ce fichier.
 
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.25.0] - 2025-10-21
+
+### 🎨 Rebranding et Ajout de la Galerie Photo au PDF
+
+#### Rebranding de la Plateforme
+- **Modifié** : Nom de la plateforme de "Talento" → "TalentsMaroc.com" dans tous les fichiers
+- **Mis à jour** : Tous les templates HTML avec le nouveau nom
+- **Mis à jour** : Tous les fichiers Python (services, routes, utilitaires)
+- **Mis à jour** : Toute la documentation (README, API docs, replit.md)
+- **Mis à jour** : Footer du PDF CINEMA avec le nouveau nom de la plateforme
+- **Mis à jour** : En-têtes de l'application web avec "TalentsMaroc.com"
+
+#### Section Galerie Photo Ajoutée au PDF
+- **Ajouté** : Nouvelle section "GALERIE PHOTO" dans le PDF CINEMA
+- **Fonctionnalité** : Affiche toutes les photos disponibles :
+  - Photo de profil
+  - Photo d'identité
+  - Photos de la galerie (numérotées)
+- **Gestion des cas vides** : Affiche "Aucune photo disponible" si aucune photo n'est présente
+- **Design** : Couleur violette (#8B5CF6) pour le titre, fond clair pour le contenu
+- **Position** : Ajoutée comme dernière section avant le footer
+
+#### Résultat
+- ✅ **Identité de marque cohérente** : TalentsMaroc.com partout dans l'application
+- ✅ **PDF encore plus complet** : 9 sections au total (3 pages, 17KB)
+- ✅ **Documentation mise à jour** : Toutes les références à "Talento" remplacées
+- ✅ **Expérience utilisateur améliorée** : Nom de plateforme clair et professionnel
+
+---
 
 ## [2.24.0] - 2025-10-21
 
@@ -31,7 +61,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - ✅ **En-tête informatif** : Nom, date de naissance, genre et code en un coup d'œil
 - ✅ **Identité complète** : Type et numéro de pièce d'identité inclus
 - ✅ **Design professionnel** : Sans emojis, adapté à un usage formel
-- ✅ **PDF généré** : 2 pages, 16KB
+- ✅ **PDF généré** : 2 pages, 16KB (maintenant 3 pages, 17KB avec la galerie photo)
 
 ---
 

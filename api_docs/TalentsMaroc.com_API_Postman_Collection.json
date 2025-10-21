@@ -1,7 +1,7 @@
 {
   "info": {
-    "name": "Talento API v1",
-    "description": "Complete API collection for Talento platform - Talent management system for African professionals",
+    "name": "TalentsMaroc.com API v1",
+    "description": "Complete API collection for TalentsMaroc.com platform - Talent management system for African professionals",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_postman_id": "talento-api-v1",
     "version": "1.0.0"

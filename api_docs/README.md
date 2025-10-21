@@ -1,6 +1,6 @@
-# Talento API Documentation
+# TalentsMaroc.com API Documentation
 
-Bienvenue dans la documentation API de Talento ! / Welcome to Talento API documentation!
+Bienvenue dans la documentation API de TalentsMaroc.com ! / Welcome to TalentsMaroc.com API documentation!
 
 ## 📚 Documentation disponible / Available Documentation
 
@@ -11,7 +11,7 @@ Bienvenue dans la documentation API de Talento ! / Welcome to Talento API docume
 - **[Full Documentation (EN)](./API_DOCUMENTATION_EN.md)** - Complete documentation in English with all endpoints, request/response examples
 
 ### Postman Collection
-- **[Postman Collection](./Talento_API_Postman_Collection.json)** - Import this file into Postman to test all API endpoints easily
+- **[Postman Collection](./TalentsMaroc.com_API_Postman_Collection.json)** - Import this file into Postman to test all API endpoints easily
 
 ## 🚀 Quick Start
 
@@ -71,7 +71,7 @@ curl -X GET http://localhost:5000/api/v1/auth/me \
 
 1. Open Postman
 2. Click "Import"
-3. Select `Talento_API_Postman_Collection.json`
+3. Select `TalentsMaroc.com_API_Postman_Collection.json`
 4. Update the `base_url` variable if needed
 5. Start with "Login" request to authenticate
 6. Test other endpoints
@@ -112,7 +112,7 @@ The API uses session-based authentication with cookies. After successful login:
 
 ## 📞 Support
 
-For questions or issues with the API, please contact the Talento development team.
+For questions or issues with the API, please contact the TalentsMaroc.com development team.
 
 ---
 

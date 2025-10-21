@@ -1,4 +1,4 @@
-# Talento API Documentation - Version 1.0
+# TalentsMaroc.com API Documentation - Version 1.0
 
 **Base URL**: `https://your-domain.com/api/v1`
 

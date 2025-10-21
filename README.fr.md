@@ -1,6 +1,6 @@
-# Talento - Plateforme de Centralisation des Talents
+# TalentsMaroc.com - Plateforme de Centralisation des Talents
 
-Talento est une application web professionnelle conçue pour centraliser et mettre en valeur les profils de talents à travers l'Afrique. La plateforme permet aux individus de créer des profils professionnels détaillés, de mettre en avant leurs compétences et de se connecter aux opportunités.
+TalentsMaroc.com est une application web professionnelle conçue pour centraliser et mettre en valeur les profils de talents à travers l'Afrique. La plateforme permet aux individus de créer des profils professionnels détaillés, de mettre en avant leurs compétences et de se connecter aux opportunités.
 
 ## Fonctionnalités
 
@@ -58,7 +58,7 @@ L'application sera disponible à `http://localhost:5000`
 
 ### Identifiants Admin par Défaut
 
-- **Email**: admin@talento.com
+- **Email**: admin@talentsmaroc.com
 - **Mot de passe**: @4dm1n
 
 ⚠️ **Important**: Changez le mot de passe admin après la première connexion !
@@ -66,13 +66,13 @@ L'application sera disponible à `http://localhost:5000`
 ### Comptes de Démonstration
 
 Le système inclut 5 comptes utilisateur de démonstration pour les tests:
-- demo1@talento.com à demo5@talento.com
+- demo1@talentsmaroc.com à demo5@talentsmaroc.com
 - Mot de passe: demo123
 
 ## Structure du Projet
 
 ```
-talento/
+talentsmaroc/
 ├── app/
 │   ├── models/          # Modèles de base de données
 │   ├── routes/          # Routes de l'application
@@ -110,7 +110,7 @@ Les administrateurs peuvent exporter les données utilisateur dans plusieurs for
 
 ## Licence
 
-© 2024 Talento. Tous droits réservés.
+© 2024 TalentsMaroc.com. Tous droits réservés.
 
 ## Support
 

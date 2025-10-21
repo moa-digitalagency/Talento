@@ -219,7 +219,7 @@ def _seed_database_fallback():
         if morocco and rabat:
             admin = User()
             admin.first_name = 'Admin'
-            admin.last_name = 'Talento'
+            admin.last_name = 'TalentsMaroc.com'
             admin.email = admin_email
             import os
             admin_password = os.environ.get('ADMIN_PASSWORD', '@4dm1n')
