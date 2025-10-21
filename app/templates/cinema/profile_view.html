@@ -94,7 +94,7 @@
                     </div>
                     
                     <!-- Contact -->
-                    {% if decrypted.phone or decrypted.whatsapp or talent.email %}
+                    {% if decrypted.phone or decrypted.whatsapp or talent.email or talent.website %}
                     <div class="bg-purple-50 p-4 rounded-lg">
                         <h3 class="font-bold text-gray-800 mb-2">📞 Contact</h3>
                         <div class="space-y-1 text-sm">
@@ -106,6 +106,9 @@
                             {% endif %}
                             {% if decrypted.whatsapp %}
                             <p><strong>WhatsApp:</strong> {{ decrypted.whatsapp }}</p>
+                            {% endif %}
+                            {% if talent.website %}
+                            <p><strong>Site Web:</strong> <a href="{{ talent.website }}" target="_blank" class="text-purple-600 hover:underline">{{ talent.website }}</a></p>
                             {% endif %}
                         </div>
                     </div>
@@ -186,12 +189,27 @@
         </div>
         {% endif %}
 
-        <!-- Talents -->
+        <!-- Types de Talent -->
+        {% if parsed.talent_types %}
+        <div class="section-yellow p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🎭</span>
+                <span>Types de talent</span>
+            </h2>
+            <div class="flex flex-wrap gap-2">
+                {% for talent_type in parsed.talent_types %}
+                <span class="badge-yellow">{{ talent_type }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Autres Talents et Compétences -->
         {% if parsed.talents %}
         <div class="section-pink p-6 mb-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span>✨</span>
-                <span>Talents</span>
+                <span>Autres talents et compétences</span>
             </h2>
             <div class="flex flex-wrap gap-2">
                 {% for talent_name in parsed.talents %}
@@ -220,7 +238,7 @@
         {% endif %}
 
         <!-- Réseaux sociaux -->
-        {% if decrypted.facebook or decrypted.instagram or decrypted.twitter or decrypted.youtube or decrypted.tiktok or decrypted.snapchat or decrypted.linkedin %}
+        {% if decrypted.facebook or decrypted.instagram or decrypted.twitter or decrypted.youtube or decrypted.tiktok or decrypted.snapchat or decrypted.linkedin or decrypted.telegram or decrypted.imdb_url or decrypted.threads %}
         <div class="section-indigo p-6 mb-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span>📱</span>
@@ -260,6 +278,21 @@
                 {% if decrypted.linkedin %}
                 <a href="https://linkedin.com/in/{{ decrypted.linkedin }}" target="_blank" class="bg-blue-100 hover:bg-blue-200 text-blue-800 p-3 rounded-lg border-2 border-blue-400 flex items-center gap-2 transition-all">
                     <span class="font-bold">LinkedIn</span>
+                </a>
+                {% endif %}
+                {% if decrypted.telegram %}
+                <a href="https://t.me/{{ decrypted.telegram.lstrip('@') }}" target="_blank" class="bg-cyan-100 hover:bg-cyan-200 text-cyan-700 p-3 rounded-lg border-2 border-cyan-300 flex items-center gap-2 transition-all">
+                    <span class="font-bold">Telegram</span>
+                </a>
+                {% endif %}
+                {% if decrypted.imdb_url %}
+                <a href="{{ decrypted.imdb_url }}" target="_blank" class="bg-amber-100 hover:bg-amber-200 text-amber-700 p-3 rounded-lg border-2 border-amber-300 flex items-center gap-2 transition-all">
+                    <span class="font-bold">IMDb</span>
+                </a>
+                {% endif %}
+                {% if decrypted.threads %}
+                <a href="https://threads.net/{{ decrypted.threads.lstrip('@') }}" target="_blank" class="bg-gray-100 hover:bg-gray-200 text-gray-800 p-3 rounded-lg border-2 border-gray-300 flex items-center gap-2 transition-all">
+                    <span class="font-bold">Threads</span>
                 </a>
                 {% endif %}
             </div>
