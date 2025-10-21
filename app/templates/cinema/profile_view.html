@@ -29,7 +29,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 <!-- Photos et QR Code -->
-                <div class="lg:col-span-1">
+                <div class="lg:col-span-1 order-2 lg:order-1">
                     <div class="text-center">
                         {% if talent.id_photo_filename %}
                         <img src="{{ url_for('static', filename='uploads/photos/' + talent.id_photo_filename) }}" 
@@ -42,19 +42,19 @@
                         {% endif %}
                         
                         {% if talent.qr_code_filename %}
-                        <div class="bg-white p-3 sm:p-4 rounded-xl border-2 border-purple-300 w-full max-w-xs mx-auto shadow-lg">
+                        <div class="bg-white p-4 rounded-xl border-2 border-purple-300 w-full max-w-sm mx-auto shadow-lg">
                             <img src="{{ url_for('static', filename='uploads/qrcodes/' + talent.qr_code_filename) }}" 
                                  alt="QR Code CINEMA" 
-                                 class="w-32 h-32 sm:w-40 sm:h-40 mx-auto">
-                            <p class="text-xs sm:text-sm text-gray-600 mt-2 font-mono font-bold text-center">{{ talent.unique_code }}</p>
-                            <p class="text-xs text-gray-500 text-center">Scannez pour voir le profil</p>
+                                 class="w-40 h-40 md:w-44 md:h-44 lg:w-40 lg:h-40 mx-auto">
+                            <p class="text-sm text-gray-600 mt-3 font-mono font-bold text-center">{{ talent.unique_code }}</p>
+                            <p class="text-xs text-gray-500 text-center mt-1">Scannez pour voir le profil</p>
                         </div>
                         {% endif %}
                     </div>
                 </div>
                 
                 <!-- Informations principales -->
-                <div class="lg:col-span-2 flex flex-col justify-between">
+                <div class="lg:col-span-2 flex flex-col justify-between order-1 lg:order-2">
                     
                     <!-- Informations personnelles (sans sous-bloc) -->
                     <div class="space-y-3 mb-6">
