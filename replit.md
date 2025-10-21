@@ -7,10 +7,11 @@ Talento is a professional web application designed to centralize and showcase ta
 - **World Countries Database**: Expanded from 54 African countries to 194 world countries with ISO-2 codes and proper nationalities
 - **Nationalities System**: Added comprehensive nationality list (Marocaine, Française, Algérienne, etc.) with emoji flags for proper form display; differentiated Congo nationalities (Congolaise Congo-Brazzaville vs Congolaise RDC)
 - **Dynamic City Loading**: Implemented automatic city dropdown loading based on selected country via `/cinema/api/cities/<country_code>` endpoint with intelligent fallback to text input for countries without predefined cities
-- **Expanded Cities Database**: Massively expanded city lists - now covering 60+ countries with 15-25 cities each (Morocco: 25, France: 25, Algeria: 20, Tunisia: 20, Senegal: 20, plus African, European, Asian, American, and Oceanian countries)
-- **CINEMA Form Enhancement**: Nationality field now displays emoji flags alongside nationalities (🇲🇦 Marocaine, 🇫🇷 Française), city selection is dynamic dropdown
+- **Expanded Cities Database**: Massively expanded city lists - now covering 60+ countries with 15-25 cities each (Morocco: 25, France: 25, Algeria: 20, Tunisia: 20, Senegal: 20, plus African, European, Asian, American, and Oceanian countries); added cities for both Congo countries (CG: Brazzaville, Pointe-Noire; CD: Kinshasa, Lubumbashi)
+- **CINEMA Form Enhancement**: Nationality field now displays emoji flags alongside nationalities (🇲🇦 Marocaine, 🇫🇷 Française), city selection is dynamic dropdown with smart conversion to text input
 - **Backend ISO Conversion**: Country codes automatically converted to country names during form submission
 - **Photo Upload Simplification**: Removed "Photo de profil" field from CINEMA registration, keeping only "Photo d'identité" and "Galerie de photos"
+- **Demo CINEMA Profiles**: Added 3 comprehensive demonstration profiles (Amina El Fassi from Morocco, Julien Moreau from France, Chukwudi Okonkwo from Nigeria) with all fields populated including ethnicities, languages, talents, physical characteristics, social media, and production history
 - **REST API v1**: Complete RESTful API with 25+ endpoints for authentication, users, talents, CINEMA, statistics, and data exports
 - **API Documentation**: Comprehensive documentation in French and English with examples (api_docs/)
 - **Postman Collection**: JSON collection for easy API testing with all endpoints pre-configured

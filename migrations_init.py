@@ -5,14 +5,17 @@ Ce script vérifie et corrige la structure de la base de données automatiquemen
 """
 import os
 import sys
+import json
 from app import create_app, db
 from app.models.user import User
 from app.models.talent import Talent, UserTalent
 from app.models.location import Country, City
+from app.models.cinema_talent import CinemaTalent
 from app.utils.qr_generator import generate_qr_code
+from app.utils.encryption import encrypt_sensitive_data
 from app.data.world_countries import WORLD_COUNTRIES
 from sqlalchemy import inspect, text
-from datetime import datetime
+from datetime import datetime, date
 
 def check_and_create_tables():
     """Vérifie et crée les tables manquantes"""
@@ -546,6 +549,172 @@ def create_demo_users():
     
     return True
 
+def create_demo_cinema_talents():
+    """Créer 3 profils CINEMA de démonstration avec tous les champs remplis"""
+    print("\n🎬 Création des profils CINEMA de démonstration...")
+    
+    demo_cinema_talents = [
+        {
+            # Profile 1: Actrice marocaine
+            'first_name': 'Amina',
+            'last_name': 'El Fassi',
+            'gender': 'F',
+            'date_of_birth': date(1995, 3, 15),
+            'id_document_type': 'CIN',
+            'id_document_number': 'AB123456',
+            'ethnicities': json.dumps(['Arabe', 'Amazigh']),
+            'country_of_origin': 'Maroc',
+            'nationality': 'Marocaine',
+            'country_of_residence': 'Maroc',
+            'city_of_residence': 'Casablanca',
+            'languages_spoken': json.dumps(['Arabe', 'Français', 'Anglais', 'Amazigh (Tamazight)']),
+            'years_of_experience': 8,
+            'eye_color': 'Marron',
+            'hair_color': 'Noir',
+            'hair_type': 'Ondulé',
+            'height': 168,
+            'skin_tone': 'Olive',
+            'build': 'Athlétique',
+            'other_talents': json.dumps(['Acteur/Actrice', 'Danseur/Danseuse', 'Mannequin']),
+            'email': 'amina.elfassi@demo.cinema',
+            'phone': '+212612345678',
+            'whatsapp': '+212612345678',
+            'facebook': 'amina.elfassi.cinema',
+            'instagram': '@amina_elfassi_official',
+            'tiktok': '@amina_cinema',
+            'youtube': 'Amina El Fassi',
+            'previous_productions': json.dumps([
+                {'title': 'Le Cœur de Casablanca', 'year': '2022', 'type': 'Film'},
+                {'title': 'Racines du Désert', 'year': '2021', 'type': 'Série TV'}
+            ])
+        },
+        {
+            # Profile 2: Acteur français
+            'first_name': 'Julien',
+            'last_name': 'Moreau',
+            'gender': 'M',
+            'date_of_birth': date(1988, 7, 22),
+            'id_document_type': 'Passeport',
+            'id_document_number': 'FR987654',
+            'ethnicities': json.dumps(['Européen']),
+            'country_of_origin': 'France',
+            'nationality': 'Française',
+            'country_of_residence': 'France',
+            'city_of_residence': 'Paris',
+            'languages_spoken': json.dumps(['Français', 'Anglais', 'Espagnol', 'Italien']),
+            'years_of_experience': 12,
+            'eye_color': 'Bleu',
+            'hair_color': 'Châtain',
+            'hair_type': 'Droit',
+            'height': 182,
+            'skin_tone': 'Claire',
+            'build': 'Musclé',
+            'other_talents': json.dumps(['Acteur/Actrice', 'Chanteur/Chanteuse', 'Cascadeur/Cascadeuse', 'Arts martiaux']),
+            'email': 'julien.moreau@demo.cinema',
+            'phone': '+33612345678',
+            'whatsapp': '+33612345678',
+            'facebook': 'julien.moreau.actor',
+            'instagram': '@julien_moreau_films',
+            'twitter': '@JulienMoreauFR',
+            'linkedin': 'julien-moreau-actor',
+            'youtube': 'Julien Moreau Channel',
+            'previous_productions': json.dumps([
+                {'title': 'Les Ombres de Paris', 'year': '2023', 'type': 'Film'},
+                {'title': 'Brigade Criminelle', 'year': '2020-2022', 'type': 'Série TV'},
+                {'title': 'Le Dernier Voyage', 'year': '2019', 'type': 'Film'}
+            ])
+        },
+        {
+            # Profile 3: Acteur nigérian
+            'first_name': 'Chukwudi',
+            'last_name': 'Okonkwo',
+            'gender': 'M',
+            'date_of_birth': date(1992, 11, 5),
+            'id_document_type': 'Passeport',
+            'id_document_number': 'NG456789',
+            'ethnicities': json.dumps(['Igbo', 'Yoruba']),
+            'country_of_origin': 'Nigéria',
+            'nationality': 'Nigériane',
+            'country_of_residence': 'Nigéria',
+            'city_of_residence': 'Lagos',
+            'languages_spoken': json.dumps(['Anglais', 'Igbo', 'Yoruba', 'Haoussa', 'Français']),
+            'years_of_experience': 6,
+            'eye_color': 'Marron foncé',
+            'hair_color': 'Noir',
+            'hair_type': 'Crépu',
+            'height': 178,
+            'skin_tone': 'Foncée',
+            'build': 'Athlétique',
+            'other_talents': json.dumps(['Acteur/Actrice', 'Comédien/Comédienne', 'Musicien/Musicienne', 'Réalisateur/Réalisatrice']),
+            'email': 'chukwudi.okonkwo@demo.cinema',
+            'phone': '+2348012345678',
+            'whatsapp': '+2348012345678',
+            'facebook': 'chukwudi.okonkwo.nollywood',
+            'instagram': '@chukwudi_nollywood',
+            'tiktok': '@chukwudi_movies',
+            'snapchat': 'chukwudi_cinema',
+            'twitter': '@ChukwudiActor',
+            'youtube': 'Chukwudi Okonkwo',
+            'previous_productions': json.dumps([
+                {'title': 'Lagos Love Story', 'year': '2023', 'type': 'Film'},
+                {'title': 'The King\'s Return', 'year': '2022', 'type': 'Film'},
+                {'title': 'Family Ties', 'year': '2021-2023', 'type': 'Série TV'}
+            ])
+        }
+    ]
+    
+    count = 0
+    for talent_data in demo_cinema_talents:
+        # Vérifier si le profil existe déjà
+        if CinemaTalent.query.filter_by(email=talent_data['email']).first():
+            continue
+        
+        # Extraire les champs à crypter
+        id_document_number = talent_data.pop('id_document_number')
+        phone = talent_data.pop('phone')
+        whatsapp = talent_data.pop('whatsapp', None)
+        facebook = talent_data.pop('facebook', None)
+        instagram = talent_data.pop('instagram', None)
+        twitter = talent_data.pop('twitter', None)
+        linkedin = talent_data.pop('linkedin', None)
+        youtube = talent_data.pop('youtube', None)
+        tiktok = talent_data.pop('tiktok', None)
+        snapchat = talent_data.pop('snapchat', None)
+        
+        # Créer le profil
+        talent = CinemaTalent(**talent_data)
+        
+        # Crypter les données sensibles
+        talent.id_document_number_encrypted = encrypt_sensitive_data(id_document_number)
+        talent.phone_encrypted = encrypt_sensitive_data(phone)
+        if whatsapp:
+            talent.whatsapp_encrypted = encrypt_sensitive_data(whatsapp)
+        if facebook:
+            talent.facebook_encrypted = encrypt_sensitive_data(facebook)
+        if instagram:
+            talent.instagram_encrypted = encrypt_sensitive_data(instagram)
+        if twitter:
+            talent.twitter_encrypted = encrypt_sensitive_data(twitter)
+        if linkedin:
+            talent.linkedin_encrypted = encrypt_sensitive_data(linkedin)
+        if youtube:
+            talent.youtube_encrypted = encrypt_sensitive_data(youtube)
+        if tiktok:
+            talent.tiktok_encrypted = encrypt_sensitive_data(tiktok)
+        if snapchat:
+            talent.snapchat_encrypted = encrypt_sensitive_data(snapchat)
+        
+        db.session.add(talent)
+        count += 1
+    
+    if count > 0:
+        db.session.commit()
+        print(f"✅ {count} profils CINEMA de démonstration créés")
+    else:
+        print("✅ Les profils CINEMA de démonstration existent déjà")
+    
+    return True
+
 def generate_qr_codes_for_users():
     """Générer les QR codes pour tous les utilisateurs qui n'en ont pas"""
     print("\n🔲 Génération des QR codes pour les utilisateurs...")
@@ -592,6 +761,7 @@ def main():
             seed_talents()
             create_admin_user()
             create_demo_users()
+            create_demo_cinema_talents()
             generate_qr_codes_for_users()
             
             print("\n" + "=" * 60)
@@ -602,6 +772,7 @@ def main():
             print(f"   - Villes: {City.query.count()}")
             print(f"   - Talents: {Talent.query.count()}")
             print(f"   - Utilisateurs: {User.query.count()}")
+            print(f"   - Profils CINEMA: {CinemaTalent.query.count()}")
             print(f"\n🔐 Compte admin: admin@talento.com")
             print(f"   Mot de passe: {'[Variable ADMIN_PASSWORD]' if os.environ.get('ADMIN_PASSWORD') else '@4dm1n'}")
             print("=" * 60)
