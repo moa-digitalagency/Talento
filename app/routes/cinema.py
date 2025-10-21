@@ -310,7 +310,31 @@ def view_profile(unique_code):
         except:
             parsed_data['gallery'] = []
     
+    # Récupérer les drapeaux des pays
+    from app.models.location import Country
+    country_flags = {}
+    
+    # Drapeau du pays d'origine
+    if talent.country_of_origin:
+        country_obj = Country.query.filter_by(name=talent.country_of_origin).first()
+        if country_obj:
+            country_flags['origin'] = country_obj.flag
+    
+    # Drapeau du pays de résidence
+    if talent.country_of_residence:
+        country_obj = Country.query.filter_by(name=talent.country_of_residence).first()
+        if country_obj:
+            country_flags['residence'] = country_obj.flag
+    
+    # Drapeau de la nationalité
+    if talent.nationality:
+        for nat in NATIONALITIES_WITH_FLAGS:
+            if nat['nationality'] == talent.nationality:
+                country_flags['nationality'] = nat['flag']
+                break
+    
     return render_template('cinema/profile_view.html',
                          talent=talent,
                          decrypted=decrypted_data,
-                         parsed=parsed_data)
+                         parsed=parsed_data,
+                         country_flags=country_flags)

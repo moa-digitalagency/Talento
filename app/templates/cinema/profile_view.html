@@ -90,33 +90,62 @@
                     </div>
                     {% endif %}
 
-                    <!-- Sous-bloc: Coordonnées -->
-                    {% if talent.email or decrypted.phone or decrypted.whatsapp or talent.website %}
-                    <div class="bg-white p-5 rounded-lg border-2 border-blue-200">
-                        <h3 class="text-lg font-bold text-blue-800 mb-3 flex items-center gap-2">
-                            <span>📞</span>
-                            <span>Coordonnées</span>
-                        </h3>
-                        <div class="space-y-2 text-sm">
-                            {% if talent.email %}
-                            <p><strong class="text-gray-700">Email :</strong> <a href="mailto:{{ talent.email }}" class="text-blue-600 hover:underline">{{ talent.email }}</a></p>
-                            {% endif %}
-                            {% if decrypted.phone %}
-                            <p><strong class="text-gray-700">Téléphone :</strong> {{ decrypted.phone }}</p>
-                            {% endif %}
-                            {% if decrypted.whatsapp %}
-                            <p><strong class="text-gray-700">WhatsApp :</strong> {{ decrypted.whatsapp }}</p>
-                            {% endif %}
-                            {% if talent.website %}
-                            <p><strong class="text-gray-700">Site Web :</strong> <a href="{{ talent.website }}" target="_blank" class="text-blue-600 hover:underline">{{ talent.website }}</a></p>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% endif %}
 
                 </div>
             </div>
         </div>
+
+        <!-- BLOC SÉPARÉ: Coordonnées -->
+        {% if talent.email or decrypted.phone or decrypted.whatsapp or talent.website %}
+        <div class="section-blue p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <span>📞</span>
+                <span>Coordonnées</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% if talent.email %}
+                <div class="bg-white p-4 rounded-lg border-2 border-blue-200">
+                    <h3 class="text-md font-bold text-blue-800 mb-2 flex items-center gap-2">
+                        <span>📧</span>
+                        <span>Email</span>
+                    </h3>
+                    <a href="mailto:{{ talent.email }}" class="text-blue-600 hover:underline text-sm break-all">{{ talent.email }}</a>
+                </div>
+                {% endif %}
+                
+                {% if decrypted.phone %}
+                <div class="bg-white p-4 rounded-lg border-2 border-blue-200">
+                    <h3 class="text-md font-bold text-blue-800 mb-2 flex items-center gap-2">
+                        <span>📱</span>
+                        <span>Téléphone</span>
+                    </h3>
+                    <p class="text-gray-700 font-semibold text-sm">{{ decrypted.phone }}</p>
+                </div>
+                {% endif %}
+                
+                {% if decrypted.whatsapp %}
+                <div class="bg-white p-4 rounded-lg border-2 border-blue-200">
+                    <h3 class="text-md font-bold text-blue-800 mb-2 flex items-center gap-2">
+                        <span>💬</span>
+                        <span>WhatsApp</span>
+                    </h3>
+                    <p class="text-gray-700 font-semibold text-sm">{{ decrypted.whatsapp }}</p>
+                </div>
+                {% endif %}
+                
+                {% if talent.website %}
+                <div class="bg-white p-4 rounded-lg border-2 border-blue-200">
+                    <h3 class="text-md font-bold text-blue-800 mb-2 flex items-center gap-2">
+                        <span>🌐</span>
+                        <span>Site Web</span>
+                    </h3>
+                    <a href="{{ talent.website }}" target="_blank" class="text-blue-600 hover:underline text-sm break-all">{{ talent.website }}</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
 
         <!-- SECTION 2: Origines -->
         <div class="section-green p-6 mb-8">
