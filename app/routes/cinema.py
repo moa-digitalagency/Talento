@@ -252,6 +252,10 @@ def view_profile(unique_code):
     
     decrypted_data = {}
     
+    # Décrypter numéro de document d'identité
+    if talent.id_document_number_encrypted:
+        decrypted_data['id_document_number'] = decrypt_sensitive_data(talent.id_document_number_encrypted)
+    
     # Décrypter téléphone et WhatsApp
     if talent.phone_encrypted:
         decrypted_data['phone'] = decrypt_sensitive_data(talent.phone_encrypted)

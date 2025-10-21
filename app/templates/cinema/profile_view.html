@@ -76,15 +76,26 @@
                             <span>📋</span>
                             <span>Document d'identité</span>
                         </h3>
-                        <p class="text-lg font-semibold text-gray-700">
-                            {% if talent.id_document_type == 'passport' %}
-                            📘 Passeport
-                            {% elif talent.id_document_type == 'national_id' %}
-                            🪪 Carte d'identité nationale
-                            {% else %}
-                            {{ talent.id_document_type }}
+                        <div class="space-y-2">
+                            <p class="text-sm text-gray-600">Type de document</p>
+                            <p class="text-lg font-semibold text-gray-800">
+                                {% if talent.id_document_type == 'passport' %}
+                                📘 Passeport
+                                {% elif talent.id_document_type == 'national_id' %}
+                                🪪 Carte d'identité nationale
+                                {% else %}
+                                {{ talent.id_document_type }}
+                                {% endif %}
+                            </p>
+                            {% if decrypted.id_document_number %}
+                            <p class="text-sm text-gray-600 mt-3">Numéro de document</p>
+                            <p class="text-lg font-semibold text-gray-800 font-mono">{{ decrypted.id_document_number }}</p>
                             {% endif %}
-                        </p>
+                            {% if talent.date_of_birth %}
+                            <p class="text-sm text-gray-600 mt-3">Date de naissance</p>
+                            <p class="text-lg font-semibold text-gray-800">{{ talent.date_of_birth.strftime('%d/%m/%Y') }}</p>
+                            {% endif %}
+                        </div>
                     </div>
                     {% endif %}
 
