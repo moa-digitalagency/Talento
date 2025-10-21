@@ -102,11 +102,16 @@ def get_work_mode_display(value):
     })
 
 LANGUAGES_CINEMA = [
-    'Afrikaans', 'Allemand', 'Amazigh (Berbère)', 'Anglais', 'Arabe', 'Arménien',
-    'Chinois (Mandarin)', 'Chinois (Cantonais)', 'Coréen', 'Créole', 'Espagnol',
-    'Français', 'Grec', 'Haoussa', 'Hébreu', 'Hindi', 'Italien', 'Japonais',
-    'Néerlandais', 'Norvégien', 'Polonais', 'Portugais', 'Roumain', 'Russe',
-    'Suédois', 'Swahili', 'Turc', 'Ukrainien', 'Wolof', 'Yoruba', 'Zoulou', 'Autre'
+    'Afrikaans', 'Albanais', 'Allemand', 'Amazigh (Berbère)', 'Amharique', 'Anglais', 
+    'Arabe', 'Arménien', 'Bambara', 'Bengali', 'Bulgare', 'Catalan', 
+    'Chinois (Cantonais)', 'Chinois (Mandarin)', 'Coréen', 'Créole', 'Danois', 
+    'Dioula', 'Espagnol', 'Estonien', 'Finnois', 'Français', 'Grec', 
+    'Haoussa', 'Hébreu', 'Hindi', 'Hongrois', 'Igbo', 'Indonésien', 'Italien', 
+    'Japonais', 'Kikuyu', 'Kinyarwanda', 'Lingala', 'Malgache', 'Malinké', 
+    'Néerlandais', 'Norvégien', 'Oromo', 'Peul', 'Polonais', 'Portugais', 
+    'Roumain', 'Russe', 'Sango', 'Serbe', 'Somali', 'Soninké', 'Suédois', 
+    'Swahili', 'Tamoul', 'Tchèque', 'Tigrinya', 'Turc', 'Ukrainien', 
+    'Wolof', 'Xhosa', 'Yoruba', 'Zoulou', 'Autre'
 ]
 
 TALENT_CATEGORIES = [

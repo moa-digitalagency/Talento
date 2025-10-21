@@ -3,6 +3,15 @@
 ## Overview
 Talento is a professional web application designed to centralize and showcase talent profiles across Africa. It enables individuals to create comprehensive profiles with unique identifiers and QR codes. The platform features advanced administrative tools, AI-powered CV analysis, and multiple data export formats. Talento aims to be a robust, scalable solution for talent management and discovery, enhancing professional networking and recruitment across the continent. A key module, CINEMA, provides a dedicated system for talent registration with detailed fields and public accessibility.
 
+## Recent Changes (October 21, 2025)
+- **CINEMA Module Enhancement**: Complete redesign of registration form into 8 organized sections
+- **Flag Integration**: Added emoji flags to all country dropdowns (using ISO-2 codes)
+- **Expanded Languages**: Enriched language options to 50+ choices with centralized LANGUAGES_CINEMA constant
+- **Categorized Talents**: Organized talents into 6 categories with emojis (Performance, Arts & Media, Sports & Skills, etc.)
+- **Enhanced Social Media**: Added TikTok and Snapchat fields with encrypted storage
+- **TMDb Integration**: Server-side movie search API for tracking previous productions (optional, requires TMDB_API_KEY)
+- **Database Migration**: Added tiktok_encrypted and snapchat_encrypted columns to cinema_talents table
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
@@ -56,7 +65,10 @@ Preferred communication style: Simple, everyday language.
 - **Blueprints**: Organized into `main`, `auth`, `profile`, `admin`, `api`, and `cinema` for modularity.
 
 ### Constants & Configuration
-- **Centralized Constants**: `app/constants.py` defines standardized availability and talent categories.
+- **Centralized Constants**: `app/constants.py` defines:
+  - Standardized availability and talent categories for main platform
+  - LANGUAGES_CINEMA: 50+ language options for CINEMA module
+  - TALENT_CATEGORIES: 6 categorized talent groups with emojis for CINEMA
 
 ### Migration & Database Initialization
 - **Strategy**: Custom scripts for table creation, column addition, and data seeding (countries, cities, talents) with idempotent operations.
@@ -78,8 +90,78 @@ Preferred communication style: Simple, everyday language.
 - **Utilities**: `qrcode`, `requests`, `email-validator`, `python-dotenv`.
 
 ### Configuration Requirements
-- **Environment Variables**: `SECRET_KEY`, `DATABASE_URL`, `ENCRYPTION_KEY` are required. `SENDGRID_API_KEY`, `OPENROUTER_API_KEY`, `SENDGRID_FROM_EMAIL`, `REPLIT_DEV_DOMAIN` are optional (API keys and sender email can be managed via admin settings).
+- **Environment Variables**: 
+  - **Required**: `SECRET_KEY`, `DATABASE_URL`, `ENCRYPTION_KEY`
+  - **Optional**: `SENDGRID_API_KEY`, `OPENROUTER_API_KEY`, `SENDGRID_FROM_EMAIL`, `REPLIT_DEV_DOMAIN`, `TMDB_API_KEY`
+  - API keys and sender email can be managed via admin settings for SendGrid/OpenRouter
+  - TMDb API key enables movie search in CINEMA productions (fallback to manual text entry if not configured)
 
 ### Static Assets
 - **CSS**: Tailwind CSS (CDN), custom corporate theme.
 - **Uploads Directory**: Local storage for user-generated content.
+
+## CINEMA Module
+
+The CINEMA module is a specialized subsystem for managing film industry talents with enhanced features.
+
+### CINEMA Registration Form Structure
+The public registration form (`/cinema/register`) is organized into **8 color-coded sections**:
+
+1. **Identité & Contact** (Blue) - Personal information, ID document, and contact details merged into one section
+2. **Origines** (Green) - Multiple ethnicities selection, country of origin, and nationality
+3. **Résidence** (Purple) - Current country and city of residence
+4. **Langues** (Cyan) - Multi-select from 50+ languages (Afrikaans, Amazigh, Arabic, French, English, Swahili, etc.)
+5. **Caractéristiques physiques** (Orange) - Eye color, hair color/type, height, skin tone, build
+6. **Talents** (Pink) - Organized into 6 categories with emojis:
+   - 🎭 Arts de la scène (Acting, Singing, Dancing, Comedy, etc.)
+   - 🎨 Arts visuels (Photography, Painting, Design, Makeup, etc.)
+   - 🎵 Musique (Musician, Composer, DJ, Sound Engineer, etc.)
+   - ⚽ Sports & Arts martiaux (Stunt work, Martial arts, Acrobatics, etc.)
+   - 🎬 Techniques & Créatives (Choreography, Directing, Screenwriting, etc.)
+   - ✨ Autres (Modeling, Magic, Mime, etc.)
+7. **Réseaux sociaux** (Indigo) - All platforms including Facebook, Instagram, TikTok, Snapchat, YouTube, Twitter, LinkedIn (encrypted storage)
+8. **Photos & Productions** (Red) - Photo uploads + movie search integration
+
+### CINEMA Features
+
+#### Country Display Enhancement
+- All country dropdowns (origin, residence, nationality) display emoji flags generated from ISO-2 codes
+- Countries are sorted alphabetically for easy selection
+- Flag generation: `Country.flag` property converts country codes to Unicode flag emojis
+
+#### TMDb Integration (Optional)
+- **Service**: `app/services/movie_service.py` provides server-side TMDb API proxy
+- **API Endpoint**: `/cinema/api/search_movies` accepts query parameter and returns film/TV results
+- **Features**: Real-time search, poster images, year display, type identification (Film/Série TV)
+- **Frontend**: JavaScript-powered autocomplete with visual movie cards
+- **Fallback**: Manual text entry area if TMDb is not configured or search fails
+- **Data Storage**: Selected productions saved as JSON array in `previous_productions` field
+
+#### Social Media Encryption
+All social media fields are encrypted using Fernet before storage:
+- facebook_encrypted, instagram_encrypted, linkedin_encrypted
+- twitter_encrypted, youtube_encrypted
+- tiktok_encrypted, snapchat_encrypted
+
+#### Multi-Select Fields
+Several fields support multiple selections stored as JSON arrays:
+- ethnicities (15+ options)
+- languages_spoken (50+ languages)
+- other_talents (categorized into 6 groups)
+
+### CINEMA Data Model
+The `CinemaTalent` model (`app/models/cinema_talent.py`) includes:
+- Personal info with encrypted ID document
+- Origins with multiple ethnicities support
+- Separate fields for origin vs. residence locations
+- Physical characteristics
+- JSON arrays for languages and talents
+- Encrypted contact and social media
+- Photo storage (profile, ID, gallery)
+- Previous productions as JSON
+
+### CINEMA Routes
+- `/cinema/register` - Public registration form (GET/POST)
+- `/cinema/talents` - List view (authenticated)
+- `/cinema/dashboard` - Statistics overview (authenticated)
+- `/cinema/api/search_movies` - TMDb proxy endpoint
