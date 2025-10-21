@@ -6,6 +6,8 @@ from app.models import Country
 from app.constants import LANGUAGES_CINEMA, TALENT_CATEGORIES
 from app.services.movie_service import search_movies
 from app.utils.file_handler import save_file
+from app.data.world_countries import NATIONALITIES
+from app.data.world_cities import get_cities_by_country
 from datetime import datetime
 import json
 
@@ -55,11 +57,20 @@ def api_search_movies():
     result = search_movies(query)
     return jsonify(result)
 
+@bp.route('/api/cities/<country_code>', methods=['GET'])
+def api_get_cities(country_code):
+    """API pour récupérer les villes d'un pays donné"""
+    cities = get_cities_by_country(country_code.upper())
+    return jsonify({'cities': cities, 'country_code': country_code.upper()})
+
 @bp.route('/register', methods=['GET', 'POST'])
 def register_talent():
     """Inscription d'un nouveau talent CINEMA"""
     # Get countries for dropdowns, sorted alphabetically
     countries = Country.query.order_by(Country.name).all()
+    
+    # Get nationalities list (sorted alphabetically)
+    nationalities = NATIONALITIES
     
     if request.method == 'POST':
         try:
@@ -146,7 +157,7 @@ def register_talent():
             existing_talent = CinemaTalent.query.filter_by(email=talent.email).first()
             if existing_talent:
                 flash('Cet email est déjà utilisé dans CINEMA.', 'error')
-                return render_template('cinema/register_talent.html', countries=countries)
+                return render_template('cinema/register_talent.html', countries=countries, nationalities=nationalities, languages=LANGUAGES_CINEMA, talent_categories=TALENT_CATEGORIES)
             
             phone = request.form.get('phone')
             if phone:
@@ -188,10 +199,12 @@ def register_talent():
             flash(f'Erreur lors de l\'enregistrement: {str(e)}', 'error')
             return render_template('cinema/register_talent.html', 
                                  countries=countries,
+                                 nationalities=nationalities,
                                  languages=LANGUAGES_CINEMA,
                                  talent_categories=TALENT_CATEGORIES)
     
     return render_template('cinema/register_talent.html', 
                          countries=countries,
+                         nationalities=nationalities,
                          languages=LANGUAGES_CINEMA,
                          talent_categories=TALENT_CATEGORIES)
