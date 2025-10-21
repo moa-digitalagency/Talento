@@ -46,27 +46,21 @@
                 </div>
                 
                 <!-- Informations principales -->
-                <div class="lg:col-span-2 space-y-6">
+                <div class="lg:col-span-2 flex flex-col justify-between">
                     
-                    <!-- Sous-bloc: Informations personnelles -->
-                    <div class="bg-white p-5 rounded-lg border-2 border-blue-200">
-                        <h3 class="text-lg font-bold text-blue-800 mb-3 flex items-center gap-2">
-                            <span>ℹ️</span>
-                            <span>Informations personnelles</span>
-                        </h3>
-                        <div class="space-y-2">
-                            <p class="text-2xl font-bold text-gray-800">{{ talent.full_name }}</p>
-                            <p class="text-gray-600">
-                                {% if talent.age %}{{ talent.age }} ans{% endif %}
-                                {% if talent.gender_display %} · {{ talent.gender_display }}{% endif %}
-                            </p>
-                            <p class="text-xl text-purple-600 font-mono font-bold tracking-wider">{{ talent.unique_code }}</p>
-                        </div>
+                    <!-- Informations personnelles (sans sous-bloc) -->
+                    <div class="space-y-2 mb-6">
+                        <p class="text-3xl font-bold text-gray-900">{{ talent.full_name }}</p>
+                        <p class="text-lg text-gray-600">
+                            {% if talent.age %}{{ talent.age }} ans{% endif %}
+                            {% if talent.gender_display %} · {{ talent.gender_display }}{% endif %}
+                        </p>
+                        <p class="text-xl text-purple-600 font-mono font-bold tracking-wider">{{ talent.unique_code }}</p>
                     </div>
 
-                    <!-- Sous-bloc: Document d'identité -->
+                    <!-- Sous-bloc: Document d'identité (aligné en bas) -->
                     {% if talent.id_document_type %}
-                    <div class="bg-white p-5 rounded-lg border-2 border-blue-200">
+                    <div class="bg-white p-5 rounded-lg border-2 border-blue-200 mt-auto">
                         <h3 class="text-lg font-bold text-blue-800 mb-3 flex items-center gap-2">
                             <span>📋</span>
                             <span>Document d'identité</span>
@@ -89,7 +83,6 @@
                         </div>
                     </div>
                     {% endif %}
-
 
                 </div>
             </div>
@@ -172,7 +165,9 @@
                 {% if talent.country_of_origin %}
                 <div class="bg-white p-4 rounded-lg border-2 border-green-200">
                     <h3 class="text-md font-bold text-green-800 mb-3">Pays d'origine</h3>
-                    <p class="text-lg font-semibold text-gray-700">{{ talent.country_of_origin }}</p>
+                    <p class="text-lg font-semibold text-gray-700">
+                        {% if country_flags.origin %}{{ country_flags.origin }} {% endif %}{{ talent.country_of_origin }}
+                    </p>
                 </div>
                 {% endif %}
 
@@ -180,7 +175,9 @@
                 {% if talent.nationality %}
                 <div class="bg-white p-4 rounded-lg border-2 border-green-200">
                     <h3 class="text-md font-bold text-green-800 mb-3">Nationalité</h3>
-                    <p class="text-lg font-semibold text-gray-700">{{ talent.nationality }}</p>
+                    <p class="text-lg font-semibold text-gray-700">
+                        {% if country_flags.nationality %}{{ country_flags.nationality }} {% endif %}{{ talent.nationality }}
+                    </p>
                 </div>
                 {% endif %}
 
@@ -199,7 +196,7 @@
             <div class="bg-white p-5 rounded-lg border-2 border-purple-200">
                 <h3 class="text-md font-bold text-purple-800 mb-3">Lieu de résidence actuel</h3>
                 <p class="text-xl font-semibold text-gray-700">
-                    {% if talent.city_of_residence %}{{ talent.city_of_residence }}, {% endif %}{{ talent.country_of_residence }}
+                    {% if talent.city_of_residence %}{{ talent.city_of_residence }}, {% endif %}{% if country_flags.residence %}{{ country_flags.residence }} {% endif %}{{ talent.country_of_residence }}
                 </p>
             </div>
         </div>

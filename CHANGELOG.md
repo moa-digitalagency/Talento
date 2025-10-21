@@ -5,6 +5,41 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.21.0] - 2025-10-21
+
+### 🎨 Améliorations UI - Page de Profil CINEMA
+
+#### Simplification de la Section Identité
+- **Supprimé** : Sous-bloc "Informations personnelles" redondant
+- **Amélioration** : Nom affiché directement en grand (text-3xl) sans conteneur
+- **Optimisation** : Âge, genre et code unique affichés directement sous le nom
+- **Alignement** : Sous-bloc "Document d'identité" maintenant aligné avec le bas du QR code (mt-auto)
+
+#### Séparation des Coordonnées
+- **Nouveau bloc indépendant** : Les coordonnées sont maintenant dans un bloc séparé avec titre "📞 Coordonnées"
+- **Sous-blocs individuels** : Chaque élément de contact (Email, Téléphone, WhatsApp, Site Web) a son propre sous-bloc
+- **Icônes distinctives** : 📧 Email, 📱 Téléphone, 💬 WhatsApp, 🌐 Site Web
+- **Meilleure lisibilité** : Grid responsive (1 colonne sur mobile, 2 colonnes sur desktop)
+
+#### Ajout de Drapeaux
+- **Section Origines** : Drapeaux d'émoji affichés pour Pays d'origine et Nationalité (ex: 🇲🇦 Maroc, 🇲🇦 Marocaine)
+- **Section Résidence** : Drapeau affiché pour le Pays de résidence (ex: 🇲🇦)
+- **Génération dynamique** : Les drapeaux sont générés automatiquement à partir des codes ISO-2 des pays
+
+### 🔧 Modifications Techniques
+
+#### Route `view_profile()` (`cinema.py`)
+- **Ajouté** : Récupération des drapeaux depuis la base de données Country
+- **Ajouté** : Mapping des drapeaux pour origine, résidence et nationalité dans `country_flags` dict
+- **Optimisation** : Utilisation de NATIONALITIES_WITH_FLAGS pour la nationalité
+
+#### Template (`profile_view.html`)
+- **Restructuration** : Section Identité avec flexbox pour alignement vertical (justify-between)
+- **Nouveau bloc** : Coordonnées séparé avec grid et sous-blocs individuels
+- **Ajout** : Drapeaux affichés conditionnellement avec `country_flags.origin`, `country_flags.nationality`, `country_flags.residence`
+
+---
+
 ## [2.20.0] - 2025-10-21
 
 ### 🎯 Restructuration Complète - Page de Profil CINEMA
