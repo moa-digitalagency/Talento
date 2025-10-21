@@ -29,7 +29,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 <!-- Photos et QR Code -->
-                <div class="lg:col-span-1 order-2 lg:order-1">
+                <div class="lg:col-span-1">
                     <div class="text-center">
                         {% if talent.id_photo_filename %}
                         <img src="{{ url_for('static', filename='uploads/photos/' + talent.id_photo_filename) }}" 
@@ -54,7 +54,7 @@
                 </div>
                 
                 <!-- Informations principales -->
-                <div class="lg:col-span-2 flex flex-col justify-between order-1 lg:order-2">
+                <div class="lg:col-span-2 flex flex-col justify-between">
                     
                     <!-- Informations personnelles (sans sous-bloc) -->
                     <div class="space-y-3 mb-6">
