@@ -595,14 +595,19 @@ def create_demo_cinema_talents():
             'height': 168,
             'skin_tone': 'Olive',
             'build': 'Athlétique',
-            'other_talents': json.dumps(['Acteur/Actrice', 'Danseur/Danseuse', 'Mannequin']),
+            'talent_types': json.dumps(['Acteur/Actrice', 'Mannequin', 'Danseur/euse']),
+            'other_talents': json.dumps(['Danse contemporaine', 'Yoga', 'Équitation']),
             'email': 'amina.elfassi@demo.cinema',
             'phone': '+212612345678',
             'whatsapp': '+212612345678',
+            'website': 'https://aminaelfassi.com',
             'facebook': 'amina.elfassi.cinema',
             'instagram': '@amina_elfassi_official',
             'tiktok': '@amina_cinema',
             'youtube': 'Amina El Fassi',
+            'telegram': '@amina_cinema',
+            'imdb_url': 'https://imdb.com/name/nm1234567',
+            'threads': '@amina_elfassi',
             'previous_productions': json.dumps([
                 {'title': 'Le Cœur de Casablanca', 'year': '2022', 'type': 'Film'},
                 {'title': 'Racines du Désert', 'year': '2021', 'type': 'Série TV'}
@@ -629,15 +634,20 @@ def create_demo_cinema_talents():
             'height': 182,
             'skin_tone': 'Claire',
             'build': 'Musclé',
-            'other_talents': json.dumps(['Acteur/Actrice', 'Chanteur/Chanteuse', 'Cascadeur/Cascadeuse', 'Arts martiaux']),
+            'talent_types': json.dumps(['Acteur/Actrice', 'Cascadeur/euse', 'Chanteur/euse']),
+            'other_talents': json.dumps(['Arts martiaux', 'Chant lyrique', 'Escrime']),
             'email': 'julien.moreau@demo.cinema',
             'phone': '+33612345678',
             'whatsapp': '+33612345678',
+            'website': 'https://julienmoreau-actor.fr',
             'facebook': 'julien.moreau.actor',
             'instagram': '@julien_moreau_films',
             'twitter': '@JulienMoreauFR',
             'linkedin': 'julien-moreau-actor',
             'youtube': 'Julien Moreau Channel',
+            'telegram': '@julien_moreau',
+            'imdb_url': 'https://imdb.com/name/nm7654321',
+            'threads': '@julien.moreau',
             'previous_productions': json.dumps([
                 {'title': 'Les Ombres de Paris', 'year': '2023', 'type': 'Film'},
                 {'title': 'Brigade Criminelle', 'year': '2020-2022', 'type': 'Série TV'},
@@ -665,16 +675,21 @@ def create_demo_cinema_talents():
             'height': 178,
             'skin_tone': 'Foncée',
             'build': 'Athlétique',
-            'other_talents': json.dumps(['Acteur/Actrice', 'Comédien/Comédienne', 'Musicien/Musicienne', 'Réalisateur/Réalisatrice']),
+            'talent_types': json.dumps(['Acteur/Actrice', 'Musicien(ne)', 'Metteur en scène']),
+            'other_talents': json.dumps(['Comédie stand-up', 'Guitare', 'Production audiovisuelle']),
             'email': 'chukwudi.okonkwo@demo.cinema',
             'phone': '+2348012345678',
             'whatsapp': '+2348012345678',
+            'website': 'https://chukwudiokonkwo.ng',
             'facebook': 'chukwudi.okonkwo.nollywood',
             'instagram': '@chukwudi_nollywood',
             'tiktok': '@chukwudi_movies',
             'snapchat': 'chukwudi_cinema',
             'twitter': '@ChukwudiActor',
             'youtube': 'Chukwudi Okonkwo',
+            'telegram': '@chukwudi_nollywood',
+            'imdb_url': 'https://imdb.com/name/nm9876543',
+            'threads': '@chukwudi_official',
             'previous_productions': json.dumps([
                 {'title': 'Lagos Love Story', 'year': '2023', 'type': 'Film'},
                 {'title': 'The King\'s Return', 'year': '2022', 'type': 'Film'},
@@ -700,6 +715,9 @@ def create_demo_cinema_talents():
         youtube = talent_data.pop('youtube', None)
         tiktok = talent_data.pop('tiktok', None)
         snapchat = talent_data.pop('snapchat', None)
+        telegram = talent_data.pop('telegram', None)
+        imdb_url = talent_data.pop('imdb_url', None)
+        threads = talent_data.pop('threads', None)
         
         # Créer le profil
         talent = CinemaTalent(**talent_data)
@@ -723,6 +741,12 @@ def create_demo_cinema_talents():
             talent.tiktok_encrypted = encrypt_sensitive_data(tiktok)
         if snapchat:
             talent.snapchat_encrypted = encrypt_sensitive_data(snapchat)
+        if telegram:
+            talent.telegram_encrypted = encrypt_sensitive_data(telegram)
+        if imdb_url:
+            talent.imdb_url_encrypted = encrypt_sensitive_data(imdb_url)
+        if threads:
+            talent.threads_encrypted = encrypt_sensitive_data(threads)
         
         db.session.add(talent)
         count += 1
