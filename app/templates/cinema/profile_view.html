@@ -6,15 +6,23 @@
 <div class="min-h-screen bg-gray-50 py-8 px-4">
     <div class="max-w-5xl mx-auto">
         
-        {% if current_user.is_authenticated and current_user.is_admin %}
         <div class="mb-6 flex flex-col sm:flex-row gap-3 sm:justify-between">
+            {% if current_user.is_authenticated and current_user.is_admin %}
             <a href="{{ url_for('cinema.talents') }}" 
                class="px-4 sm:px-6 py-2 sm:py-3 bg-gray-100 text-gray-700 font-bold rounded-lg border-2 border-gray-500 hover:bg-gray-200 transition-all flex items-center justify-center gap-2 text-sm sm:text-base">
                 <span>◀️</span>
                 <span>Retour</span>
             </a>
+            {% else %}
+            <div></div>
+            {% endif %}
+            
+            <a href="{{ url_for('cinema.export_pdf', code=talent.unique_code) }}" 
+               class="px-4 sm:px-6 py-2 sm:py-3 bg-red-50 text-red-700 font-bold rounded-lg border-2 border-red-500 hover:bg-red-100 transition-all flex items-center justify-center gap-2 text-sm sm:text-base shadow-md">
+                <span>📄</span>
+                <span>Télécharger PDF</span>
+            </a>
         </div>
-        {% endif %}
 
         <!-- SECTION 1: Identité & Contact -->
         <div class="section-blue p-6 mb-8">
@@ -379,6 +387,48 @@
             </div>
         </div>
         {% endif %}
+
+        <!-- SECTION 10: Galerie photos -->
+        <div class="section-emerald p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <span>📸</span>
+                <span>Galerie photos</span>
+            </h2>
+            
+            {% if talent.photo_1 or talent.photo_2 or talent.photo_3 %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% if talent.photo_1 %}
+                <div class="bg-white p-4 rounded-lg border-2 border-emerald-200 shadow-sm">
+                    <img src="{{ url_for('static', filename='uploads/photos/' + talent.photo_1) }}" 
+                         alt="Photo 1" 
+                         class="w-full h-64 object-cover rounded-lg">
+                    <p class="text-center text-sm text-gray-600 mt-2 font-semibold">Photo 1</p>
+                </div>
+                {% endif %}
+                {% if talent.photo_2 %}
+                <div class="bg-white p-4 rounded-lg border-2 border-emerald-200 shadow-sm">
+                    <img src="{{ url_for('static', filename='uploads/photos/' + talent.photo_2) }}" 
+                         alt="Photo 2" 
+                         class="w-full h-64 object-cover rounded-lg">
+                    <p class="text-center text-sm text-gray-600 mt-2 font-semibold">Photo 2</p>
+                </div>
+                {% endif %}
+                {% if talent.photo_3 %}
+                <div class="bg-white p-4 rounded-lg border-2 border-emerald-200 shadow-sm">
+                    <img src="{{ url_for('static', filename='uploads/photos/' + talent.photo_3) }}" 
+                         alt="Photo 3" 
+                         class="w-full h-64 object-cover rounded-lg">
+                    <p class="text-center text-sm text-gray-600 mt-2 font-semibold">Photo 3</p>
+                </div>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="bg-white p-8 rounded-lg border-2 border-emerald-200 text-center">
+                <p class="text-gray-500 text-lg font-semibold">📷 Photos non disponibles</p>
+                <p class="text-gray-400 text-sm mt-2">Aucune photo n'a été ajoutée à ce profil</p>
+            </div>
+            {% endif %}
+        </div>
 
     </div>
 </div>

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify, send_file
 from flask_login import login_required, current_user
 from app import db
 from app.models.cinema_talent import CinemaTalent
@@ -8,11 +8,13 @@ from app.constants import (
     EYE_COLORS, HAIR_COLORS, HAIR_TYPES, SKIN_TONES, BUILD_TYPES
 )
 from app.services.movie_service import search_movies
+from app.services.export_service import ExportService
 from app.utils.file_handler import save_file
 from app.data.world_countries import NATIONALITIES, NATIONALITIES_WITH_FLAGS
 from app.data.world_cities import get_cities_by_country
 from datetime import datetime
 import json
+import io
 
 bp = Blueprint('cinema', __name__, url_prefix='/cinema')
 
@@ -338,3 +340,22 @@ def view_profile(unique_code):
                          decrypted=decrypted_data,
                          parsed=parsed_data,
                          country_flags=country_flags)
+
+@bp.route('/export/pdf/<code>')
+def export_pdf(code):
+    """Télécharger le profil CINEMA en PDF"""
+    talent = CinemaTalent.query.filter_by(unique_code=code, is_active=True).first_or_404()
+    
+    pdf_bytes = ExportService.export_cinema_talent_card_pdf(talent)
+    
+    buffer = io.BytesIO(pdf_bytes)
+    buffer.seek(0)
+    
+    filename = f'cinema_{talent.unique_code}_{datetime.now().strftime("%Y%m%d")}.pdf'
+    
+    return send_file(
+        buffer,
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name=filename
+    )

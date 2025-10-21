@@ -5,6 +5,47 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.22.0] - 2025-10-21
+
+### 🎬 Nouvelle Fonctionnalité - Export PDF & Galerie Photos CINEMA
+
+#### Export PDF Profil CINEMA
+- **Nouveau** : Ajout d'une route `/cinema/export/pdf/<code>` pour télécharger le profil CINEMA en PDF
+- **Nouveau** : Bouton "Télécharger PDF" visible sur chaque page de profil CINEMA
+- **Fonctionnalité** : Le PDF inclut photo/initiales, QR code, toutes les informations du profil avec drapeaux
+- **Sections PDF** : Identité & Contact, Origines, Langues & Caractéristiques, Types de talents
+- **Service** : Nouvelle méthode `ExportService.export_cinema_talent_card_pdf()` dans `export_service.py`
+- **Format** : PDF professionnel avec mise en page soignée, couleurs sectionnées et footer daté
+
+#### Section Galerie Photos
+- **Nouveau** : Section "Galerie photos" en fin de page de profil CINEMA
+- **Affichage** : Grille responsive (1-3 colonnes) pour afficher photo_1, photo_2, photo_3
+- **Placeholder** : Message "Photos non disponibles" si aucune photo n'est présente
+- **Style** : Section emerald avec bordure pointillée cohérente avec le design global
+
+### 🔧 Modifications Techniques
+
+#### Backend (`cinema.py`)
+- **Ajouté** : Route `export_pdf(code)` pour générer et télécharger le PDF
+- **Import** : Ajout de `send_file`, `ExportService` et `io` pour gestion des PDF
+
+#### Service d'Export (`export_service.py`)
+- **Ajouté** : Méthode statique `export_cinema_talent_card_pdf(cinema_talent)`
+- **Fonctionnalités** : 
+  - Génération de photo ou placeholder avec initiales colorées selon genre
+  - Intégration QR code dans le layout
+  - Calcul automatique de l'âge depuis la date de naissance
+  - Récupération et affichage des drapeaux pour pays et nationalités
+  - Parsing JSON pour ethnicités, langues, types de talents
+  - Layout professionnel avec sections colorées
+
+#### Template (`profile_view.html`)
+- **Ajouté** : Bouton "Télécharger PDF" dans l'en-tête avec style rouge distinctif
+- **Ajouté** : Section 10 "Galerie photos" avec conditions d'affichage et placeholder
+- **Layout** : Bouton visible pour tous les utilisateurs (admin et public)
+
+---
+
 ## [2.21.0] - 2025-10-21
 
 ### 🎨 Améliorations UI - Page de Profil CINEMA

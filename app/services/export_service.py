@@ -645,3 +645,363 @@ class ExportService:
         doc.build(elements)
         buffer.seek(0)
         return buffer.getvalue()
+    
+    @staticmethod
+    def export_cinema_talent_card_pdf(cinema_talent):
+        """
+        Générer une fiche talent CINEMA individuelle en PDF
+        
+        Args:
+            cinema_talent: Objet CinemaTalent
+            
+        Returns:
+            bytes: Données du fichier PDF
+        """
+        from app.models import Country
+        from app.data.world_countries import NATIONALITIES_WITH_FLAGS
+        import json
+        
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=0.5*inch, bottomMargin=0.5*inch)
+        elements = []
+        
+        styles = getSampleStyleSheet()
+        
+        # Couleurs de la plateforme
+        color_blue = colors.HexColor('#3B82F6')
+        color_purple = colors.HexColor('#9333EA')
+        color_green = colors.HexColor('#22c55e')
+        color_indigo = colors.HexColor('#4F46E5')
+        color_gray = colors.HexColor('#6B7280')
+        
+        # ==== EN-TÊTE ====
+        header_style = ParagraphStyle(
+            'Header',
+            parent=styles['Heading1'],
+            fontSize=24,
+            textColor=color_indigo,
+            alignment=TA_CENTER,
+            fontName='Helvetica-Bold',
+            spaceAfter=5
+        )
+        
+        subtitle_header_style = ParagraphStyle(
+            'SubtitleHeader',
+            parent=styles['Normal'],
+            fontSize=12,
+            textColor=color_gray,
+            alignment=TA_CENTER,
+            spaceAfter=20
+        )
+        
+        elements.append(Paragraph("🎬 TALENTO CINEMA - FICHE DE TALENT", header_style))
+        elements.append(Paragraph("Profil Cinématographique - Talents du Cinéma Africain", subtitle_header_style))
+        
+        # Ligne de séparation
+        line_table = Table([['']],  colWidths=[6.5*inch])
+        line_table.setStyle(TableStyle([
+            ('LINEABOVE', (0, 0), (-1, 0), 3, color_indigo),
+            ('LINEBELOW', (0, 0), (-1, 0), 1, color_green),
+        ]))
+        elements.append(line_table)
+        elements.append(Spacer(1, 15))
+        
+        # ==== SECTION PRINCIPALE: PHOTO, INFO & QR CODE ====
+        def get_initial(name):
+            """Extraire l'initiale de manière sécurisée"""
+            if not name:
+                return '?'
+            clean_name = str(name).strip()
+            return clean_name[0].upper() if clean_name else '?'
+        
+        first_initial = get_initial(cinema_talent.first_name)
+        last_initial = get_initial(cinema_talent.last_name)
+        initials = f"{first_initial}{last_initial}"
+        
+        # Générer la photo ou le placeholder
+        photo_element = None
+        if cinema_talent.id_photo_filename:
+            try:
+                photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'photos', cinema_talent.id_photo_filename)
+                if os.path.exists(photo_path):
+                    photo_element = Image(photo_path, width=1.8*inch, height=1.8*inch)
+            except:
+                pass
+        
+        if not photo_element:
+            # Placeholder avec initiales
+            placeholder_color = color_blue if cinema_talent.gender == 'M' else (color_purple if cinema_talent.gender == 'F' else color_green)
+            
+            placeholder_style = ParagraphStyle(
+                'Placeholder',
+                parent=styles['Normal'],
+                fontSize=60,
+                textColor=colors.white,
+                alignment=TA_CENTER,
+                fontName='Helvetica-Bold',
+                leading=72
+            )
+            
+            placeholder_table = Table([[Paragraph(initials, placeholder_style)]], colWidths=[1.8*inch], rowHeights=[1.8*inch])
+            placeholder_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), placeholder_color),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                ('BOX', (0, 0), (-1, -1), 2, colors.white),
+            ]))
+            photo_element = placeholder_table
+        
+        # QR Code
+        qr_element = None
+        if cinema_talent.qr_code_filename:
+            try:
+                qr_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'qrcodes', cinema_talent.qr_code_filename)
+                if os.path.exists(qr_path):
+                    qr_element = Image(qr_path, width=1.5*inch, height=1.5*inch)
+            except:
+                pass
+        
+        # Nom complet
+        full_name = f"{cinema_talent.first_name} {cinema_talent.last_name}"
+        name_style = ParagraphStyle(
+            'Name',
+            parent=styles['Normal'],
+            fontSize=18,
+            textColor=color_indigo,
+            fontName='Helvetica-Bold',
+            alignment=TA_CENTER
+        )
+        name_element = Paragraph(full_name.upper(), name_style)
+        
+        # Code unique
+        code_style = ParagraphStyle(
+            'Code',
+            parent=styles['Normal'],
+            fontSize=14,
+            textColor=color_purple,
+            fontName='Helvetica-Bold',
+            alignment=TA_CENTER
+        )
+        code_element = Paragraph(cinema_talent.unique_code, code_style)
+        
+        # Layout de la section principale
+        if qr_element:
+            main_layout = Table([[photo_element, name_element, qr_element]], colWidths=[2*inch, 2.5*inch, 2*inch])
+        else:
+            main_layout = Table([[photo_element, name_element]], colWidths=[2*inch, 4.5*inch])
+        
+        main_layout.setStyle(TableStyle([
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(main_layout)
+        elements.append(Spacer(1, 10))
+        elements.append(code_element)
+        elements.append(Spacer(1, 20))
+        
+        # ==== SECTION IDENTITÉ ====
+        identity_title = Table([['👤  IDENTITÉ & CONTACT']], colWidths=[6.5*inch])
+        identity_title.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), color_blue),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 14),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(identity_title)
+        
+        # Calcul de l'âge
+        age_str = 'Non renseigné'
+        if cinema_talent.birth_date:
+            from datetime import date
+            today = date.today()
+            age = today.year - cinema_talent.birth_date.year - ((today.month, today.day) < (cinema_talent.birth_date.month, cinema_talent.birth_date.day))
+            age_str = f"{age} ans"
+        
+        # Récupérer les drapeaux
+        country_origin = Country.query.filter_by(name=cinema_talent.country_of_origin).first() if cinema_talent.country_of_origin else None
+        country_residence = Country.query.filter_by(name=cinema_talent.country_of_residence).first() if cinema_talent.country_of_residence else None
+        
+        flag_origin = country_origin.flag if country_origin else ''
+        flag_residence = country_residence.flag if country_residence else ''
+        flag_nationality = ''
+        if cinema_talent.nationality:
+            for item in NATIONALITIES_WITH_FLAGS:
+                if item['nationality'] == cinema_talent.nationality:
+                    flag_nationality = item['flag']
+                    break
+        
+        info_data = [
+            ['Âge', age_str],
+            ['Genre', {'M': 'Homme', 'F': 'Femme', 'N': 'Non précisé'}.get(cinema_talent.gender, 'Non renseigné')],
+            ['Email', cinema_talent.email or 'Non renseigné'],
+            ['Téléphone', cinema_talent.phone or 'Non renseigné'],
+            ['Site Web', cinema_talent.website or 'Non renseigné'],
+            ['Pays d\'origine', f"{flag_origin} {cinema_talent.country_of_origin}" if cinema_talent.country_of_origin else 'Non renseigné'],
+            ['Nationalité', f"{flag_nationality} {cinema_talent.nationality}" if cinema_talent.nationality else 'Non renseigné'],
+            ['Résidence', f"{cinema_talent.city_of_residence}, {flag_residence} {cinema_talent.country_of_residence}" if cinema_talent.country_of_residence else 'Non renseigné'],
+        ]
+        
+        info_table = Table(info_data, colWidths=[2*inch, 4.5*inch])
+        info_table.setStyle(TableStyle([
+            ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+            ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 0), (-1, -1), 10),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+            ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#DBEAFE')),
+            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+            ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
+        ]))
+        elements.append(info_table)
+        elements.append(Spacer(1, 15))
+        
+        # ==== ORIGINES ====
+        try:
+            ethnicities = json.loads(cinema_talent.ethnicities) if cinema_talent.ethnicities else []
+        except:
+            ethnicities = []
+        
+        if ethnicities:
+            origins_title = Table([['🌍  ORIGINES']], colWidths=[6.5*inch])
+            origins_title.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), color_green),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 14),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(origins_title)
+            
+            origins_data = [['Ethnicités', ', '.join(ethnicities)]]
+            origins_table = Table(origins_data, colWidths=[2*inch, 4.5*inch])
+            origins_table.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+                ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#DCFCE7')),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+            ]))
+            elements.append(origins_table)
+            elements.append(Spacer(1, 15))
+        
+        # ==== LANGUES & CARACTÉRISTIQUES PHYSIQUES ====
+        try:
+            languages = json.loads(cinema_talent.languages) if cinema_talent.languages else []
+        except:
+            languages = []
+        
+        if languages or cinema_talent.height:
+            char_title = Table([['🗣️  LANGUES & CARACTÉRISTIQUES']], colWidths=[6.5*inch])
+            char_title.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#06B6D4')),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 14),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(char_title)
+            
+            char_data = []
+            if languages:
+                char_data.append(['Langues parlées', ', '.join(languages)])
+            if cinema_talent.height:
+                char_data.append(['Taille', f"{cinema_talent.height} cm"])
+            if cinema_talent.eye_color:
+                char_data.append(['Yeux', cinema_talent.eye_color])
+            if cinema_talent.hair_color:
+                char_data.append(['Couleur de cheveux', cinema_talent.hair_color])
+            if cinema_talent.skin_tone:
+                char_data.append(['Teint', cinema_talent.skin_tone])
+            
+            char_table = Table(char_data, colWidths=[2*inch, 4.5*inch])
+            char_table.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+                ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#CFFAFE')),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+                ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
+            ]))
+            elements.append(char_table)
+            elements.append(Spacer(1, 15))
+        
+        # ==== TYPES DE TALENTS ====
+        try:
+            talent_types = json.loads(cinema_talent.talent_types) if cinema_talent.talent_types else []
+        except:
+            talent_types = []
+        
+        if talent_types:
+            talents_title = Table([['🎭  TYPES DE TALENTS']], colWidths=[6.5*inch])
+            talents_title.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EAB308')),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 14),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(talents_title)
+            
+            talents_text = ', '.join(talent_types)
+            talents_para = Paragraph(talents_text, styles['Normal'])
+            talents_data = [[talents_para]]
+            talents_table = Table(talents_data, colWidths=[6.5*inch])
+            talents_table.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('TOPPADDING', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#FEF9C3')),
+                ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
+            ]))
+            elements.append(talents_table)
+            elements.append(Spacer(1, 15))
+        
+        # ==== FOOTER ====
+        elements.append(Spacer(1, 20))
+        footer_line = Table([['']],  colWidths=[6.5*inch])
+        footer_line.setStyle(TableStyle([
+            ('LINEABOVE', (0, 0), (-1, 0), 2, color_indigo),
+        ]))
+        elements.append(footer_line)
+        
+        footer_style = ParagraphStyle(
+            'Footer',
+            parent=styles['Normal'],
+            fontSize=9,
+            textColor=color_gray,
+            alignment=TA_CENTER
+        )
+        elements.append(Spacer(1, 10))
+        elements.append(Paragraph(f"Document généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')}", footer_style))
+        elements.append(Paragraph("🎬 Plateforme Talento CINEMA - Talents du Cinéma Africain", footer_style))
+        
+        doc.build(elements)
+        buffer.seek(0)
+        return buffer.getvalue()
