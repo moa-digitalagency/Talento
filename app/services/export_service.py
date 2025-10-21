@@ -908,15 +908,15 @@ class ExportService:
             elements.append(origins_table)
             elements.append(Spacer(1, 15))
         
-        # ==== LANGUES & CARACTÉRISTIQUES PHYSIQUES ====
+        # ==== LANGUES ====
         try:
             languages = json.loads(cinema_talent.languages) if cinema_talent.languages else []
         except:
             languages = []
         
-        if languages or cinema_talent.height:
-            char_title = Table([['🗣️  LANGUES & CARACTÉRISTIQUES']], colWidths=[6.5*inch])
-            char_title.setStyle(TableStyle([
+        if languages:
+            lang_title = Table([['🗣️  LANGUES PARLÉES']], colWidths=[6.5*inch])
+            lang_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#06B6D4')),
                 ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
                 ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
@@ -925,22 +925,57 @@ class ExportService:
                 ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
                 ('LEFTPADDING', (0, 0), (-1, -1), 10),
             ]))
-            elements.append(char_title)
+            elements.append(lang_title)
             
-            char_data = []
-            if languages:
-                char_data.append(['Langues parlées', ', '.join(languages)])
+            lang_text = ', '.join(languages)
+            lang_para = Paragraph(lang_text, styles['Normal'])
+            lang_table = Table([[lang_para]], colWidths=[6.5*inch])
+            lang_table.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('TOPPADDING', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#CFFAFE')),
+                ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
+            ]))
+            elements.append(lang_table)
+            elements.append(Spacer(1, 15))
+        
+        # ==== CARACTÉRISTIQUES PHYSIQUES ====
+        has_physical = (cinema_talent.height or cinema_talent.eye_color or cinema_talent.hair_color or 
+                       cinema_talent.hair_type or cinema_talent.skin_tone or cinema_talent.build)
+        
+        if has_physical:
+            phys_title = Table([['👁️  CARACTÉRISTIQUES PHYSIQUES']], colWidths=[6.5*inch])
+            phys_title.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F97316')),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 14),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(phys_title)
+            
+            phys_data = []
             if cinema_talent.height:
-                char_data.append(['Taille', f"{cinema_talent.height} cm"])
+                phys_data.append(['Taille', f"{cinema_talent.height} cm"])
             if cinema_talent.eye_color:
-                char_data.append(['Yeux', cinema_talent.eye_color])
+                phys_data.append(['Couleur des yeux', cinema_talent.eye_color])
             if cinema_talent.hair_color:
-                char_data.append(['Couleur de cheveux', cinema_talent.hair_color])
+                phys_data.append(['Couleur de cheveux', cinema_talent.hair_color])
+            if cinema_talent.hair_type:
+                phys_data.append(['Type de cheveux', cinema_talent.hair_type])
             if cinema_talent.skin_tone:
-                char_data.append(['Teint', cinema_talent.skin_tone])
+                phys_data.append(['Teint', cinema_talent.skin_tone])
+            if cinema_talent.build:
+                phys_data.append(['Corpulence', cinema_talent.build])
             
-            char_table = Table(char_data, colWidths=[2*inch, 4.5*inch])
-            char_table.setStyle(TableStyle([
+            phys_table = Table(phys_data, colWidths=[2*inch, 4.5*inch])
+            phys_table.setStyle(TableStyle([
                 ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
                 ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
                 ('FONTSIZE', (0, 0), (-1, -1), 10),
@@ -948,12 +983,13 @@ class ExportService:
                 ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
                 ('LEFTPADDING', (0, 0), (-1, -1), 10),
                 ('RIGHTPADDING', (0, 0), (-1, -1), 10),
-                ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#CFFAFE')),
+                ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#FFEDD5')),
                 ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
                 ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
                 ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
             ]))
-            elements.append(char_table)
+            elements.append(phys_table)
             elements.append(Spacer(1, 15))
         
         # ==== TYPES DE TALENTS ====
@@ -990,6 +1026,143 @@ class ExportService:
                 ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
             ]))
             elements.append(talents_table)
+            elements.append(Spacer(1, 15))
+        
+        # ==== COMPÉTENCES ARTISTIQUES ====
+        try:
+            other_talents = json.loads(cinema_talent.other_talents) if cinema_talent.other_talents else []
+        except:
+            other_talents = []
+        
+        if other_talents:
+            comp_title = Table([['✨  COMPÉTENCES ARTISTIQUES']], colWidths=[6.5*inch])
+            comp_title.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EC4899')),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 14),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(comp_title)
+            
+            comp_text = ', '.join(other_talents)
+            comp_para = Paragraph(comp_text, styles['Normal'])
+            comp_table = Table([[comp_para]], colWidths=[6.5*inch])
+            comp_table.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('TOPPADDING', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#FCE7F3')),
+                ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
+            ]))
+            elements.append(comp_table)
+            elements.append(Spacer(1, 15))
+        
+        # ==== RÉSEAUX SOCIAUX ====
+        social_networks = []
+        social_fields = {
+            'facebook': 'Facebook',
+            'instagram': 'Instagram', 
+            'twitter': 'Twitter',
+            'youtube': 'YouTube',
+            'tiktok': 'TikTok',
+            'snapchat': 'Snapchat',
+            'linkedin': 'LinkedIn',
+            'telegram': 'Telegram',
+            'imdb_url': 'IMDb',
+            'threads': 'Threads'
+        }
+        
+        for field, label in social_fields.items():
+            encrypted_field = f'{field}_encrypted'
+            if hasattr(cinema_talent, encrypted_field):
+                encrypted_value = getattr(cinema_talent, encrypted_field)
+                if encrypted_value:
+                    try:
+                        decrypted_value = decrypt_sensitive_data(encrypted_value)
+                        if decrypted_value:
+                            social_networks.append([label, decrypted_value])
+                    except:
+                        pass
+        
+        if social_networks:
+            social_title = Table([['📱  RÉSEAUX SOCIAUX']], colWidths=[6.5*inch])
+            social_title.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#6366F1')),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 14),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(social_title)
+            
+            social_table = Table(social_networks, colWidths=[1.5*inch, 5*inch])
+            social_table.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+                ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 9),
+                ('TOPPADDING', (0, 0), (-1, -1), 6),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#E0E7FF')),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+                ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
+            ]))
+            elements.append(social_table)
+            elements.append(Spacer(1, 15))
+        
+        # ==== PRODUCTIONS PRÉCÉDENTES ====
+        try:
+            productions = json.loads(cinema_talent.previous_productions) if cinema_talent.previous_productions else []
+        except:
+            productions = []
+        
+        if productions:
+            prod_title = Table([['🎥  PRODUCTIONS PRÉCÉDENTES']], colWidths=[6.5*inch])
+            prod_title.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EF4444')),
+                ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, -1), 14),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+            ]))
+            elements.append(prod_title)
+            
+            prod_data = []
+            for production in productions:
+                title = production.get('title', 'Sans titre')
+                prod_type = production.get('type', '')
+                year = production.get('year', '')
+                prod_info = f"{title} ({prod_type}, {year})" if prod_type and year else title
+                prod_data.append([prod_info])
+            
+            prod_table = Table(prod_data, colWidths=[6.5*inch])
+            prod_table.setStyle(TableStyle([
+                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                ('FONTSIZE', (0, 0), (-1, -1), 10),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#FEE2E2')),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+                ('ROWBACKGROUNDS', (0, 0), (-1, -1), [colors.white, colors.HexColor('#FEE2E2')]),
+            ]))
+            elements.append(prod_table)
             elements.append(Spacer(1, 15))
         
         # ==== FOOTER ====

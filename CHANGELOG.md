@@ -5,6 +5,36 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.23.0] - 2025-10-21
+
+### ✨ Amélioration Majeure - Export PDF CINEMA Complet et Professionnel
+
+#### Informations Complètes Ajoutées
+- **Ajouté** : Section "LANGUES PARLÉES" séparée avec mise en page améliorée
+- **Ajouté** : Section "CARACTÉRISTIQUES PHYSIQUES" complète avec tous les champs :
+  - Taille, Couleur des yeux, Couleur de cheveux
+  - Type de cheveux, Teint, Corpulence
+- **Ajouté** : Section "COMPÉTENCES ARTISTIQUES" (other_talents)
+- **Ajouté** : Section "RÉSEAUX SOCIAUX" avec déchiffrement automatique :
+  - Facebook, Instagram, Twitter, YouTube, TikTok
+  - Snapchat, LinkedIn, Telegram, IMDb, Threads
+- **Ajouté** : Section "PRODUCTIONS PRÉCÉDENTES" avec titre, type et année
+
+#### Amélioration de la Mise en Page
+- **Optimisé** : Alignement professionnel avec largeurs de colonnes cohérentes (2" + 4.5" ou 1.5" + 5")
+- **Amélioré** : Espacement vertical entre les sections (15px)
+- **Amélioré** : Utilisation de VALIGN='TOP' pour un meilleur alignement du contenu
+- **Amélioré** : Couleurs sectionnées correspondant à l'interface web
+- **Amélioré** : Alternance de couleurs de fond pour meilleure lisibilité
+
+#### Résultat Final
+- ✅ **PDF complet** : 2 pages, 16KB avec toutes les sections
+- ✅ **8 sections** : Identité, Origines, Langues, Caractéristiques, Types de talents, Compétences, Réseaux sociaux, Productions
+- ✅ **Mise en page professionnelle** : Alignement parfait, espacement cohérent, couleurs harmonieuses
+- ✅ **Aucune information manquante** : Toutes les données du profil sont incluses
+
+---
+
 ## [2.22.1] - 2025-10-21
 
 ### 🐛 Corrections de Bugs - Export PDF CINEMA
