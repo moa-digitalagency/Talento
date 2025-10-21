@@ -6,11 +6,12 @@ Talento is a professional web application designed to centralize and showcase ta
 ## Recent Changes (October 21, 2025)
 - **CINEMA Module Enhancement**: Complete redesign of registration form into 8 organized sections
 - **Flag Integration**: Added emoji flags to all country dropdowns (using ISO-2 codes)
-- **Expanded Languages**: Enriched language options to 50+ choices with centralized LANGUAGES_CINEMA constant
+- **Expanded Languages**: Enriched language options to 60 languages with centralized LANGUAGES_CINEMA constant
 - **Categorized Talents**: Organized talents into 6 categories with emojis (Performance, Arts & Media, Sports & Skills, etc.)
 - **Enhanced Social Media**: Added TikTok and Snapchat fields with encrypted storage
 - **TMDb Integration**: Server-side movie search API for tracking previous productions (optional, requires TMDB_API_KEY)
 - **Database Migration**: Added tiktok_encrypted and snapchat_encrypted columns to cinema_talents table
+- **Navigation Update**: CINEMA link moved from public header to authenticated-only header; public access via "Postuler en tant que talent cinéma" button on login page
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -67,7 +68,7 @@ Preferred communication style: Simple, everyday language.
 ### Constants & Configuration
 - **Centralized Constants**: `app/constants.py` defines:
   - Standardized availability and talent categories for main platform
-  - LANGUAGES_CINEMA: 50+ language options for CINEMA module
+  - LANGUAGES_CINEMA: 60 language options for CINEMA module
   - TALENT_CATEGORIES: 6 categorized talent groups with emojis for CINEMA
 
 ### Migration & Database Initialization
@@ -110,7 +111,7 @@ The public registration form (`/cinema/register`) is organized into **8 color-co
 1. **Identité & Contact** (Blue) - Personal information, ID document, and contact details merged into one section
 2. **Origines** (Green) - Multiple ethnicities selection, country of origin, and nationality
 3. **Résidence** (Purple) - Current country and city of residence
-4. **Langues** (Cyan) - Multi-select from 50+ languages (Afrikaans, Amazigh, Arabic, French, English, Swahili, etc.)
+4. **Langues** (Cyan) - Multi-select from 60 languages (Afrikaans, Albanais, Amazigh, Amharique, Arabic, Bambara, French, English, Igbo, Swahili, Wolof, Yoruba, Zoulou, etc.)
 5. **Caractéristiques physiques** (Orange) - Eye color, hair color/type, height, skin tone, build
 6. **Talents** (Pink) - Organized into 6 categories with emojis:
    - 🎭 Arts de la scène (Acting, Singing, Dancing, Comedy, etc.)
@@ -121,6 +122,10 @@ The public registration form (`/cinema/register`) is organized into **8 color-co
    - ✨ Autres (Modeling, Magic, Mime, etc.)
 7. **Réseaux sociaux** (Indigo) - All platforms including Facebook, Instagram, TikTok, Snapchat, YouTube, Twitter, LinkedIn (encrypted storage)
 8. **Photos & Productions** (Red) - Photo uploads + movie search integration
+
+### CINEMA Access Points
+- **Public Access**: "Postuler en tant que talent cinéma" button on login page (`/auth/login`) redirects to public registration form
+- **Authenticated Access**: CINEMA link in navigation header (visible only after login) leads to CINEMA dashboard (`/cinema/dashboard`)
 
 ### CINEMA Features
 
