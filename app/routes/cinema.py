@@ -259,7 +259,7 @@ def view_profile(unique_code):
         decrypted_data['whatsapp'] = decrypt_sensitive_data(talent.whatsapp_encrypted)
     
     # Décrypter réseaux sociaux
-    social_fields = ['facebook', 'instagram', 'linkedin', 'twitter', 'youtube', 'tiktok', 'snapchat', 'imdb_url', 'threads']
+    social_fields = ['facebook', 'instagram', 'linkedin', 'twitter', 'youtube', 'tiktok', 'snapchat', 'telegram', 'imdb_url', 'threads']
     for field in social_fields:
         encrypted_field = f'{field}_encrypted'
         if hasattr(talent, encrypted_field):
@@ -281,6 +281,12 @@ def view_profile(unique_code):
             parsed_data['languages'] = json.loads(talent.languages_spoken)
         except:
             parsed_data['languages'] = []
+    
+    if talent.talent_types:
+        try:
+            parsed_data['talent_types'] = json.loads(talent.talent_types)
+        except:
+            parsed_data['talent_types'] = []
     
     if talent.other_talents:
         try:
