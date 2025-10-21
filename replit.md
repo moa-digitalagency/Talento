@@ -4,6 +4,10 @@
 Talento is a professional web application designed to centralize and showcase talent profiles across Africa. It enables individuals to create comprehensive profiles with unique identifiers and QR codes. The platform features advanced administrative tools, AI-powered CV analysis, and multiple data export formats. Talento aims to be a robust, scalable solution for talent management and discovery, enhancing professional networking and recruitment across the continent. A key module, CINEMA, provides a dedicated system for talent registration with detailed fields and public accessibility.
 
 ## Recent Changes (October 21, 2025)
+- **REST API v1**: Complete RESTful API with 25+ endpoints for authentication, users, talents, CINEMA, statistics, and data exports
+- **API Documentation**: Comprehensive documentation in French and English with examples (api_docs/)
+- **Postman Collection**: JSON collection for easy API testing with all endpoints pre-configured
+- **CSRF Exemption**: API v1 routes exempt from CSRF protection for external client access
 - **CINEMA Module Enhancement**: Complete redesign of registration form into 8 organized sections
 - **Flag Integration**: Added emoji flags to all country dropdowns (using ISO-2 codes)
 - **Expanded Languages**: Enriched language options to 60 languages with centralized LANGUAGES_CINEMA constant
@@ -63,7 +67,20 @@ Preferred communication style: Simple, everyday language.
     - Public CINEMA talent registration form mirrors the main registration design.
 
 ### Routing Structure
-- **Blueprints**: Organized into `main`, `auth`, `profile`, `admin`, `api`, and `cinema` for modularity.
+- **Blueprints**: Organized into `main`, `auth`, `profile`, `admin`, `api`, `cinema`, and `api_v1` for modularity.
+
+### REST API v1
+- **Base URL**: `/api/v1`
+- **Authentication**: Session-based (cookies)
+- **CSRF Protection**: Exempt for all API v1 routes
+- **Documentation**: Available in `api_docs/` (French & English)
+- **Endpoints**:
+  - Authentication: `/auth/login`, `/auth/logout`, `/auth/me`
+  - Users: `/users` (list, get, delete, toggle-active)
+  - Talents & Location: `/talents`, `/countries`, `/cities`
+  - CINEMA: `/cinema/talents`, `/cinema/talents/:id`, `/cinema/stats`
+  - Statistics: `/stats/overview`, `/stats/talents`
+  - Exports: `/export/users/excel`, `/export/users/csv`, `/export/users/pdf`
 
 ### Constants & Configuration
 - **Centralized Constants**: `app/constants.py` defines:

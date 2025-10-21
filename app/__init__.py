@@ -268,6 +268,9 @@ def create_app(config_class=Config):
     app.register_blueprint(cinema.bp)
     app.register_blueprint(api_v1.bp)
     
+    # Exemption CSRF pour toutes les routes API v1
+    csrf.exempt(api_v1.bp)
+    
     with app.app_context():
         db.create_all()
         seed_database()
