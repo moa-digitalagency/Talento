@@ -5,6 +5,51 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.18.0] - 2025-10-21
+
+### ✨ Améliorations - Profils CINEMA
+
+#### Mise à jour des Profils de Démonstration
+- **Ajouté** : Champs Website, Telegram, IMDb, Threads et Types de talent aux 3 profils de démonstration CINEMA
+- Les profils de démo incluent maintenant :
+  - Site web personnel (non chiffré)
+  - Telegram (chiffré)
+  - IMDb URL (chiffré)
+  - Threads (chiffré)
+  - Types de talent (acteur/actrice, mannequin, etc.)
+  - Autres talents réorganisés (compétences spécifiques)
+
+#### Page de Visualisation des Profils CINEMA
+- **Ajouté** : Affichage du site web dans la section Contact
+- **Ajouté** : Nouvelle section "Types de talent" avec badges colorés
+- **Ajouté** : Telegram dans la section Réseaux sociaux
+- **Ajouté** : IMDb dans la section Réseaux sociaux
+- **Ajouté** : Threads dans la section Réseaux sociaux
+- **Renommé** : Section "Talents" → "Autres talents et compétences" pour plus de clarté
+- Les liens Telegram et Threads gèrent automatiquement le préfixe "@"
+
+### 🔧 Modifications Techniques
+
+#### Profils de Démonstration (`migrations_init.py`)
+- Ajout de 4 nouveaux champs aux profils de démo :
+  - `website` : Site web personnel (public)
+  - `telegram` : Compte Telegram (chiffré)
+  - `imdb_url` : Profil IMDb (chiffré)
+  - `threads` : Profil Threads (chiffré)
+  - `talent_types` : Types de talent (JSON array)
+- Séparation entre "Types de talent" (ex: Acteur/Actrice) et "Autres talents" (compétences spécifiques)
+
+#### Route CINEMA (`cinema.py`)
+- Ajout de `telegram` à la liste des champs à décrypter dans `view_profile()`
+- Ajout du parsing de `talent_types` (JSON) pour l'affichage
+
+#### Template (`profile_view.html`)
+- Section Contact : ajout du site web avec lien cliquable
+- Nouvelle section "Types de talent" avec badges jaunes
+- Section Réseaux sociaux : ajout de Telegram, IMDb et Threads avec couleurs distinctives
+
+---
+
 ## [2.17.0] - 2025-10-21
 
 ### 🐛 Corrections de Bugs - Formulaire CINEMA
