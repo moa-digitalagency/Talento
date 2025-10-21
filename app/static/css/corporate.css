@@ -142,6 +142,13 @@ h2 {
     box-shadow: 0 4px 6px rgba(168, 85, 247, 0.1);
 }
 
+.section-violet {
+    background: rgba(139, 92, 246, 0.08);
+    border: 3px dotted #8b5cf6;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px rgba(139, 92, 246, 0.15);
+}
+
 .section-orange {
     background: rgba(249, 115, 22, 0.05);
     border: 3px dotted #f97316;
@@ -189,6 +196,7 @@ h2 {
 .section-green:hover,
 .section-red:hover,
 .section-purple:hover,
+.section-violet:hover,
 .section-orange:hover,
 .section-cyan:hover,
 .section-pink:hover,

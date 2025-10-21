@@ -9,6 +9,11 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### 🎨 Améliorations UI - Page de Profil CINEMA
 
+#### Correction du Pointillé Section Résidence
+- **Corrigé** : Ajout de la classe CSS `section-violet` manquante pour la section Résidence
+- **Amélioration** : Couleur violette plus foncée (#8b5cf6) avec fond plus contrasté (8% opacity) pour meilleure visibilité du pointillé
+- **Résultat** : Le pointillé violet de la section Résidence est maintenant bien visible sur toutes les pages
+
 #### Simplification de la Section Identité
 - **Supprimé** : Sous-bloc "Informations personnelles" redondant
 - **Amélioration** : Nom affiché directement en grand (text-3xl) sans conteneur
