@@ -641,7 +641,7 @@ class ExportService:
         )
         elements.append(Spacer(1, 10))
         elements.append(Paragraph(f"Document généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')}", footer_style))
-        elements.append(Paragraph("🌍 Plateforme Talento - Centralisation des Talents Africains", footer_style))
+        elements.append(Paragraph("Plateforme Talento CINEMA - Talents du Cinéma Africain", footer_style))
         
         doc.build(elements)
         buffer.seek(0)
@@ -762,34 +762,64 @@ class ExportService:
             except:
                 pass
         
-        # Nom complet
+        # Colonne centrale: Nom, date de naissance, genre
         full_name = f"{cinema_talent.first_name} {cinema_talent.last_name}"
+        
+        # Calculer la date de naissance formatée
+        birth_date_str = 'Non renseignée'
+        if cinema_talent.date_of_birth:
+            birth_date_str = cinema_talent.date_of_birth.strftime('%d/%m/%Y')
+        
+        gender_str = {'M': 'Homme', 'F': 'Femme', 'N': 'Non précisé'}.get(cinema_talent.gender, 'Non renseigné')
+        
+        # Styles pour la colonne centrale
         name_style = ParagraphStyle(
             'Name',
             parent=styles['Normal'],
-            fontSize=18,
+            fontSize=16,
             textColor=color_indigo,
             fontName='Helvetica-Bold',
-            alignment=TA_CENTER
+            alignment=TA_CENTER,
+            leading=18
         )
-        name_element = Paragraph(full_name.upper(), name_style)
         
-        # Code unique
-        code_style = ParagraphStyle(
-            'Code',
+        info_style = ParagraphStyle(
+            'InfoCenter',
             parent=styles['Normal'],
-            fontSize=14,
-            textColor=color_purple,
-            fontName='Helvetica-Bold',
-            alignment=TA_CENTER
+            fontSize=10,
+            textColor=colors.HexColor('#374151'),
+            fontName='Helvetica',
+            alignment=TA_CENTER,
+            leading=14
         )
-        code_element = Paragraph(cinema_talent.unique_code, code_style)
+        
+        # Créer la colonne centrale avec nom sur 2 lignes, date et genre
+        name_parts = full_name.upper().split(' ', 1)
+        if len(name_parts) == 2:
+            name_text = f"{name_parts[0]}<br/>{name_parts[1]}"
+        else:
+            name_text = name_parts[0]
+        
+        center_content = [
+            [Paragraph(name_text, name_style)],
+            [Paragraph(f"<b>Né(e) le:</b> {birth_date_str}", info_style)],
+            [Paragraph(f"<b>Genre:</b> {gender_str}", info_style)],
+            [Paragraph(f"<b>Code:</b> {cinema_talent.unique_code}", info_style)]
+        ]
+        
+        center_table = Table(center_content, colWidths=[2.5*inch])
+        center_table.setStyle(TableStyle([
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+        ]))
         
         # Layout de la section principale
         if qr_element:
-            main_layout = Table([[photo_element, name_element, qr_element]], colWidths=[2*inch, 2.5*inch, 2*inch])
+            main_layout = Table([[photo_element, center_table, qr_element]], colWidths=[2*inch, 2.5*inch, 2*inch])
         else:
-            main_layout = Table([[photo_element, name_element]], colWidths=[2*inch, 4.5*inch])
+            main_layout = Table([[photo_element, center_table]], colWidths=[2*inch, 4.5*inch])
         
         main_layout.setStyle(TableStyle([
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -798,12 +828,10 @@ class ExportService:
             ('RIGHTPADDING', (0, 0), (-1, -1), 10),
         ]))
         elements.append(main_layout)
-        elements.append(Spacer(1, 10))
-        elements.append(code_element)
         elements.append(Spacer(1, 20))
         
         # ==== SECTION IDENTITÉ ====
-        identity_title = Table([['👤  IDENTITÉ & CONTACT']], colWidths=[6.5*inch])
+        identity_title = Table([['IDENTITÉ & CONTACT']], colWidths=[6.5*inch])
         identity_title.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, -1), color_blue),
             ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
@@ -836,7 +864,7 @@ class ExportService:
                     flag_nationality = item['flag']
                     break
         
-        # Déchiffrer le téléphone
+        # Déchiffrer le téléphone et le numéro de pièce d'identité
         phone_decrypted = 'Non renseigné'
         if cinema_talent.phone_encrypted:
             try:
@@ -844,9 +872,19 @@ class ExportService:
             except:
                 phone_decrypted = 'Non disponible'
         
+        id_document_number = 'Non renseigné'
+        if cinema_talent.id_document_number_encrypted:
+            try:
+                id_document_number = decrypt_sensitive_data(cinema_talent.id_document_number_encrypted)
+                # Masquer partiellement le numéro (montrer seulement les 4 premiers caractères)
+                if len(id_document_number) > 4:
+                    id_document_number = id_document_number[:4] + '...'
+            except:
+                id_document_number = 'Non disponible'
+        
         info_data = [
+            ['Pièce d\'identité', f"{cinema_talent.id_document_type or 'Non renseigné'} - {id_document_number}"],
             ['Âge', age_str],
-            ['Genre', {'M': 'Homme', 'F': 'Femme', 'N': 'Non précisé'}.get(cinema_talent.gender, 'Non renseigné')],
             ['Email', cinema_talent.email or 'Non renseigné'],
             ['Téléphone', phone_decrypted],
             ['Site Web', cinema_talent.website or 'Non renseigné'],
@@ -879,7 +917,7 @@ class ExportService:
             ethnicities = []
         
         if ethnicities:
-            origins_title = Table([['🌍  ORIGINES']], colWidths=[6.5*inch])
+            origins_title = Table([['ORIGINES']], colWidths=[6.5*inch])
             origins_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), color_green),
                 ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
@@ -915,7 +953,7 @@ class ExportService:
             languages = []
         
         if languages:
-            lang_title = Table([['🗣️  LANGUES PARLÉES']], colWidths=[6.5*inch])
+            lang_title = Table([['LANGUES PARLÉES']], colWidths=[6.5*inch])
             lang_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#06B6D4')),
                 ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
@@ -948,7 +986,7 @@ class ExportService:
                        cinema_talent.hair_type or cinema_talent.skin_tone or cinema_talent.build)
         
         if has_physical:
-            phys_title = Table([['👁️  CARACTÉRISTIQUES PHYSIQUES']], colWidths=[6.5*inch])
+            phys_title = Table([['CARACTÉRISTIQUES PHYSIQUES']], colWidths=[6.5*inch])
             phys_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#F97316')),
                 ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
@@ -999,7 +1037,7 @@ class ExportService:
             talent_types = []
         
         if talent_types:
-            talents_title = Table([['🎭  TYPES DE TALENTS']], colWidths=[6.5*inch])
+            talents_title = Table([['TYPES DE TALENTS']], colWidths=[6.5*inch])
             talents_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EAB308')),
                 ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
@@ -1035,7 +1073,7 @@ class ExportService:
             other_talents = []
         
         if other_talents:
-            comp_title = Table([['✨  COMPÉTENCES ARTISTIQUES']], colWidths=[6.5*inch])
+            comp_title = Table([['COMPÉTENCES ARTISTIQUES']], colWidths=[6.5*inch])
             comp_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EC4899')),
                 ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
@@ -1091,7 +1129,7 @@ class ExportService:
                         pass
         
         if social_networks:
-            social_title = Table([['📱  RÉSEAUX SOCIAUX']], colWidths=[6.5*inch])
+            social_title = Table([['RÉSEAUX SOCIAUX']], colWidths=[6.5*inch])
             social_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#6366F1')),
                 ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
@@ -1128,7 +1166,7 @@ class ExportService:
             productions = []
         
         if productions:
-            prod_title = Table([['🎥  PRODUCTIONS PRÉCÉDENTES']], colWidths=[6.5*inch])
+            prod_title = Table([['PRODUCTIONS PRÉCÉDENTES']], colWidths=[6.5*inch])
             prod_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EF4444')),
                 ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),

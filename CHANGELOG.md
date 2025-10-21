@@ -5,6 +5,36 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.24.0] - 2025-10-21
+
+### 🎨 Refonte de l'En-tête et Amélioration Visuelle du PDF CINEMA
+
+#### En-tête Repensé
+- **Modifié** : Colonne centrale de l'en-tête avec informations essentielles :
+  - Nom complet affiché sur deux lignes (Prénom / Nom)
+  - Date de naissance complète (format DD/MM/YYYY)
+  - Genre (Homme/Femme)
+  - Code unique du talent
+- **Amélioré** : Meilleure hiérarchie visuelle avec nom en gras, infos secondaires en police normale
+
+#### Informations Pièce d'Identité
+- **Ajouté** : Type de pièce d'identité (CIN, Passeport, etc.) dans la section Identité
+- **Ajouté** : Numéro de pièce d'identité (masqué partiellement : 4 premiers caractères + "...")
+- **Sécurité** : Déchiffrement sécurisé des données sensibles avec affichage partiel
+
+#### Design Épuré
+- **Supprimé** : Tous les emojis des titres de sections pour un rendu professionnel
+- **Titres** : Sections en texte pur, majuscules, avec fond coloré
+- **Résultat** : Apparence plus formelle et professionnelle adaptée aux documents officiels
+
+#### Résultat
+- ✅ **En-tête informatif** : Nom, date de naissance, genre et code en un coup d'œil
+- ✅ **Identité complète** : Type et numéro de pièce d'identité inclus
+- ✅ **Design professionnel** : Sans emojis, adapté à un usage formel
+- ✅ **PDF généré** : 2 pages, 16KB
+
+---
+
 ## [2.23.0] - 2025-10-21
 
 ### ✨ Amélioration Majeure - Export PDF CINEMA Complet et Professionnel
