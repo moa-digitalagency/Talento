@@ -101,8 +101,11 @@ def register_talent():
             talent.country_of_origin = request.form.get('country_of_origin')
             talent.nationality = request.form.get('nationality')
             
-            # Residence
-            talent.country_of_residence = request.form.get('country_of_residence')
+            # Residence - Convert country code to name
+            country_code = request.form.get('country_of_residence')
+            if country_code:
+                country = Country.query.filter_by(code=country_code).first()
+                talent.country_of_residence = country.name if country else country_code
             talent.city_of_residence = request.form.get('city_of_residence')
             
             # Languages - Multiple choices

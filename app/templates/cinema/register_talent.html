@@ -184,8 +184,8 @@
                         <select id="nationality" name="nationality" required 
                                 class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all duration-200 outline-none">
                             <option value="">Sélectionner...</option>
-                            {% for country in countries %}
-                            <option value="{{ country.name }}">{{ country.flag }} {{ country.name }}</option>
+                            {% for nationality in nationalities %}
+                            <option value="{{ nationality }}">{{ nationality }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -213,10 +213,11 @@
                         Pays de résidence <span class="text-red-500">*</span>
                     </label>
                     <select id="country_of_residence" name="country_of_residence" required 
-                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200 outline-none">
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200 outline-none"
+                            onchange="loadCitiesByCountry(this.value)">
                         <option value="">Sélectionner...</option>
                         {% for country in countries %}
-                        <option value="{{ country.name }}">{{ country.flag }} {{ country.name }}</option>
+                        <option value="{{ country.code }}" data-name="{{ country.name }}">{{ country.flag }} {{ country.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -224,9 +225,12 @@
                     <label for="city_of_residence" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
                         Ville de résidence <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" id="city_of_residence" name="city_of_residence" required 
-                           placeholder="Ex: Casablanca"
-                           class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200 outline-none">
+                    <select id="city_of_residence" name="city_of_residence" required 
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200 outline-none"
+                            disabled>
+                        <option value="">Sélectionnez d'abord un pays...</option>
+                    </select>
+                    <small class="text-gray-500 text-xs">Les villes se chargeront automatiquement après la sélection du pays</small>
                 </div>
             </div>
         </div>
@@ -544,6 +548,51 @@
 </div>
 
 <script>
+// City loading functionality
+function loadCitiesByCountry(countryCode) {
+    const citySelect = document.getElementById('city_of_residence');
+    
+    if (!countryCode) {
+        citySelect.disabled = true;
+        citySelect.innerHTML = '<option value="">Sélectionnez d\'abord un pays...</option>';
+        return;
+    }
+    
+    // Show loading state
+    citySelect.disabled = true;
+    citySelect.innerHTML = '<option value="">Chargement des villes...</option>';
+    
+    // Fetch cities for the selected country
+    fetch(`/cinema/api/cities/${countryCode}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.cities && data.cities.length > 0) {
+                citySelect.innerHTML = '<option value="">Sélectionner une ville...</option>' +
+                    data.cities.map(city => `<option value="${city}">${city}</option>`).join('');
+                citySelect.disabled = false;
+            } else {
+                // No predefined cities, allow manual entry
+                citySelect.innerHTML = '<option value="">Aucune ville prédéfinie - Saisir manuellement</option>';
+                citySelect.disabled = false;
+                // Convert to text input if no cities
+                const parent = citySelect.parentElement;
+                const newInput = document.createElement('input');
+                newInput.type = 'text';
+                newInput.id = 'city_of_residence';
+                newInput.name = 'city_of_residence';
+                newInput.required = true;
+                newInput.placeholder = 'Entrez votre ville';
+                newInput.className = citySelect.className;
+                parent.replaceChild(newInput, citySelect);
+            }
+        })
+        .catch(err => {
+            console.error('Error loading cities:', err);
+            citySelect.innerHTML = '<option value="">Erreur - Saisir manuellement</option>';
+            citySelect.disabled = false;
+        });
+}
+
 // Movie search functionality
 let searchTimeout;
 let selectedMovies = [];
