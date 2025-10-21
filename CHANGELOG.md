@@ -5,6 +5,46 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.17.0] - 2025-10-21
+
+### 🐛 Corrections de Bugs - Formulaire CINEMA
+
+#### Affichage des Langues
+- **Corrigé** : Les langues affichaient du code brut au lieu des noms et drapeaux
+- Ajout de l'utilisation correcte de `language['name']` et `language['flag']` dans le template
+
+#### Dropdowns des Caractéristiques Physiques
+- **Corrigé** : Tous les dropdowns étaient vides (yeux, cheveux, teint, corpulence)
+- Ajout du passage des constantes depuis `cinema.py` vers le template :
+  - `EYE_COLORS` (couleur des yeux)
+  - `HAIR_COLORS` (couleur de cheveux)
+  - `HAIR_TYPES` (type de cheveux)
+  - `SKIN_TONES` (teint de peau)
+  - `BUILD_TYPES` (corpulence)
+
+#### Section Type de Talent
+- **Ajouté** : Nouvelle section 6 "Type de talent" avec 13 options en checkboxes
+- Options : Acteur/Actrice, Figurant(e), Cascadeur/euse, Mannequin, Danseur/euse, Chanteur/euse, Musicien(ne), Présentateur/trice, Influenceur/euse, Coach, Chorégraphe, Metteur en scène, Autre
+- Permet la sélection multiple des types de talents
+
+#### Réorganisation des Champs
+- **Déplacé** : Champ "Site Web" de la section Réseaux sociaux vers la section Coordonnées
+- **Ajouté** : Telegram dans la section Réseaux sociaux (chiffré)
+- **Mis à jour** : Numérotation des sections de 8 à 9 sections au total
+
+### 🔧 Modifications Techniques
+
+#### Template CINEMA (`cinema/register_talent.html`)
+- Structure du formulaire mise à jour : 9 sections au lieu de 8
+- Tous les compteurs de section mis à jour (Section X/9)
+- Boucles Jinja2 ajoutées pour générer dynamiquement les options des dropdowns
+
+#### Route CINEMA (`cinema.py`)
+- Import des constantes : `EYE_COLORS`, `HAIR_COLORS`, `HAIR_TYPES`, `SKIN_TONES`, `BUILD_TYPES`
+- Passage de toutes les constantes au contexte du template dans `register_cinema_talent()`
+
+---
+
 ## [2.16.0] - 2025-10-21
 
 ### 🎯 Nouvelles Fonctionnalités

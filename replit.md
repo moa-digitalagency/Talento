@@ -56,10 +56,10 @@ Preferred communication style: Simple, everyday language.
 - **Key Endpoints**: Authentication, User management, Talents & Location data, CINEMA specific data and statistics, and Data Exports.
 
 ### CINEMA Module Specifics
-- **Registration Form**: Public form (`/cinema/register`) organized into 8 color-coded sections for identity, origins, residence, languages, physical characteristics, talents (categorized), social networks (encrypted), and photos/productions.
-- **Features**: Country dropdowns with emoji flags, dynamic city loading, multi-select fields for ethnicities, languages, and talents.
+- **Registration Form**: Public form (`/cinema/register`) organized into 9 color-coded sections for identity & contact, origins, residence, languages, physical characteristics, talent types (13 options with multi-select), talents (categorized), social networks (encrypted including Telegram), and photos/productions.
+- **Features**: Country dropdowns with emoji flags, dynamic city loading, multi-select fields for ethnicities, languages, and talents. All physical characteristic dropdowns (eyes, hair color/type, skin tone, build) are populated from constants.
 - **TMDb Integration**: Optional server-side API proxy for movie/TV show search in production history, with real-time search and poster display.
-- **Data Model**: `CinemaTalent` model includes personal info with encrypted ID, origins vs. residence, physical characteristics, JSON arrays for languages/talents, encrypted contact/social media, photo storage, and previous productions as JSON.
+- **Data Model**: `CinemaTalent` model includes personal info with encrypted ID, origins vs. residence, physical characteristics, JSON arrays for languages/talents, encrypted contact/social media (including Telegram), website field (non-encrypted), photo storage, and previous productions as JSON.
 
 ## External Dependencies
 
