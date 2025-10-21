@@ -18,11 +18,6 @@
 
         <!-- SECTION 1: Identité & Contact -->
         <div class="section-blue p-6 mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <span>👤</span>
-                <span>Identité & Contact</span>
-            </h2>
-
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 <!-- Photos et QR Code -->
@@ -90,10 +85,6 @@
                             {% if decrypted.id_document_number %}
                             <p class="text-sm text-gray-600 mt-3">Numéro de document</p>
                             <p class="text-lg font-semibold text-gray-800 font-mono">{{ decrypted.id_document_number }}</p>
-                            {% endif %}
-                            {% if talent.date_of_birth %}
-                            <p class="text-sm text-gray-600 mt-3">Date de naissance</p>
-                            <p class="text-lg font-semibold text-gray-800">{{ talent.date_of_birth.strftime('%d/%m/%Y') }}</p>
                             {% endif %}
                         </div>
                     </div>
