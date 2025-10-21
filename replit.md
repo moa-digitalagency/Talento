@@ -4,6 +4,12 @@
 Talento is a professional web application designed to centralize and showcase talent profiles across Africa. It enables individuals to create comprehensive profiles with unique identifiers and QR codes. The platform features advanced administrative tools, AI-powered CV analysis, and multiple data export formats. Talento aims to be a robust, scalable solution for talent management and discovery, enhancing professional networking and recruitment across the continent. A key module, CINEMA, provides a dedicated system for talent registration with detailed fields and public accessibility.
 
 ## Recent Changes (October 21, 2025)
+- **World Countries Database**: Expanded from 54 African countries to 194 world countries with ISO-2 codes and proper nationalities
+- **Nationalities System**: Added comprehensive nationality list (Marocaine, Française, Algérienne, etc.) for proper form display
+- **Dynamic City Loading**: Implemented automatic city dropdown loading based on selected country via `/cinema/api/cities/<country_code>` endpoint
+- **Multi-Country Cities**: Added cities for multiple countries (Morocco, France, Algeria, Tunisia, Senegal, Egypt, USA, UK, Canada, etc.)
+- **CINEMA Form Enhancement**: Nationality field now shows proper nationalities, city selection is dynamic dropdown instead of text input
+- **Backend ISO Conversion**: Country codes automatically converted to country names during form submission
 - **REST API v1**: Complete RESTful API with 25+ endpoints for authentication, users, talents, CINEMA, statistics, and data exports
 - **API Documentation**: Comprehensive documentation in French and English with examples (api_docs/)
 - **Postman Collection**: JSON collection for easy API testing with all endpoints pre-configured
