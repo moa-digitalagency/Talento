@@ -72,6 +72,7 @@ def register():
             user.city_id = int(city_id) if city_id else None
             
             user.portfolio_url = request.form.get('portfolio_url')
+            user.website = request.form.get('website')
             user.linkedin = request.form.get('linkedin')
             user.instagram = request.form.get('instagram')
             user.twitter = request.form.get('twitter')
@@ -84,6 +85,8 @@ def register():
             user.pinterest = request.form.get('pinterest')
             user.snapchat = request.form.get('snapchat')
             user.telegram = request.form.get('telegram')
+            user.imdb_url = request.form.get('imdb_url')
+            user.threads = request.form.get('threads')
             
             user.bio = request.form.get('bio')
             years_exp = request.form.get('years_experience')

@@ -172,6 +172,9 @@ def register_talent():
                 from app.utils.encryption import encrypt_data
                 talent.whatsapp_encrypted = encrypt_data(whatsapp)
             
+            # Website (not encrypted)
+            talent.website = request.form.get('website')
+            
             # Social Media (all encrypted)
             social_media = {
                 'facebook': request.form.get('facebook'),
@@ -180,7 +183,9 @@ def register_talent():
                 'twitter': request.form.get('twitter'),
                 'youtube': request.form.get('youtube'),
                 'tiktok': request.form.get('tiktok'),
-                'snapchat': request.form.get('snapchat')
+                'snapchat': request.form.get('snapchat'),
+                'imdb_url': request.form.get('imdb_url'),
+                'threads': request.form.get('threads')
             }
             
             from app.utils.encryption import encrypt_data
@@ -229,7 +234,7 @@ def view_profile(unique_code):
         decrypted_data['whatsapp'] = decrypt_sensitive_data(talent.whatsapp_encrypted)
     
     # Décrypter réseaux sociaux
-    social_fields = ['facebook', 'instagram', 'linkedin', 'twitter', 'youtube', 'tiktok', 'snapchat']
+    social_fields = ['facebook', 'instagram', 'linkedin', 'twitter', 'youtube', 'tiktok', 'snapchat', 'imdb_url', 'threads']
     for field in social_fields:
         encrypted_field = f'{field}_encrypted'
         if hasattr(talent, encrypted_field):

@@ -51,6 +51,7 @@ def edit():
             
             current_user.bio = request.form.get('bio', '').strip() or None
             current_user.portfolio_url = request.form.get('portfolio_url', '').strip() or None
+            current_user.website = request.form.get('website', '').strip() or None
             
             current_user.linkedin = request.form.get('linkedin', '').strip() or None
             current_user.instagram = request.form.get('instagram', '').strip() or None
@@ -64,6 +65,8 @@ def edit():
             current_user.snapchat = request.form.get('snapchat', '').strip() or None
             current_user.telegram = request.form.get('telegram', '').strip() or None
             current_user.pinterest = request.form.get('pinterest', '').strip() or None
+            current_user.imdb_url = request.form.get('imdb_url', '').strip() or None
+            current_user.threads = request.form.get('threads', '').strip() or None
             
             if 'photo' in request.files:
                 photo = request.files['photo']
