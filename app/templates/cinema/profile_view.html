@@ -221,24 +221,6 @@
         </div>
         {% endif %}
 
-        <!-- Productions précédentes -->
-        {% if parsed.productions %}
-        <div class="section-red p-6 mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span>🎥</span>
-                <span>Productions précédentes</span>
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {% for production in parsed.productions %}
-                <div class="bg-white p-4 rounded-lg border-2 border-red-200">
-                    <h3 class="font-bold text-gray-800">{{ production.title }}</h3>
-                    <p class="text-sm text-gray-600">{{ production.type }} · {{ production.year }}</p>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
         <!-- Réseaux sociaux -->
         {% if decrypted.facebook or decrypted.instagram or decrypted.twitter or decrypted.youtube or decrypted.tiktok or decrypted.snapchat or decrypted.linkedin or decrypted.telegram or decrypted.imdb_url or decrypted.threads %}
         <div class="section-indigo p-6 mb-8">
@@ -297,6 +279,24 @@
                     <span class="font-bold">Threads</span>
                 </a>
                 {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Productions précédentes -->
+        {% if parsed.productions %}
+        <div class="section-red p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🎥</span>
+                <span>Productions précédentes</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for production in parsed.productions %}
+                <div class="bg-white p-4 rounded-lg border-2 border-red-200">
+                    <h3 class="font-bold text-gray-800">{{ production.title }}</h3>
+                    <p class="text-sm text-gray-600">{{ production.type }} · {{ production.year }}</p>
+                </div>
+                {% endfor %}
             </div>
         </div>
         {% endif %}
