@@ -5,6 +5,19 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.22.1] - 2025-10-21
+
+### 🐛 Corrections de Bugs - Export PDF CINEMA
+
+#### Corrections des Attributs du Modèle
+- **Corrigé** : Utilisation correcte de `date_of_birth` au lieu de `birth_date` pour le calcul de l'âge
+- **Corrigé** : Utilisation de `id_photo_filename` au lieu de `photo_1` pour la photo d'identité
+- **Corrigé** : Déchiffrement correct du téléphone via `decrypt_sensitive_data(phone_encrypted)`
+- **Corrigé** : Import correct de `decrypt_sensitive_data` depuis `app.utils.encryption`
+- **Résultat** : Export PDF entièrement fonctionnel (PDF 2 pages, 15KB généré avec succès)
+
+---
+
 ## [2.22.0] - 2025-10-21
 
 ### 🎬 Nouvelle Fonctionnalité - Export PDF & Galerie Photos CINEMA

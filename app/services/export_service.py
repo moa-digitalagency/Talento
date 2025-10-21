@@ -13,6 +13,7 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
+from app.utils.encryption import decrypt_sensitive_data
 
 class ExportService:
     """Service d'export des données"""
@@ -816,10 +817,10 @@ class ExportService:
         
         # Calcul de l'âge
         age_str = 'Non renseigné'
-        if cinema_talent.birth_date:
+        if cinema_talent.date_of_birth:
             from datetime import date
             today = date.today()
-            age = today.year - cinema_talent.birth_date.year - ((today.month, today.day) < (cinema_talent.birth_date.month, cinema_talent.birth_date.day))
+            age = today.year - cinema_talent.date_of_birth.year - ((today.month, today.day) < (cinema_talent.date_of_birth.month, cinema_talent.date_of_birth.day))
             age_str = f"{age} ans"
         
         # Récupérer les drapeaux
@@ -835,11 +836,19 @@ class ExportService:
                     flag_nationality = item['flag']
                     break
         
+        # Déchiffrer le téléphone
+        phone_decrypted = 'Non renseigné'
+        if cinema_talent.phone_encrypted:
+            try:
+                phone_decrypted = decrypt_sensitive_data(cinema_talent.phone_encrypted)
+            except:
+                phone_decrypted = 'Non disponible'
+        
         info_data = [
             ['Âge', age_str],
             ['Genre', {'M': 'Homme', 'F': 'Femme', 'N': 'Non précisé'}.get(cinema_talent.gender, 'Non renseigné')],
             ['Email', cinema_talent.email or 'Non renseigné'],
-            ['Téléphone', cinema_talent.phone or 'Non renseigné'],
+            ['Téléphone', phone_decrypted],
             ['Site Web', cinema_talent.website or 'Non renseigné'],
             ['Pays d\'origine', f"{flag_origin} {cinema_talent.country_of_origin}" if cinema_talent.country_of_origin else 'Non renseigné'],
             ['Nationalité', f"{flag_nationality} {cinema_talent.nationality}" if cinema_talent.nationality else 'Non renseigné'],
