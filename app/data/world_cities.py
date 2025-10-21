@@ -281,6 +281,12 @@ WORLD_CITIES = {
         'Toliara', 'Antsiranana', 'Ambovombe', 'Morondava', 'Manakara'
     ],
     
+    # Congo-Brazzaville (CG)
+    'CG': [
+        'Brazzaville', 'Pointe-Noire', 'Dolisie', 'Nkayi', 'Owando',
+        'Ouesso', 'Impfondo', 'Sibiti', 'Madingou', 'Kinkala'
+    ],
+    
     # RDC (CD)
     'CD': [
         'Kinshasa', 'Lubumbashi', 'Mbuji-Mayi', 'Kananga', 'Kisangani',

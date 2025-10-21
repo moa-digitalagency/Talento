@@ -5,8 +5,8 @@ Talento is a professional web application designed to centralize and showcase ta
 
 ## Recent Changes (October 21, 2025)
 - **World Countries Database**: Expanded from 54 African countries to 194 world countries with ISO-2 codes and proper nationalities
-- **Nationalities System**: Added comprehensive nationality list (Marocaine, Française, Algérienne, etc.) with emoji flags for proper form display
-- **Dynamic City Loading**: Implemented automatic city dropdown loading based on selected country via `/cinema/api/cities/<country_code>` endpoint
+- **Nationalities System**: Added comprehensive nationality list (Marocaine, Française, Algérienne, etc.) with emoji flags for proper form display; differentiated Congo nationalities (Congolaise Congo-Brazzaville vs Congolaise RDC)
+- **Dynamic City Loading**: Implemented automatic city dropdown loading based on selected country via `/cinema/api/cities/<country_code>` endpoint with intelligent fallback to text input for countries without predefined cities
 - **Expanded Cities Database**: Massively expanded city lists - now covering 60+ countries with 15-25 cities each (Morocco: 25, France: 25, Algeria: 20, Tunisia: 20, Senegal: 20, plus African, European, Asian, American, and Oceanian countries)
 - **CINEMA Form Enhancement**: Nationality field now displays emoji flags alongside nationalities (🇲🇦 Marocaine, 🇫🇷 Française), city selection is dynamic dropdown
 - **Backend ISO Conversion**: Country codes automatically converted to country names during form submission

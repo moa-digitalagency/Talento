@@ -543,46 +543,71 @@
 <script>
 // City loading functionality
 function loadCitiesByCountry(countryCode) {
-    const citySelect = document.getElementById('city_of_residence');
+    let cityField = document.getElementById('city_of_residence');
+    const parent = cityField.parentElement;
     
     if (!countryCode) {
-        citySelect.disabled = true;
-        citySelect.innerHTML = '<option value="">Sélectionnez d\'abord un pays...</option>';
+        // Reset to select with disabled state
+        if (cityField.tagName !== 'SELECT') {
+            const newSelect = document.createElement('select');
+            newSelect.id = 'city_of_residence';
+            newSelect.name = 'city_of_residence';
+            newSelect.required = true;
+            newSelect.className = cityField.className;
+            parent.replaceChild(newSelect, cityField);
+            cityField = newSelect;
+        }
+        cityField.disabled = true;
+        cityField.innerHTML = '<option value="">Sélectionnez d\'abord un pays...</option>';
         return;
     }
     
+    // Ensure we have a select element
+    if (cityField.tagName !== 'SELECT') {
+        const newSelect = document.createElement('select');
+        newSelect.id = 'city_of_residence';
+        newSelect.name = 'city_of_residence';
+        newSelect.required = true;
+        newSelect.className = cityField.className;
+        parent.replaceChild(newSelect, cityField);
+        cityField = newSelect;
+    }
+    
     // Show loading state
-    citySelect.disabled = true;
-    citySelect.innerHTML = '<option value="">Chargement des villes...</option>';
+    cityField.disabled = true;
+    cityField.innerHTML = '<option value="">Chargement des villes...</option>';
     
     // Fetch cities for the selected country
     fetch(`/cinema/api/cities/${countryCode}`)
         .then(res => res.json())
         .then(data => {
             if (data.cities && data.cities.length > 0) {
-                citySelect.innerHTML = '<option value="">Sélectionner une ville...</option>' +
+                cityField.innerHTML = '<option value="">Sélectionner une ville...</option>' +
                     data.cities.map(city => `<option value="${city}">${city}</option>`).join('');
-                citySelect.disabled = false;
+                cityField.disabled = false;
             } else {
-                // No predefined cities, allow manual entry
-                citySelect.innerHTML = '<option value="">Aucune ville prédéfinie - Saisir manuellement</option>';
-                citySelect.disabled = false;
-                // Convert to text input if no cities
-                const parent = citySelect.parentElement;
+                // No predefined cities, convert to text input
                 const newInput = document.createElement('input');
                 newInput.type = 'text';
                 newInput.id = 'city_of_residence';
                 newInput.name = 'city_of_residence';
                 newInput.required = true;
-                newInput.placeholder = 'Entrez votre ville';
-                newInput.className = citySelect.className;
-                parent.replaceChild(newInput, citySelect);
+                newInput.placeholder = 'Entrez le nom de votre ville';
+                newInput.className = cityField.className;
+                parent.replaceChild(newInput, cityField);
             }
         })
         .catch(err => {
             console.error('Error loading cities:', err);
-            citySelect.innerHTML = '<option value="">Erreur - Saisir manuellement</option>';
-            citySelect.disabled = false;
+            // On error, convert to text input
+            const newInput = document.createElement('input');
+            newInput.type = 'text';
+            newInput.id = 'city_of_residence';
+            newInput.name = 'city_of_residence';
+            newInput.required = true;
+            newInput.placeholder = 'Entrez le nom de votre ville (erreur de chargement)';
+            newInput.className = cityField.className;
+            parent.replaceChild(newInput, cityField);
         });
 }
 

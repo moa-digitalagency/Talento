@@ -49,7 +49,7 @@ WORLD_COUNTRIES = [
     {'name': 'Chypre', 'code': 'CY', 'nationality': 'Chypriote'},
     {'name': 'Colombie', 'code': 'CO', 'nationality': 'Colombienne'},
     {'name': 'Comores', 'code': 'KM', 'nationality': 'Comorienne'},
-    {'name': 'Congo', 'code': 'CG', 'nationality': 'Congolaise'},
+    {'name': 'Congo', 'code': 'CG', 'nationality': 'Congolaise (Congo-Brazzaville)'},
     {'name': 'Corée du Nord', 'code': 'KP', 'nationality': 'Nord-coréenne'},
     {'name': 'Corée du Sud', 'code': 'KR', 'nationality': 'Sud-coréenne'},
     {'name': 'Costa Rica', 'code': 'CR', 'nationality': 'Costaricienne'},
@@ -181,7 +181,7 @@ WORLD_COUNTRIES = [
     {'name': 'Qatar', 'code': 'QA', 'nationality': 'Qatarienne'},
     
     # R
-    {'name': 'RD Congo', 'code': 'CD', 'nationality': 'Congolaise'},
+    {'name': 'RD Congo', 'code': 'CD', 'nationality': 'Congolaise (RDC)'},
     {'name': 'République centrafricaine', 'code': 'CF', 'nationality': 'Centrafricaine'},
     {'name': 'République dominicaine', 'code': 'DO', 'nationality': 'Dominicaine'},
     {'name': 'Roumanie', 'code': 'RO', 'nationality': 'Roumaine'},
