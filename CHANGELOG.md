@@ -5,6 +5,56 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.20.0] - 2025-10-21
+
+### 🎯 Restructuration Complète - Page de Profil CINEMA
+
+#### Organisation en Sous-blocs
+- **Restructuration majeure** : La page de profil CINEMA est maintenant organisée en 9 sections avec des sous-blocs clairs
+- Chaque section principale contient maintenant des sous-blocs visuels pour une meilleure lisibilité
+- Les informations sont groupées logiquement selon leur nature
+
+#### Section 1 - Identité & Contact
+- **Sous-bloc "Informations personnelles"** : Nom complet, âge, genre, code unique
+- **Sous-bloc "Document d'identité"** : Type de document, numéro de document (décrypté), date de naissance
+- **Sous-bloc "Coordonnées"** : Email, téléphone, WhatsApp, site web
+- Photos et QR code intégrés
+
+#### Section 2 - Origines
+- **Sous-bloc "Ethnicité"** : Badges colorés pour les ethnicités
+- **Sous-bloc "Pays d'origine"** : Pays d'origine de la personne
+- **Sous-bloc "Nationalité"** : Nationalité légale
+
+#### Section 3 - Résidence
+- **Sous-bloc "Lieu de résidence actuel"** : Ville et pays de résidence
+
+#### Section 5 - Caractéristiques physiques
+- **Sous-bloc "Apparence physique"** : Taille, yeux, couleur/type cheveux, teint, corpulence
+
+#### Profils de Démonstration
+- **Supprimés et recréés** : Les 3 profils CINEMA de démonstration ont été recréés avec toutes les informations complètes
+- **Correction** : Type de document maintenant correctement enregistré (`passport`, `national_id` au lieu de "CIN", "Passeport")
+- Tous les champs du formulaire d'inscription sont maintenant remplis
+
+### 🔧 Modifications Techniques
+
+#### Route `view_profile()` (`cinema.py`)
+- **Ajouté** : Décryptage du numéro de document d'identité pour affichage
+- Le numéro de document est maintenant disponible dans `decrypted_data['id_document_number']`
+
+#### Template (`profile_view.html`)
+- Restructuration complète avec sous-blocs dans chaque section
+- Ajout de l'affichage du numéro de document d'identité (décrypté)
+- Ajout de l'affichage de la date de naissance (format DD/MM/YYYY)
+- Amélioration de la hiérarchie visuelle avec des en-têtes de sous-blocs
+
+#### Script `recreate_cinema_demo.py`
+- Nouveau script pour supprimer et recréer les profils CINEMA de démonstration
+- Génération automatique des codes uniques et QR codes
+- Chiffrement correct de toutes les données sensibles
+
+---
+
 ## [2.19.0] - 2025-10-21
 
 ### 🎨 Amélioration Visuelle - Page de Profil CINEMA
