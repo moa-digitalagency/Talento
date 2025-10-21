@@ -5,6 +5,55 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.27.0] - 2025-10-21
+
+### 🛡️ Système de Migration Robuste et Corrections d'Affichage
+
+#### QR Code Responsive (Tablette & Mobile)
+- **Corrigé** : QR code maintenant visible sur tablettes et mobiles
+- **Classes Tailwind adaptatives** :
+  - `w-full max-w-xs mx-auto` : Largeur responsive avec maximum
+  - `w-32 h-32 sm:w-40 sm:h-40` : Taille adaptative (plus petit sur mobile)
+  - `p-3 sm:p-4` : Padding adaptatif
+  - `shadow-lg` : Ombre pour meilleure visibilité
+- **Résultat** : QR code parfaitement visible sur tous les appareils
+
+#### PDF - Numéro Complet de Pièce d'Identité
+- **Modifié** : PDF affiche maintenant le numéro complet de la pièce d'identité
+- **Supprimé** : Masquage partiel (4 premiers caractères + "...")
+- **Affichage** : Type de document + numéro complet (ex: "Carte d'identité nationale - AB123456")
+- **Sécurité** : Déchiffrement sécurisé maintenu avec Fernet
+
+#### Système de Migration Automatique Robuste
+- **Nouveau module** : `app/utils/auto_migrate.py` pour migrations sans crash
+- **Fonctionnalités** :
+  - `safe_auto_migrate()` : Exécute migrations avec gestion d'erreurs complète
+  - `_ensure_tables_exist()` : Crée tables manquantes automatiquement
+  - `_ensure_columns_exist()` : Ajoute colonnes manquantes (compatible SQLite et PostgreSQL)
+  - `_add_columns_to_table()` : Ajout sécurisé avec détection de contraintes
+  - `run_initial_seed()` : Seeding optionnel (via `ENABLE_AUTO_SEED=1`)
+- **Gestion SQLite** : Détection automatique et ajustement des contraintes UNIQUE
+- **Logging amélioré** : Info/Warning/Error détaillés pour chaque opération
+- **Garantie** : L'application continue TOUJOURS, même en cas d'échec de migration
+
+#### Corrections Système
+- **Modifié** : `app/services/database_service.py` - fonction `get_last_migration()`
+  - Vérifie existence de table `alembic_version` avant lecture
+  - Retourne "Système manuel (migrations_init.py)" si table absente
+  - Plus d'erreurs dans les logs pour table manquante
+- **Intégration** : `app/__init__.py` - migration automatique au démarrage
+  - Try/catch global : Aucun crash possible lors des migrations
+  - Seeding optionnel pour éviter surcharge de connexions
+
+#### Résultat
+- ✅ **QR code responsive** : Visible sur mobile, tablette et PC
+- ✅ **Numéro ID complet dans PDF** : Plus de masquage partiel
+- ✅ **Application robuste** : Ne crashe JAMAIS lors des migrations
+- ✅ **Migrations automatiques** : Tables et colonnes ajoutées au démarrage
+- ✅ **Compatible multi-DB** : SQLite et PostgreSQL gérés différemment
+
+---
+
 ## [2.26.0] - 2025-10-21
 
 ### ✨ Amélioration de l'Affichage - Profil CINEMA et PDF

@@ -103,14 +103,20 @@ class DatabaseService:
     def get_last_migration():
         """Récupère la dernière migration appliquée"""
         try:
+            inspector = inspect(db.engine)
+            existing_tables = inspector.get_table_names()
+            
+            if 'alembic_version' not in existing_tables:
+                return 'Système manuel (migrations_init.py)'
+            
             result = db.session.execute(text(
                 "SELECT version_num FROM alembic_version ORDER BY version_num DESC LIMIT 1"
             ))
             version = result.scalar()
             return version if version else 'Aucune'
         except Exception as e:
-            current_app.logger.error(f"Erreur lors de la récupération de la version de migration: {e}")
-            return 'N/A'
+            current_app.logger.debug(f"Version de migration non disponible: {e}")
+            return 'Système manuel'
     
     @staticmethod
     def test_connection():

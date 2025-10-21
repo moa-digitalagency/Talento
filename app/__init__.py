@@ -272,7 +272,23 @@ def create_app(config_class=Config):
     csrf.exempt(api_v1.bp)
     
     with app.app_context():
-        db.create_all()
-        seed_database()
+        try:
+            from app.utils.auto_migrate import safe_auto_migrate
+            import os
+            
+            logger = app.logger
+            logger.info("🚀 Démarrage de TalentsMaroc.com...")
+            
+            safe_auto_migrate(db)
+            
+            if os.environ.get('ENABLE_AUTO_SEED') == '1':
+                from app.utils.auto_migrate import run_initial_seed
+                run_initial_seed(db)
+            
+            logger.info("✅ Application prête")
+            
+        except Exception as e:
+            app.logger.error(f"❌ Erreur lors de l'initialisation: {e}")
+            app.logger.warning("⚠️ L'application continue malgré l'erreur")
     
     return app
