@@ -1085,8 +1085,8 @@ def generate_project_badge(project_talent_id):
         positions = [
             (horizontal_spacing, page_height - badge_height - vertical_spacing),  # Top left
             (page_width/2 + horizontal_spacing/2, page_height - badge_height - vertical_spacing),  # Top right
-            (horizontal_spacing, page_height/2 - badge_height/2),  # Bottom left
-            (page_width/2 + horizontal_spacing/2, page_height/2 - badge_height/2)  # Bottom right
+            (horizontal_spacing, vertical_spacing),  # Bottom left
+            (page_width/2 + horizontal_spacing/2, vertical_spacing)  # Bottom right
         ]
         
         # Générer le QR code avec le code unique du projet

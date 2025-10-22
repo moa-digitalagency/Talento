@@ -99,5 +99,31 @@ class CinemaTalent(db.Model):
             return None
         return 'Homme' if self.gender == 'M' else 'Femme'
     
+    @property
+    def id_document_number_initials(self):
+        """Afficher les initiales du numéro de pièce d'identité (format masqué)"""
+        if not self.id_document_number_encrypted:
+            return None
+        
+        try:
+            from app.utils.encryption import decrypt_sensitive_data
+            decrypted_number = decrypt_sensitive_data(self.id_document_number_encrypted)
+            
+            if not decrypted_number:
+                return "***"
+            
+            # Toujours masquer les données sensibles
+            length = len(decrypted_number)
+            if length <= 2:
+                return "***"
+            elif length <= 5:
+                # Pour 3-5 caractères: premier + *** + dernier
+                return f"{decrypted_number[0]}***{decrypted_number[-1]}"
+            else:
+                # Pour 6+ caractères: 3 premiers + *** + 3 derniers
+                return f"{decrypted_number[:3]}***{decrypted_number[-3:]}"
+        except Exception:
+            return "***"
+    
     def __repr__(self):
         return f'<CinemaTalent {self.first_name} {self.last_name}>'
