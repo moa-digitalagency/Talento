@@ -1164,25 +1164,35 @@ def generate_project_badge(project_talent_id):
             content_y -= 0.7*cm
             
             # 4. Photo du talent cinema (arrondie)
-            if photo_path and os.path.exists(photo_path):
-                photo_size = 3*cm
-                photo_x = content_x + content_width/2 - photo_size/2
-                photo_y = content_y - photo_size - 0.2*cm
+            photo_size = 3*cm
+            photo_x = content_x + content_width/2 - photo_size/2
+            photo_y = content_y - photo_size - 0.2*cm
+            
+            # Si pas de photo, créer une image par défaut
+            if not photo_path or not os.path.exists(photo_path):
+                # Créer une image par défaut avec PIL
+                default_img = PILImage.new('RGB', (300, 300), color='#E0F2FE')
+                from PIL import ImageDraw, ImageFont
+                draw = ImageDraw.Draw(default_img)
                 
-                # Bordure arrondie autour de la photo
-                c.setStrokeColor(colors.HexColor('#E5E7EB'))
-                c.setLineWidth(2)
-                c.roundRect(photo_x - 0.1*cm, photo_y - 0.1*cm, photo_size + 0.2*cm, photo_size + 0.2*cm, 0.4*cm, fill=0, stroke=1)
-                c.setLineWidth(1)
+                # Dessiner un cercle pour l'icône utilisateur
+                draw.ellipse([75, 50, 225, 200], fill='#BAE6FD', outline='#0EA5E9', width=8)
+                draw.ellipse([110, 80, 190, 160], fill='#0EA5E9')
+                draw.ellipse([90, 170, 210, 290], fill='#0EA5E9')
                 
-                c.drawImage(photo_path, photo_x, photo_y,
-                           width=photo_size, height=photo_size, preserveAspectRatio=True, mask='auto')
-                content_y -= photo_size + 0.6*cm
-            else:
-                c.setFont("Helvetica", 9)
-                c.setFillColor(colors.grey)
-                c.drawCentredString(content_x + content_width/2, content_y - 1.3*cm, "[Photo non disponible]")
-                content_y -= 1.7*cm
+                default_photo_path = f"/tmp/default_photo_{project_talent.project_code}.png"
+                default_img.save(default_photo_path)
+                photo_path = default_photo_path
+            
+            # Bordure arrondie autour de la photo
+            c.setStrokeColor(colors.HexColor('#E5E7EB'))
+            c.setLineWidth(2)
+            c.roundRect(photo_x - 0.1*cm, photo_y - 0.1*cm, photo_size + 0.2*cm, photo_size + 0.2*cm, 0.4*cm, fill=0, stroke=1)
+            c.setLineWidth(1)
+            
+            c.drawImage(photo_path, photo_x, photo_y,
+                       width=photo_size, height=photo_size, preserveAspectRatio=True, mask='auto')
+            content_y -= photo_size + 0.6*cm
             
             # 5. Nom complet du talent
             c.setFont("Helvetica-Bold", 12)
@@ -1278,6 +1288,11 @@ def generate_project_badge(project_talent_id):
         # Nettoyer les fichiers temporaires
         if os.path.exists(qr_path):
             os.remove(qr_path)
+        
+        # Nettoyer l'image par défaut si elle a été créée
+        default_photo_path = f"/tmp/default_photo_{project_talent.project_code}.png"
+        if os.path.exists(default_photo_path):
+            os.remove(default_photo_path)
         
         # Marquer le badge comme généré
         project_talent.badge_generated = True
