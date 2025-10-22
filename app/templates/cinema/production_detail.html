@@ -1,25 +1,25 @@
 {% extends "cinema/base_cinema.html" %}
 
-{% block title %}{{ production.title }} - TalentsMaroc.com{% endblock %}
+{% block title %}{{ production.name }} - TalentsMaroc.com{% endblock %}
 
 {% block cinema_content %}
 <div class="mb-6">
     <a href="{{ url_for('cinema.productions') }}" class="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-2 mb-4">
         <span>←</span>
-        <span>Retour aux productions</span>
+        <span>Retour aux boîtes de production</span>
     </a>
 </div>
 
 <div class="bg-white rounded-lg shadow-md overflow-hidden">
-    <!-- En-tête avec affiche -->
+    <!-- En-tête avec logo -->
     <div class="relative">
-        {% if production.poster_url %}
-        <div class="h-96 bg-gray-200 overflow-hidden">
-            <img src="{{ production.poster_url }}" alt="{{ production.title }}" class="w-full h-full object-cover">
+        {% if production.logo_url %}
+        <div class="h-96 bg-gray-100 overflow-hidden flex items-center justify-center p-8">
+            <img src="{{ production.logo_url }}" alt="{{ production.name }}" class="max-h-full max-w-full object-contain">
         </div>
         {% else %}
         <div class="h-96 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-            <span class="text-9xl">🎬</span>
+            <span class="text-9xl">🏢</span>
         </div>
         {% endif %}
         
@@ -27,7 +27,7 @@
             <a href="{{ url_for('cinema.edit_production', production_id=production.id) }}" class="bg-white hover:bg-gray-100 text-gray-800 px-4 py-2 rounded-lg font-semibold shadow-md transition-all">
                 ✏️ Modifier
             </a>
-            <form method="POST" action="{{ url_for('cinema.delete_production', production_id=production.id) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette production ?');">
+            <form method="POST" action="{{ url_for('cinema.delete_production', production_id=production.id) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette boîte de production ?');">
                 <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold shadow-md transition-all">
                     🗑️ Supprimer
                 </button>
@@ -38,166 +38,271 @@
     <!-- Informations principales -->
     <div class="p-8">
         <div class="mb-6">
-            <h1 class="text-4xl font-bold text-gray-800 mb-2">{{ production.title }}</h1>
-            {% if production.original_title and production.original_title != production.title %}
-            <p class="text-xl text-gray-500 italic">{{ production.original_title }}</p>
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">{{ production.name }}</h1>
+            {% if production.location_display %}
+            <p class="text-xl text-gray-500 flex items-center gap-2">
+                <span>📍</span>
+                <span>{{ production.location_display }}</span>
+            </p>
             {% endif %}
         </div>
         
         <div class="flex gap-3 mb-6 flex-wrap">
-            {% if production.production_type %}
-            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">{{ production.production_type }}</span>
+            {% if production.specialization %}
+            <span class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">{{ production.specialization }}</span>
             {% endif %}
-            {% if production.year_display %}
-            <span class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full font-semibold">{{ production.year_display }}</span>
+            {% if production.founded_year %}
+            <span class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full font-semibold">Fondée en {{ production.founded_year }}</span>
             {% endif %}
-            {% if production.status %}
-            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">{{ production.status }}</span>
+            {% if production.is_verified %}
+            <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full font-semibold">✓ Vérifiée</span>
             {% endif %}
-            {% if production.genre %}
-            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">{{ production.genre }}</span>
-            {% endif %}
-            {% if production.duration %}
-            <span class="bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full font-semibold">{{ production.duration }} min</span>
+            {% if production.productions_count %}
+            <span class="bg-purple-100 text-purple-800 px-4 py-2 rounded-full font-semibold">{{ production.productions_count }} productions</span>
             {% endif %}
         </div>
-        
-        {% if production.synopsis %}
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-3">Synopsis</h2>
-            <p class="text-gray-700 leading-relaxed">{{ production.synopsis }}</p>
-        </div>
-        {% endif %}
         
         {% if production.description %}
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-3">Description</h2>
+        <div class="mb-8 bg-blue-50 p-6 rounded-lg">
+            <h2 class="text-2xl font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <span>📝</span>
+                <span>À propos</span>
+            </h2>
             <p class="text-gray-700 leading-relaxed">{{ production.description }}</p>
         </div>
         {% endif %}
         
         <!-- Informations détaillées -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">🎥 Production</h2>
+            <!-- Contact -->
+            <div class="bg-green-50 p-6 rounded-lg">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>📞</span>
+                    <span>Contact</span>
+                </h2>
                 <div class="space-y-3">
-                    {% if production.director %}
+                    {% if production.address %}
                     <div>
-                        <span class="font-semibold text-gray-700">Réalisateur:</span>
-                        <span class="text-gray-600 ml-2">{{ production.director }}</span>
+                        <span class="font-semibold text-gray-700">Adresse:</span>
+                        <span class="text-gray-600 ml-2">{{ production.address }}</span>
                     </div>
                     {% endif %}
-                    {% if production.producer %}
+                    {% if production.city or production.country %}
                     <div>
-                        <span class="font-semibold text-gray-700">Producteur:</span>
-                        <span class="text-gray-600 ml-2">{{ production.producer }}</span>
+                        <span class="font-semibold text-gray-700">Localisation:</span>
+                        <span class="text-gray-600 ml-2">{{ production.location_display }}</span>
                     </div>
                     {% endif %}
-                    {% if production.production_company %}
+                    {% if production.postal_code %}
                     <div>
-                        <span class="font-semibold text-gray-700">Société:</span>
-                        <span class="text-gray-600 ml-2">{{ production.production_company }}</span>
+                        <span class="font-semibold text-gray-700">Code postal:</span>
+                        <span class="text-gray-600 ml-2">{{ production.postal_code }}</span>
                     </div>
                     {% endif %}
-                    {% if production.country %}
+                    {% if production.phone %}
                     <div>
-                        <span class="font-semibold text-gray-700">Pays:</span>
-                        <span class="text-gray-600 ml-2">{{ production.country }}</span>
+                        <span class="font-semibold text-gray-700">Téléphone:</span>
+                        <span class="text-gray-600 ml-2">{{ production.phone }}</span>
                     </div>
                     {% endif %}
-                    {% if production.language %}
+                    {% if production.email %}
                     <div>
-                        <span class="font-semibold text-gray-700">Langue:</span>
-                        <span class="text-gray-600 ml-2">{{ production.language }}</span>
+                        <span class="font-semibold text-gray-700">Email:</span>
+                        <a href="mailto:{{ production.email }}" class="text-blue-600 hover:text-blue-700 ml-2">{{ production.email }}</a>
                     </div>
                     {% endif %}
-                    {% if production.rating %}
+                    {% if production.website %}
                     <div>
-                        <span class="font-semibold text-gray-700">Classification:</span>
-                        <span class="text-gray-600 ml-2">{{ production.rating }}</span>
+                        <span class="font-semibold text-gray-700">Site web:</span>
+                        <a href="{{ production.website }}" target="_blank" class="text-blue-600 hover:text-blue-700 ml-2">{{ production.website }}</a>
                     </div>
                     {% endif %}
                 </div>
             </div>
             
-            <div>
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">📅 Dates</h2>
+            <!-- Informations entreprise -->
+            <div class="bg-yellow-50 p-6 rounded-lg">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>🏢</span>
+                    <span>Entreprise</span>
+                </h2>
                 <div class="space-y-3">
-                    {% if production.production_year %}
+                    {% if production.ceo %}
                     <div>
-                        <span class="font-semibold text-gray-700">Année de production:</span>
-                        <span class="text-gray-600 ml-2">{{ production.production_year }}</span>
+                        <span class="font-semibold text-gray-700">CEO / Directeur:</span>
+                        <span class="text-gray-600 ml-2">{{ production.ceo }}</span>
                     </div>
                     {% endif %}
-                    {% if production.release_date %}
+                    {% if production.founded_year %}
                     <div>
-                        <span class="font-semibold text-gray-700">Date de sortie:</span>
-                        <span class="text-gray-600 ml-2">{{ production.release_date.strftime('%d/%m/%Y') }}</span>
+                        <span class="font-semibold text-gray-700">Année de fondation:</span>
+                        <span class="text-gray-600 ml-2">{{ production.founded_year }}</span>
                     </div>
                     {% endif %}
-                    {% if production.start_date %}
+                    {% if production.employees_count %}
                     <div>
-                        <span class="font-semibold text-gray-700">Début tournage:</span>
-                        <span class="text-gray-600 ml-2">{{ production.start_date.strftime('%d/%m/%Y') }}</span>
+                        <span class="font-semibold text-gray-700">Employés:</span>
+                        <span class="text-gray-600 ml-2">{{ production.employees_count }}</span>
                     </div>
                     {% endif %}
-                    {% if production.end_date %}
+                    {% if production.productions_count %}
                     <div>
-                        <span class="font-semibold text-gray-700">Fin tournage:</span>
-                        <span class="text-gray-600 ml-2">{{ production.end_date.strftime('%d/%m/%Y') }}</span>
+                        <span class="font-semibold text-gray-700">Nombre de productions:</span>
+                        <span class="text-gray-600 ml-2">{{ production.productions_count }}</span>
+                    </div>
+                    {% endif %}
+                    {% if production.specialization %}
+                    <div>
+                        <span class="font-semibold text-gray-700">Spécialisation:</span>
+                        <span class="text-gray-600 ml-2">{{ production.specialization }}</span>
                     </div>
                     {% endif %}
                 </div>
             </div>
         </div>
         
-        <!-- Budget et Box-office -->
-        {% if production.budget or production.box_office %}
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">💰 Finances</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {% if production.budget %}
-                <div class="bg-blue-50 p-4 rounded-lg">
-                    <span class="font-semibold text-gray-700">Budget:</span>
-                    <span class="text-gray-600 ml-2">{{ production.budget }}</span>
-                </div>
+        <!-- Réseaux sociaux -->
+        {% if production.facebook or production.instagram or production.linkedin or production.twitter %}
+        <div class="mb-8 bg-purple-50 p-6 rounded-lg">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🌐</span>
+                <span>Réseaux sociaux</span>
+            </h2>
+            <div class="flex gap-3 flex-wrap">
+                {% if production.facebook %}
+                <a href="{{ production.facebook }}" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all">
+                    Facebook
+                </a>
                 {% endif %}
-                {% if production.box_office %}
-                <div class="bg-green-50 p-4 rounded-lg">
-                    <span class="font-semibold text-gray-700">Box-office:</span>
-                    <span class="text-gray-600 ml-2">{{ production.box_office }}</span>
-                </div>
+                {% if production.instagram %}
+                <a href="{{ production.instagram }}" target="_blank" class="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg font-semibold transition-all">
+                    Instagram
+                </a>
+                {% endif %}
+                {% if production.linkedin %}
+                <a href="{{ production.linkedin }}" target="_blank" class="bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-lg font-semibold transition-all">
+                    LinkedIn
+                </a>
+                {% endif %}
+                {% if production.twitter %}
+                <a href="{{ production.twitter }}" target="_blank" class="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg font-semibold transition-all">
+                    Twitter
+                </a>
                 {% endif %}
             </div>
         </div>
         {% endif %}
         
-        <!-- Liens externes -->
-        {% if production.trailer_url or production.website or production.imdb_id or production.tmdb_id %}
-        <div class="mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">🔗 Liens</h2>
-            <div class="flex gap-3 flex-wrap">
-                {% if production.trailer_url %}
-                <a href="{{ production.trailer_url }}" target="_blank" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold transition-all">
-                    🎥 Bande-annonce
-                </a>
+        <!-- Productions notables -->
+        {% if production.notable_productions %}
+        <div class="mb-8 bg-red-50 p-6 rounded-lg">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🎬</span>
+                <span>Productions notables</span>
+            </h2>
+            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                {% for item in production.notable_productions.replace(',', '\n').split('\n') %}
+                {% if item.strip() %}
+                <li>{{ item.strip() }}</li>
                 {% endif %}
-                {% if production.website %}
-                <a href="{{ production.website }}" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all">
-                    🌐 Site officiel
-                </a>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <!-- Services -->
+        {% if production.services %}
+        <div class="mb-8 bg-indigo-50 p-6 rounded-lg">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>⚙️</span>
+                <span>Services offerts</span>
+            </h2>
+            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                {% for item in production.services.replace(',', '\n').split('\n') %}
+                {% if item.strip() %}
+                <li>{{ item.strip() }}</li>
                 {% endif %}
-                {% if production.imdb_id %}
-                <a href="https://www.imdb.com/title/{{ production.imdb_id }}" target="_blank" class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg font-semibold transition-all">
-                    🎬 IMDb
-                </a>
-                {% endif %}
-                {% if production.tmdb_id %}
-                <a href="https://www.themoviedb.org/movie/{{ production.tmdb_id }}" target="_blank" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-all">
-                    📽️ TMDb
-                </a>
-                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+        
+        <!-- Équipements et Studios -->
+        {% if production.equipment or production.studios %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            {% if production.equipment %}
+            <div class="bg-teal-50 p-6 rounded-lg">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>🎥</span>
+                    <span>Équipements</span>
+                </h2>
+                <p class="text-gray-700 leading-relaxed">{{ production.equipment }}</p>
             </div>
+            {% endif %}
+            
+            {% if production.studios %}
+            <div class="bg-orange-50 p-6 rounded-lg">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>🏬</span>
+                    <span>Studios</span>
+                </h2>
+                <p class="text-gray-700 leading-relaxed">{{ production.studios }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- Certifications et Affiliations -->
+        {% if production.certifications or production.memberships %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            {% if production.certifications %}
+            <div class="bg-cyan-50 p-6 rounded-lg">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>📜</span>
+                    <span>Certifications</span>
+                </h2>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                    {% for item in production.certifications.replace(',', '\n').split('\n') %}
+                    {% if item.strip() %}
+                    <li>{{ item.strip() }}</li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            
+            {% if production.memberships %}
+            <div class="bg-lime-50 p-6 rounded-lg">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span>🤝</span>
+                    <span>Affiliations professionnelles</span>
+                </h2>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                    {% for item in production.memberships.replace(',', '\n').split('\n') %}
+                    {% if item.strip() %}
+                    <li>{{ item.strip() }}</li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <!-- Prix et distinctions -->
+        {% if production.awards %}
+        <div class="mb-8 bg-amber-50 p-6 rounded-lg">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🏆</span>
+                <span>Prix et distinctions</span>
+            </h2>
+            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                {% for item in production.awards.replace(',', '\n').split('\n') %}
+                {% if item.strip() %}
+                <li>{{ item.strip() }}</li>
+                {% endif %}
+                {% endfor %}
+            </ul>
         </div>
         {% endif %}
         

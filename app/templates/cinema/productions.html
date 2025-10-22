@@ -1,19 +1,19 @@
 {% extends "cinema/base_cinema.html" %}
 
-{% block title %}Productions CINEMA - TalentsMaroc.com{% endblock %}
+{% block title %}Boîtes de Production CINEMA - TalentsMaroc.com{% endblock %}
 
 {% block cinema_content %}
 <div class="mb-8 flex justify-between items-start">
     <div>
         <h1 class="text-4xl font-bold text-gray-800 mb-2 flex items-center gap-3">
-            <span>🎬</span>
-            <span>Productions CINEMA</span>
+            <span>🏢</span>
+            <span>Boîtes de Production</span>
         </h1>
-        <p class="text-gray-600">Gestion des productions cinématographiques</p>
+        <p class="text-gray-600">Gestion des sociétés de production cinématographique</p>
     </div>
     <a href="{{ url_for('cinema.add_production') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center gap-2 transition-all shadow-md hover:shadow-lg">
         <span class="text-xl">➕</span>
-        <span>Ajouter Production</span>
+        <span>Ajouter une Boîte de Production</span>
     </a>
 </div>
 
@@ -21,50 +21,56 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for production in productions %}
     <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-all overflow-hidden border border-gray-200">
-        {% if production.poster_url %}
-        <div class="h-48 bg-gray-200 overflow-hidden">
-            <img src="{{ production.poster_url }}" alt="{{ production.title }}" class="w-full h-full object-cover">
+        {% if production.logo_url %}
+        <div class="h-48 bg-gray-100 overflow-hidden flex items-center justify-center p-4">
+            <img src="{{ production.logo_url }}" alt="{{ production.name }}" class="max-h-full max-w-full object-contain">
         </div>
         {% else %}
         <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-            <span class="text-8xl">🎬</span>
+            <span class="text-8xl">🏢</span>
         </div>
         {% endif %}
         
         <div class="p-6">
             <div class="mb-3">
-                <h3 class="text-xl font-bold text-gray-800 mb-1">{{ production.title }}</h3>
-                {% if production.original_title and production.original_title != production.title %}
-                <p class="text-sm text-gray-500 italic">{{ production.original_title }}</p>
+                <h3 class="text-xl font-bold text-gray-800 mb-1">{{ production.name }}</h3>
+                {% if production.location_display %}
+                <p class="text-sm text-gray-500 flex items-center gap-1">
+                    <span>📍</span>
+                    <span>{{ production.location_display }}</span>
+                </p>
                 {% endif %}
             </div>
             
             <div class="flex gap-2 mb-3 flex-wrap">
-                {% if production.production_type %}
-                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">{{ production.production_type }}</span>
+                {% if production.specialization %}
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">{{ production.specialization }}</span>
                 {% endif %}
-                {% if production.year_display %}
-                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-semibold">{{ production.year_display }}</span>
-                {% endif %}
-                {% if production.status %}
-                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">{{ production.status }}</span>
+                {% if production.is_verified %}
+                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">✓ Vérifiée</span>
                 {% endif %}
             </div>
             
-            {% if production.genre %}
+            {% if production.ceo %}
             <p class="text-sm text-gray-600 mb-2">
-                <span class="font-semibold">Genre:</span> {{ production.genre }}
+                <span class="font-semibold">CEO:</span> {{ production.ceo }}
             </p>
             {% endif %}
             
-            {% if production.director %}
+            {% if production.productions_count %}
             <p class="text-sm text-gray-600 mb-2">
-                <span class="font-semibold">Réalisateur:</span> {{ production.director }}
+                <span class="font-semibold">Productions:</span> {{ production.productions_count }}
             </p>
             {% endif %}
             
-            {% if production.synopsis %}
-            <p class="text-sm text-gray-700 mb-4 line-clamp-3">{{ production.synopsis }}</p>
+            {% if production.founded_year %}
+            <p class="text-sm text-gray-600 mb-2">
+                <span class="font-semibold">Fondée en:</span> {{ production.founded_year }}
+            </p>
+            {% endif %}
+            
+            {% if production.description %}
+            <p class="text-sm text-gray-700 mb-4 line-clamp-3">{{ production.description }}</p>
             {% endif %}
             
             <div class="flex gap-2 mt-4">
@@ -82,12 +88,12 @@
 {% else %}
 <div class="section-blue p-8">
     <div class="text-center py-16">
-        <span class="text-6xl mb-4 block">🎬</span>
-        <p class="text-gray-600 text-lg font-semibold mb-2">Aucune production</p>
-        <p class="text-gray-500 mb-6">Commencez par ajouter votre première production cinématographique</p>
+        <span class="text-6xl mb-4 block">🏢</span>
+        <p class="text-gray-600 text-lg font-semibold mb-2">Aucune boîte de production</p>
+        <p class="text-gray-500 mb-6">Commencez par ajouter votre première société de production</p>
         <a href="{{ url_for('cinema.add_production') }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg">
             <span class="text-xl mr-2">➕</span>
-            Ajouter une production
+            Ajouter une Boîte de Production
         </a>
     </div>
 </div>

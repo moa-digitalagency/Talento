@@ -1,21 +1,21 @@
 {% extends "cinema/base_cinema.html" %}
 
-{% block title %}{{ 'Modifier' if production else 'Ajouter' }} Production - TalentsMaroc.com{% endblock %}
+{% block title %}{{ 'Modifier' if production else 'Ajouter' }} Boîte de Production - TalentsMaroc.com{% endblock %}
 
 {% block cinema_content %}
 <div class="mb-8">
     <h1 class="text-4xl font-bold text-gray-800 mb-2 flex items-center gap-3">
-        <span>🎬</span>
-        <span>{{ 'Modifier' if production else 'Ajouter' }} une Production</span>
+        <span>🏢</span>
+        <span>{{ 'Modifier' if production else 'Ajouter' }} une Boîte de Production</span>
     </h1>
-    <p class="text-gray-600">{{ 'Modifiez' if production else 'Ajoutez' }} les informations de la production cinématographique</p>
+    <p class="text-gray-600">{{ 'Modifiez' if production else 'Ajoutez' }} les informations de la société de production</p>
 </div>
 
 <form method="POST" class="bg-white rounded-lg shadow-md p-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         <!-- Informations de base -->
-        <div class="md:col-span-2">
+        <div class="md:col-span-2 bg-blue-50 p-4 rounded-lg">
             <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span>📋</span>
                 <span>Informations de base</span>
@@ -23,76 +23,45 @@
         </div>
         
         <div class="md:col-span-2">
-            <label class="block text-gray-700 font-semibold mb-2">Titre *</label>
-            <input type="text" name="title" value="{{ production.title if production else '' }}" required
+            <label class="block text-gray-700 font-semibold mb-2">Nom de la société *</label>
+            <input type="text" name="name" value="{{ production.name if production else '' }}" required
                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
         
         <div class="md:col-span-2">
-            <label class="block text-gray-700 font-semibold mb-2">Titre original</label>
-            <input type="text" name="original_title" value="{{ production.original_title if production else '' }}"
+            <label class="block text-gray-700 font-semibold mb-2">URL du logo</label>
+            <input type="url" name="logo_url" value="{{ production.logo_url if production else '' }}"
                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
         
-        <div>
-            <label class="block text-gray-700 font-semibold mb-2">Type de production *</label>
-            <select name="production_type" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option value="">Sélectionner...</option>
-                <option value="Film" {% if production and production.production_type == 'Film' %}selected{% endif %}>Film</option>
-                <option value="Série" {% if production and production.production_type == 'Série' %}selected{% endif %}>Série</option>
-                <option value="Court-métrage" {% if production and production.production_type == 'Court-métrage' %}selected{% endif %}>Court-métrage</option>
-                <option value="Documentaire" {% if production and production.production_type == 'Documentaire' %}selected{% endif %}>Documentaire</option>
-                <option value="Téléfilm" {% if production and production.production_type == 'Téléfilm' %}selected{% endif %}>Téléfilm</option>
-                <option value="Animation" {% if production and production.production_type == 'Animation' %}selected{% endif %}>Animation</option>
-            </select>
+        <div class="md:col-span-2">
+            <label class="block text-gray-700 font-semibold mb-2">Description</label>
+            <textarea name="description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ production.description if production else '' }}</textarea>
         </div>
         
-        <div>
-            <label class="block text-gray-700 font-semibold mb-2">Genre</label>
-            <input type="text" name="genre" value="{{ production.genre if production else '' }}" placeholder="Drame, Comédie, Action..."
+        <div class="md:col-span-2">
+            <label class="block text-gray-700 font-semibold mb-2">Spécialisation</label>
+            <input type="text" name="specialization" value="{{ production.specialization if production else '' }}" placeholder="Films, Séries, Documentaires, Publicités..."
                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
         
-        <div>
-            <label class="block text-gray-700 font-semibold mb-2">Statut</label>
-            <select name="status" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option value="En développement" {% if production and production.status == 'En développement' %}selected{% endif %}>En développement</option>
-                <option value="En production" {% if production and production.status == 'En production' %}selected{% endif %}>En production</option>
-                <option value="Post-production" {% if production and production.status == 'Post-production' %}selected{% endif %}>Post-production</option>
-                <option value="Sortie" {% if production and production.status == 'Sortie' %}selected{% endif %}>Sortie</option>
-                <option value="Annulé" {% if production and production.status == 'Annulé' %}selected{% endif %}>Annulé</option>
-            </select>
-        </div>
-        
-        <div>
-            <label class="block text-gray-700 font-semibold mb-2">Durée (minutes)</label>
-            <input type="number" name="duration" value="{{ production.duration if production else '' }}"
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        
-        <!-- Détails de production -->
-        <div class="md:col-span-2 mt-6">
+        <!-- Contact -->
+        <div class="md:col-span-2 bg-green-50 p-4 rounded-lg mt-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span>🎥</span>
-                <span>Détails de production</span>
+                <span>📞</span>
+                <span>Contact</span>
             </h2>
         </div>
         
-        <div>
-            <label class="block text-gray-700 font-semibold mb-2">Réalisateur</label>
-            <input type="text" name="director" value="{{ production.director if production else '' }}"
+        <div class="md:col-span-2">
+            <label class="block text-gray-700 font-semibold mb-2">Adresse</label>
+            <input type="text" name="address" value="{{ production.address if production else '' }}"
                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
         
         <div>
-            <label class="block text-gray-700 font-semibold mb-2">Producteur</label>
-            <input type="text" name="producer" value="{{ production.producer if production else '' }}"
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        
-        <div>
-            <label class="block text-gray-700 font-semibold mb-2">Société de production</label>
-            <input type="text" name="production_company" value="{{ production.production_company if production else '' }}"
+            <label class="block text-gray-700 font-semibold mb-2">Ville</label>
+            <input type="text" name="city" value="{{ production.city if production else '' }}"
                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
         
@@ -103,130 +72,171 @@
         </div>
         
         <div>
-            <label class="block text-gray-700 font-semibold mb-2">Langue</label>
-            <input type="text" name="language" value="{{ production.language if production else '' }}"
+            <label class="block text-gray-700 font-semibold mb-2">Code postal</label>
+            <input type="text" name="postal_code" value="{{ production.postal_code if production else '' }}"
                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
         
         <div>
-            <label class="block text-gray-700 font-semibold mb-2">Classification</label>
-            <input type="text" name="rating" value="{{ production.rating if production else '' }}" placeholder="Tous publics, -12, -16..."
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        
-        <!-- Dates -->
-        <div class="md:col-span-2 mt-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span>📅</span>
-                <span>Dates</span>
-            </h2>
-        </div>
-        
-        <div>
-            <label class="block text-gray-700 font-semibold mb-2">Année de production</label>
-            <input type="number" name="production_year" value="{{ production.production_year if production else '' }}" min="1900" max="2100"
+            <label class="block text-gray-700 font-semibold mb-2">Téléphone</label>
+            <input type="tel" name="phone" value="{{ production.phone if production else '' }}"
                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
         
         <div>
-            <label class="block text-gray-700 font-semibold mb-2">Date de sortie</label>
-            <input type="date" name="release_date" value="{{ production.release_date.strftime('%Y-%m-%d') if production and production.release_date else '' }}"
+            <label class="block text-gray-700 font-semibold mb-2">Email</label>
+            <input type="email" name="email" value="{{ production.email if production else '' }}"
                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
         </div>
         
         <div>
-            <label class="block text-gray-700 font-semibold mb-2">Début de tournage</label>
-            <input type="date" name="start_date" value="{{ production.start_date.strftime('%Y-%m-%d') if production and production.start_date else '' }}"
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        
-        <div>
-            <label class="block text-gray-700 font-semibold mb-2">Fin de tournage</label>
-            <input type="date" name="end_date" value="{{ production.end_date.strftime('%Y-%m-%d') if production and production.end_date else '' }}"
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        
-        <!-- Descriptions -->
-        <div class="md:col-span-2 mt-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span>📝</span>
-                <span>Descriptions</span>
-            </h2>
-        </div>
-        
-        <div class="md:col-span-2">
-            <label class="block text-gray-700 font-semibold mb-2">Synopsis</label>
-            <textarea name="synopsis" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ production.synopsis if production else '' }}</textarea>
-        </div>
-        
-        <div class="md:col-span-2">
-            <label class="block text-gray-700 font-semibold mb-2">Description détaillée</label>
-            <textarea name="description" rows="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ production.description if production else '' }}</textarea>
-        </div>
-        
-        <!-- Budget et Revenus -->
-        <div class="md:col-span-2 mt-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span>💰</span>
-                <span>Budget et Revenus</span>
-            </h2>
-        </div>
-        
-        <div>
-            <label class="block text-gray-700 font-semibold mb-2">Budget</label>
-            <input type="text" name="budget" value="{{ production.budget if production else '' }}" placeholder="Ex: 5 millions USD"
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        
-        <div>
-            <label class="block text-gray-700 font-semibold mb-2">Box-office</label>
-            <input type="text" name="box_office" value="{{ production.box_office if production else '' }}" placeholder="Ex: 50 millions USD"
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        
-        <!-- Médias et Liens -->
-        <div class="md:col-span-2 mt-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                <span>🔗</span>
-                <span>Médias et Liens</span>
-            </h2>
-        </div>
-        
-        <div class="md:col-span-2">
-            <label class="block text-gray-700 font-semibold mb-2">URL de l'affiche</label>
-            <input type="url" name="poster_url" value="{{ production.poster_url if production else '' }}"
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        
-        <div class="md:col-span-2">
-            <label class="block text-gray-700 font-semibold mb-2">URL de la bande-annonce</label>
-            <input type="url" name="trailer_url" value="{{ production.trailer_url if production else '' }}"
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        
-        <div>
-            <label class="block text-gray-700 font-semibold mb-2">ID IMDb</label>
-            <input type="text" name="imdb_id" value="{{ production.imdb_id if production else '' }}" placeholder="tt1234567"
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        
-        <div>
-            <label class="block text-gray-700 font-semibold mb-2">ID TMDb</label>
-            <input type="text" name="tmdb_id" value="{{ production.tmdb_id if production else '' }}"
-                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-        </div>
-        
-        <div class="md:col-span-2">
-            <label class="block text-gray-700 font-semibold mb-2">Site web officiel</label>
+            <label class="block text-gray-700 font-semibold mb-2">Site web</label>
             <input type="url" name="website" value="{{ production.website if production else '' }}"
                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        
+        <!-- Réseaux sociaux -->
+        <div class="md:col-span-2 bg-purple-50 p-4 rounded-lg mt-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🌐</span>
+                <span>Réseaux sociaux</span>
+            </h2>
+        </div>
+        
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Facebook</label>
+            <input type="url" name="facebook" value="{{ production.facebook if production else '' }}" placeholder="https://facebook.com/..."
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Instagram</label>
+            <input type="url" name="instagram" value="{{ production.instagram if production else '' }}" placeholder="https://instagram.com/..."
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">LinkedIn</label>
+            <input type="url" name="linkedin" value="{{ production.linkedin if production else '' }}" placeholder="https://linkedin.com/company/..."
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Twitter</label>
+            <input type="url" name="twitter" value="{{ production.twitter if production else '' }}" placeholder="https://twitter.com/..."
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        
+        <!-- Informations entreprise -->
+        <div class="md:col-span-2 bg-yellow-50 p-4 rounded-lg mt-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🏢</span>
+                <span>Informations entreprise</span>
+            </h2>
+        </div>
+        
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Année de fondation</label>
+            <input type="number" name="founded_year" value="{{ production.founded_year if production else '' }}" min="1800" max="2100"
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">CEO / Directeur</label>
+            <input type="text" name="ceo" value="{{ production.ceo if production else '' }}"
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Nombre d'employés</label>
+            <input type="number" name="employees_count" value="{{ production.employees_count if production else '' }}" min="0"
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        
+        <div>
+            <label class="block text-gray-700 font-semibold mb-2">Nombre de productions</label>
+            <input type="number" name="productions_count" value="{{ production.productions_count if production else '' }}" min="0"
+                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        </div>
+        
+        <!-- Productions & Services -->
+        <div class="md:col-span-2 bg-red-50 p-4 rounded-lg mt-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🎬</span>
+                <span>Productions & Services</span>
+            </h2>
+        </div>
+        
+        <div class="md:col-span-2">
+            <label class="block text-gray-700 font-semibold mb-2">Productions notables</label>
+            <textarea name="notable_productions" rows="4" placeholder="Ex: Film A, Film B, Série C" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ production.notable_productions if production else '' }}</textarea>
+            <p class="text-sm text-gray-500 mt-1">Séparez chaque production par une virgule ou un retour à la ligne</p>
+        </div>
+        
+        <div class="md:col-span-2">
+            <label class="block text-gray-700 font-semibold mb-2">Services offerts</label>
+            <textarea name="services" rows="4" placeholder="Ex: Production, Post-production, Distribution, Casting" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ production.services if production else '' }}</textarea>
+            <p class="text-sm text-gray-500 mt-1">Séparez chaque service par une virgule ou un retour à la ligne</p>
+        </div>
+        
+        <div class="md:col-span-2">
+            <label class="block text-gray-700 font-semibold mb-2">Équipements</label>
+            <textarea name="equipment" rows="3" placeholder="Description des équipements disponibles..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ production.equipment if production else '' }}</textarea>
+        </div>
+        
+        <div class="md:col-span-2">
+            <label class="block text-gray-700 font-semibold mb-2">Studios</label>
+            <textarea name="studios" rows="3" placeholder="Description des studios disponibles..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ production.studios if production else '' }}</textarea>
+        </div>
+        
+        <!-- Certifications & Récompenses -->
+        <div class="md:col-span-2 bg-indigo-50 p-4 rounded-lg mt-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🏆</span>
+                <span>Certifications & Récompenses</span>
+            </h2>
+        </div>
+        
+        <div class="md:col-span-2">
+            <label class="block text-gray-700 font-semibold mb-2">Certifications</label>
+            <textarea name="certifications" rows="3" placeholder="Ex: ISO 9001, Certification X, Certification Y" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ production.certifications if production else '' }}</textarea>
+            <p class="text-sm text-gray-500 mt-1">Séparez chaque certification par une virgule ou un retour à la ligne</p>
+        </div>
+        
+        <div class="md:col-span-2">
+            <label class="block text-gray-700 font-semibold mb-2">Affiliations professionnelles</label>
+            <textarea name="memberships" rows="3" placeholder="Ex: Association A, Syndicat B, Organisation C" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ production.memberships if production else '' }}</textarea>
+            <p class="text-sm text-gray-500 mt-1">Séparez chaque affiliation par une virgule ou un retour à la ligne</p>
+        </div>
+        
+        <div class="md:col-span-2">
+            <label class="block text-gray-700 font-semibold mb-2">Prix et distinctions</label>
+            <textarea name="awards" rows="3" placeholder="Ex: Prix X 2020, Festival Y - Meilleur film 2021" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ production.awards if production else '' }}</textarea>
+            <p class="text-sm text-gray-500 mt-1">Séparez chaque prix par une virgule ou un retour à la ligne</p>
+        </div>
+        
+        <!-- Statut -->
+        <div class="md:col-span-2 bg-gray-50 p-4 rounded-lg mt-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>✓</span>
+                <span>Statut</span>
+            </h2>
+        </div>
+        
+        <div class="md:col-span-2">
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" name="is_verified" value="1" {% if production and production.is_verified %}checked{% endif %}
+                       class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500">
+                <span class="text-gray-700 font-semibold">Société vérifiée</span>
+            </label>
+            <p class="text-sm text-gray-500 mt-1 ml-8">Cochez cette case si la société a été vérifiée et validée</p>
         </div>
     </div>
     
     <!-- Boutons d'action -->
     <div class="flex gap-4 mt-8">
         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg">
-            {{ 'Mettre à jour' if production else 'Créer la production' }}
+            {{ 'Mettre à jour' if production else 'Créer la boîte de production' }}
         </button>
         <a href="{{ url_for('cinema.productions') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-3 rounded-lg font-semibold transition-all">
             Annuler

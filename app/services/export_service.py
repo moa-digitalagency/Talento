@@ -252,7 +252,19 @@ class ExportService:
             spaceAfter=20
         )
         
-        elements.append(Paragraph("🌍 TALENTSMAROC.COM - FICHE DE TALENT", header_style))
+        # Tentative d'ajout du logo
+        logo_path = os.path.join('static', 'img', 'logo.png')
+        try:
+            if os.path.exists(logo_path):
+                logo = Image(logo_path, width=1.2*inch, height=1.2*inch, kind='proportional')
+                logo.hAlign = 'CENTER'
+                elements.append(logo)
+                elements.append(Spacer(1, 10))
+            else:
+                elements.append(Paragraph("🌍 TALENTSMAROC.COM - FICHE DE TALENT", header_style))
+        except:
+            elements.append(Paragraph("🌍 TALENTSMAROC.COM - FICHE DE TALENT", header_style))
+        
         elements.append(Paragraph("Plateforme de Centralisation des Talents Africain Subsahrien aux Maroc", subtitle_header_style))
         
         # Ligne de séparation
@@ -705,7 +717,19 @@ class ExportService:
             spaceAfter=20
         )
         
-        elements.append(Paragraph("TalentsMaroc.com", platform_style))
+        # Tentative d'ajout du logo
+        logo_path = os.path.join('static', 'img', 'logo.png')
+        try:
+            if os.path.exists(logo_path):
+                logo = Image(logo_path, width=1.2*inch, height=1.2*inch, kind='proportional')
+                logo.hAlign = 'CENTER'
+                elements.append(logo)
+                elements.append(Spacer(1, 10))
+            else:
+                elements.append(Paragraph("TalentsMaroc.com", platform_style))
+        except:
+            elements.append(Paragraph("TalentsMaroc.com", platform_style))
+        
         elements.append(Paragraph("CINEMA - FICHE DE TALENT", header_style))
         elements.append(Paragraph("Profil Cinématographique - Talents du Cinéma Africain", subtitle_header_style))
         
