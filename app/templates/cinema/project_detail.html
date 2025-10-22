@@ -12,11 +12,11 @@
 
 <!-- En-tête du projet -->
 <div class="bg-white rounded-lg shadow-md overflow-hidden border-2 border-gray-200 mb-6">
-    <div class="bg-gradient-to-r from-purple-500 to-blue-600 p-6 text-white">
+    <div class="bg-gradient-to-r from-purple-500 to-blue-600 p-6">
         <div class="flex justify-between items-start">
             <div>
-                <h1 class="text-3xl font-bold mb-2">{{ project.name }}</h1>
-                <p class="text-lg opacity-90">{{ project.production_type }}</p>
+                <h1 class="text-3xl font-bold mb-2 text-white">{{ project.name }}</h1>
+                <p class="text-lg text-white opacity-90">{{ project.production_type }}</p>
             </div>
             <div class="flex gap-2">
                 <a href="{{ url_for('cinema.edit_project', project_id=project.id) }}" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-bold border-2 border-blue-500 hover:bg-blue-200 transition-all">
@@ -44,7 +44,30 @@
             {% if project.origin_country %}
             <div class="bg-green-50 p-4 rounded-lg border-2 border-green-200">
                 <p class="text-sm font-semibold text-gray-600">Pays d'origine</p>
-                <p class="text-lg font-bold text-gray-800">{{ project.origin_country }}</p>
+                <p class="text-lg font-bold text-gray-800">
+                    {% if 'Maroc' in project.origin_country or 'Morocco' in project.origin_country %}🇲🇦
+                    {% elif 'France' in project.origin_country %}🇫🇷
+                    {% elif 'USA' in project.origin_country or 'États-Unis' in project.origin_country %}🇺🇸
+                    {% elif 'Espagne' in project.origin_country or 'Spain' in project.origin_country %}🇪🇸
+                    {% elif 'Tunisie' in project.origin_country %}🇹🇳
+                    {% elif 'Algérie' in project.origin_country %}🇩🇿
+                    {% elif 'Égypte' in project.origin_country %}🇪🇬
+                    {% elif 'Royaume-Uni' in project.origin_country or 'UK' in project.origin_country %}🇬🇧
+                    {% elif 'Allemagne' in project.origin_country or 'Germany' in project.origin_country %}🇩🇪
+                    {% elif 'Italie' in project.origin_country or 'Italy' in project.origin_country %}🇮🇹
+                    {% elif 'Canada' in project.origin_country %}🇨🇦
+                    {% elif 'Australie' in project.origin_country or 'Australia' in project.origin_country %}🇦🇺
+                    {% elif 'Belgique' in project.origin_country %}🇧🇪
+                    {% elif 'Suisse' in project.origin_country %}🇨🇭
+                    {% elif 'Inde' in project.origin_country or 'India' in project.origin_country %}🇮🇳
+                    {% elif 'Chine' in project.origin_country or 'China' in project.origin_country %}🇨🇳
+                    {% elif 'Japon' in project.origin_country or 'Japan' in project.origin_country %}🇯🇵
+                    {% elif 'Brésil' in project.origin_country or 'Brazil' in project.origin_country %}🇧🇷
+                    {% elif 'Argentine' in project.origin_country %}🇦🇷
+                    {% elif 'Mexique' in project.origin_country or 'Mexico' in project.origin_country %}🇲🇽
+                    {% endif %}
+                    {{ project.origin_country }}
+                </p>
             </div>
             {% endif %}
             
@@ -178,7 +201,7 @@
                     </td>
                     <td class="px-4 py-3">
                         <div class="flex gap-2 justify-center">
-                            <a href="{{ url_for('cinema.profile_view', code=pt.cinema_talent.unique_code) }}" 
+                            <a href="{{ url_for('cinema.view_profile', unique_code=pt.cinema_talent.unique_code) }}" 
                                target="_blank"
                                class="bg-green-100 text-green-700 px-3 py-1 rounded text-xs font-bold border-2 border-green-500 hover:bg-green-200 transition-all">
                                 👁️ Profil
