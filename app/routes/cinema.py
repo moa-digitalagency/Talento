@@ -234,12 +234,6 @@ def delete_production(production_id):
         flash(f'Erreur lors de la suppression de la boîte de production: {str(e)}', 'error')
     return redirect(url_for('cinema.productions'))
 
-@bp.route('/projects')
-@login_required
-def projects():
-    """Projets CINEMA - Gestion des projets"""
-    return render_template('cinema/projects.html')
-
 @bp.route('/team')
 @login_required
 def team():
@@ -770,3 +764,407 @@ def print_talents_list():
         as_attachment=True,
         download_name=filename
     )
+
+# ============================================
+# ROUTES POUR LA GESTION DES PROJETS
+# ============================================
+
+@bp.route('/projects')
+@login_required
+def projects():
+    """Liste des projets de production en cours"""
+    from app.models.project import Project
+    projects_list = Project.query.filter_by(is_active=True).order_by(Project.created_at.desc()).all()
+    return render_template('cinema/projects.html', projects=projects_list)
+
+@bp.route('/projects/new', methods=['GET', 'POST'])
+@login_required
+def add_project():
+    """Créer un nouveau projet de production"""
+    from app.models.project import Project
+    
+    if request.method == 'POST':
+        try:
+            project = Project()
+            
+            # Informations de base
+            project.name = request.form.get('name')
+            project.production_type = request.form.get('production_type')
+            project.production_company_id = request.form.get('production_company_id') or None
+            
+            # Localisation
+            project.origin_country = request.form.get('origin_country')
+            project.shooting_locations = request.form.get('shooting_locations')
+            
+            # Dates
+            start_date_str = request.form.get('start_date')
+            end_date_str = request.form.get('end_date')
+            
+            if start_date_str:
+                project.start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            if end_date_str:
+                project.end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+            
+            # Statut
+            project.status = request.form.get('status', 'en_preparation')
+            project.created_by = current_user.id
+            
+            db.session.add(project)
+            db.session.commit()
+            
+            flash(f'✅ Projet "{project.name}" créé avec succès!', 'success')
+            return redirect(url_for('cinema.project_detail', project_id=project.id))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f'❌ Erreur lors de la création du projet: {str(e)}', 'error')
+    
+    # GET request - afficher le formulaire
+    productions_list = Production.query.filter_by(is_active=True).order_by(Production.name).all()
+    
+    production_types = [
+        'Film',
+        'Série',
+        'Court-métrage',
+        'Documentaire',
+        'Publicité',
+        'Clip musical',
+        'Téléfilm',
+        'Web-série',
+        'Autre'
+    ]
+    
+    status_choices = [
+        ('en_preparation', 'En préparation'),
+        ('en_tournage', 'En tournage'),
+        ('post_production', 'Post-production'),
+        ('termine', 'Terminé')
+    ]
+    
+    return render_template('cinema/project_form.html',
+                         productions=productions_list,
+                         production_types=production_types,
+                         status_choices=status_choices,
+                         nationalities=NATIONALITIES_WITH_FLAGS)
+
+@bp.route('/projects/<int:project_id>')
+@login_required
+def project_detail(project_id):
+    """Détails d'un projet avec la liste des talents assignés"""
+    from app.models.project import Project, ProjectTalent
+    
+    project = Project.query.get_or_404(project_id)
+    
+    # Récupérer tous les talents assignés au projet
+    project_talents = ProjectTalent.query.filter_by(project_id=project_id).order_by(ProjectTalent.assigned_at.desc()).all()
+    
+    # Récupérer tous les talents CINEMA disponibles pour l'ajout
+    all_cinema_talents = CinemaTalent.query.filter_by(is_active=True).order_by(CinemaTalent.first_name, CinemaTalent.last_name).all()
+    
+    return render_template('cinema/project_detail.html',
+                         project=project,
+                         project_talents=project_talents,
+                         all_cinema_talents=all_cinema_talents,
+                         cinema_talent_types=CINEMA_TALENT_TYPES)
+
+@bp.route('/projects/<int:project_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_project(project_id):
+    """Modifier un projet existant"""
+    from app.models.project import Project
+    
+    project = Project.query.get_or_404(project_id)
+    
+    if request.method == 'POST':
+        try:
+            # Informations de base
+            project.name = request.form.get('name')
+            project.production_type = request.form.get('production_type')
+            project.production_company_id = request.form.get('production_company_id') or None
+            
+            # Localisation
+            project.origin_country = request.form.get('origin_country')
+            project.shooting_locations = request.form.get('shooting_locations')
+            
+            # Dates
+            start_date_str = request.form.get('start_date')
+            end_date_str = request.form.get('end_date')
+            
+            if start_date_str:
+                project.start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            else:
+                project.start_date = None
+                
+            if end_date_str:
+                project.end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+            else:
+                project.end_date = None
+            
+            # Statut
+            project.status = request.form.get('status', 'en_preparation')
+            
+            db.session.commit()
+            
+            flash(f'✅ Projet "{project.name}" modifié avec succès!', 'success')
+            return redirect(url_for('cinema.project_detail', project_id=project.id))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f'❌ Erreur lors de la modification du projet: {str(e)}', 'error')
+    
+    # GET request - afficher le formulaire pré-rempli
+    productions_list = Production.query.filter_by(is_active=True).order_by(Production.name).all()
+    
+    production_types = [
+        'Film',
+        'Série',
+        'Court-métrage',
+        'Documentaire',
+        'Publicité',
+        'Clip musical',
+        'Téléfilm',
+        'Web-série',
+        'Autre'
+    ]
+    
+    status_choices = [
+        ('en_preparation', 'En préparation'),
+        ('en_tournage', 'En tournage'),
+        ('post_production', 'Post-production'),
+        ('termine', 'Terminé')
+    ]
+    
+    return render_template('cinema/project_form.html',
+                         project=project,
+                         productions=productions_list,
+                         production_types=production_types,
+                         status_choices=status_choices,
+                         nationalities=NATIONALITIES_WITH_FLAGS)
+
+@bp.route('/projects/<int:project_id>/assign-talent', methods=['POST'])
+@login_required
+def assign_talent_to_project(project_id):
+    """Assigner un talent CINEMA à un projet"""
+    from app.models.project import Project, ProjectTalent
+    from app.utils.project_code_generator import generate_project_talent_code
+    
+    project = Project.query.get_or_404(project_id)
+    
+    try:
+        cinema_talent_id = request.form.get('cinema_talent_id')
+        talent_type = request.form.get('talent_type')
+        role_description = request.form.get('role_description', '')
+        
+        if not cinema_talent_id or not talent_type:
+            flash('❌ Veuillez sélectionner un talent et un type de talent', 'error')
+            return redirect(url_for('cinema.project_detail', project_id=project_id))
+        
+        # Vérifier si ce talent est déjà assigné au projet
+        existing = ProjectTalent.query.filter_by(
+            project_id=project_id,
+            cinema_talent_id=cinema_talent_id
+        ).first()
+        
+        if existing:
+            flash('❌ Ce talent est déjà assigné à ce projet', 'error')
+            return redirect(url_for('cinema.project_detail', project_id=project_id))
+        
+        # Créer l'assignation
+        project_talent = ProjectTalent()
+        project_talent.project_id = project_id
+        project_talent.cinema_talent_id = cinema_talent_id
+        project_talent.talent_type = talent_type
+        project_talent.role_description = role_description
+        project_talent.project_code = generate_project_talent_code(project_id)
+        project_talent.assigned_by = current_user.id
+        
+        db.session.add(project_talent)
+        db.session.commit()
+        
+        flash(f'✅ Talent assigné avec succès! Code: {project_talent.project_code}', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f'❌ Erreur lors de l\'assignation du talent: {str(e)}', 'error')
+    
+    return redirect(url_for('cinema.project_detail', project_id=project_id))
+
+@bp.route('/projects/<int:project_id>/remove-talent/<int:project_talent_id>', methods=['POST'])
+@login_required
+def remove_talent_from_project(project_id, project_talent_id):
+    """Retirer un talent d'un projet"""
+    from app.models.project import ProjectTalent
+    
+    project_talent = ProjectTalent.query.get_or_404(project_talent_id)
+    
+    # Vérifier que le talent appartient bien à ce projet
+    if project_talent.project_id != project_id:
+        flash('❌ Erreur: talent non associé à ce projet', 'error')
+        return redirect(url_for('cinema.project_detail', project_id=project_id))
+    
+    try:
+        db.session.delete(project_talent)
+        db.session.commit()
+        flash('✅ Talent retiré du projet avec succès', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'❌ Erreur lors du retrait du talent: {str(e)}', 'error')
+    
+    return redirect(url_for('cinema.project_detail', project_id=project_id))
+
+@bp.route('/projects/<int:project_id>/delete', methods=['POST'])
+@login_required
+def delete_project(project_id):
+    """Supprimer (soft delete) un projet"""
+    from app.models.project import Project
+    
+    project = Project.query.get_or_404(project_id)
+    
+    try:
+        project.is_active = False
+        db.session.commit()
+        flash(f'✅ Projet "{project.name}" supprimé avec succès', 'success')
+        return redirect(url_for('cinema.projects'))
+    except Exception as e:
+        db.session.rollback()
+        flash(f'❌ Erreur lors de la suppression du projet: {str(e)}', 'error')
+        return redirect(url_for('cinema.project_detail', project_id=project_id))
+
+@bp.route('/projects/talent/<int:project_talent_id>/generate-badge')
+@login_required
+def generate_project_badge(project_talent_id):
+    """Générer un badge pour un talent assigné à un projet"""
+    from app.models.project import ProjectTalent
+    from reportlab.lib.pagesizes import letter, A4
+    from reportlab.lib import colors
+    from reportlab.lib.units import cm
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.enums import TA_CENTER, TA_LEFT
+    import qrcode
+    import os
+    
+    project_talent = ProjectTalent.query.get_or_404(project_talent_id)
+    talent = project_talent.cinema_talent
+    project = project_talent.project
+    
+    try:
+        # Créer un buffer pour le PDF
+        buffer = io.BytesIO()
+        
+        # Configuration du document (format badge - A6 paysage)
+        badge_width = 14.8 * cm
+        badge_height = 10.5 * cm
+        
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=(badge_width, badge_height),
+            leftMargin=0.5*cm,
+            rightMargin=0.5*cm,
+            topMargin=0.5*cm,
+            bottomMargin=0.5*cm
+        )
+        
+        elements = []
+        styles = getSampleStyleSheet()
+        
+        # Style pour le titre
+        title_style = ParagraphStyle(
+            'BadgeTitle',
+            parent=styles['Heading1'],
+            fontSize=16,
+            textColor=colors.HexColor('#8B5CF6'),
+            alignment=TA_CENTER,
+            spaceAfter=6
+        )
+        
+        # Style pour le nom
+        name_style = ParagraphStyle(
+            'BadgeName',
+            parent=styles['Normal'],
+            fontSize=14,
+            textColor=colors.black,
+            alignment=TA_CENTER,
+            fontName='Helvetica-Bold',
+            spaceAfter=6
+        )
+        
+        # Style pour les informations
+        info_style = ParagraphStyle(
+            'BadgeInfo',
+            parent=styles['Normal'],
+            fontSize=10,
+            textColor=colors.HexColor('#4B5563'),
+            alignment=TA_CENTER,
+            spaceAfter=4
+        )
+        
+        # Titre du badge
+        elements.append(Paragraph("BADGE PROJET", title_style))
+        elements.append(Spacer(1, 0.3*cm))
+        
+        # Nom complet
+        elements.append(Paragraph(f"{talent.first_name} {talent.last_name}", name_style))
+        
+        # Code unique du projet
+        elements.append(Paragraph(f"<b>Code:</b> {project_talent.project_code}", info_style))
+        
+        # Type de talent
+        elements.append(Paragraph(f"<b>Rôle:</b> {project_talent.talent_type}", info_style))
+        
+        # Nom du projet
+        elements.append(Paragraph(f"<b>Projet:</b> {project.name}", info_style))
+        
+        # Type de production
+        elements.append(Paragraph(f"<b>Production:</b> {project.production_type}", info_style))
+        
+        # Générer un QR code pour le profil du talent
+        qr = qrcode.QRCode(version=1, box_size=10, border=2)
+        qr.add_data(f"{talent.unique_code}")  # On peut utiliser le code CINEMA du talent
+        qr.make(fit=True)
+        qr_img = qr.make_image(fill_color="black", back_color="white")
+        
+        # Sauvegarder temporairement le QR code
+        qr_path = f"/tmp/qr_{project_talent.project_code}.png"
+        qr_img.save(qr_path)
+        
+        elements.append(Spacer(1, 0.3*cm))
+        
+        # Ajouter le QR code au badge
+        elements.append(Image(qr_path, width=3*cm, height=3*cm))
+        
+        # Footer
+        elements.append(Spacer(1, 0.2*cm))
+        footer_style = ParagraphStyle(
+            'BadgeFooter',
+            parent=styles['Normal'],
+            fontSize=7,
+            textColor=colors.grey,
+            alignment=TA_CENTER
+        )
+        elements.append(Paragraph(f"TalentsMaroc.com - {datetime.now().strftime('%d/%m/%Y')}", footer_style))
+        
+        # Construire le PDF
+        doc.build(elements)
+        
+        # Nettoyer le QR code temporaire
+        if os.path.exists(qr_path):
+            os.remove(qr_path)
+        
+        # Marquer le badge comme généré
+        project_talent.badge_generated = True
+        db.session.commit()
+        
+        buffer.seek(0)
+        filename = f'badge_{project_talent.project_code}.pdf'
+        
+        return send_file(
+            buffer,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=filename
+        )
+        
+    except Exception as e:
+        flash(f'❌ Erreur lors de la génération du badge: {str(e)}', 'error')
+        return redirect(url_for('cinema.project_detail', project_id=project_talent.project_id))

@@ -1,6 +1,6 @@
 import os
 from app import create_app, db
-from app.models import User, Talent, UserTalent, Country, City, Production
+from app.models import User, Talent, UserTalent, Country, City, Production, Project, ProjectTalent
 
 app = create_app()
 
@@ -13,7 +13,9 @@ def make_shell_context():
         'UserTalent': UserTalent,
         'Country': Country,
         'City': City,
-        'Production': Production
+        'Production': Production,
+        'Project': Project,
+        'ProjectTalent': ProjectTalent
     }
 
 @app.template_filter('format_code')

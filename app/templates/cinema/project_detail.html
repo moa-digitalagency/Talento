@@ -1,0 +1,212 @@
+{% extends "cinema/base_cinema.html" %}
+
+{% block title %}{{ project.name }} - TalentsMaroc.com{% endblock %}
+
+{% block cinema_content %}
+<div class="mb-6">
+    <a href="{{ url_for('cinema.projects') }}" class="inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-bold border-2 border-gray-500 hover:bg-gray-200 transition-all">
+        <span>←</span>
+        <span>Retour aux projets</span>
+    </a>
+</div>
+
+<!-- En-tête du projet -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden border-2 border-gray-200 mb-6">
+    <div class="bg-gradient-to-r from-purple-500 to-blue-600 p-6 text-white">
+        <div class="flex justify-between items-start">
+            <div>
+                <h1 class="text-3xl font-bold mb-2">{{ project.name }}</h1>
+                <p class="text-lg opacity-90">{{ project.production_type }}</p>
+            </div>
+            <div class="flex gap-2">
+                <a href="{{ url_for('cinema.edit_project', project_id=project.id) }}" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-bold border-2 border-blue-500 hover:bg-blue-200 transition-all">
+                    ✏️ Modifier
+                </a>
+                <form method="POST" action="{{ url_for('cinema.delete_project', project_id=project.id) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce projet ?');" class="inline">
+                    <button type="submit" class="bg-red-100 text-red-700 px-4 py-2 rounded-lg font-bold border-2 border-red-500 hover:bg-red-200 transition-all">
+                        🗑️ Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+            {% if project.production_company %}
+            <div class="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
+                <p class="text-sm font-semibold text-gray-600">Société de production</p>
+                <p class="text-lg font-bold text-gray-800">{{ project.production_company.name }}</p>
+            </div>
+            {% endif %}
+            
+            {% if project.origin_country %}
+            <div class="bg-green-50 p-4 rounded-lg border-2 border-green-200">
+                <p class="text-sm font-semibold text-gray-600">Pays d'origine</p>
+                <p class="text-lg font-bold text-gray-800">{{ project.origin_country }}</p>
+            </div>
+            {% endif %}
+            
+            <div class="bg-yellow-50 p-4 rounded-lg border-2 border-yellow-200">
+                <p class="text-sm font-semibold text-gray-600">Calendrier</p>
+                <p class="text-lg font-bold text-gray-800">{{ project.dates_display }}</p>
+            </div>
+            
+            <div class="bg-purple-50 p-4 rounded-lg border-2 border-purple-200">
+                <p class="text-sm font-semibold text-gray-600">Statut</p>
+                <div class="mt-1">
+                    {% if project.status == 'en_preparation' %}
+                    <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-bold border-2 border-yellow-300 inline-block">⏳ {{ project.status_display }}</span>
+                    {% elif project.status == 'en_tournage' %}
+                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold border-2 border-green-300 inline-block">🎬 {{ project.status_display }}</span>
+                    {% elif project.status == 'post_production' %}
+                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold border-2 border-blue-300 inline-block">🎞️ {{ project.status_display }}</span>
+                    {% else %}
+                    <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-bold border-2 border-gray-300 inline-block">✓ {{ project.status_display }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        {% if project.shooting_locations %}
+        <div class="bg-teal-50 p-4 rounded-lg border-2 border-teal-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Lieux de tournage</p>
+            <p class="text-gray-800">{{ project.shooting_locations }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Section d'ajout de talent -->
+<div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 mb-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">➕ Ajouter un Talent au Projet</h2>
+    
+    <form method="POST" action="{{ url_for('cinema.assign_talent_to_project', project_id=project.id) }}" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label for="cinema_talent_id" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Sélectionner un talent <span class="text-red-500">*</span>
+                </label>
+                <select id="cinema_talent_id" 
+                        name="cinema_talent_id" 
+                        required
+                        class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all">
+                    <option value="">-- Choisir un talent --</option>
+                    {% for talent in all_cinema_talents %}
+                    <option value="{{ talent.id }}">
+                        {{ talent.first_name }} {{ talent.last_name }} ({{ talent.unique_code }})
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                <label for="talent_type" class="block text-sm font-semibold text-gray-700 mb-2">
+                    Type de talent <span class="text-red-500">*</span>
+                </label>
+                <select id="talent_type" 
+                        name="talent_type" 
+                        required
+                        class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all">
+                    <option value="">-- Type de rôle --</option>
+                    {% for talent_type in cinema_talent_types %}
+                    <option value="{{ talent_type }}">{{ talent_type }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="flex items-end">
+                <button type="submit" class="w-full bg-purple-100 text-purple-700 px-6 py-2 rounded-lg font-bold border-2 border-purple-500 hover:bg-purple-200 transition-all">
+                    ➕ Assigner
+                </button>
+            </div>
+        </div>
+        
+        <div>
+            <label for="role_description" class="block text-sm font-semibold text-gray-700 mb-2">
+                Description du rôle (optionnel)
+            </label>
+            <textarea id="role_description" 
+                      name="role_description" 
+                      rows="2"
+                      placeholder="Ex: Rôle principal, scènes d'action..."
+                      class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all"></textarea>
+        </div>
+    </form>
+</div>
+
+<!-- Liste des talents assignés -->
+<div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">👥 Talents Assignés ({{ project_talents|length }})</h2>
+    
+    {% if project_talents %}
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead>
+                <tr class="bg-purple-100 border-b-2 border-purple-300">
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Code Projet</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Nom Complet</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Code CINEMA</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Type de Talent</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Assigné le</th>
+                    <th class="px-4 py-3 text-center text-sm font-bold text-gray-800">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pt in project_talents %}
+                <tr class="border-b border-gray-200 hover:bg-gray-50">
+                    <td class="px-4 py-3">
+                        <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded font-bold text-sm border-2 border-purple-300">
+                            {{ pt.project_code }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 font-semibold">
+                        {{ pt.cinema_talent.first_name }} {{ pt.cinema_talent.last_name }}
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="text-sm text-gray-600">{{ pt.cinema_talent.unique_code }}</span>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-semibold border border-blue-300">
+                            {{ pt.talent_type }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-600">
+                        {{ pt.assigned_at.strftime('%d/%m/%Y') }}
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="flex gap-2 justify-center">
+                            <a href="{{ url_for('cinema.profile_view', code=pt.cinema_talent.unique_code) }}" 
+                               target="_blank"
+                               class="bg-green-100 text-green-700 px-3 py-1 rounded text-xs font-bold border-2 border-green-500 hover:bg-green-200 transition-all">
+                                👁️ Profil
+                            </a>
+                            <a href="{{ url_for('cinema.generate_project_badge', project_talent_id=pt.id) }}" 
+                               class="bg-orange-100 text-orange-700 px-3 py-1 rounded text-xs font-bold border-2 border-orange-500 hover:bg-orange-200 transition-all">
+                                🎫 Badge
+                            </a>
+                            <form method="POST" 
+                                  action="{{ url_for('cinema.remove_talent_from_project', project_id=project.id, project_talent_id=pt.id) }}" 
+                                  onsubmit="return confirm('Retirer ce talent du projet ?');"
+                                  class="inline">
+                                <button type="submit" 
+                                        class="bg-red-100 text-red-700 px-3 py-1 rounded text-xs font-bold border-2 border-red-500 hover:bg-red-200 transition-all">
+                                    ❌
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="text-center py-12 bg-gray-50 rounded-lg border-2 border-gray-200">
+        <span class="text-5xl mb-3 block">👥</span>
+        <p class="text-gray-600 font-semibold">Aucun talent assigné</p>
+        <p class="text-gray-500 text-sm">Utilisez le formulaire ci-dessus pour ajouter des talents au projet</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
