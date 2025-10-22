@@ -1073,16 +1073,20 @@ def generate_project_badge(project_talent_id):
         c = canvas.Canvas(buffer, pagesize=A4)
         page_width, page_height = A4
         
-        # Dimensions d'un badge A6 (10.5 x 14.8 cm)
-        badge_width = 10.5 * cm
-        badge_height = 14.8 * cm
+        # Dimensions réduites pour les badges (9.5 x 13.5 cm)
+        badge_width = 9.5 * cm
+        badge_height = 13.5 * cm
+        
+        # Calculer les positions centrées pour 4 badges avec espacement
+        horizontal_spacing = 0.75 * cm
+        vertical_spacing = 0.75 * cm
         
         # Positions des 4 badges sur la page A4
         positions = [
-            (0.5*cm, page_height - badge_height - 0.5*cm),  # Top left
-            (page_width/2 + 0.25*cm, page_height - badge_height - 0.5*cm),  # Top right
-            (0.5*cm, page_height - 2*badge_height - 1*cm),  # Bottom left
-            (page_width/2 + 0.25*cm, page_height - 2*badge_height - 1*cm)  # Bottom right
+            (horizontal_spacing, page_height - badge_height - vertical_spacing),  # Top left
+            (page_width/2 + horizontal_spacing/2, page_height - badge_height - vertical_spacing),  # Top right
+            (horizontal_spacing, page_height/2 - badge_height/2),  # Bottom left
+            (page_width/2 + horizontal_spacing/2, page_height/2 - badge_height/2)  # Bottom right
         ]
         
         # Générer le QR code avec le code unique du projet
@@ -1281,6 +1285,21 @@ def generate_project_badge(project_talent_id):
             c.setFillColor(colors.HexColor('#9CA3AF'))
             c.drawCentredString(content_x + content_width/2, y + 0.25*cm, 
                               f"TalentsMaroc.com | {datetime.now().strftime('%d/%m/%Y')}")
+        
+        # Lignes de découpage au centre pour faciliter le pliage
+        c.setStrokeColor(colors.HexColor('#CCCCCC'))
+        c.setDash([5, 3], 0)
+        c.setLineWidth(0.5)
+        
+        # Ligne verticale au centre
+        c.line(page_width/2, 0, page_width/2, page_height)
+        
+        # Ligne horizontale au centre
+        c.line(0, page_height/2, page_width, page_height/2)
+        
+        # Réinitialiser le style de ligne
+        c.setDash([], 0)
+        c.setLineWidth(1)
         
         # Finaliser le PDF
         c.save()
