@@ -469,7 +469,7 @@ def print_talents_list():
     
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), 
-                          rightMargin=0.3*cm, leftMargin=0.3*cm,
+                          rightMargin=0.15*cm, leftMargin=0.15*cm,
                           topMargin=0.6*cm, bottomMargin=0.6*cm)
     
     elements = []
@@ -558,7 +558,7 @@ def print_talents_list():
             ""
         ])
     
-    table = Table(data, colWidths=[3.8*cm, 2.2*cm, 2.8*cm, 2.8*cm, 2.8*cm, 2.8*cm, 4.5*cm, 3.8*cm])
+    table = Table(data, colWidths=[3.6*cm, 2.0*cm, 2.6*cm, 2.6*cm, 2.6*cm, 2.6*cm, 4.2*cm, 5.2*cm])
     
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#6B46C1')),

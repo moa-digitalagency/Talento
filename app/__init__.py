@@ -341,6 +341,24 @@ def _ensure_admin_exists(db, logger):
         from app.models.location import Country, City
         import os
         
+        # ÉTAPE 1: Garantir que Morocco et Rabat existent (OBLIGATOIRE pour créer l'admin)
+        morocco = Country.query.filter_by(code='MA').first()
+        if not morocco:
+            logger.info("🌍 Création du pays Morocco (requis pour admin)...")
+            morocco = Country(name='Maroc', code='MA')
+            db.session.add(morocco)
+            db.session.commit()
+            logger.info("✅ Maroc créé")
+        
+        rabat = City.query.filter_by(code='RAB').first()
+        if not rabat:
+            logger.info("🏙️ Création de la ville Rabat (requis pour admin)...")
+            rabat = City(name='Rabat', code='RAB')
+            db.session.add(rabat)
+            db.session.commit()
+            logger.info("✅ Rabat créé")
+        
+        # ÉTAPE 2: Créer ou mettre à jour l'admin
         admin_email = 'admin@talento.com'
         admin_code = 'MARAB0001N'
         admin_password = os.environ.get('ADMIN_PASSWORD', '@4dm1n')
