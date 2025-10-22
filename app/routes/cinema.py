@@ -1085,10 +1085,9 @@ def generate_project_badge(project_talent_id):
             (page_width/2 + 0.25*cm, page_height - 2*badge_height - 1*cm)  # Bottom right
         ]
         
-        # Générer le QR code
+        # Générer le QR code avec le code unique du projet
         qr = qrcode.QRCode(version=1, box_size=10, border=2)
-        profile_url = f"https://talentsmaroc.com/cinema/profile/{talent.unique_code}"
-        qr.add_data(profile_url)
+        qr.add_data(project_talent.project_code)
         qr.make(fit=True)
         qr_img = qr.make_image(fill_color="black", back_color="white")
         qr_path = f"/tmp/qr_{project_talent.project_code}.png"
