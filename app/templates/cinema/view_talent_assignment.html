@@ -93,6 +93,11 @@
         </div>
         
         <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Description</p>
+            <p class="text-base text-gray-800">{% if project_talent.role_description %}{{ project_talent.role_description }}{% else %}Pas de description{% endif %}</p>
+        </div>
+        
+        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
             <p class="text-sm font-semibold text-gray-600 mb-1">Assigné le</p>
             <p class="text-lg font-bold text-gray-800">{{ project_talent.assigned_at.strftime('%d/%m/%Y à %H:%M') }}</p>
         </div>
@@ -164,6 +169,16 @@
             <div class="bg-green-50 p-4 rounded-lg border border-green-200">
                 <p class="text-sm font-semibold text-gray-600 mb-1">Genre</p>
                 <p class="text-lg font-bold text-gray-800">{{ talent.gender }}</p>
+            </div>
+            {% endif %}
+            
+            {% if talent.languages_spoken %}
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <p class="text-sm font-semibold text-gray-600 mb-1">Langues parlées</p>
+                <p class="text-lg font-bold text-gray-800">
+                    {% set languages = talent.languages_spoken|from_json %}
+                    {% if languages %}{{ languages|join(', ') }}{% else %}Non spécifiées{% endif %}
+                </p>
             </div>
             {% endif %}
             
