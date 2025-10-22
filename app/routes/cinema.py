@@ -469,7 +469,7 @@ def print_talents_list():
     
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), 
-                          rightMargin=0.15*cm, leftMargin=0.15*cm,
+                          rightMargin=0.5*cm, leftMargin=0.5*cm,
                           topMargin=0.6*cm, bottomMargin=0.6*cm)
     
     elements = []
@@ -558,7 +558,7 @@ def print_talents_list():
             ""
         ])
     
-    table = Table(data, colWidths=[3.6*cm, 2.0*cm, 2.6*cm, 2.6*cm, 2.6*cm, 2.6*cm, 4.2*cm, 5.2*cm])
+    table = Table(data, colWidths=[3.8*cm, 2.6*cm, 3.2*cm, 2.8*cm, 2.8*cm, 2.8*cm, 4.5*cm, 5.5*cm])
     
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#6B46C1')),
@@ -566,8 +566,8 @@ def print_talents_list():
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 8),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
-        ('TOPPADDING', (0, 0), (-1, 0), 6),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('TOPPADDING', (0, 0), (-1, 0), 8),
         ('BACKGROUND', (0, 1), (-1, -1), colors.white),
         ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
         ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
@@ -575,8 +575,8 @@ def print_talents_list():
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#E0E0E0')),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F9F5FF')]),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 2),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 2),
+        ('LEFTPADDING', (0, 0), (-1, -1), 6),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 6),
         ('TOPPADDING', (0, 1), (-1, -1), 5),
         ('BOTTOMPADDING', (0, 1), (-1, -1), 5),
     ]))
