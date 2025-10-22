@@ -5,6 +5,61 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.30.0] - 2025-10-22
+
+### 🔍 Refonte Recherche Avancée CINEMA et Optimisations PDF
+
+#### Recherche Globale Unifiée
+- **Remplacé** : Champ "Nom du talent" par "Recherche globale"
+- **Largeur** : Champ élargi au double (2 colonnes sur 3)
+- **Indexation étendue** : Recherche dans nom, prénom, email, code unique, document d'identité
+- **Placeholder** : "Rechercher par nom, email, téléphone, code unique, document d'identité..."
+- **Recherche temps réel** : Filtrage automatique pendant la saisie
+
+#### Réorganisation de la Disposition des Filtres
+- **Ligne 1** : Recherche globale (2/3) + Type de talent (1/3)
+- **Ligne 2** : Genre + Tranche d'âge + Ethnicité + Pays (4 colonnes)
+- **Ligne 3** : Yeux + Cheveux + Teint + Taille + Langues (5 colonnes)
+- **Supprimé** : Champ "Expérience" (non présent dans la base de données)
+- **Regroupement logique** : Informations démographiques puis caractéristiques physiques
+
+#### Corrections Filtrage
+- **Corrigé** : Attributs `data-*` correctement liés aux champs de la base de données
+- **Supprimé** : Référence au champ `years_of_experience` inexistant
+- **Ajouté** : `data-search-global` pour recherche étendue
+- **Nettoyé** : `data-experience` supprimé du tableau
+- **Optimisé** : Parsing JSON pour ethnicités, types de talent et langues
+
+#### JavaScript - Logique de Filtrage
+- **Remplacé** : `searchName` par `searchGlobal` pour recherche élargie
+- **Supprimé** : Tout le code lié au filtre "Expérience"
+- **Corrigé** : Filtre langues parlées (parsing JSON array)
+- **Amélioré** : Gestion d'erreurs pour champs JSON invalides
+- **Conservé** : Recherche en temps réel et bouton réinitialiser
+
+#### Export PDF - Colonnes et Espacement
+- **Élargi** : Toutes les colonnes pour éviter chevauchement de texte
+  - "Nom complet" : 3.6cm → 3.8cm
+  - "Âge / Genre" : 2.0cm → 2.6cm (+30%)
+  - "Document d'identité" : 2.6cm → 3.2cm (+23%)
+  - "Téléphone", "WhatsApp", "Ethnicité" : 2.6cm → 2.8cm
+  - "Type de talent" : 4.2cm → 4.5cm
+  - "Observations" : 5.2cm → 5.5cm
+- **Augmenté** : Padding interne des cellules
+  - Padding gauche/droite : 2px → 6px (×3)
+  - Padding en-tête : 6px → 8px
+- **Corrigé** : Marges de page (0.15cm → 0.5cm) pour plus d'espace
+- **Résultat** : Titres de colonnes parfaitement lisibles sans chevauchement
+
+#### Résultat
+- ✅ **Recherche puissante** : Un seul champ pour chercher dans tous les champs importants
+- ✅ **Disposition logique** : Filtres regroupés par catégorie
+- ✅ **Données exactes** : Tous les filtres correspondent aux champs BDD réels
+- ✅ **PDF professionnel** : Colonnes larges avec espacement confortable
+- ✅ **Pas de bugs** : Champ expérience supprimé, langues correctement filtrées
+
+---
+
 ## [2.29.0] - 2025-10-21
 
 ### 📚 Documentation du Système de Codification

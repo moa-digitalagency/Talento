@@ -20,13 +20,13 @@
     </div>
     
     <div class="bg-white p-6 rounded-lg border-2 border-dotted border-blue-500">
-        <!-- Ligne 1: Informations générales -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">👤 Nom du talent</label>
+        <!-- Ligne 1: Recherche générale et filtres de base -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div class="md:col-span-2">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">🔍 Recherche globale</label>
                 <input type="text" 
-                       id="searchName"
-                       placeholder="Rechercher par nom..." 
+                       id="searchGlobal"
+                       placeholder="Rechercher par nom, email, téléphone, code unique, document d'identité..." 
                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
             
@@ -39,7 +39,10 @@
                     {% endfor %}
                 </select>
             </div>
-            
+        </div>
+        
+        <!-- Ligne 2: Informations démographiques -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">⚧️ Genre</label>
                 <select id="searchGender" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -60,10 +63,7 @@
                     <option value="51+">51+ ans (Senior)</option>
                 </select>
             </div>
-        </div>
-        
-        <!-- Ligne 2: Caractéristiques physiques -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+            
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">🌍 Ethnicité</label>
                 <select id="searchEthnicity" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -79,6 +79,19 @@
                 </select>
             </div>
             
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">🌍 Pays</label>
+                <select id="searchCountry" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Tous les pays</option>
+                    {% for country in countries %}
+                    <option value="{{ country.name }}">{{ country.flag }} {{ country.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <!-- Ligne 3: Caractéristiques physiques -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">👁️ Yeux</label>
                 <select id="searchEyeColor" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -120,38 +133,14 @@
                     <option value="190+">190+ cm</option>
                 </select>
             </div>
-        </div>
-        
-        <!-- Ligne 3: Localisation et langues -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">🌍 Pays</label>
-                <select id="searchCountry" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Tous les pays</option>
-                    {% for country in countries %}
-                    <option value="{{ country.name }}">{{ country.flag }} {{ country.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
             
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">🗣️ Langues parlées</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">🗣️ Langues</label>
                 <select id="searchLanguage" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Toutes</option>
                     {% for language in languages %}
                     <option value="{{ language }}">{{ language }}</option>
                     {% endfor %}
-                </select>
-            </div>
-            
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">⭐ Expérience</label>
-                <select id="searchExperience" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Tous niveaux</option>
-                    <option value="0-1">Débutant (0-1 ans)</option>
-                    <option value="2-5">Intermédiaire (2-5 ans)</option>
-                    <option value="6-10">Expérimenté (6-10 ans)</option>
-                    <option value="10+">Expert (10+ ans)</option>
                 </select>
             </div>
         </div>
@@ -210,7 +199,7 @@
                     <tbody>
                         {% for talent in talents %}
                         <tr class="talent-row border-b border-gray-200 hover:bg-purple-50 transition-all"
-                            data-name="{{ talent.first_name|lower }} {{ talent.last_name|lower }}"
+                            data-search-global="{{ talent.first_name|lower }} {{ talent.last_name|lower }} {{ talent.email|lower }} {{ talent.unique_code|lower if talent.unique_code else '' }}"
                             data-talent-types="{{ talent.talent_types if talent.talent_types else '[]' }}"
                             data-gender="{{ talent.gender }}"
                             data-age="{{ talent.age if talent.age else '' }}"
@@ -220,8 +209,7 @@
                             data-skin-tone="{{ talent.skin_tone if talent.skin_tone else '' }}"
                             data-height="{{ talent.height if talent.height else '' }}"
                             data-country="{{ talent.country_of_residence if talent.country_of_residence else '' }}"
-                            data-languages="{{ talent.languages_spoken if talent.languages_spoken else '[]' }}"
-                            data-experience="{{ talent.years_of_experience if talent.years_of_experience else '' }}">
+                            data-languages="{{ talent.languages_spoken if talent.languages_spoken else '[]' }}">
                             <td class="py-3 px-4">
                                 <input type="checkbox" class="talent-checkbox w-5 h-5 rounded border-2 border-purple-400 text-purple-600 focus:ring-2 focus:ring-purple-500" data-talent-id="{{ talent.id }}">
                             </td>
@@ -452,7 +440,7 @@ const resetButton = document.getElementById('resetButton');
 
 function filterTalents() {
     // Récupérer les valeurs de recherche
-    const searchName = document.getElementById('searchName').value.toLowerCase().trim();
+    const searchGlobal = document.getElementById('searchGlobal').value.toLowerCase().trim();
     const searchTalentType = document.getElementById('searchTalentType').value;
     const searchGender = document.getElementById('searchGender').value;
     const searchAge = document.getElementById('searchAge').value;
@@ -463,7 +451,6 @@ function filterTalents() {
     const searchHeight = document.getElementById('searchHeight').value;
     const searchCountry = document.getElementById('searchCountry').value;
     const searchLanguage = document.getElementById('searchLanguage').value;
-    const searchExperience = document.getElementById('searchExperience').value;
     
     // Récupérer toutes les lignes de talents
     const talentRows = document.querySelectorAll('.talent-row');
@@ -472,8 +459,8 @@ function filterTalents() {
     talentRows.forEach(row => {
         let shouldShow = true;
         
-        // Filtre par nom (recherche uniquement dans first_name + last_name)
-        if (searchName && !row.dataset.name.includes(searchName)) {
+        // Filtre par recherche globale (nom, email, téléphone, code, document)
+        if (searchGlobal && !row.dataset.searchGlobal.includes(searchGlobal)) {
             shouldShow = false;
         }
         
@@ -578,26 +565,6 @@ function filterTalents() {
             }
         }
         
-        // Filtre par expérience
-        if (searchExperience) {
-            const experience = parseInt(row.dataset.experience);
-            if (!experience && experience !== 0) {
-                shouldShow = false;
-            } else {
-                const [min, max] = searchExperience.split('-');
-                if (max === undefined) {
-                    // Cas "10+"
-                    if (experience < parseInt(min)) {
-                        shouldShow = false;
-                    }
-                } else {
-                    if (experience < parseInt(min) || experience > parseInt(max)) {
-                        shouldShow = false;
-                    }
-                }
-            }
-        }
-        
         // Afficher ou cacher la ligne
         if (shouldShow) {
             row.style.display = '';
@@ -612,7 +579,7 @@ function filterTalents() {
 
 function resetFilters() {
     // Réinitialiser tous les champs de recherche
-    document.getElementById('searchName').value = '';
+    document.getElementById('searchGlobal').value = '';
     document.getElementById('searchTalentType').value = '';
     document.getElementById('searchGender').value = '';
     document.getElementById('searchAge').value = '';
@@ -623,7 +590,6 @@ function resetFilters() {
     document.getElementById('searchHeight').value = '';
     document.getElementById('searchCountry').value = '';
     document.getElementById('searchLanguage').value = '';
-    document.getElementById('searchExperience').value = '';
     
     // Afficher toutes les lignes
     const talentRows = document.querySelectorAll('.talent-row');
@@ -643,10 +609,10 @@ if (resetButton) {
     resetButton.addEventListener('click', resetFilters);
 }
 
-// Recherche en temps réel pour le champ nom
-const searchNameField = document.getElementById('searchName');
-if (searchNameField) {
-    searchNameField.addEventListener('input', filterTalents);
+// Recherche en temps réel pour le champ global
+const searchGlobalField = document.getElementById('searchGlobal');
+if (searchGlobalField) {
+    searchGlobalField.addEventListener('input', filterTalents);
 }
 </script>
 {% endblock %}
