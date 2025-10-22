@@ -25,13 +25,14 @@
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">👤 Nom du talent</label>
                 <input type="text" 
+                       id="searchName"
                        placeholder="Rechercher par nom..." 
                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">🎭 Type de talent</label>
-                <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="searchTalentType" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Tous les types</option>
                     {% for talent_type in cinema_talent_types %}
                     <option value="{{ talent_type }}">{{ talent_type }}</option>
@@ -41,7 +42,7 @@
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">⚧️ Genre</label>
-                <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="searchGender" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Tous</option>
                     <option value="M">Homme</option>
                     <option value="F">Femme</option>
@@ -50,7 +51,7 @@
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">🎂 Tranche d'âge</label>
-                <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="searchAge" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Tous les âges</option>
                     <option value="0-17">0-17 ans (Enfant/Ado)</option>
                     <option value="18-25">18-25 ans (Jeune adulte)</option>
@@ -65,7 +66,7 @@
         <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">🌍 Ethnicité</label>
-                <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="searchEthnicity" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Toutes</option>
                     <option value="Arabe">Arabe</option>
                     <option value="Berbère">Berbère</option>
@@ -80,7 +81,7 @@
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">👁️ Yeux</label>
-                <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="searchEyeColor" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Tous</option>
                     {% for color in eye_colors %}
                     <option value="{{ color }}">{{ color }}</option>
@@ -90,7 +91,7 @@
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">💇 Cheveux</label>
-                <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="searchHairColor" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Tous</option>
                     {% for color in hair_colors %}
                     <option value="{{ color }}">{{ color }}</option>
@@ -100,7 +101,7 @@
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">🎨 Teint</label>
-                <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="searchSkinTone" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Tous</option>
                     {% for tone in skin_tones %}
                     <option value="{{ tone }}">{{ tone }}</option>
@@ -110,7 +111,7 @@
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">📏 Taille</label>
-                <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="searchHeight" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Toutes</option>
                     <option value="0-160">< 160 cm</option>
                     <option value="160-170">160-170 cm</option>
@@ -125,7 +126,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">🌍 Pays</label>
-                <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="searchCountry" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Tous les pays</option>
                     {% for country in countries %}
                     <option value="{{ country.name }}">{{ country.flag }} {{ country.name }}</option>
@@ -135,7 +136,7 @@
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">🗣️ Langues parlées</label>
-                <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="searchLanguage" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Toutes</option>
                     {% for language in languages %}
                     <option value="{{ language }}">{{ language }}</option>
@@ -145,7 +146,7 @@
             
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">⭐ Expérience</label>
-                <select class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <select id="searchExperience" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Tous niveaux</option>
                     <option value="0-1">Débutant (0-1 ans)</option>
                     <option value="2-5">Intermédiaire (2-5 ans)</option>
@@ -156,10 +157,10 @@
         </div>
         
         <div class="mt-6 flex gap-3">
-            <button class="px-4 py-2 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold rounded-lg transition-all">
+            <button id="searchButton" class="px-4 py-2 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold rounded-lg transition-all">
                 🔍 Rechercher
             </button>
-            <button class="px-4 py-2 bg-white text-gray-700 font-semibold rounded-lg border-2 border-gray-300 hover:bg-gray-50 transition-all">
+            <button id="resetButton" class="px-4 py-2 bg-white text-gray-700 font-semibold rounded-lg border-2 border-gray-300 hover:bg-gray-50 transition-all">
                 🔄 Réinitialiser
             </button>
         </div>
@@ -208,7 +209,19 @@
                     </thead>
                     <tbody>
                         {% for talent in talents %}
-                        <tr class="border-b border-gray-200 hover:bg-purple-50 transition-all">
+                        <tr class="talent-row border-b border-gray-200 hover:bg-purple-50 transition-all"
+                            data-name="{{ talent.first_name|lower }} {{ talent.last_name|lower }}"
+                            data-talent-types="{{ talent.talent_types if talent.talent_types else '[]' }}"
+                            data-gender="{{ talent.gender }}"
+                            data-age="{{ talent.age if talent.age else '' }}"
+                            data-ethnicities="{{ talent.ethnicities if talent.ethnicities else '[]' }}"
+                            data-eye-color="{{ talent.eye_color if talent.eye_color else '' }}"
+                            data-hair-color="{{ talent.hair_color if talent.hair_color else '' }}"
+                            data-skin-tone="{{ talent.skin_tone if talent.skin_tone else '' }}"
+                            data-height="{{ talent.height if talent.height else '' }}"
+                            data-country="{{ talent.country_of_residence if talent.country_of_residence else '' }}"
+                            data-languages="{{ talent.languages_spoken if talent.languages_spoken else '[]' }}"
+                            data-experience="{{ talent.years_of_experience if talent.years_of_experience else '' }}">
                             <td class="py-3 px-4">
                                 <input type="checkbox" class="talent-checkbox w-5 h-5 rounded border-2 border-purple-400 text-purple-600 focus:ring-2 focus:ring-purple-500" data-talent-id="{{ talent.id }}">
                             </td>
@@ -431,6 +444,209 @@ function deleteTalent(talentId, talentName) {
             alert('Erreur lors de la suppression');
         });
     }
+}
+
+// ==================== RECHERCHE AVANCÉE ====================
+const searchButton = document.getElementById('searchButton');
+const resetButton = document.getElementById('resetButton');
+
+function filterTalents() {
+    // Récupérer les valeurs de recherche
+    const searchName = document.getElementById('searchName').value.toLowerCase().trim();
+    const searchTalentType = document.getElementById('searchTalentType').value;
+    const searchGender = document.getElementById('searchGender').value;
+    const searchAge = document.getElementById('searchAge').value;
+    const searchEthnicity = document.getElementById('searchEthnicity').value;
+    const searchEyeColor = document.getElementById('searchEyeColor').value;
+    const searchHairColor = document.getElementById('searchHairColor').value;
+    const searchSkinTone = document.getElementById('searchSkinTone').value;
+    const searchHeight = document.getElementById('searchHeight').value;
+    const searchCountry = document.getElementById('searchCountry').value;
+    const searchLanguage = document.getElementById('searchLanguage').value;
+    const searchExperience = document.getElementById('searchExperience').value;
+    
+    // Récupérer toutes les lignes de talents
+    const talentRows = document.querySelectorAll('.talent-row');
+    let visibleCount = 0;
+    
+    talentRows.forEach(row => {
+        let shouldShow = true;
+        
+        // Filtre par nom (recherche uniquement dans first_name + last_name)
+        if (searchName && !row.dataset.name.includes(searchName)) {
+            shouldShow = false;
+        }
+        
+        // Filtre par type de talent (JSON array)
+        if (searchTalentType) {
+            try {
+                const talentTypes = JSON.parse(row.dataset.talentTypes);
+                if (!talentTypes.includes(searchTalentType)) {
+                    shouldShow = false;
+                }
+            } catch (e) {
+                shouldShow = false;
+            }
+        }
+        
+        // Filtre par genre
+        if (searchGender && row.dataset.gender !== searchGender) {
+            shouldShow = false;
+        }
+        
+        // Filtre par tranche d'âge
+        if (searchAge) {
+            const age = parseInt(row.dataset.age);
+            if (!age) {
+                shouldShow = false;
+            } else {
+                const [min, max] = searchAge.split('-');
+                if (max === undefined) {
+                    // Cas "51+"
+                    if (age < parseInt(min)) {
+                        shouldShow = false;
+                    }
+                } else {
+                    if (age < parseInt(min) || age > parseInt(max)) {
+                        shouldShow = false;
+                    }
+                }
+            }
+        }
+        
+        // Filtre par ethnicité (JSON array)
+        if (searchEthnicity) {
+            try {
+                const ethnicities = JSON.parse(row.dataset.ethnicities);
+                if (!ethnicities.includes(searchEthnicity)) {
+                    shouldShow = false;
+                }
+            } catch (e) {
+                shouldShow = false;
+            }
+        }
+        
+        // Filtre par couleur des yeux
+        if (searchEyeColor && row.dataset.eyeColor !== searchEyeColor) {
+            shouldShow = false;
+        }
+        
+        // Filtre par couleur des cheveux
+        if (searchHairColor && row.dataset.hairColor !== searchHairColor) {
+            shouldShow = false;
+        }
+        
+        // Filtre par teint
+        if (searchSkinTone && row.dataset.skinTone !== searchSkinTone) {
+            shouldShow = false;
+        }
+        
+        // Filtre par taille
+        if (searchHeight) {
+            const height = parseInt(row.dataset.height);
+            if (!height) {
+                shouldShow = false;
+            } else {
+                const [min, max] = searchHeight.split('-');
+                if (max === undefined) {
+                    // Cas "190+"
+                    if (height < parseInt(min)) {
+                        shouldShow = false;
+                    }
+                } else {
+                    if (height < parseInt(min) || height > parseInt(max)) {
+                        shouldShow = false;
+                    }
+                }
+            }
+        }
+        
+        // Filtre par pays
+        if (searchCountry && row.dataset.country !== searchCountry) {
+            shouldShow = false;
+        }
+        
+        // Filtre par langue (JSON array)
+        if (searchLanguage) {
+            try {
+                const languages = JSON.parse(row.dataset.languages);
+                if (!languages.includes(searchLanguage)) {
+                    shouldShow = false;
+                }
+            } catch (e) {
+                shouldShow = false;
+            }
+        }
+        
+        // Filtre par expérience
+        if (searchExperience) {
+            const experience = parseInt(row.dataset.experience);
+            if (!experience && experience !== 0) {
+                shouldShow = false;
+            } else {
+                const [min, max] = searchExperience.split('-');
+                if (max === undefined) {
+                    // Cas "10+"
+                    if (experience < parseInt(min)) {
+                        shouldShow = false;
+                    }
+                } else {
+                    if (experience < parseInt(min) || experience > parseInt(max)) {
+                        shouldShow = false;
+                    }
+                }
+            }
+        }
+        
+        // Afficher ou cacher la ligne
+        if (shouldShow) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    console.log(`Filtrage terminé: ${visibleCount} talent(s) trouvé(s)`);
+}
+
+function resetFilters() {
+    // Réinitialiser tous les champs de recherche
+    document.getElementById('searchName').value = '';
+    document.getElementById('searchTalentType').value = '';
+    document.getElementById('searchGender').value = '';
+    document.getElementById('searchAge').value = '';
+    document.getElementById('searchEthnicity').value = '';
+    document.getElementById('searchEyeColor').value = '';
+    document.getElementById('searchHairColor').value = '';
+    document.getElementById('searchSkinTone').value = '';
+    document.getElementById('searchHeight').value = '';
+    document.getElementById('searchCountry').value = '';
+    document.getElementById('searchLanguage').value = '';
+    document.getElementById('searchExperience').value = '';
+    
+    // Afficher toutes les lignes
+    const talentRows = document.querySelectorAll('.talent-row');
+    talentRows.forEach(row => {
+        row.style.display = '';
+    });
+    
+    console.log('Filtres réinitialisés');
+}
+
+// Événements des boutons
+if (searchButton) {
+    searchButton.addEventListener('click', filterTalents);
+}
+
+if (resetButton) {
+    resetButton.addEventListener('click', resetFilters);
+}
+
+// Recherche en temps réel pour le champ nom
+const searchNameField = document.getElementById('searchName');
+if (searchNameField) {
+    searchNameField.addEventListener('input', filterTalents);
 }
 </script>
 {% endblock %}
