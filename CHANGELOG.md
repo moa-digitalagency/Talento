@@ -7,7 +7,12 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [2.30.0] - 2025-10-22
 
-### 🔍 Refonte Recherche Avancée CINEMA et Optimisations PDF
+### 🔍 Synchronisation Totale Formulaire d'Inscription ↔ Recherche Avancée CINEMA
+
+#### 🎯 Problème Résolu : Synchronisation des Données
+- **Avant** : Les filtres de recherche utilisaient uniquement les valeurs présentes dans la BDD
+- **Après** : Les filtres utilisent TOUJOURS les mêmes constantes que le formulaire d'inscription
+- **Garantie** : Toutes les options du formulaire sont disponibles dans les filtres, même si aucun talent ne les utilise
 
 #### Recherche Globale Unifiée
 - **Remplacé** : Champ "Nom du talent" par "Recherche globale"
@@ -19,25 +24,35 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 #### Réorganisation de la Disposition des Filtres
 - **Ligne 1** : Recherche globale (2/3) + Type de talent (1/3)
 - **Ligne 2** : Genre + Tranche d'âge + Ethnicité + Pays (4 colonnes)
-- **Ligne 3** : Yeux + Cheveux + Teint + Taille + Langues (5 colonnes)
-- **Supprimé** : Champ "Expérience" (non présent dans la base de données)
-- **Regroupement logique** : Informations démographiques puis caractéristiques physiques
+- **Ligne 3** : Couleur yeux + Couleur cheveux + Type cheveux + Langues (4 colonnes)
+- **Ligne 4** : Teint de peau + Corpulence + Taille (3 colonnes)
+- **Supprimé** : Champ "Expérience" (n'existe pas dans la base de données)
+- **Ajouté** : Type de cheveux + Corpulence (manquaient dans les filtres)
 
-#### Corrections Filtrage
-- **Corrigé** : Attributs `data-*` correctement liés aux champs de la base de données
-- **Supprimé** : Référence au champ `years_of_experience` inexistant
-- **Ajouté** : `data-search-global` pour recherche étendue
-- **Nettoyé** : `data-experience` supprimé du tableau
-- **Optimisé** : Parsing JSON pour ethnicités, types de talent et langues
+#### Filtres Physiques - Valeurs 100% Synchronisées
+- **Couleur des yeux** (12 options) : Marron foncé, Marron, Marron clair, Noisette, Vert, Vert clair, Bleu, Bleu clair, Gris, Ambre, Noir, Vairons
+- **Couleur des cheveux** (16 options) : Noir, Brun foncé, Brun, Châtain foncé, Châtain, Châtain clair, Blond foncé, Blond, Blond platine, Roux, Auburn, Poivre et sel, Gris, Blanc, Colorés/Fantaisie, Chauve/Rasé
+- **Type de cheveux** (10 options) : Raides, Ondulés, Bouclés, Frisés, Crépus, Afro, Tressés, Locks/Dreadlocks, Rasés, Chauve
+- **Teint de peau** (10 options) : Très clair, Clair, Moyen clair, Moyen, Olivâtre, Mat, Bronzé, Foncé, Très foncé, Noir profond
+- **Corpulence** (10 options) : Très mince, Mince, Svelte, Athlétique, Musclé, Moyen, Fort, Rond, Corpulent, Imposant
 
-#### JavaScript - Logique de Filtrage
-- **Remplacé** : `searchName` par `searchGlobal` pour recherche élargie
-- **Supprimé** : Tout le code lié au filtre "Expérience"
-- **Corrigé** : Filtre langues parlées (parsing JSON array)
-- **Amélioré** : Gestion d'erreurs pour champs JSON invalides
-- **Conservé** : Recherche en temps réel et bouton réinitialiser
+#### Corrections Backend (routes/cinema.py)
+- **Supprimé** : Logique qui extrayait les valeurs uniques de la BDD
+- **Modifié** : Utilisation directe des constantes `EYE_COLORS`, `HAIR_COLORS`, `HAIR_TYPES`, `SKIN_TONES`, `BUILD_TYPES`
+- **Résultat** : Les filtres affichent maintenant toutes les 58 options possibles, pas seulement celles utilisées
 
-#### Export PDF - Colonnes et Espacement
+#### Corrections Frontend (templates/cinema/talents.html)
+- **Ajouté** : Attributs `data-hair-type` et `data-build` dans le tableau
+- **Corrigé** : Affichage des langues avec drapeaux (`language.name` et `language.flag`)
+- **Labels clarifiés** : "Couleur des yeux", "Couleur des cheveux", "Type de cheveux", "Teint de peau"
+
+#### JavaScript - Logique de Filtrage Complète
+- **Ajouté** : Filtres `searchHairType` et `searchBuild`
+- **Corrigé** : Parsing JSON pour langues parlées
+- **Amélioré** : Gestion d'erreurs pour tous les champs JSON (ethnicities, talent_types, languages)
+- **Reset** : Réinitialisation de tous les 13 filtres
+
+#### Export PDF - Colonnes et Espacement (version précédente)
 - **Élargi** : Toutes les colonnes pour éviter chevauchement de texte
   - "Nom complet" : 3.6cm → 3.8cm
   - "Âge / Genre" : 2.0cm → 2.6cm (+30%)
@@ -45,18 +60,15 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - "Téléphone", "WhatsApp", "Ethnicité" : 2.6cm → 2.8cm
   - "Type de talent" : 4.2cm → 4.5cm
   - "Observations" : 5.2cm → 5.5cm
-- **Augmenté** : Padding interne des cellules
-  - Padding gauche/droite : 2px → 6px (×3)
-  - Padding en-tête : 6px → 8px
-- **Corrigé** : Marges de page (0.15cm → 0.5cm) pour plus d'espace
-- **Résultat** : Titres de colonnes parfaitement lisibles sans chevauchement
+- **Augmenté** : Padding interne des cellules (2px → 6px, ×3)
+- **Corrigé** : Marges de page (0.15cm → 0.5cm)
 
-#### Résultat
-- ✅ **Recherche puissante** : Un seul champ pour chercher dans tous les champs importants
-- ✅ **Disposition logique** : Filtres regroupés par catégorie
-- ✅ **Données exactes** : Tous les filtres correspondent aux champs BDD réels
-- ✅ **PDF professionnel** : Colonnes larges avec espacement confortable
-- ✅ **Pas de bugs** : Champ expérience supprimé, langues correctement filtrées
+#### Résultat Final
+- ✅ **Synchronisation parfaite** : Formulaire d'inscription ↔ Filtres de recherche (100% identiques)
+- ✅ **58 options physiques** : Toutes les caractéristiques disponibles dans les filtres
+- ✅ **Recherche puissante** : 13 filtres combinables + recherche globale en temps réel
+- ✅ **Aucune donnée manquante** : Type de cheveux et corpulence ajoutés
+- ✅ **Pas de bugs** : Champ expérience supprimé, langues avec drapeaux
 
 ---
 

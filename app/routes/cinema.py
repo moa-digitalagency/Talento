@@ -35,34 +35,18 @@ def talents():
     # Récupérer tous les pays de la base de données pour les filtres
     countries = Country.query.order_by(Country.name).all()
     
-    # Récupérer les valeurs uniques des caractéristiques des talents existants
-    ethnicities_set = set()
-    eye_colors_set = set()
-    hair_colors_set = set()
-    skin_tones_set = set()
-    
-    for talent in talents_list:
-        if talent.ethnicities:
-            try:
-                ethnicities = json.loads(talent.ethnicities)
-                ethnicities_set.update(ethnicities)
-            except:
-                pass
-        if talent.eye_color:
-            eye_colors_set.add(talent.eye_color)
-        if talent.hair_color:
-            hair_colors_set.add(talent.hair_color)
-        if talent.skin_tone:
-            skin_tones_set.add(talent.skin_tone)
-    
+    # Utiliser TOUJOURS les constantes complètes pour les filtres
+    # (même principe que le formulaire d'inscription - synchronisation totale)
     return render_template('cinema/talents.html', 
                          talents=talents_list,
                          countries=countries,
                          languages=LANGUAGES_CINEMA,
                          cinema_talent_types=CINEMA_TALENT_TYPES,
-                         eye_colors=sorted(eye_colors_set) if eye_colors_set else EYE_COLORS,
-                         hair_colors=sorted(hair_colors_set) if hair_colors_set else HAIR_COLORS,
-                         skin_tones=sorted(skin_tones_set) if skin_tones_set else SKIN_TONES)
+                         eye_colors=EYE_COLORS,
+                         hair_colors=HAIR_COLORS,
+                         hair_types=HAIR_TYPES,
+                         skin_tones=SKIN_TONES,
+                         build_types=BUILD_TYPES)
 
 @bp.route('/productions')
 @login_required

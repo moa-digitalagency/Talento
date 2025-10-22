@@ -90,12 +90,12 @@
             </div>
         </div>
         
-        <!-- Ligne 3: Caractéristiques physiques -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+        <!-- Ligne 3: Caractéristiques physiques - Partie 1 -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">👁️ Yeux</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">👁️ Couleur des yeux</label>
                 <select id="searchEyeColor" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Tous</option>
+                    <option value="">Toutes</option>
                     {% for color in eye_colors %}
                     <option value="{{ color }}">{{ color }}</option>
                     {% endfor %}
@@ -103,9 +103,9 @@
             </div>
             
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">💇 Cheveux</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">💇 Couleur des cheveux</label>
                 <select id="searchHairColor" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Tous</option>
+                    <option value="">Toutes</option>
                     {% for color in hair_colors %}
                     <option value="{{ color }}">{{ color }}</option>
                     {% endfor %}
@@ -113,11 +113,44 @@
             </div>
             
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">🎨 Teint</label>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">✂️ Type de cheveux</label>
+                <select id="searchHairType" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Tous</option>
+                    {% for type in hair_types %}
+                    <option value="{{ type }}">{{ type }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">🗣️ Langues parlées</label>
+                <select id="searchLanguage" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Toutes</option>
+                    {% for language in languages %}
+                    <option value="{{ language.name }}">{{ language.flag }} {{ language.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        <!-- Ligne 4: Caractéristiques physiques - Partie 2 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">🎨 Teint de peau</label>
                 <select id="searchSkinTone" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <option value="">Tous</option>
                     {% for tone in skin_tones %}
                     <option value="{{ tone }}">{{ tone }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">💪 Corpulence</label>
+                <select id="searchBuild" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Toutes</option>
+                    {% for build in build_types %}
+                    <option value="{{ build }}">{{ build }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -131,16 +164,6 @@
                     <option value="170-180">170-180 cm</option>
                     <option value="180-190">180-190 cm</option>
                     <option value="190+">190+ cm</option>
-                </select>
-            </div>
-            
-            <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-2">🗣️ Langues</label>
-                <select id="searchLanguage" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="">Toutes</option>
-                    {% for language in languages %}
-                    <option value="{{ language }}">{{ language }}</option>
-                    {% endfor %}
                 </select>
             </div>
         </div>
@@ -206,7 +229,9 @@
                             data-ethnicities="{{ talent.ethnicities if talent.ethnicities else '[]' }}"
                             data-eye-color="{{ talent.eye_color if talent.eye_color else '' }}"
                             data-hair-color="{{ talent.hair_color if talent.hair_color else '' }}"
+                            data-hair-type="{{ talent.hair_type if talent.hair_type else '' }}"
                             data-skin-tone="{{ talent.skin_tone if talent.skin_tone else '' }}"
+                            data-build="{{ talent.build if talent.build else '' }}"
                             data-height="{{ talent.height if talent.height else '' }}"
                             data-country="{{ talent.country_of_residence if talent.country_of_residence else '' }}"
                             data-languages="{{ talent.languages_spoken if talent.languages_spoken else '[]' }}">
@@ -447,7 +472,9 @@ function filterTalents() {
     const searchEthnicity = document.getElementById('searchEthnicity').value;
     const searchEyeColor = document.getElementById('searchEyeColor').value;
     const searchHairColor = document.getElementById('searchHairColor').value;
+    const searchHairType = document.getElementById('searchHairType').value;
     const searchSkinTone = document.getElementById('searchSkinTone').value;
+    const searchBuild = document.getElementById('searchBuild').value;
     const searchHeight = document.getElementById('searchHeight').value;
     const searchCountry = document.getElementById('searchCountry').value;
     const searchLanguage = document.getElementById('searchLanguage').value;
@@ -523,8 +550,18 @@ function filterTalents() {
             shouldShow = false;
         }
         
+        // Filtre par type de cheveux
+        if (searchHairType && row.dataset.hairType !== searchHairType) {
+            shouldShow = false;
+        }
+        
         // Filtre par teint
         if (searchSkinTone && row.dataset.skinTone !== searchSkinTone) {
+            shouldShow = false;
+        }
+        
+        // Filtre par corpulence
+        if (searchBuild && row.dataset.build !== searchBuild) {
             shouldShow = false;
         }
         
@@ -586,7 +623,9 @@ function resetFilters() {
     document.getElementById('searchEthnicity').value = '';
     document.getElementById('searchEyeColor').value = '';
     document.getElementById('searchHairColor').value = '';
+    document.getElementById('searchHairType').value = '';
     document.getElementById('searchSkinTone').value = '';
+    document.getElementById('searchBuild').value = '';
     document.getElementById('searchHeight').value = '';
     document.getElementById('searchCountry').value = '';
     document.getElementById('searchLanguage').value = '';
