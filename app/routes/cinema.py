@@ -1033,16 +1033,18 @@ def delete_project(project_id):
 @bp.route('/projects/talent/<int:project_talent_id>/generate-badge')
 @login_required
 def generate_project_badge(project_talent_id):
-    """Générer un badge pour un talent assigné à un projet"""
+    """Générer un badge pour un talent assigné à un projet - 4 badges A6 sur une page A4"""
     from app.models.project import ProjectTalent
-    from reportlab.lib.pagesizes import letter, A4
+    from reportlab.lib.pagesizes import A4
     from reportlab.lib import colors
     from reportlab.lib.units import cm
-    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
-    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.lib.enums import TA_CENTER, TA_LEFT
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.enums import TA_CENTER
+    from reportlab.platypus import Paragraph
+    from reportlab.lib.styles import ParagraphStyle
     import qrcode
     import os
+    from PIL import Image as PILImage
     
     project_talent = ProjectTalent.query.get_or_404(project_talent_id)
     talent = project_talent.cinema_talent
@@ -1052,102 +1054,145 @@ def generate_project_badge(project_talent_id):
         # Créer un buffer pour le PDF
         buffer = io.BytesIO()
         
-        # Configuration du document (format badge - A6 paysage)
-        badge_width = 14.8 * cm
-        badge_height = 10.5 * cm
+        # Page A4
+        c = canvas.Canvas(buffer, pagesize=A4)
+        page_width, page_height = A4
         
-        doc = SimpleDocTemplate(
-            buffer,
-            pagesize=(badge_width, badge_height),
-            leftMargin=0.5*cm,
-            rightMargin=0.5*cm,
-            topMargin=0.5*cm,
-            bottomMargin=0.5*cm
-        )
+        # Dimensions d'un badge A6 (10.5 x 14.8 cm)
+        badge_width = 10.5 * cm
+        badge_height = 14.8 * cm
         
-        elements = []
-        styles = getSampleStyleSheet()
+        # Positions des 4 badges sur la page A4
+        positions = [
+            (0.5*cm, page_height - badge_height - 0.5*cm),  # Top left
+            (page_width/2 + 0.25*cm, page_height - badge_height - 0.5*cm),  # Top right
+            (0.5*cm, page_height - 2*badge_height - 1*cm),  # Bottom left
+            (page_width/2 + 0.25*cm, page_height - 2*badge_height - 1*cm)  # Bottom right
+        ]
         
-        # Style pour le titre
-        title_style = ParagraphStyle(
-            'BadgeTitle',
-            parent=styles['Heading1'],
-            fontSize=16,
-            textColor=colors.HexColor('#8B5CF6'),
-            alignment=TA_CENTER,
-            spaceAfter=6
-        )
-        
-        # Style pour le nom
-        name_style = ParagraphStyle(
-            'BadgeName',
-            parent=styles['Normal'],
-            fontSize=14,
-            textColor=colors.black,
-            alignment=TA_CENTER,
-            fontName='Helvetica-Bold',
-            spaceAfter=6
-        )
-        
-        # Style pour les informations
-        info_style = ParagraphStyle(
-            'BadgeInfo',
-            parent=styles['Normal'],
-            fontSize=10,
-            textColor=colors.HexColor('#4B5563'),
-            alignment=TA_CENTER,
-            spaceAfter=4
-        )
-        
-        # Titre du badge
-        elements.append(Paragraph("BADGE PROJET", title_style))
-        elements.append(Spacer(1, 0.3*cm))
-        
-        # Nom complet
-        elements.append(Paragraph(f"{talent.first_name} {talent.last_name}", name_style))
-        
-        # Code unique du projet
-        elements.append(Paragraph(f"<b>Code:</b> {project_talent.project_code}", info_style))
-        
-        # Type de talent
-        elements.append(Paragraph(f"<b>Rôle:</b> {project_talent.talent_type}", info_style))
-        
-        # Nom du projet
-        elements.append(Paragraph(f"<b>Projet:</b> {project.name}", info_style))
-        
-        # Type de production
-        elements.append(Paragraph(f"<b>Production:</b> {project.production_type}", info_style))
-        
-        # Générer un QR code pour le profil du talent
+        # Générer le QR code
         qr = qrcode.QRCode(version=1, box_size=10, border=2)
-        qr.add_data(f"{talent.unique_code}")  # On peut utiliser le code CINEMA du talent
+        profile_url = f"https://talentsmaroc.com/cinema/profile/{talent.unique_code}"
+        qr.add_data(profile_url)
         qr.make(fit=True)
         qr_img = qr.make_image(fill_color="black", back_color="white")
-        
-        # Sauvegarder temporairement le QR code
         qr_path = f"/tmp/qr_{project_talent.project_code}.png"
         qr_img.save(qr_path)
         
-        elements.append(Spacer(1, 0.3*cm))
+        # Logo path
+        logo_path = os.path.join('app', 'static', 'img', 'logo.png')
+        if not os.path.exists(logo_path):
+            logo_path = os.path.join('static', 'img', 'logo.png')
         
-        # Ajouter le QR code au badge
-        elements.append(Image(qr_path, width=3*cm, height=3*cm))
+        # Photo path
+        photo_path = None
+        if talent.photo:
+            photo_path = os.path.join('app', 'static', 'uploads', 'photos', talent.photo)
+            if not os.path.exists(photo_path):
+                photo_path = os.path.join('static', 'uploads', 'photos', talent.photo)
+                if not os.path.exists(photo_path):
+                    photo_path = None
         
-        # Footer
-        elements.append(Spacer(1, 0.2*cm))
-        footer_style = ParagraphStyle(
-            'BadgeFooter',
-            parent=styles['Normal'],
-            fontSize=7,
-            textColor=colors.grey,
-            alignment=TA_CENTER
-        )
-        elements.append(Paragraph(f"TalentsMaroc.com - {datetime.now().strftime('%d/%m/%Y')}", footer_style))
+        # Dates du projet
+        dates_text = "Dates: Non spécifiées"
+        if project.estimated_start_date and project.estimated_end_date:
+            start = project.estimated_start_date.strftime('%d/%m/%Y')
+            end = project.estimated_end_date.strftime('%d/%m/%Y')
+            dates_text = f"{start} - {end}"
+        elif project.estimated_start_date:
+            dates_text = f"Début: {project.estimated_start_date.strftime('%d/%m/%Y')}"
         
-        # Construire le PDF
-        doc.build(elements)
+        # Dessiner les 4 badges
+        for x, y in positions:
+            # Bordure pointillée pour découper
+            c.setDash([3, 3], 0)
+            c.setStrokeColor(colors.grey)
+            c.rect(x, y, badge_width, badge_height)
+            c.setDash([], 0)
+            
+            # Marges internes
+            margin = 0.4 * cm
+            content_x = x + margin
+            content_y = y + badge_height - margin
+            content_width = badge_width - 2 * margin
+            
+            # 1. Logo en haut
+            if os.path.exists(logo_path):
+                c.drawImage(logo_path, content_x + content_width/2 - 1.5*cm, content_y - 1.8*cm, 
+                           width=3*cm, height=1.5*cm, preserveAspectRatio=True, mask='auto')
+                content_y -= 2*cm
+            else:
+                c.setFont("Helvetica-Bold", 10)
+                c.setFillColor(colors.HexColor('#8B5CF6'))
+                c.drawCentredString(content_x + content_width/2, content_y - 0.5*cm, "TALENTSMAROC.COM")
+                content_y -= 1*cm
+            
+            # 2. Nom de la boîte de production
+            c.setFont("Helvetica-Bold", 9)
+            c.setFillColor(colors.HexColor('#4F46E5'))
+            production_name = project.production_company.name if project.production_company else "Production"
+            c.drawCentredString(content_x + content_width/2, content_y - 0.4*cm, production_name[:35])
+            content_y -= 0.7*cm
+            
+            # 3. Dates de début et fin
+            c.setFont("Helvetica", 7)
+            c.setFillColor(colors.HexColor('#6B7280'))
+            c.drawCentredString(content_x + content_width/2, content_y - 0.3*cm, dates_text)
+            content_y -= 0.8*cm
+            
+            # 4. Photo du talent cinema
+            if photo_path and os.path.exists(photo_path):
+                photo_size = 3*cm
+                c.drawImage(photo_path, content_x + content_width/2 - photo_size/2, content_y - photo_size - 0.2*cm,
+                           width=photo_size, height=photo_size, preserveAspectRatio=True, mask='auto')
+                content_y -= photo_size + 0.4*cm
+            else:
+                c.setFont("Helvetica", 8)
+                c.setFillColor(colors.grey)
+                c.drawCentredString(content_x + content_width/2, content_y - 1.5*cm, "[Photo non disponible]")
+                content_y -= 2*cm
+            
+            # 5. Code unique projet
+            c.setFont("Helvetica-Bold", 11)
+            c.setFillColor(colors.HexColor('#8B5CF6'))
+            c.drawCentredString(content_x + content_width/2, content_y - 0.4*cm, project_talent.project_code)
+            content_y -= 0.7*cm
+            
+            # 6. Nom du projet
+            c.setFont("Helvetica-Bold", 9)
+            c.setFillColor(colors.black)
+            project_name = project.name[:30] + "..." if len(project.name) > 30 else project.name
+            c.drawCentredString(content_x + content_width/2, content_y - 0.4*cm, project_name)
+            content_y -= 0.7*cm
+            
+            # 7. Rôle
+            c.setFont("Helvetica", 8)
+            c.setFillColor(colors.HexColor('#4B5563'))
+            role_text = f"Rôle: {project_talent.talent_type}"
+            c.drawCentredString(content_x + content_width/2, content_y - 0.3*cm, role_text)
+            content_y -= 0.6*cm
+            
+            # 8. Type de production
+            production_type = f"Type: {project.production_type}"
+            c.drawCentredString(content_x + content_width/2, content_y - 0.3*cm, production_type)
+            content_y -= 0.7*cm
+            
+            # 9. QR code
+            qr_size = 2.5*cm
+            c.drawImage(qr_path, content_x + content_width/2 - qr_size/2, content_y - qr_size - 0.2*cm,
+                       width=qr_size, height=qr_size)
+            content_y -= qr_size + 0.4*cm
+            
+            # Footer avec code de la plateforme
+            c.setFont("Helvetica", 6)
+            c.setFillColor(colors.grey)
+            c.drawCentredString(content_x + content_width/2, y + 0.3*cm, 
+                              f"TalentsMaroc.com | {talent.unique_code} | {datetime.now().strftime('%d/%m/%Y')}")
         
-        # Nettoyer le QR code temporaire
+        # Finaliser le PDF
+        c.save()
+        
+        # Nettoyer les fichiers temporaires
         if os.path.exists(qr_path):
             os.remove(qr_path)
         
@@ -1156,7 +1201,7 @@ def generate_project_badge(project_talent_id):
         db.session.commit()
         
         buffer.seek(0)
-        filename = f'badge_{project_talent.project_code}.pdf'
+        filename = f'badge_{project_talent.project_code}_x4.pdf'
         
         return send_file(
             buffer,
