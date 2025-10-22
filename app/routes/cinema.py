@@ -469,8 +469,8 @@ def print_talents_list():
     
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), 
-                          rightMargin=1.5*cm, leftMargin=1.5*cm,
-                          topMargin=2*cm, bottomMargin=2*cm)
+                          rightMargin=0.8*cm, leftMargin=0.8*cm,
+                          topMargin=1*cm, bottomMargin=1*cm)
     
     elements = []
     styles = getSampleStyleSheet()
@@ -509,7 +509,7 @@ def print_talents_list():
             if talent.id_document_number_encrypted:
                 try:
                     id_number = decrypt_sensitive_data(talent.id_document_number_encrypted)
-                    id_document += f"\n{id_number[:2]}***{id_number[-2:]}" if len(id_number) > 4 else ""
+                    id_document += f"\n{id_number}"
                 except:
                     pass
         
