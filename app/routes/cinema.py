@@ -1106,88 +1106,161 @@ def generate_project_badge(project_talent_id):
         for x, y in positions:
             # Bordure pointillée pour découper
             c.setDash([3, 3], 0)
-            c.setStrokeColor(colors.grey)
-            c.rect(x, y, badge_width, badge_height)
+            c.setStrokeColor(colors.HexColor('#A855F7'))
+            c.setLineWidth(1.5)
+            c.roundRect(x, y, badge_width, badge_height, 0.3*cm)
             c.setDash([], 0)
+            c.setLineWidth(1)
             
             # Marges internes
-            margin = 0.4 * cm
+            margin = 0.5 * cm
             content_x = x + margin
             content_y = y + badge_height - margin
             content_width = badge_width - 2 * margin
             
-            # 1. Logo en haut
+            # 1. En-tête avec dégradé (simulé avec rectangles de couleurs)
+            header_height = 2*cm
+            # Fond dégradé violet-bleu adouci
+            c.setFillColor(colors.HexColor('#A855F7'))
+            c.roundRect(x, y + badge_height - header_height, badge_width, header_height, 0.3*cm, fill=1, stroke=0)
+            c.setFillColor(colors.HexColor('#3B82F6'))
+            c.setFillAlpha(0.5)
+            c.roundRect(x + badge_width/3, y + badge_height - header_height, badge_width*2/3, header_height, 0, fill=1, stroke=0)
+            c.setFillAlpha(1)
+            
+            # Logo dans l'en-tête
             if os.path.exists(logo_path):
-                c.drawImage(logo_path, content_x + content_width/2 - 1.5*cm, content_y - 1.8*cm, 
-                           width=3*cm, height=1.5*cm, preserveAspectRatio=True, mask='auto')
-                content_y -= 2*cm
+                c.drawImage(logo_path, content_x + content_width/2 - 1.2*cm, content_y - 1.5*cm, 
+                           width=2.4*cm, height=1.2*cm, preserveAspectRatio=True, mask='auto')
             else:
-                c.setFont("Helvetica-Bold", 10)
-                c.setFillColor(colors.HexColor('#8B5CF6'))
-                c.drawCentredString(content_x + content_width/2, content_y - 0.5*cm, "TALENTSMAROC.COM")
-                content_y -= 1*cm
+                c.setFont("Helvetica-Bold", 9)
+                c.setFillColor(colors.white)
+                c.drawCentredString(content_x + content_width/2, content_y - 0.8*cm, "TALENTSMAROC.COM")
+            
+            content_y -= header_height + 0.3*cm
             
             # 2. Nom de la boîte de production
-            c.setFont("Helvetica-Bold", 9)
-            c.setFillColor(colors.HexColor('#4F46E5'))
+            c.setFont("Helvetica-Bold", 8)
+            c.setFillColor(colors.HexColor('#1F2937'))
             production_name = project.production_company.name if project.production_company else "Production"
-            c.drawCentredString(content_x + content_width/2, content_y - 0.4*cm, production_name[:35])
-            content_y -= 0.7*cm
+            c.drawCentredString(content_x + content_width/2, content_y - 0.3*cm, production_name[:40])
+            content_y -= 0.6*cm
             
             # 3. Dates de début et fin
             c.setFont("Helvetica", 7)
             c.setFillColor(colors.HexColor('#6B7280'))
-            c.drawCentredString(content_x + content_width/2, content_y - 0.3*cm, dates_text)
-            content_y -= 0.8*cm
-            
-            # 4. Photo du talent cinema
-            if photo_path and os.path.exists(photo_path):
-                photo_size = 3*cm
-                c.drawImage(photo_path, content_x + content_width/2 - photo_size/2, content_y - photo_size - 0.2*cm,
-                           width=photo_size, height=photo_size, preserveAspectRatio=True, mask='auto')
-                content_y -= photo_size + 0.4*cm
-            else:
-                c.setFont("Helvetica", 8)
-                c.setFillColor(colors.grey)
-                c.drawCentredString(content_x + content_width/2, content_y - 1.5*cm, "[Photo non disponible]")
-                content_y -= 2*cm
-            
-            # 5. Code unique projet
-            c.setFont("Helvetica-Bold", 11)
-            c.setFillColor(colors.HexColor('#8B5CF6'))
-            c.drawCentredString(content_x + content_width/2, content_y - 0.4*cm, project_talent.project_code)
-            content_y -= 0.7*cm
-            
-            # 6. Nom du projet
-            c.setFont("Helvetica-Bold", 9)
-            c.setFillColor(colors.black)
-            project_name = project.name[:30] + "..." if len(project.name) > 30 else project.name
-            c.drawCentredString(content_x + content_width/2, content_y - 0.4*cm, project_name)
-            content_y -= 0.7*cm
-            
-            # 7. Rôle
-            c.setFont("Helvetica", 8)
-            c.setFillColor(colors.HexColor('#4B5563'))
-            role_text = f"Rôle: {project_talent.talent_type}"
-            c.drawCentredString(content_x + content_width/2, content_y - 0.3*cm, role_text)
+            c.drawCentredString(content_x + content_width/2, content_y - 0.25*cm, dates_text)
             content_y -= 0.6*cm
             
-            # 8. Type de production
-            production_type = f"Type: {project.production_type}"
-            c.drawCentredString(content_x + content_width/2, content_y - 0.3*cm, production_type)
-            content_y -= 0.7*cm
+            # 4. Photo du talent cinema (arrondie)
+            if photo_path and os.path.exists(photo_path):
+                photo_size = 2.8*cm
+                photo_x = content_x + content_width/2 - photo_size/2
+                photo_y = content_y - photo_size - 0.2*cm
+                
+                # Bordure arrondie autour de la photo
+                c.setStrokeColor(colors.HexColor('#E5E7EB'))
+                c.setLineWidth(2)
+                c.roundRect(photo_x - 0.1*cm, photo_y - 0.1*cm, photo_size + 0.2*cm, photo_size + 0.2*cm, 0.4*cm, fill=0, stroke=1)
+                c.setLineWidth(1)
+                
+                c.drawImage(photo_path, photo_x, photo_y,
+                           width=photo_size, height=photo_size, preserveAspectRatio=True, mask='auto')
+                content_y -= photo_size + 0.5*cm
+            else:
+                c.setFont("Helvetica", 7)
+                c.setFillColor(colors.grey)
+                c.drawCentredString(content_x + content_width/2, content_y - 1.2*cm, "[Photo non disponible]")
+                content_y -= 1.6*cm
+            
+            # 5. Nom complet du talent
+            c.setFont("Helvetica-Bold", 10)
+            c.setFillColor(colors.HexColor('#1F2937'))
+            full_name = f"{talent.first_name} {talent.last_name}"
+            c.drawCentredString(content_x + content_width/2, content_y - 0.35*cm, full_name[:35])
+            content_y -= 0.6*cm
+            
+            # 6. Code Talent (petit, discret)
+            c.setFont("Helvetica", 7)
+            c.setFillColor(colors.HexColor('#9CA3AF'))
+            c.drawCentredString(content_x + content_width/2, content_y - 0.25*cm, f"Code Talent: {talent.unique_code}")
+            content_y -= 0.6*cm
+            
+            # 7. Nom du projet
+            c.setFont("Helvetica-Bold", 9)
+            c.setFillColor(colors.HexColor('#1F2937'))
+            project_name = project.name[:35] + "..." if len(project.name) > 35 else project.name
+            c.drawCentredString(content_x + content_width/2, content_y - 0.3*cm, project_name)
+            content_y -= 0.5*cm
+            
+            # Type de production (petit)
+            c.setFont("Helvetica", 7)
+            c.setFillColor(colors.HexColor('#6B7280'))
+            c.drawCentredString(content_x + content_width/2, content_y - 0.25*cm, project.production_type)
+            content_y -= 0.6*cm
+            
+            # 8. Bloc rôle avec bordure pointillée et code couleur
+            role_colors = {
+                'Acteur/Actrice Principal(e)': ('#EF4444', '#FEE2E2', '#7F1D1D'),  # Rouge
+                'Acteur/Actrice Secondaire': ('#F59E0B', '#FEF3C7', '#78350F'),  # Orange
+                'Figurant(e)': ('#3B82F6', '#DBEAFE', '#1E3A8A'),  # Bleu
+                'Silhouette': ('#8B5CF6', '#EDE9FE', '#4C1D95'),  # Violet
+                'Doublure': ('#10B981', '#D1FAE5', '#065F46'),  # Vert
+                'Doublure Lumière': ('#14B8A6', '#CCFBF1', '#134E4A'),  # Teal
+                'Cascadeur/Cascadeuse': ('#DC2626', '#FEE2E2', '#7F1D1D'),  # Rouge foncé
+                'Mannequin': ('#EC4899', '#FCE7F3', '#831843'),  # Rose
+                'Voix Off': ('#6366F1', '#E0E7FF', '#312E81'),  # Indigo
+                'Figurant Spécialisé': ('#0EA5E9', '#E0F2FE', '#0C4A6E'),  # Sky
+                'Choriste': ('#A855F7', '#F3E8FF', '#581C87'),  # Purple
+                'Danseur/Danseuse de fond': ('#D946EF', '#FAE8FF', '#701A75'),  # Fuchsia
+                'Autre': ('#6B7280', '#F3F4F6', '#374151')  # Gris
+            }
+            
+            # Trouver la couleur du rôle
+            role_color = role_colors.get(project_talent.talent_type, role_colors['Autre'])
+            border_color, bg_color, text_color = role_color
+            
+            # Dessiner le bloc rôle
+            role_box_height = 0.8*cm
+            role_box_y = content_y - role_box_height - 0.2*cm
+            
+            # Fond du bloc
+            c.setFillColor(colors.HexColor(bg_color))
+            c.roundRect(content_x, role_box_y, content_width, role_box_height, 0.2*cm, fill=1, stroke=0)
+            
+            # Bordure pointillée colorée
+            c.setDash([2, 2], 0)
+            c.setStrokeColor(colors.HexColor(border_color))
+            c.setLineWidth(2)
+            c.roundRect(content_x, role_box_y, content_width, role_box_height, 0.2*cm, fill=0, stroke=1)
+            c.setDash([], 0)
+            c.setLineWidth(1)
+            
+            # Texte du rôle
+            c.setFont("Helvetica-Bold", 9)
+            c.setFillColor(colors.HexColor(text_color))
+            c.drawCentredString(content_x + content_width/2, role_box_y + role_box_height/2 - 0.15*cm, project_talent.talent_type)
+            
+            content_y = role_box_y - 0.4*cm
             
             # 9. QR code
-            qr_size = 2.5*cm
-            c.drawImage(qr_path, content_x + content_width/2 - qr_size/2, content_y - qr_size - 0.2*cm,
-                       width=qr_size, height=qr_size)
-            content_y -= qr_size + 0.4*cm
+            qr_size = 2.2*cm
+            qr_x = content_x + content_width/2 - qr_size/2
+            qr_y = content_y - qr_size - 0.2*cm
+            
+            # Bordure autour du QR code
+            c.setStrokeColor(colors.HexColor('#E5E7EB'))
+            c.setLineWidth(1.5)
+            c.roundRect(qr_x - 0.15*cm, qr_y - 0.15*cm, qr_size + 0.3*cm, qr_size + 0.3*cm, 0.2*cm, fill=0, stroke=1)
+            c.setLineWidth(1)
+            
+            c.drawImage(qr_path, qr_x, qr_y, width=qr_size, height=qr_size)
             
             # Footer avec code de la plateforme
             c.setFont("Helvetica", 6)
-            c.setFillColor(colors.grey)
-            c.drawCentredString(content_x + content_width/2, y + 0.3*cm, 
-                              f"TalentsMaroc.com | {talent.unique_code} | {datetime.now().strftime('%d/%m/%Y')}")
+            c.setFillColor(colors.HexColor('#9CA3AF'))
+            c.drawCentredString(content_x + content_width/2, y + 0.25*cm, 
+                              f"TalentsMaroc.com | {datetime.now().strftime('%d/%m/%Y')}")
         
         # Finaliser le PDF
         c.save()
