@@ -1095,12 +1095,12 @@ def generate_project_badge(project_talent_id):
         
         # Dates du projet
         dates_text = "Dates: Non spécifiées"
-        if project.estimated_start_date and project.estimated_end_date:
-            start = project.estimated_start_date.strftime('%d/%m/%Y')
-            end = project.estimated_end_date.strftime('%d/%m/%Y')
+        if project.start_date and project.end_date:
+            start = project.start_date.strftime('%d/%m/%Y')
+            end = project.end_date.strftime('%d/%m/%Y')
             dates_text = f"{start} - {end}"
-        elif project.estimated_start_date:
-            dates_text = f"Début: {project.estimated_start_date.strftime('%d/%m/%Y')}"
+        elif project.start_date:
+            dates_text = f"Début: {project.start_date.strftime('%d/%m/%Y')}"
         
         # Dessiner les 4 badges
         for x, y in positions:
