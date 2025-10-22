@@ -390,3 +390,202 @@ def export_pdf(code):
         as_attachment=True,
         download_name=filename
     )
+
+@bp.route('/delete/<int:talent_id>', methods=['POST'])
+@login_required
+def delete_talent(talent_id):
+    """Supprimer un talent individuel"""
+    if not current_user.is_admin:
+        return jsonify({'success': False, 'message': 'Accès non autorisé'}), 403
+    
+    try:
+        talent = CinemaTalent.query.get_or_404(talent_id)
+        talent_name = f"{talent.first_name} {talent.last_name}"
+        
+        talent.is_active = False
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'{talent_name} a été supprimé avec succès'
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'message': f'Erreur lors de la suppression: {str(e)}'
+        }), 500
+
+@bp.route('/delete/bulk', methods=['POST'])
+@login_required
+def delete_talents_bulk():
+    """Supprimer plusieurs talents en lot"""
+    if not current_user.is_admin:
+        return jsonify({'success': False, 'message': 'Accès non autorisé'}), 403
+    
+    try:
+        data = request.get_json()
+        talent_ids = data.get('talent_ids', [])
+        
+        if not talent_ids:
+            return jsonify({'success': False, 'message': 'Aucun talent sélectionné'}), 400
+        
+        deleted_count = 0
+        for talent_id in talent_ids:
+            talent = CinemaTalent.query.get(talent_id)
+            if talent:
+                talent.is_active = False
+                deleted_count += 1
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'{deleted_count} talent(s) supprimé(s) avec succès'
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'message': f'Erreur lors de la suppression: {str(e)}'
+        }), 500
+
+@bp.route('/print/list')
+@login_required
+def print_talents_list():
+    """Imprimer la liste des talents en format paysage PDF"""
+    if not current_user.is_admin:
+        flash('Accès non autorisé', 'error')
+        return redirect(url_for('cinema.talents'))
+    
+    talents_list = CinemaTalent.query.filter_by(is_active=True).order_by(CinemaTalent.first_name, CinemaTalent.last_name).all()
+    
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import cm
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.lib.enums import TA_CENTER
+    
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), 
+                          rightMargin=1.5*cm, leftMargin=1.5*cm,
+                          topMargin=2*cm, bottomMargin=2*cm)
+    
+    elements = []
+    styles = getSampleStyleSheet()
+    
+    title_style = ParagraphStyle(
+        'CustomTitle',
+        parent=styles['Heading1'],
+        fontSize=18,
+        textColor=colors.HexColor('#6B46C1'),
+        spaceAfter=20,
+        alignment=TA_CENTER,
+        fontName='Helvetica-Bold'
+    )
+    
+    title = Paragraph("Liste des Talents CINEMA - TalentsMaroc.com", title_style)
+    elements.append(title)
+    elements.append(Spacer(1, 0.5*cm))
+    
+    data = [['Nom complet', 'Âge / Genre', 'Document d\'identité', 'Ethnicité', 'Type de talent']]
+    
+    for talent in talents_list:
+        from app.utils.encryption import decrypt_sensitive_data
+        
+        full_name = f"{talent.first_name} {talent.last_name}"
+        
+        age_gender = ""
+        if talent.age:
+            age_gender += f"{talent.age} ans"
+        if talent.gender_display:
+            age_gender += f" / {talent.gender_display}" if age_gender else talent.gender_display
+        
+        id_document = ""
+        if talent.id_document_type:
+            id_type = "Passeport" if talent.id_document_type == 'passport' else "CIN"
+            id_document = id_type
+            if talent.id_document_number_encrypted:
+                try:
+                    id_number = decrypt_sensitive_data(talent.id_document_number_encrypted)
+                    id_document += f"\n{id_number[:2]}***{id_number[-2:]}" if len(id_number) > 4 else ""
+                except:
+                    pass
+        
+        ethnicity = ""
+        if talent.ethnicities:
+            try:
+                ethnicities_list = json.loads(talent.ethnicities)
+                ethnicity = ethnicities_list[0] if ethnicities_list else ""
+                if len(ethnicities_list) > 1:
+                    ethnicity += f" +{len(ethnicities_list)-1}"
+            except:
+                pass
+        
+        talent_type = ""
+        if talent.talent_types:
+            try:
+                talent_types_list = json.loads(talent.talent_types)
+                talent_type = talent_types_list[0] if talent_types_list else ""
+                if len(talent_types_list) > 1:
+                    talent_type += f" +{len(talent_types_list)-1}"
+            except:
+                pass
+        
+        data.append([
+            full_name,
+            age_gender or "-",
+            id_document or "-",
+            ethnicity or "-",
+            talent_type or "-"
+        ])
+    
+    table = Table(data, colWidths=[5*cm, 3.5*cm, 4*cm, 4*cm, 6*cm])
+    
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#6B46C1')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 11),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('TOPPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#E0E0E0')),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F9F5FF')]),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+        ('TOPPADDING', (0, 1), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
+    ]))
+    
+    elements.append(table)
+    
+    footer_style = ParagraphStyle(
+        'Footer',
+        parent=styles['Normal'],
+        fontSize=8,
+        textColor=colors.grey,
+        alignment=TA_CENTER
+    )
+    
+    elements.append(Spacer(1, 1*cm))
+    footer_text = f"Document généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')} - Total: {len(talents_list)} talent(s)"
+    elements.append(Paragraph(footer_text, footer_style))
+    
+    doc.build(elements)
+    
+    buffer.seek(0)
+    filename = f'liste_talents_cinema_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf'
+    
+    return send_file(
+        buffer,
+        mimetype='application/pdf',
+        as_attachment=True,
+        download_name=filename
+    )
