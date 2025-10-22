@@ -1045,6 +1045,151 @@ def delete_project(project_id):
         flash(f'❌ Erreur lors de la suppression du projet: {str(e)}', 'error')
         return redirect(url_for('cinema.project_detail', project_id=project_id))
 
+@bp.route('/projects/<int:project_id>/print-talents-list')
+@login_required
+def print_project_talents_list(project_id):
+    """Imprimer la liste des talents assignés au projet en format paysage avec colonne observation"""
+    from app.models.project import Project, ProjectTalent
+    from reportlab.lib.pagesizes import A4, landscape
+    from reportlab.lib import colors
+    from reportlab.lib.units import cm
+    from reportlab.pdfgen import canvas
+    from reportlab.platypus import Table, TableStyle
+    from reportlab.lib.enums import TA_CENTER, TA_LEFT
+    
+    project = Project.query.get_or_404(project_id)
+    project_talents = ProjectTalent.query.filter_by(project_id=project_id).all()
+    
+    if not project_talents:
+        flash('❌ Aucun talent assigné à ce projet', 'error')
+        return redirect(url_for('cinema.project_detail', project_id=project_id))
+    
+    try:
+        # Créer un buffer pour le PDF
+        buffer = io.BytesIO()
+        
+        # Page A4 en paysage
+        page_width, page_height = landscape(A4)
+        c = canvas.Canvas(buffer, pagesize=landscape(A4))
+        
+        # En-tête
+        c.setFont("Helvetica-Bold", 16)
+        c.setFillColor(colors.HexColor('#8B5CF6'))
+        c.drawCentredString(page_width/2, page_height - 2*cm, "LISTE DES TALENTS ASSIGNÉS")
+        
+        c.setFont("Helvetica-Bold", 12)
+        c.setFillColor(colors.HexColor('#1F2937'))
+        c.drawCentredString(page_width/2, page_height - 2.8*cm, f"Projet: {project.name}")
+        
+        # Informations complémentaires
+        c.setFont("Helvetica", 10)
+        c.setFillColor(colors.HexColor('#6B7280'))
+        info_text = f"Production: {project.production_company.name if project.production_company else 'N/A'} | "
+        info_text += f"Type: {project.production_type} | "
+        if project.start_date and project.end_date:
+            info_text += f"Période: {project.start_date.strftime('%d/%m/%Y')} - {project.end_date.strftime('%d/%m/%Y')}"
+        c.drawCentredString(page_width/2, page_height - 3.5*cm, info_text)
+        
+        # Tableau des talents
+        table_start_y = page_height - 4.5*cm
+        
+        # Données du tableau
+        data = [['Code Projet', 'Nom Complet', 'Pièce d\'identité', 'Type de Talent', 'Observation']]
+        
+        for pt in project_talents:
+            talent = pt.cinema_talent
+            
+            # Pièce d'identité avec icône
+            id_doc = ''
+            if talent.id_document_type:
+                if talent.id_document_type == 'passport':
+                    id_doc = '📘 '
+                elif talent.id_document_type == 'national_id':
+                    id_doc = '🪪 '
+            id_doc += talent.id_document_number_full if talent.id_document_number_full else 'Non renseigné'
+            
+            data.append([
+                pt.project_code,
+                f"{talent.first_name} {talent.last_name}",
+                id_doc,
+                pt.talent_type,
+                ''  # Colonne observation vide
+            ])
+        
+        # Créer le tableau avec ReportLab
+        # Largeurs de colonnes (total = page_width - 3cm de marges)
+        available_width = page_width - 3*cm
+        col_widths = [
+            available_width * 0.12,  # Code Projet: 12%
+            available_width * 0.20,  # Nom Complet: 20%
+            available_width * 0.18,  # Pièce d'identité: 18%
+            available_width * 0.22,  # Type de Talent: 22%
+            available_width * 0.28   # Observation: 28%
+        ]
+        
+        table = Table(data, colWidths=col_widths, repeatRows=1)
+        
+        # Style du tableau
+        table.setStyle(TableStyle([
+            # En-tête
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#8B5CF6')),
+            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, 0), 10),
+            ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, 0), 'MIDDLE'),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+            ('TOPPADDING', (0, 0), (-1, 0), 12),
+            
+            # Corps du tableau
+            ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+            ('TEXTCOLOR', (0, 1), (-1, -1), colors.HexColor('#1F2937')),
+            ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+            ('FONTSIZE', (0, 1), (-1, -1), 9),
+            ('ALIGN', (0, 1), (0, -1), 'CENTER'),  # Code Projet centré
+            ('ALIGN', (1, 1), (-1, -1), 'LEFT'),   # Reste aligné à gauche
+            ('VALIGN', (0, 1), (-1, -1), 'TOP'),
+            ('TOPPADDING', (0, 1), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
+            ('LEFTPADDING', (0, 1), (-1, -1), 6),
+            ('RIGHTPADDING', (0, 1), (-1, -1), 6),
+            
+            # Lignes alternées
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
+            
+            # Grille
+            ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#E5E7EB')),
+            ('LINEBELOW', (0, 0), (-1, 0), 2, colors.HexColor('#6B21A8')),
+        ]))
+        
+        # Calculer la hauteur du tableau et le dessiner
+        table_width, table_height = table.wrap(0, 0)
+        table.drawOn(c, 1.5*cm, table_start_y - table_height)
+        
+        # Footer
+        c.setFont("Helvetica", 8)
+        c.setFillColor(colors.HexColor('#9CA3AF'))
+        from datetime import datetime
+        footer_text = f"TalentsMaroc.com | Imprimé le {datetime.now().strftime('%d/%m/%Y à %H:%M')} | Nombre de talents: {len(project_talents)}"
+        c.drawCentredString(page_width/2, 1*cm, footer_text)
+        
+        # Finaliser le PDF
+        c.save()
+        
+        buffer.seek(0)
+        filename = f'liste_talents_{project.name.replace(" ", "_")}.pdf'
+        
+        return send_file(
+            buffer,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=filename
+        )
+        
+    except Exception as e:
+        flash(f'❌ Erreur lors de la génération de la liste: {str(e)}', 'error')
+        return redirect(url_for('cinema.project_detail', project_id=project_id))
+
 @bp.route('/projects/talent/<int:project_talent_id>/generate-badge')
 @login_required
 def generate_project_badge(project_talent_id):
@@ -1167,8 +1312,8 @@ def generate_project_badge(project_talent_id):
             c.drawCentredString(content_x + content_width/2, content_y - 0.3*cm, dates_text)
             content_y -= 0.7*cm
             
-            # 4. Photo du talent cinema (arrondie)
-            photo_size = 3*cm
+            # 4. Photo du talent cinema (arrondie) - taille réduite
+            photo_size = 2.2*cm
             photo_x = content_x + content_width/2 - photo_size/2
             photo_y = content_y - photo_size - 0.2*cm
             
@@ -1236,9 +1381,8 @@ def generate_project_badge(project_talent_id):
             c.setLineWidth(1)
             
             c.drawImage(qr_path, qr_x, qr_y, width=qr_size, height=qr_size)
-            content_y = qr_y - 0.5*cm
             
-            # 9. Bloc rôle avec bordure pointillée et code couleur (EN BAS)
+            # 9. Bloc rôle avec bordure pointillée et code couleur (juste au-dessus du footer)
             role_colors = {
                 'Acteur/Actrice Principal(e)': ('#EF4444', '#FEE2E2', '#7F1D1D'),  # Rouge
                 'Acteur/Actrice Secondaire': ('#F59E0B', '#FEF3C7', '#78350F'),  # Orange
@@ -1259,9 +1403,9 @@ def generate_project_badge(project_talent_id):
             role_color = role_colors.get(project_talent.talent_type, role_colors['Autre'])
             border_color, bg_color, text_color = role_color
             
-            # Dessiner le bloc rôle (plus grand, en bas)
+            # Dessiner le bloc rôle juste au-dessus du footer
             role_box_height = 1.1*cm
-            role_box_y = content_y - role_box_height - 0.2*cm
+            role_box_y = y + 0.6*cm  # Positionné au-dessus du footer (qui est à y + 0.25cm)
             
             # Fond du bloc
             c.setFillColor(colors.HexColor(bg_color))

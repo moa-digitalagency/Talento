@@ -125,5 +125,18 @@ class CinemaTalent(db.Model):
         except Exception:
             return "***"
     
+    @property
+    def id_document_number_full(self):
+        """Afficher le numéro de pièce d'identité complet (non masqué)"""
+        if not self.id_document_number_encrypted:
+            return None
+        
+        try:
+            from app.utils.encryption import decrypt_sensitive_data
+            decrypted_number = decrypt_sensitive_data(self.id_document_number_encrypted)
+            return decrypted_number if decrypted_number else None
+        except Exception:
+            return None
+    
     def __repr__(self):
         return f'<CinemaTalent {self.first_name} {self.last_name}>'
