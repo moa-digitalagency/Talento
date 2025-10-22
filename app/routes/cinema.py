@@ -489,7 +489,7 @@ def print_talents_list():
     elements.append(title)
     elements.append(Spacer(1, 0.5*cm))
     
-    data = [['Nom complet', 'Âge / Genre', 'Document d\'identité', 'Ethnicité', 'Type de talent']]
+    data = [['Nom complet', 'Âge / Genre', 'Document d\'identité', 'Téléphone', 'WhatsApp', 'Ethnicité', 'Type de talent']]
     
     for talent in talents_list:
         from app.utils.encryption import decrypt_sensitive_data
@@ -512,6 +512,20 @@ def print_talents_list():
                     id_document += f"\n{id_number}"
                 except:
                     pass
+        
+        phone = ""
+        if talent.phone_encrypted:
+            try:
+                phone = decrypt_sensitive_data(talent.phone_encrypted)
+            except:
+                pass
+        
+        whatsapp = ""
+        if talent.whatsapp_encrypted:
+            try:
+                whatsapp = decrypt_sensitive_data(talent.whatsapp_encrypted)
+            except:
+                pass
         
         ethnicity = ""
         if talent.ethnicities:
@@ -537,11 +551,13 @@ def print_talents_list():
             full_name,
             age_gender or "-",
             id_document or "-",
+            phone or "-",
+            whatsapp or "-",
             ethnicity or "-",
             talent_type or "-"
         ])
     
-    table = Table(data, colWidths=[5*cm, 3.5*cm, 4*cm, 4*cm, 6*cm])
+    table = Table(data, colWidths=[4*cm, 2.5*cm, 3*cm, 2.5*cm, 2.5*cm, 3*cm, 5*cm])
     
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#6B46C1')),
