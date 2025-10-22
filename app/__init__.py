@@ -282,6 +282,33 @@ def create_app(config_class=Config):
     # Exemption CSRF pour toutes les routes API v1
     csrf.exempt(api_v1.bp)
     
+    # Gestionnaire d'erreur 404 pour gérer les URLs mal encodées
+    @app.errorhandler(404)
+    def handle_404(e):
+        from flask import request, redirect, url_for
+        # Si l'URL contient %3F (qui est un ? encodé), rediriger vers login
+        if '%3F' in request.url or '%2F' in request.url:
+            return redirect(url_for('auth.login'))
+        # Sinon, retourner une vraie page 404
+        return f'''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>404 - Page non trouvée</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+        </head>
+        <body class="bg-gray-50 min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <h1 class="text-6xl font-bold text-gray-800 mb-4">404</h1>
+                <p class="text-xl text-gray-600 mb-8">Page non trouvée</p>
+                <a href="{url_for('auth.login')}" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Retour à l'accueil
+                </a>
+            </div>
+        </body>
+        </html>
+        ''', 404
+    
     with app.app_context():
         try:
             from app.utils.auto_migrate import safe_auto_migrate
