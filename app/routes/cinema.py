@@ -52,73 +52,75 @@ def talents():
 @bp.route('/productions')
 @login_required
 def productions():
-    """Productions CINEMA - Gestion des productions"""
+    """Boîtes de production CINEMA - Gestion des boîtes de production"""
     productions_list = Production.query.filter_by(is_active=True).order_by(Production.created_at.desc()).all()
     return render_template('cinema/productions.html', productions=productions_list)
 
 @bp.route('/productions/new', methods=['GET', 'POST'])
 @login_required
 def add_production():
-    """Ajouter une nouvelle production"""
+    """Ajouter une nouvelle boîte de production"""
     if request.method == 'POST':
         try:
             production = Production()
             
             # Informations de base
-            production.title = request.form.get('title')
-            production.original_title = request.form.get('original_title')
-            production.production_type = request.form.get('production_type')
-            production.genre = request.form.get('genre')
-            
-            # Détails de production
-            production.director = request.form.get('director')
-            production.producer = request.form.get('producer')
-            production.production_company = request.form.get('production_company')
-            production.country = request.form.get('country')
-            production.language = request.form.get('language')
-            
-            # Dates
-            production_year = request.form.get('production_year')
-            if production_year:
-                production.production_year = int(production_year)
-            
-            release_date = request.form.get('release_date')
-            if release_date:
-                production.release_date = datetime.strptime(release_date, '%Y-%m-%d').date()
-            
-            start_date = request.form.get('start_date')
-            if start_date:
-                production.start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
-            
-            end_date = request.form.get('end_date')
-            if end_date:
-                production.end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
-            
-            # Description
-            production.synopsis = request.form.get('synopsis')
+            production.name = request.form.get('name')
+            production.logo_url = request.form.get('logo_url')
             production.description = request.form.get('description')
+            production.specialization = request.form.get('specialization')
             
-            # Budget et revenus
-            production.budget = request.form.get('budget')
-            production.box_office = request.form.get('box_office')
+            # Coordonnées
+            production.address = request.form.get('address')
+            production.city = request.form.get('city')
+            production.country = request.form.get('country')
+            production.postal_code = request.form.get('postal_code')
             
-            # Médias
-            production.poster_url = request.form.get('poster_url')
-            production.trailer_url = request.form.get('trailer_url')
+            # Contact
+            production.phone = request.form.get('phone')
+            production.email = request.form.get('email')
+            production.website = request.form.get('website')
             
-            # Informations techniques
-            duration = request.form.get('duration')
-            if duration:
-                production.duration = int(duration)
-            production.rating = request.form.get('rating')
+            # Réseaux sociaux
+            production.facebook = request.form.get('facebook')
+            production.instagram = request.form.get('instagram')
+            production.linkedin = request.form.get('linkedin')
+            production.twitter = request.form.get('twitter')
+            
+            # Informations sur l'entreprise
+            founded_year = request.form.get('founded_year')
+            if founded_year:
+                production.founded_year = int(founded_year)
+            
+            production.ceo = request.form.get('ceo')
+            
+            employees_count = request.form.get('employees_count')
+            if employees_count:
+                production.employees_count = int(employees_count)
+            
+            # Productions
+            productions_count = request.form.get('productions_count')
+            if productions_count:
+                production.productions_count = int(productions_count)
+            
+            production.notable_productions = request.form.get('notable_productions')
+            
+            # Services offerts
+            production.services = request.form.get('services')
+            
+            # Équipements et studios
+            production.equipment = request.form.get('equipment')
+            production.studios = request.form.get('studios')
+            
+            # Certifications et affiliations
+            production.certifications = request.form.get('certifications')
+            production.memberships = request.form.get('memberships')
+            
+            # Récompenses
+            production.awards = request.form.get('awards')
             
             # Statut
-            production.status = request.form.get('status', 'En production')
-            
-            # Liens
-            production.imdb_id = request.form.get('imdb_id')
-            production.tmdb_id = request.form.get('tmdb_id')
-            production.website = request.form.get('website')
+            production.is_verified = request.form.get('is_verified') == 'on'
             
             # Métadonnées
             production.created_by = current_user.id
@@ -126,95 +128,110 @@ def add_production():
             db.session.add(production)
             db.session.commit()
             
-            flash(f'Production "{production.title}" créée avec succès!', 'success')
+            flash(f'Boîte de production "{production.name}" créée avec succès!', 'success')
             return redirect(url_for('cinema.productions'))
             
         except Exception as e:
             db.session.rollback()
-            flash(f'Erreur lors de la création de la production: {str(e)}', 'error')
+            flash(f'Erreur lors de la création de la boîte de production: {str(e)}', 'error')
     
     return render_template('cinema/production_form.html')
 
 @bp.route('/productions/<int:production_id>')
 @login_required
 def view_production(production_id):
-    """Afficher les détails d'une production"""
+    """Afficher les détails d'une boîte de production"""
     production = Production.query.get_or_404(production_id)
     return render_template('cinema/production_detail.html', production=production)
 
 @bp.route('/productions/<int:production_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_production(production_id):
-    """Modifier une production existante"""
+    """Modifier une boîte de production existante"""
     production = Production.query.get_or_404(production_id)
     
     if request.method == 'POST':
         try:
-            # Mise à jour des informations
-            production.title = request.form.get('title')
-            production.original_title = request.form.get('original_title')
-            production.production_type = request.form.get('production_type')
-            production.genre = request.form.get('genre')
-            production.director = request.form.get('director')
-            production.producer = request.form.get('producer')
-            production.production_company = request.form.get('production_company')
-            production.country = request.form.get('country')
-            production.language = request.form.get('language')
-            
-            production_year = request.form.get('production_year')
-            if production_year:
-                production.production_year = int(production_year)
-            
-            release_date = request.form.get('release_date')
-            if release_date:
-                production.release_date = datetime.strptime(release_date, '%Y-%m-%d').date()
-            
-            start_date = request.form.get('start_date')
-            if start_date:
-                production.start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
-            
-            end_date = request.form.get('end_date')
-            if end_date:
-                production.end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
-            
-            production.synopsis = request.form.get('synopsis')
+            # Informations de base
+            production.name = request.form.get('name')
+            production.logo_url = request.form.get('logo_url')
             production.description = request.form.get('description')
-            production.budget = request.form.get('budget')
-            production.box_office = request.form.get('box_office')
-            production.poster_url = request.form.get('poster_url')
-            production.trailer_url = request.form.get('trailer_url')
+            production.specialization = request.form.get('specialization')
             
-            duration = request.form.get('duration')
-            if duration:
-                production.duration = int(duration)
-            production.rating = request.form.get('rating')
-            production.status = request.form.get('status', 'En production')
-            production.imdb_id = request.form.get('imdb_id')
-            production.tmdb_id = request.form.get('tmdb_id')
+            # Coordonnées
+            production.address = request.form.get('address')
+            production.city = request.form.get('city')
+            production.country = request.form.get('country')
+            production.postal_code = request.form.get('postal_code')
+            
+            # Contact
+            production.phone = request.form.get('phone')
+            production.email = request.form.get('email')
             production.website = request.form.get('website')
             
+            # Réseaux sociaux
+            production.facebook = request.form.get('facebook')
+            production.instagram = request.form.get('instagram')
+            production.linkedin = request.form.get('linkedin')
+            production.twitter = request.form.get('twitter')
+            
+            # Informations sur l'entreprise
+            founded_year = request.form.get('founded_year')
+            if founded_year:
+                production.founded_year = int(founded_year)
+            
+            production.ceo = request.form.get('ceo')
+            
+            employees_count = request.form.get('employees_count')
+            if employees_count:
+                production.employees_count = int(employees_count)
+            
+            # Productions
+            productions_count = request.form.get('productions_count')
+            if productions_count:
+                production.productions_count = int(productions_count)
+            
+            production.notable_productions = request.form.get('notable_productions')
+            
+            # Services offerts
+            production.services = request.form.get('services')
+            
+            # Équipements et studios
+            production.equipment = request.form.get('equipment')
+            production.studios = request.form.get('studios')
+            
+            # Certifications et affiliations
+            production.certifications = request.form.get('certifications')
+            production.memberships = request.form.get('memberships')
+            
+            # Récompenses
+            production.awards = request.form.get('awards')
+            
+            # Statut
+            production.is_verified = request.form.get('is_verified') == 'on'
+            
             db.session.commit()
-            flash(f'Production "{production.title}" mise à jour avec succès!', 'success')
+            flash(f'Boîte de production "{production.name}" mise à jour avec succès!', 'success')
             return redirect(url_for('cinema.view_production', production_id=production.id))
             
         except Exception as e:
             db.session.rollback()
-            flash(f'Erreur lors de la mise à jour: {str(e)}', 'error')
+            flash(f'Erreur lors de la mise à jour de la boîte de production: {str(e)}', 'error')
     
     return render_template('cinema/production_form.html', production=production)
 
 @bp.route('/productions/<int:production_id>/delete', methods=['POST'])
 @login_required
 def delete_production(production_id):
-    """Supprimer une production (soft delete)"""
+    """Supprimer une boîte de production (soft delete)"""
     production = Production.query.get_or_404(production_id)
     try:
         production.is_active = False
         db.session.commit()
-        flash(f'Production "{production.title}" supprimée avec succès!', 'success')
+        flash(f'Boîte de production "{production.name}" supprimée avec succès!', 'success')
     except Exception as e:
         db.session.rollback()
-        flash(f'Erreur lors de la suppression: {str(e)}', 'error')
+        flash(f'Erreur lors de la suppression de la boîte de production: {str(e)}', 'error')
     return redirect(url_for('cinema.productions'))
 
 @bp.route('/projects')

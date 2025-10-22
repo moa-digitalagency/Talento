@@ -71,79 +71,126 @@ def ensure_admin_user():
                 print(f"👑 Droits admin activés")
 
 def ensure_demo_productions():
-    """Créer 2 productions démo au démarrage si elles n'existent pas"""
+    """Créer 2 boîtes de production démo au démarrage si elles n'existent pas"""
     with app.app_context():
-        from datetime import date
+        import json
         
-        # Vérifier si des productions existent déjà
+        # Vérifier si des boîtes de production existent déjà
         existing_count = Production.query.count()
         if existing_count > 0:
-            print(f"📊 {existing_count} production(s) déjà présente(s)")
+            print(f"🏢 {existing_count} boîte(s) de production déjà présente(s)")
             return
         
-        print("🎬 Création des productions démo...")
+        print("🏢 Création des boîtes de production démo...")
         
-        # Production 1: Film marocain
-        prod1 = Production(
-            title="Les Étoiles du Désert",
-            original_title="Les Étoiles du Désert",
-            production_type="Film",
-            genre="Drame",
-            director="Nabil Ayouch",
-            producer="Ali N'Productions",
-            production_company="Morocco Films Production",
+        # Boîte de production 1: Morocco Films Production
+        company1 = Production(
+            name="Morocco Films Production",
+            description="Société de production cinématographique spécialisée dans les films et séries de haute qualité. Leader dans la production audiovisuelle au Maroc depuis plus de 15 ans.",
+            specialization="Films de cinéma, Séries TV, Documentaires",
+            address="123 Boulevard Mohammed V",
+            city="Casablanca",
             country="Maroc",
-            language="Arabe, Français",
-            production_year=2024,
-            release_date=date(2024, 11, 15),
-            start_date=date(2024, 3, 1),
-            end_date=date(2024, 6, 30),
-            synopsis="L'histoire captivante d'une famille berbère qui traverse les défis du désert marocain pour réaliser leurs rêves. Une exploration poétique de la résilience, de l'identité et de l'espoir dans un contexte moderne.",
-            description="Ce film dramatique suit le parcours de Fatima, une jeune femme berbère qui rêve de devenir réalisatrice. Entre traditions ancestrales et aspirations contemporaines, elle doit naviguer les attentes familiales tout en poursuivant sa passion. Tourné dans les magnifiques paysages du Sahara marocain, le film offre une réflexion profonde sur l'identité culturelle et l'émancipation.",
-            budget="3 millions USD",
-            box_office="8.5 millions USD",
-            poster_url="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800",
-            duration=125,
-            rating="Tous publics",
-            status="Sortie",
-            website="https://example.com/etoiles-desert"
+            postal_code="20000",
+            phone="+212 522 123 456",
+            email="contact@moroccofilms.ma",
+            website="https://www.moroccofilms.ma",
+            facebook="moroccofilms",
+            instagram="@moroccofilms",
+            linkedin="morocco-films-production",
+            twitter="@moroccofilms",
+            founded_year=2008,
+            ceo="Nabil Ayouch",
+            employees_count=45,
+            productions_count=28,
+            notable_productions=json.dumps([
+                "Les Étoiles du Désert",
+                "Casablanca by Night",
+                "Le Jardin des Oliviers",
+                "Atlas Dreams"
+            ], ensure_ascii=False),
+            services=json.dumps([
+                "Production cinématographique",
+                "Post-production",
+                "Casting",
+                "Location de matériel"
+            ], ensure_ascii=False),
+            equipment="Caméras RED, ARRI Alexa, Drones DJI, Studios d'enregistrement",
+            studios="2 studios de tournage (500m² et 800m²), Studio de post-production",
+            certifications=json.dumps([
+                "ISO 9001",
+                "CCM (Centre Cinématographique Marocain)"
+            ], ensure_ascii=False),
+            awards=json.dumps([
+                "Prix du Meilleur Producteur - Festival de Marrakech 2022",
+                "Grand Prix - Festival National du Film 2021"
+            ], ensure_ascii=False),
+            is_active=True,
+            is_verified=True
         )
         
-        # Production 2: Série TV
-        prod2 = Production(
-            title="Casablanca Chronicles",
-            original_title="Chroniques de Casablanca",
-            production_type="Série",
-            genre="Thriller, Drame",
-            director="Laïla Marrakchi",
-            producer="Hassan El Fad",
-            production_company="Royal TV Productions",
+        # Boîte de production 2: Atlas Studios Production
+        company2 = Production(
+            name="Atlas Studios Production",
+            description="Spécialiste de la production de films internationaux et de séries TV. Nous offrons des services complets de production, de la pré-production à la post-production.",
+            specialization="Films internationaux, Séries TV, Publicités, Clips musicaux",
+            address="Avenue des Forces Armées Royales, Zone Industrielle",
+            city="Ouarzazate",
             country="Maroc",
-            language="Arabe, Français, Anglais",
-            production_year=2025,
-            release_date=date(2025, 2, 1),
-            start_date=date(2024, 9, 1),
-            end_date=date(2024, 12, 20),
-            synopsis="Une série palpitante qui plonge dans les mystères et intrigues de Casablanca moderne. Entre crime organisé, corruption politique et relations familiales complexes, cette série révèle les dessous d'une métropole en mutation.",
-            description="Casablanca Chronicles suit plusieurs personnages dont les destins s'entrelacent dans la ville blanche. Un inspecteur de police dévoué, une avocate ambitieuse, et un entrepreneur visionnaire se retrouvent au cœur d'une conspiration qui pourrait changer le visage de la ville. La série explore les tensions entre modernité et tradition, justice et pouvoir, dans le Maroc contemporain.",
-            budget="12 millions USD (Saison 1)",
-            poster_url="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800",
-            duration=55,
-            rating="-16",
-            status="En production",
-            website="https://example.com/casablanca-chronicles"
+            postal_code="45000",
+            phone="+212 524 888 777",
+            email="info@atlasstudios.ma",
+            website="https://www.atlasstudios.ma",
+            facebook="atlasstudios",
+            instagram="@atlasstudios_ma",
+            linkedin="atlas-studios-production",
+            founded_year=2012,
+            ceo="Laïla Marrakchi",
+            employees_count=62,
+            productions_count=42,
+            notable_productions=json.dumps([
+                "Kingdom of Heaven",
+                "Game of Thrones (Saisons 3-6)",
+                "The Mummy Returns",
+                "Babel"
+            ], ensure_ascii=False),
+            services=json.dumps([
+                "Production cinématographique",
+                "Services de plateau",
+                "Location de décors",
+                "Coordination de tournage",
+                "Post-production",
+                "Effets spéciaux"
+            ], ensure_ascii=False),
+            equipment="Caméras ARRI, RED, Sony Venice, Grues, Drones professionnels, Équipement d'éclairage complet",
+            studios="Studios Atlas: 20 hectares, 8 plateaux de tournage, Backlots variés (désert, médina, forteresse)",
+            certifications=json.dumps([
+                "ISO 9001:2015",
+                "CCM Agrément",
+                "Film Commission Morocco"
+            ], ensure_ascii=False),
+            memberships=json.dumps([
+                "Association des Producteurs de Films Marocains",
+                "Mediterranean Film Institute"
+            ], ensure_ascii=False),
+            awards=json.dumps([
+                "Meilleure Collaboration Internationale - 2023",
+                "Prix de l'Excellence Technique - Festival de Cannes 2020"
+            ], ensure_ascii=False),
+            is_active=True,
+            is_verified=True
         )
         
         try:
-            db.session.add(prod1)
-            db.session.add(prod2)
+            db.session.add(company1)
+            db.session.add(company2)
             db.session.commit()
-            print("✅ 2 productions démo créées avec succès!")
-            print(f"   - {prod1.title} ({prod1.production_type})")
-            print(f"   - {prod2.title} ({prod2.production_type})")
+            print("✅ 2 boîtes de production démo créées avec succès!")
+            print(f"   - {company1.name} ({company1.city})")
+            print(f"   - {company2.name} ({company2.city})")
         except Exception as e:
             db.session.rollback()
-            print(f"⚠️  Erreur lors de la création des productions démo: {e}")
+            print(f"⚠️  Erreur lors de la création des boîtes de production démo: {e}")
 
 if __name__ == '__main__':
     with app.app_context():
