@@ -319,9 +319,8 @@ def create_app(config_class=Config):
             
             safe_auto_migrate(db)
             
-            if os.environ.get('ENABLE_AUTO_SEED') == '1':
-                from app.utils.auto_migrate import run_initial_seed
-                run_initial_seed(db)
+            # Auto-détecter si les données demo doivent être créées
+            _ensure_demo_data_exists(db, logger)
             
             # Garantir que le compte admin existe toujours
             _ensure_admin_exists(db, logger)
@@ -333,6 +332,48 @@ def create_app(config_class=Config):
             app.logger.warning("⚠️ L'application continue malgré l'erreur")
     
     return app
+
+def _ensure_demo_data_exists(db, logger):
+    """Créer automatiquement les données demo si elles n'existent pas encore"""
+    try:
+        from app.models.user import User
+        from app.models.cinema_talent import CinemaTalent
+        import os
+        import subprocess
+        import sys
+        
+        # Vérifier si les données demo existent déjà
+        demo_user_exists = User.query.filter(User.email.like('demo%')).first() is not None
+        demo_cinema_exists = CinemaTalent.query.filter(CinemaTalent.email.like('%@demo.cinema')).first() is not None
+        
+        if demo_user_exists and demo_cinema_exists:
+            logger.info("✓ Données demo déjà présentes")
+            return True
+        
+        logger.info("🌱 Création automatique des données de démonstration...")
+        
+        # Exécuter le script de seeding
+        env = os.environ.copy()
+        env['SKIP_AUTO_MIGRATION'] = '1'  # Éviter la récursion
+        
+        result = subprocess.run(
+            [sys.executable, 'migrations_init.py'],
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=120
+        )
+        
+        if result.returncode == 0:
+            logger.info("✅ Données de démonstration créées avec succès")
+            return True
+        else:
+            logger.warning(f"⚠️ Erreur lors de la création des données demo: {result.stderr[:200]}")
+            return False
+            
+    except Exception as e:
+        logger.warning(f"⚠️ Impossible de créer les données demo: {e}")
+        return False
 
 def _ensure_admin_exists(db, logger):
     """Garantir que le compte admin existe avec les bons identifiants"""
