@@ -2,61 +2,62 @@ from datetime import datetime
 from app import db
 
 class Production(db.Model):
+    """Modèle représentant une boîte de production (société de production)"""
     __tablename__ = 'productions'
     
     id = db.Column(db.Integer, primary_key=True)
     
     # Informations de base
-    title = db.Column(db.String(200), nullable=False)
-    original_title = db.Column(db.String(200))
-    production_type = db.Column(db.String(50), nullable=False)  # Film, Série, Court-métrage, Documentaire, etc.
-    genre = db.Column(db.String(100))  # Drame, Comédie, Action, etc.
-    
-    # Détails de production
-    director = db.Column(db.String(200))
-    producer = db.Column(db.String(200))
-    production_company = db.Column(db.String(200))
-    country = db.Column(db.String(100))
-    language = db.Column(db.String(100))
-    
-    # Dates
-    production_year = db.Column(db.Integer)
-    release_date = db.Column(db.Date)
-    start_date = db.Column(db.Date)  # Date de début de tournage
-    end_date = db.Column(db.Date)  # Date de fin de tournage
+    name = db.Column(db.String(200), nullable=False)  # Nom de la société
+    logo_url = db.Column(db.String(500))  # Logo de la société
     
     # Description
-    synopsis = db.Column(db.Text)
-    description = db.Column(db.Text)
+    description = db.Column(db.Text)  # Description de la société
+    specialization = db.Column(db.String(200))  # Films, Séries, Documentaires, Publicités, etc.
     
-    # Budget et revenus
-    budget = db.Column(db.String(100))
-    box_office = db.Column(db.String(100))
+    # Coordonnées
+    address = db.Column(db.String(300))
+    city = db.Column(db.String(100))
+    country = db.Column(db.String(100))
+    postal_code = db.Column(db.String(20))
     
-    # Médias
-    poster_url = db.Column(db.String(500))
-    trailer_url = db.Column(db.String(500))
-    
-    # Informations techniques
-    duration = db.Column(db.Integer)  # Durée en minutes
-    rating = db.Column(db.String(50))  # Classification (PG, R, etc.)
-    
-    # Casting et équipe (stockés en JSON)
-    cast = db.Column(db.Text)  # JSON list des acteurs
-    crew = db.Column(db.Text)  # JSON list de l'équipe technique
-    
-    # Récompenses et festivals
-    awards = db.Column(db.Text)  # JSON list des prix et nominations
-    festivals = db.Column(db.Text)  # JSON list des festivals
-    
-    # Liens et références
-    imdb_id = db.Column(db.String(50))
-    tmdb_id = db.Column(db.String(50))
+    # Contact
+    phone = db.Column(db.String(50))
+    email = db.Column(db.String(120))
     website = db.Column(db.String(500))
     
+    # Réseaux sociaux
+    facebook = db.Column(db.String(200))
+    instagram = db.Column(db.String(200))
+    linkedin = db.Column(db.String(200))
+    twitter = db.Column(db.String(200))
+    
+    # Informations sur l'entreprise
+    founded_year = db.Column(db.Integer)  # Année de fondation
+    ceo = db.Column(db.String(200))  # Directeur/CEO
+    employees_count = db.Column(db.Integer)  # Nombre d'employés
+    
+    # Productions
+    productions_count = db.Column(db.Integer, default=0)  # Nombre de productions réalisées
+    notable_productions = db.Column(db.Text)  # JSON list des productions notables
+    
+    # Services offerts
+    services = db.Column(db.Text)  # JSON list des services (Production, Post-production, Distribution, etc.)
+    
+    # Équipements et studios
+    equipment = db.Column(db.Text)  # Description des équipements
+    studios = db.Column(db.Text)  # Description des studios
+    
+    # Certifications et affiliations
+    certifications = db.Column(db.Text)  # JSON list des certifications
+    memberships = db.Column(db.Text)  # JSON list des affiliations professionnelles
+    
+    # Récompenses
+    awards = db.Column(db.Text)  # JSON list des prix et distinctions
+    
     # Statut
-    status = db.Column(db.String(50), default='En production')  # En production, Post-production, Sortie, Annulé
     is_active = db.Column(db.Boolean, default=True)
+    is_verified = db.Column(db.Boolean, default=False)  # Vérification de la société
     
     # Métadonnées
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -64,9 +65,10 @@ class Production(db.Model):
     created_by = db.Column(db.Integer, db.ForeignKey('users.id'))
     
     def __repr__(self):
-        return f'<Production {self.title}>'
+        return f'<Production Company {self.name}>'
     
     @property
-    def year_display(self):
-        """Afficher l'année de production"""
-        return self.production_year or (self.release_date.year if self.release_date else None)
+    def location_display(self):
+        """Afficher la localisation complète"""
+        parts = [self.city, self.country]
+        return ', '.join(filter(None, parts)) or 'Non spécifiée'
