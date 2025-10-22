@@ -16,6 +16,7 @@ Preferred communication style: Simple, everyday language.
 - **Data Models**: User, Talent, UserTalent, Country, City, AppSettings, and CinemaTalent, with sensitive data encrypted using Fernet.
 - **Security**: Passwords hashed with Werkzeug. AppSettings stores configurations securely.
 - **Recent Schema Updates (v2.16.0)**: Added website, imdb_url_encrypted, and threads_encrypted fields to User and CinemaTalent models for enhanced profile information.
+- **Automatic Data Seeding**: System automatically detects if demo data exists on startup. If missing, creates 5 demo users (demo1-5@talento.com) and 3 CINEMA talents (emails ending with @demo.cinema) via `migrations_init.py`. Idempotent design prevents duplicate creation. Admin account (admin@talento.com / MARAB0001N / @4dm1n) is always guaranteed to exist with required Morocco/Rabat locations.
 
 ### Unique Identification System
 - **Main Code Format**: PPVVVNNNNG (Country, City, 4 digits, Gender).
