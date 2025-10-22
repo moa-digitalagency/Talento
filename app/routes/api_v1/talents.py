@@ -1,3 +1,11 @@
+"""
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
 from flask import request, jsonify, current_app
 from flask_login import login_required
 from app.routes.api_v1 import bp

@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 """
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
+
+"""
 Script de migration pour ajouter les nouveaux champs aux modèles User et CinemaTalent
 - website (User)
 - imdb_url_encrypted (User et CinemaTalent)

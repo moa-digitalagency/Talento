@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 """
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
+
+"""
 Script pour garantir que le compte admin existe toujours
 Exécuté automatiquement au démarrage de l'application
 """

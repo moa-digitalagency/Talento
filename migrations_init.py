@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 """
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
+
+"""
 Script de migration et initialisation de la base de données
 Ce script vérifie et corrige la structure de la base de données automatiquement
 """

@@ -1,16 +1,21 @@
 """
-Service pour la recherche de films via TMDb API
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+
+Service pour la recherche de films via OMDB API
 """
 import requests
 import os
 
-TMDB_API_KEY = os.environ.get('TMDB_API_KEY', '')
-TMDB_BASE_URL = 'https://api.themoviedb.org/3'
-TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w200'
+OMDB_API_KEY = os.environ.get('OMDB_API_KEY', '')
+OMDB_BASE_URL = 'http://www.omdbapi.com/'
 
 def search_movies(query, page=1):
     """
-    Recherche des films sur TMDb
+    Recherche des films sur OMDB
     
     Args:
         query: Terme de recherche
@@ -19,53 +24,55 @@ def search_movies(query, page=1):
     Returns:
         dict: Résultats de recherche ou erreur
     """
-    if not TMDB_API_KEY:
-        return {'error': 'TMDb API key not configured'}
+    if not OMDB_API_KEY:
+        return {'error': 'OMDB API key not configured'}
     
     if not query or len(query.strip()) < 2:
         return {'results': []}
     
     try:
-        url = f'{TMDB_BASE_URL}/search/multi'
-        params = {
-            'api_key': TMDB_API_KEY,
-            'query': query,
-            'page': page,
-            'language': 'fr-FR'
-        }
+        # Search for both movies and series to match TMDb functionality
+        all_results = []
+        total_count = 0
         
-        response = requests.get(url, params=params, timeout=5)
-        response.raise_for_status()
+        for search_type in ['movie', 'series']:
+            params = {
+                'apikey': OMDB_API_KEY,
+                's': query,
+                'page': page,
+                'type': search_type
+            }
+            
+            response = requests.get(OMDB_BASE_URL, params=params, timeout=5)
+            response.raise_for_status()
+            
+            data = response.json()
+            
+            if data.get('Response') != 'False':
+                for item in data.get('Search', []):
+                    # Map OMDB type to display format
+                    if item.get('Type') == 'movie':
+                        display_type = 'Film'
+                    elif item.get('Type') == 'series':
+                        display_type = 'Série TV'
+                    else:
+                        display_type = item.get('Type', 'Film').title()
+                    
+                    all_results.append({
+                        'id': item.get('imdbID'),
+                        'title': item.get('Title', ''),
+                        'year': item.get('Year', ''),
+                        'type': display_type,
+                        'poster_url': item.get('Poster') if item.get('Poster') != 'N/A' else '',
+                        'tmdb_id': item.get('imdbID')
+                    })
+                
+                total_count += int(data.get('totalResults', 0))
         
-        data = response.json()
+        # Limit to 10 results like the original TMDb implementation
+        all_results = all_results[:10]
         
-        results = []
-        for item in data.get('results', [])[:10]:
-            media_type = item.get('media_type')
-            
-            if media_type not in ['movie', 'tv']:
-                continue
-            
-            title = item.get('title') or item.get('name', '')
-            year = ''
-            if item.get('release_date'):
-                year = item.get('release_date')[:4]
-            elif item.get('first_air_date'):
-                year = item.get('first_air_date')[:4]
-            
-            poster_path = item.get('poster_path')
-            poster_url = f'{TMDB_IMAGE_BASE}{poster_path}' if poster_path else ''
-            
-            results.append({
-                'id': item.get('id'),
-                'title': title,
-                'year': year,
-                'type': 'Film' if media_type == 'movie' else 'Série TV',
-                'poster_url': poster_url,
-                'tmdb_id': item.get('id')
-            })
-        
-        return {'results': results, 'total': data.get('total_results', 0)}
+        return {'results': all_results, 'total': total_count}
         
     except requests.RequestException as e:
         return {'error': f'Erreur de recherche: {str(e)}'}

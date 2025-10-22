@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 """
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
+
+"""
 Script pour régénérer les données CINEMA avec la nouvelle clé de chiffrement
 """
 import os

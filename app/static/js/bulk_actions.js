@@ -1,3 +1,11 @@
+/*
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+*/
+
 class BulkActionManager {
     constructor() {
         this.selectedIds = new Set();

@@ -1,4 +1,12 @@
 """
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
+"""
 Service d'analyse intelligente de CV et profils
 Utilise OpenRouter AI pour analyser les CV et générer des scores
 """

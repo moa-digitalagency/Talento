@@ -1,3 +1,11 @@
+"""
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
 import os
 import subprocess
 import json
@@ -297,8 +305,14 @@ class UpdateService:
             
             logs = []
             if os.path.exists(UpdateService.UPDATE_LOG_FILE):
-                with open(UpdateService.UPDATE_LOG_FILE, 'r') as f:
-                    logs = json.load(f)
+                try:
+                    with open(UpdateService.UPDATE_LOG_FILE, 'r') as f:
+                        content = f.read().strip()
+                        if content and not content.startswith('<!doctype') and not content.startswith('<html'):
+                            logs = json.loads(content)
+                except json.JSONDecodeError:
+                    current_app.logger.warning("Log file corrupted, starting fresh")
+                    logs = []
             
             logs.append(log_entry)
             
@@ -317,9 +331,21 @@ class UpdateService:
                 return []
             
             with open(UpdateService.UPDATE_LOG_FILE, 'r') as f:
-                logs = json.load(f)
+                content = f.read().strip()
+                if not content or content.startswith('<!doctype') or content.startswith('<html'):
+                    current_app.logger.warning("Log file contains HTML instead of JSON, resetting it")
+                    return []
+                logs = json.loads(content)
             
             return logs[-count:]
+        except json.JSONDecodeError as e:
+            current_app.logger.error(f"Erreur de décodage JSON dans l'historique des mises à jour: {e}")
+            try:
+                os.remove(UpdateService.UPDATE_LOG_FILE)
+                current_app.logger.info("Fichier de log corrompu supprimé")
+            except:
+                pass
+            return []
         except Exception as e:
             current_app.logger.error(f"Erreur lors de la récupération de l'historique des mises à jour: {e}")
             return []

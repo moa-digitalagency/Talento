@@ -1,5 +1,14 @@
 #!/usr/bin/env python
 """
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
+
+"""
 Migration pour ajouter les nouveaux champs CINEMA
 - talent_types (types de talents)
 - website (site web)

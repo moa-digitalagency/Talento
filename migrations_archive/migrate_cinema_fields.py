@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 """
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
+
+"""
 Script de migration pour ajouter les nouveaux champs au modèle CinemaTalent
 """
 from app import create_app, db

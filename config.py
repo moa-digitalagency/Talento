@@ -1,3 +1,11 @@
+"""
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
 import os
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet

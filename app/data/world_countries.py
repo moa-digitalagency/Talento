@@ -1,4 +1,12 @@
 """
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
+"""
 Liste complète de tous les pays du monde avec codes ISO-2 et nationalités
 Basé sur la norme ISO 3166-1 (2025) - 195 pays reconnus par l'ONU
 """

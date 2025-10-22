@@ -1,4 +1,12 @@
 """
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
+"""
 Générateur de code unique pour les talents CINEMA
 Format: PPVVVNNNNNG (10 caractères)
 - PP: Code pays ISO-2 (2 lettres)

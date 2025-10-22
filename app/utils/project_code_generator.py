@@ -1,4 +1,12 @@
 """
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
+"""
 Générateur de codes uniques pour les talents assignés aux projets.
 Format: CCIII001001 (sans tirets, minimum 10 caractères)
   - CC: Code pays (2 lettres)

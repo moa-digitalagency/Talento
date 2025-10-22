@@ -1,4 +1,12 @@
 """
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
+"""
 Villes principales par pays pour le formulaire CINEMA
 Liste des principales villes pour les pays les plus utilisés
 """

@@ -1,4 +1,12 @@
 """
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
+"""
 Module de chiffrement des données sensibles
 Utilise Fernet (chiffrement symétrique) pour protéger les données
 """

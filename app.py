@@ -1,3 +1,11 @@
+"""
+TalentsMaroc.com
+MOA Digital Agency LLC
+Par : Aisance KALONJI
+Mail : moa@myoneart.com
+www.myoneart.com
+"""
+
 import os
 from app import create_app, db
 from app.models import User, Talent, UserTalent, Country, City, Production, Project, ProjectTalent
