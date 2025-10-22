@@ -323,6 +323,9 @@ def create_app(config_class=Config):
                 from app.utils.auto_migrate import run_initial_seed
                 run_initial_seed(db)
             
+            # Garantir que le compte admin existe toujours
+            _ensure_admin_exists(db, logger)
+            
             logger.info("✅ Application prête")
             
         except Exception as e:
@@ -330,3 +333,57 @@ def create_app(config_class=Config):
             app.logger.warning("⚠️ L'application continue malgré l'erreur")
     
     return app
+
+def _ensure_admin_exists(db, logger):
+    """Garantir que le compte admin existe avec les bons identifiants"""
+    try:
+        from app.models.user import User
+        from app.models.location import Country, City
+        import os
+        
+        admin_email = 'admin@talento.com'
+        admin_code = 'MARAB0001N'
+        admin_password = os.environ.get('ADMIN_PASSWORD', '@4dm1n')
+        
+        admin = User.query.filter(
+            (User.email == admin_email) | (User.unique_code == admin_code)
+        ).first()
+        
+        if not admin:
+            logger.info("👤 Création du compte admin...")
+            morocco = Country.query.filter_by(code='MA').first()
+            rabat = City.query.filter_by(code='RAB').first()
+            
+            if morocco and rabat:
+                admin = User(
+                    email=admin_email,
+                    first_name='Admin',
+                    last_name='Talento',
+                    unique_code=admin_code,
+                    is_admin=True,
+                    account_active=True,
+                    country_id=morocco.id,
+                    city_id=rabat.id,
+                    gender='N'
+                )
+                admin.set_password(admin_password)
+                admin.phone = '+212600000000'
+                db.session.add(admin)
+                db.session.commit()
+                logger.info(f"✅ Admin créé: {admin_email} / {admin_code}")
+            else:
+                logger.warning("⚠️  Impossible de créer admin - Morocco/Rabat manquants")
+        else:
+            # Vérifier et corriger le mot de passe si nécessaire
+            if not admin.check_password(admin_password):
+                admin.set_password(admin_password)
+                db.session.commit()
+                logger.info(f"🔐 Mot de passe admin mis à jour")
+            if not admin.is_admin:
+                admin.is_admin = True
+                db.session.commit()
+                logger.info(f"👑 Droits admin activés")
+            else:
+                logger.info(f"✅ Compte admin OK: {admin_email}")
+    except Exception as e:
+        logger.error(f"⚠️  Erreur lors de la vérification admin: {e}")
