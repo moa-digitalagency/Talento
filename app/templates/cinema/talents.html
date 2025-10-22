@@ -168,15 +168,25 @@
 
 <!-- Liste des talents -->
 <div class="section-purple p-8 mb-8">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div class="flex items-center gap-3">
             <span class="text-4xl">👥</span>
             <h2 class="text-2xl font-bold text-gray-800">Base de Données des Talents</h2>
         </div>
-        <a href="{{ url_for('cinema.register_talent') }}" class="px-6 py-3 border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-bold rounded-lg transition-all flex items-center gap-2">
-            <span>➕</span>
-            <span>Ajouter un Talent</span>
-        </a>
+        <div class="flex flex-wrap gap-3">
+            <button id="deleteSelectedBtn" class="px-6 py-3 bg-red-50 text-red-700 font-bold rounded-lg border-2 border-red-500 hover:bg-red-600 hover:text-white transition-all items-center gap-2 hidden">
+                <span>🗑️</span>
+                <span>Supprimer la sélection</span>
+            </button>
+            <a href="{{ url_for('cinema.print_talents_list') }}" target="_blank" class="px-6 py-3 bg-blue-50 text-blue-700 font-bold rounded-lg border-2 border-blue-500 hover:bg-blue-600 hover:text-white transition-all flex items-center gap-2">
+                <span>🖨️</span>
+                <span>Imprimer la liste</span>
+            </a>
+            <a href="{{ url_for('cinema.register_talent') }}" class="px-6 py-3 border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-bold rounded-lg transition-all flex items-center gap-2">
+                <span>➕</span>
+                <span>Ajouter un Talent</span>
+            </a>
+        </div>
     </div>
     
     <div class="bg-white p-6 rounded-lg border-2 border-dotted border-purple-500">
@@ -186,6 +196,9 @@
                 <table class="w-full">
                     <thead>
                         <tr class="border-b-2 border-purple-300">
+                            <th class="text-left py-3 px-4 font-bold text-gray-700">
+                                <input type="checkbox" id="selectAll" class="w-5 h-5 rounded border-2 border-purple-400 text-purple-600 focus:ring-2 focus:ring-purple-500">
+                            </th>
                             <th class="text-left py-3 px-4 font-bold text-gray-700">Photo</th>
                             <th class="text-left py-3 px-4 font-bold text-gray-700">Nom</th>
                             <th class="text-left py-3 px-4 font-bold text-gray-700">Ethnicité</th>
@@ -196,6 +209,9 @@
                     <tbody>
                         {% for talent in talents %}
                         <tr class="border-b border-gray-200 hover:bg-purple-50 transition-all">
+                            <td class="py-3 px-4">
+                                <input type="checkbox" class="talent-checkbox w-5 h-5 rounded border-2 border-purple-400 text-purple-600 focus:ring-2 focus:ring-purple-500" data-talent-id="{{ talent.id }}">
+                            </td>
                             <td class="py-3 px-4">
                                 {% if talent.profile_photo_filename %}
                                 <img src="{{ url_for('static', filename='uploads/cinema_photos/' + talent.profile_photo_filename) }}" 
@@ -243,16 +259,21 @@
                                 {% endif %}
                             </td>
                             <td class="py-3 px-4">
-                                {% if talent.unique_code %}
-                                <a href="{{ url_for('cinema.view_profile', unique_code=talent.unique_code) }}" 
-                                   class="px-4 py-2 border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-semibold rounded-lg transition-all inline-flex items-center gap-2"
-                                   target="_blank">
-                                    <span>👁️</span>
-                                    <span>Voir</span>
-                                </a>
-                                {% else %}
-                                <span class="text-gray-400 text-sm">Pas de code</span>
-                                {% endif %}
+                                <div class="flex gap-2">
+                                    {% if talent.unique_code %}
+                                    <a href="{{ url_for('cinema.view_profile', unique_code=talent.unique_code) }}" 
+                                       class="px-4 py-2 border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-semibold rounded-lg transition-all inline-flex items-center gap-2"
+                                       target="_blank">
+                                        <span>👁️</span>
+                                        <span>Voir</span>
+                                    </a>
+                                    {% endif %}
+                                    <button onclick="deleteTalent({{ talent.id }}, '{{ talent.first_name }} {{ talent.last_name }}')" 
+                                            class="px-4 py-2 border-2 border-red-500 text-red-600 hover:bg-red-600 hover:text-white font-semibold rounded-lg transition-all inline-flex items-center gap-2">
+                                        <span>🗑️</span>
+                                        <span>Supprimer</span>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -315,4 +336,101 @@
         </div>
     </div>
 </div>
+
+<script>
+// Gestion de la sélection multiple
+const selectAllCheckbox = document.getElementById('selectAll');
+const talentCheckboxes = document.querySelectorAll('.talent-checkbox');
+const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
+
+// Sélectionner/Désélectionner tout
+if (selectAllCheckbox) {
+    selectAllCheckbox.addEventListener('change', function() {
+        talentCheckboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateDeleteButton();
+    });
+}
+
+// Mettre à jour le bouton supprimer en fonction de la sélection
+talentCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', updateDeleteButton);
+});
+
+function updateDeleteButton() {
+    const checkedBoxes = document.querySelectorAll('.talent-checkbox:checked');
+    if (checkedBoxes.length > 0) {
+        deleteSelectedBtn.classList.remove('hidden');
+        deleteSelectedBtn.classList.add('flex');
+        deleteSelectedBtn.innerHTML = `<span>🗑️</span><span>Supprimer (${checkedBoxes.length})</span>`;
+    } else {
+        deleteSelectedBtn.classList.add('hidden');
+        deleteSelectedBtn.classList.remove('flex');
+    }
+    
+    // Décocher "Tout sélectionner" si toutes les cases ne sont pas cochées
+    if (selectAllCheckbox) {
+        selectAllCheckbox.checked = checkedBoxes.length === talentCheckboxes.length && talentCheckboxes.length > 0;
+    }
+}
+
+// Supprimer les talents sélectionnés
+if (deleteSelectedBtn) {
+    deleteSelectedBtn.addEventListener('click', function() {
+        const checkedBoxes = document.querySelectorAll('.talent-checkbox:checked');
+        const talentIds = Array.from(checkedBoxes).map(cb => cb.dataset.talentId);
+        
+        if (talentIds.length === 0) return;
+        
+        if (confirm(`Êtes-vous sûr de vouloir supprimer ${talentIds.length} talent(s) ? Cette action est irréversible.`)) {
+            fetch('{{ url_for("cinema.delete_talents_bulk") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ talent_ids: talentIds })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message || 'Talents supprimés avec succès');
+                    window.location.reload();
+                } else {
+                    alert(data.message || 'Erreur lors de la suppression');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la suppression');
+            });
+        }
+    });
+}
+
+// Supprimer un talent individuel
+function deleteTalent(talentId, talentName) {
+    if (confirm(`Êtes-vous sûr de vouloir supprimer "${talentName}" ? Cette action est irréversible.`)) {
+        fetch(`{{ url_for("cinema.delete_talent", talent_id=0) }}`.replace('0', talentId), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message || 'Talent supprimé avec succès');
+                window.location.reload();
+            } else {
+                alert(data.message || 'Erreur lors de la suppression');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de la suppression');
+        });
+    }
+}
+</script>
 {% endblock %}
