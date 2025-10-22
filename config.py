@@ -17,6 +17,16 @@ class Config:
     WTF_CSRF_ENABLED = True
     WTF_CSRF_TIME_LIMIT = None
     
+    # Session cookie configuration for Replit proxy/iframe environment
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'None'
+    
+    # Remember cookie configuration
+    REMEMBER_COOKIE_SECURE = True
+    REMEMBER_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_SAMESITE = 'None'
+    
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
     UPLOAD_FOLDER = 'app/static/uploads'
     ALLOWED_PHOTO_EXTENSIONS = {'png', 'jpg', 'jpeg'}
