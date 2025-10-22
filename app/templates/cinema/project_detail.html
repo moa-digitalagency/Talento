@@ -23,6 +23,7 @@
                     ✏️ Modifier
                 </a>
                 <form method="POST" action="{{ url_for('cinema.delete_project', project_id=project.id) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce projet ?');" class="inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="bg-red-100 text-red-700 px-4 py-2 rounded-lg font-bold border-2 border-red-500 hover:bg-red-200 transition-all">
                         🗑️ Supprimer
                     </button>
@@ -82,6 +83,7 @@
     <h2 class="text-2xl font-bold text-gray-800 mb-4">➕ Ajouter un Talent au Projet</h2>
     
     <form method="POST" action="{{ url_for('cinema.assign_talent_to_project', project_id=project.id) }}" class="space-y-4">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
                 <label for="cinema_talent_id" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -189,6 +191,7 @@
                                   action="{{ url_for('cinema.remove_talent_from_project', project_id=project.id, project_talent_id=pt.id) }}" 
                                   onsubmit="return confirm('Retirer ce talent du projet ?');"
                                   class="inline">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <button type="submit" 
                                         class="bg-red-100 text-red-700 px-3 py-1 rounded text-xs font-bold border-2 border-red-500 hover:bg-red-200 transition-all">
                                     ❌

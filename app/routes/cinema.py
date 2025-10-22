@@ -975,7 +975,7 @@ def assign_talent_to_project(project_id):
         project_talent.cinema_talent_id = cinema_talent_id
         project_talent.talent_type = talent_type
         project_talent.role_description = role_description
-        project_talent.project_code = generate_project_talent_code(project_id)
+        project_talent.project_code = generate_project_talent_code(project)
         project_talent.assigned_by = current_user.id
         
         db.session.add(project_talent)

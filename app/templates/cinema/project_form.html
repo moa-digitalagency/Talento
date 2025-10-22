@@ -20,6 +20,7 @@
     </h1>
     
     <form method="POST" class="space-y-6">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <!-- Informations de base -->
         <div class="bg-blue-50 p-6 rounded-lg border-2 border-blue-200">
             <h2 class="text-xl font-bold text-gray-800 mb-4">📝 Informations de base</h2>
@@ -101,8 +102,8 @@
                             class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all">
                         <option value="">-- Sélectionner --</option>
                         {% for country in nationalities %}
-                        <option value="{{ country }}" {% if project and project.origin_country == country %}selected{% endif %}>
-                            {{ country }}
+                        <option value="{{ country.nationality }}" {% if project and project.origin_country == country.nationality %}selected{% endif %}>
+                            {{ country.flag }} {{ country.nationality }}
                         </option>
                         {% endfor %}
                     </select>
