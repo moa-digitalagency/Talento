@@ -11,12 +11,12 @@
 </div>
 
 <!-- En-tête du projet -->
-<div class="bg-white rounded-lg shadow-md overflow-hidden border-2 border-gray-200 mb-6">
-    <div class="bg-gradient-to-r from-purple-500 to-blue-600 p-6">
+<div class="bg-white rounded-lg shadow-md overflow-hidden border-2 border-purple-200 mb-6">
+    <div class="bg-white p-6 border-b-2 border-purple-200">
         <div class="flex justify-between items-start">
             <div>
-                <h1 class="text-3xl font-bold mb-2 text-white">{{ project.name }}</h1>
-                <p class="text-lg text-white opacity-90">{{ project.production_type }}</p>
+                <h1 class="text-3xl font-bold mb-2 text-gray-800">{{ project.name }}</h1>
+                <p class="text-lg text-gray-600">{{ project.production_type }}</p>
             </div>
             <div class="flex gap-2">
                 <a href="{{ url_for('cinema.edit_project', project_id=project.id) }}" class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-bold border-2 border-blue-500 hover:bg-blue-200 transition-all">
@@ -173,7 +173,6 @@
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Nom Complet</th>
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Code CINEMA</th>
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Type de Talent</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Assigné le</th>
                     <th class="px-4 py-3 text-center text-sm font-bold text-gray-800">Actions</th>
                 </tr>
             </thead>
@@ -196,15 +195,11 @@
                             {{ pt.talent_type }}
                         </span>
                     </td>
-                    <td class="px-4 py-3 text-sm text-gray-600">
-                        {{ pt.assigned_at.strftime('%d/%m/%Y') }}
-                    </td>
                     <td class="px-4 py-3">
                         <div class="flex gap-2 justify-center">
-                            <a href="{{ url_for('cinema.view_profile', unique_code=pt.cinema_talent.unique_code) }}" 
-                               target="_blank"
-                               class="bg-green-100 text-green-700 px-3 py-1 rounded text-xs font-bold border-2 border-green-500 hover:bg-green-200 transition-all">
-                                👁️ Profil
+                            <a href="{{ url_for('cinema.view_talent_assignment', project_talent_id=pt.id) }}" 
+                               class="bg-purple-100 text-purple-700 px-3 py-1 rounded text-xs font-bold border-2 border-purple-500 hover:bg-purple-200 transition-all">
+                                👁️ Voir
                             </a>
                             <a href="{{ url_for('cinema.generate_project_badge', project_talent_id=pt.id) }}" 
                                class="bg-orange-100 text-orange-700 px-3 py-1 rounded text-xs font-bold border-2 border-orange-500 hover:bg-orange-200 transition-all">

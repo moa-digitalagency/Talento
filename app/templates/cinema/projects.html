@@ -14,10 +14,10 @@
 {% if projects %}
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     {% for project in projects %}
-    <div class="bg-white rounded-lg shadow-md overflow-hidden border-2 border-gray-200 hover:border-purple-300 transition-all">
-        <div class="bg-gradient-to-r from-purple-500 to-blue-600 p-4 text-white">
-            <h2 class="text-xl font-bold mb-1">{{ project.name }}</h2>
-            <p class="text-sm opacity-90">{{ project.production_type }}</p>
+    <div class="bg-white rounded-lg shadow-md overflow-hidden border-2 border-purple-200 hover:border-purple-400 transition-all">
+        <div class="bg-white p-4 border-b-2 border-purple-200">
+            <h2 class="text-xl font-bold mb-1 text-gray-800">{{ project.name }}</h2>
+            <p class="text-sm text-gray-600">{{ project.production_type }}</p>
         </div>
         
         <div class="p-6">

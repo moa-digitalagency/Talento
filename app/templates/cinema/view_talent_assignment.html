@@ -1,0 +1,252 @@
+{% extends "cinema/base_cinema.html" %}
+
+{% block title %}Détails Assignation - {{ talent.first_name }} {{ talent.last_name }} - TalentsMaroc.com{% endblock %}
+
+{% block cinema_content %}
+<div class="mb-6">
+    <a href="{{ url_for('cinema.project_detail', project_id=project.id) }}" class="inline-flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg font-bold border-2 border-gray-500 hover:bg-gray-200 transition-all">
+        <span>←</span>
+        <span>Retour au projet</span>
+    </a>
+</div>
+
+<!-- En-tête -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden border-2 border-purple-200 mb-6">
+    <div class="bg-white p-6 border-b-2 border-purple-200">
+        <h1 class="text-3xl font-bold mb-2 text-gray-800">Détails de l'assignation</h1>
+        <p class="text-lg text-gray-600">{{ talent.first_name }} {{ talent.last_name }} - {{ project.name }}</p>
+    </div>
+</div>
+
+<!-- Informations du Projet -->
+<div class="bg-white rounded-lg shadow-md p-6 border-2 border-blue-200 mb-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <span>🎬</span>
+        <span>Informations du Projet</span>
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Nom du projet</p>
+            <p class="text-lg font-bold text-gray-800">{{ project.name }}</p>
+        </div>
+        
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Type de production</p>
+            <p class="text-lg font-bold text-gray-800">{{ project.production_type }}</p>
+        </div>
+        
+        {% if project.production_company %}
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Société de production</p>
+            <p class="text-lg font-bold text-gray-800">{{ project.production_company.name }}</p>
+        </div>
+        {% endif %}
+        
+        {% if project.origin_country %}
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Pays d'origine</p>
+            <p class="text-lg font-bold text-gray-800">{{ project.origin_country }}</p>
+        </div>
+        {% endif %}
+        
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Dates du projet</p>
+            <p class="text-lg font-bold text-gray-800">{{ project.dates_display }}</p>
+        </div>
+        
+        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Statut</p>
+            <div class="mt-1">
+                {% if project.status == 'en_preparation' %}
+                <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-bold border-2 border-yellow-300 inline-block">⏳ {{ project.status_display }}</span>
+                {% elif project.status == 'en_tournage' %}
+                <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold border-2 border-green-300 inline-block">🎬 {{ project.status_display }}</span>
+                {% elif project.status == 'post_production' %}
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold border-2 border-blue-300 inline-block">🎞️ {{ project.status_display }}</span>
+                {% else %}
+                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-bold border-2 border-gray-300 inline-block">✓ {{ project.status_display }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Informations de l'Assignation -->
+<div class="bg-white rounded-lg shadow-md p-6 border-2 border-purple-200 mb-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <span>📋</span>
+        <span>Détails de l'Assignation</span>
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Code Projet</p>
+            <p class="text-xl font-bold text-purple-700">{{ project_talent.project_code }}</p>
+        </div>
+        
+        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Type de talent</p>
+            <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-bold border-2 border-blue-300 inline-block">
+                {{ project_talent.talent_type }}
+            </span>
+        </div>
+        
+        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Assigné le</p>
+            <p class="text-lg font-bold text-gray-800">{{ project_talent.assigned_at.strftime('%d/%m/%Y à %H:%M') }}</p>
+        </div>
+        
+        {% if project_talent.start_date %}
+        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Date de début</p>
+            <p class="text-lg font-bold text-gray-800">{{ project_talent.start_date.strftime('%d/%m/%Y') }}</p>
+        </div>
+        {% endif %}
+        
+        {% if project_talent.end_date %}
+        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
+            <p class="text-sm font-semibold text-gray-600 mb-1">Date de fin</p>
+            <p class="text-lg font-bold text-gray-800">{{ project_talent.end_date.strftime('%d/%m/%Y') }}</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    {% if project_talent.role_description %}
+    <div class="mt-4 bg-purple-50 p-4 rounded-lg border border-purple-200">
+        <p class="text-sm font-semibold text-gray-600 mb-2">Description du rôle</p>
+        <p class="text-gray-800">{{ project_talent.role_description }}</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Informations du Talent (Identité) -->
+<div class="bg-white rounded-lg shadow-md p-6 border-2 border-green-200 mb-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <span>👤</span>
+        <span>Informations du Talent</span>
+    </h2>
+    
+    <div class="flex flex-col md:flex-row gap-6">
+        <!-- Photo -->
+        <div class="flex-shrink-0">
+            {% if talent.profile_photo_filename %}
+            <img src="{{ url_for('static', filename='uploads/photos/' + talent.profile_photo_filename) }}" 
+                 alt="{{ talent.first_name }} {{ talent.last_name }}" 
+                 class="w-40 h-40 object-cover rounded-lg border-4 border-green-300 shadow-md">
+            {% else %}
+            <div class="w-40 h-40 bg-green-100 rounded-lg border-4 border-green-300 flex items-center justify-center">
+                <span class="text-5xl">👤</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Informations de base -->
+        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <p class="text-sm font-semibold text-gray-600 mb-1">Nom complet</p>
+                <p class="text-lg font-bold text-gray-800">{{ talent.first_name }} {{ talent.last_name }}</p>
+            </div>
+            
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <p class="text-sm font-semibold text-gray-600 mb-1">Code CINEMA</p>
+                <p class="text-lg font-bold text-green-700">{{ talent.unique_code }}</p>
+            </div>
+            
+            {% if talent.date_of_birth %}
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <p class="text-sm font-semibold text-gray-600 mb-1">Date de naissance</p>
+                <p class="text-lg font-bold text-gray-800">{{ talent.date_of_birth.strftime('%d/%m/%Y') }}</p>
+            </div>
+            {% endif %}
+            
+            {% if talent.gender %}
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <p class="text-sm font-semibold text-gray-600 mb-1">Genre</p>
+                <p class="text-lg font-bold text-gray-800">{{ talent.gender }}</p>
+            </div>
+            {% endif %}
+            
+            {% if talent.nationality %}
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <p class="text-sm font-semibold text-gray-600 mb-1">Nationalité</p>
+                <p class="text-lg font-bold text-gray-800">{{ talent.nationality }}</p>
+            </div>
+            {% endif %}
+            
+            {% if talent.city %}
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                <p class="text-sm font-semibold text-gray-600 mb-1">Ville</p>
+                <p class="text-lg font-bold text-gray-800">{{ talent.city }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Caractéristiques physiques -->
+    {% if talent.height or talent.eye_color or talent.hair_color or talent.skin_tone %}
+    <div class="mt-6">
+        <h3 class="text-lg font-bold text-gray-800 mb-3">Caractéristiques Physiques</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {% if talent.height %}
+            <div class="bg-green-50 p-3 rounded-lg border border-green-200 text-center">
+                <p class="text-xs font-semibold text-gray-600 mb-1">Taille</p>
+                <p class="text-base font-bold text-gray-800">{{ talent.height }} cm</p>
+            </div>
+            {% endif %}
+            
+            {% if talent.eye_color %}
+            <div class="bg-green-50 p-3 rounded-lg border border-green-200 text-center">
+                <p class="text-xs font-semibold text-gray-600 mb-1">Yeux</p>
+                <p class="text-base font-bold text-gray-800">{{ talent.eye_color }}</p>
+            </div>
+            {% endif %}
+            
+            {% if talent.hair_color %}
+            <div class="bg-green-50 p-3 rounded-lg border border-green-200 text-center">
+                <p class="text-xs font-semibold text-gray-600 mb-1">Cheveux</p>
+                <p class="text-base font-bold text-gray-800">{{ talent.hair_color }}</p>
+            </div>
+            {% endif %}
+            
+            {% if talent.skin_tone %}
+            <div class="bg-green-50 p-3 rounded-lg border border-green-200 text-center">
+                <p class="text-xs font-semibold text-gray-600 mb-1">Teint</p>
+                <p class="text-base font-bold text-gray-800">{{ talent.skin_tone }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Historique de Présence (À développer) -->
+<div class="bg-white rounded-lg shadow-md p-6 border-2 border-orange-200">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <span>📅</span>
+        <span>Historique de Présence</span>
+    </h2>
+    
+    <div class="text-center py-12 bg-orange-50 rounded-lg border-2 border-orange-200">
+        <span class="text-5xl mb-3 block">🚧</span>
+        <p class="text-gray-700 font-semibold mb-2">Fonctionnalité en développement</p>
+        <p class="text-gray-500 text-sm">L'historique de présence sera bientôt disponible</p>
+    </div>
+</div>
+
+<!-- Actions -->
+<div class="mt-6 flex gap-3">
+    <a href="{{ url_for('cinema.generate_project_badge', project_talent_id=project_talent.id) }}" 
+       class="bg-orange-100 text-orange-700 px-6 py-3 rounded-lg font-bold border-2 border-orange-500 hover:bg-orange-200 transition-all inline-flex items-center gap-2">
+        <span>🎫</span>
+        <span>Générer le Badge</span>
+    </a>
+    
+    <a href="{{ url_for('cinema.view_profile', unique_code=talent.unique_code) }}" 
+       target="_blank"
+       class="bg-green-100 text-green-700 px-6 py-3 rounded-lg font-bold border-2 border-green-500 hover:bg-green-200 transition-all inline-flex items-center gap-2">
+        <span>👁️</span>
+        <span>Voir le Profil Complet</span>
+    </a>
+</div>
+{% endblock %}
