@@ -3,7 +3,7 @@
 {% block title %}{{ 'Modifier' if production else 'Ajouter' }} Boîte de Production - TalentsMaroc.com{% endblock %}
 
 {% block cinema_content %}
-<div class="mb-8">
+<div class="section-orange p-8 mb-8">
     <h1 class="text-4xl font-bold text-gray-800 mb-2 flex items-center gap-3">
         <span>🏢</span>
         <span>{{ 'Modifier' if production else 'Ajouter' }} une Boîte de Production</span>
@@ -11,12 +11,12 @@
     <p class="text-gray-600">{{ 'Modifiez' if production else 'Ajoutez' }} les informations de la société de production</p>
 </div>
 
-<form method="POST" class="bg-white rounded-lg shadow-md p-8">
+<form method="POST" class="section-purple p-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         
         <!-- Informations de base -->
-        <div class="md:col-span-2 bg-blue-50 p-4 rounded-lg">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <div class="md:col-span-2">
+            <h2 class="text-2xl font-bold text-blue-600 mb-4 flex items-center gap-2">
                 <span>📋</span>
                 <span>Informations de base</span>
             </h2>
@@ -46,8 +46,8 @@
         </div>
         
         <!-- Contact -->
-        <div class="md:col-span-2 bg-green-50 p-4 rounded-lg mt-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <div class="md:col-span-2 mt-6">
+            <h2 class="text-2xl font-bold text-green-600 mb-4 flex items-center gap-2">
                 <span>📞</span>
                 <span>Contact</span>
             </h2>
@@ -96,8 +96,8 @@
         </div>
         
         <!-- Réseaux sociaux -->
-        <div class="md:col-span-2 bg-purple-50 p-4 rounded-lg mt-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <div class="md:col-span-2 mt-6">
+            <h2 class="text-2xl font-bold text-purple-600 mb-4 flex items-center gap-2">
                 <span>🌐</span>
                 <span>Réseaux sociaux</span>
             </h2>
@@ -128,8 +128,8 @@
         </div>
         
         <!-- Informations entreprise -->
-        <div class="md:col-span-2 bg-yellow-50 p-4 rounded-lg mt-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <div class="md:col-span-2 mt-6">
+            <h2 class="text-2xl font-bold text-yellow-600 mb-4 flex items-center gap-2">
                 <span>🏢</span>
                 <span>Informations entreprise</span>
             </h2>
@@ -160,8 +160,8 @@
         </div>
         
         <!-- Productions & Services -->
-        <div class="md:col-span-2 bg-red-50 p-4 rounded-lg mt-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <div class="md:col-span-2 mt-6">
+            <h2 class="text-2xl font-bold text-red-600 mb-4 flex items-center gap-2">
                 <span>🎬</span>
                 <span>Productions & Services</span>
             </h2>
@@ -190,8 +190,8 @@
         </div>
         
         <!-- Certifications & Récompenses -->
-        <div class="md:col-span-2 bg-indigo-50 p-4 rounded-lg mt-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <div class="md:col-span-2 mt-6">
+            <h2 class="text-2xl font-bold text-indigo-600 mb-4 flex items-center gap-2">
                 <span>🏆</span>
                 <span>Certifications & Récompenses</span>
             </h2>
@@ -216,7 +216,7 @@
         </div>
         
         <!-- Statut -->
-        <div class="md:col-span-2 bg-gray-50 p-4 rounded-lg mt-6">
+        <div class="md:col-span-2 mt-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span>✓</span>
                 <span>Statut</span>
@@ -235,11 +235,11 @@
     
     <!-- Boutons d'action -->
     <div class="flex gap-4 mt-8">
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all shadow-md hover:shadow-lg">
-            {{ 'Mettre à jour' if production else 'Créer la boîte de production' }}
+        <button type="submit" class="bg-orange-100 text-orange-700 px-8 py-3 rounded-lg font-bold border-2 border-orange-500 hover:bg-orange-200 transition-all">
+            ✅ {{ 'Mettre à jour' if production else 'Créer la boîte de production' }}
         </button>
-        <a href="{{ url_for('cinema.productions') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-3 rounded-lg font-semibold transition-all">
-            Annuler
+        <a href="{{ url_for('cinema.productions') }}" class="bg-gray-100 text-gray-700 px-8 py-3 rounded-lg font-bold border-2 border-gray-500 hover:bg-gray-200 transition-all">
+            ❌ Annuler
         </a>
     </div>
 </form>
