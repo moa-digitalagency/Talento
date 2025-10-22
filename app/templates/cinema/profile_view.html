@@ -26,31 +26,19 @@
 
         <!-- SECTION 1: Identité & Contact -->
         <div class="section-blue p-6 mb-8">
-            <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-center">
+            <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start lg:items-center">
                 
-                <!-- Photos et QR Code -->
-                <div class="flex-shrink-0">
-                    <div class="text-center">
-                        {% if talent.id_photo_filename %}
-                        <img src="{{ url_for('static', filename='uploads/photos/' + talent.id_photo_filename) }}" 
-                             alt="{{ talent.full_name }}" 
-                             class="w-48 h-48 rounded-full mx-auto mb-6 object-cover border-4 border-blue-500 shadow-xl">
-                        {% else %}
-                        <div class="w-48 h-48 rounded-full mx-auto mb-6 bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center text-white text-6xl font-bold border-4 border-purple-500 shadow-xl">
-                            {{ talent.first_name[0] if talent.first_name else '?' }}{{ talent.last_name[0] if talent.last_name else '?' }}
-                        </div>
-                        {% endif %}
-                        
-                        {% if talent.qr_code_filename %}
-                        <div class="hidden lg:block bg-white p-4 rounded-xl border-2 border-purple-300 w-full max-w-sm mx-auto shadow-lg">
-                            <img src="{{ url_for('static', filename='uploads/qrcodes/' + talent.qr_code_filename) }}" 
-                                 alt="QR Code CINEMA" 
-                                 class="w-40 h-40 mx-auto">
-                            <p class="text-sm text-gray-600 mt-3 font-mono font-bold text-center">{{ talent.unique_code }}</p>
-                            <p class="text-xs text-gray-500 text-center mt-1">Scannez pour voir le profil</p>
-                        </div>
-                        {% endif %}
+                <!-- Photo -->
+                <div class="flex-shrink-0 mx-auto lg:mx-0">
+                    {% if talent.id_photo_filename %}
+                    <img src="{{ url_for('static', filename='uploads/photos/' + talent.id_photo_filename) }}" 
+                         alt="{{ talent.full_name }}" 
+                         class="w-48 h-48 rounded-full object-cover border-4 border-blue-500 shadow-xl">
+                    {% else %}
+                    <div class="w-48 h-48 rounded-full bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center text-white text-6xl font-bold border-4 border-purple-500 shadow-xl">
+                        {{ talent.first_name[0] if talent.first_name else '?' }}{{ talent.last_name[0] if talent.last_name else '?' }}
                     </div>
+                    {% endif %}
                 </div>
                 
                 <!-- Informations principales - Centrées verticalement avec la photo -->
@@ -64,33 +52,45 @@
                         <p class="text-2xl lg:text-3xl text-purple-600 font-mono font-bold tracking-wider">{{ talent.unique_code }}</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- Document d'identité - Bloc séparé en dessous -->
-            {% if talent.id_document_type %}
-            <div class="bg-white p-5 rounded-lg border-2 border-blue-200 mt-6">
-                <h3 class="text-lg font-bold text-blue-800 mb-3 flex items-center gap-2">
-                    <span>📋</span>
-                    <span>Document d'identité</span>
-                </h3>
-                <div class="space-y-2">
-                    <p class="text-sm text-gray-600">Type de document</p>
-                    <p class="text-lg font-semibold text-gray-800">
-                        {% if talent.id_document_type == 'passport' %}
-                        📘 Passeport
-                        {% elif talent.id_document_type == 'national_id' %}
-                        🪪 Carte d'identité nationale
-                        {% else %}
-                        {{ talent.id_document_type }}
-                        {% endif %}
-                    </p>
-                    {% if decrypted.id_document_number %}
-                    <p class="text-sm text-gray-600 mt-3">Numéro de document</p>
-                    <p class="text-lg font-semibold text-gray-800 font-mono">{{ decrypted.id_document_number }}</p>
+                <!-- QR Code et Document d'identité alignés -->
+                <div class="flex-shrink-0 space-y-4 mx-auto lg:mx-0">
+                    {% if talent.qr_code_filename %}
+                    <div class="bg-white p-4 rounded-xl border-2 border-purple-300 w-full max-w-sm shadow-lg">
+                        <img src="{{ url_for('static', filename='uploads/qrcodes/' + talent.qr_code_filename) }}" 
+                             alt="QR Code CINEMA" 
+                             class="w-40 h-40 mx-auto">
+                        <p class="text-sm text-gray-600 mt-3 font-mono font-bold text-center">{{ talent.unique_code }}</p>
+                        <p class="text-xs text-gray-500 text-center mt-1">Scannez pour voir le profil</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if talent.id_document_type %}
+                    <div class="bg-white p-5 rounded-lg border-2 border-blue-200">
+                        <h3 class="text-lg font-bold text-blue-800 mb-3 flex items-center gap-2">
+                            <span>📋</span>
+                            <span>Document d'identité</span>
+                        </h3>
+                        <div class="space-y-2">
+                            <p class="text-sm text-gray-600">Type de document</p>
+                            <p class="text-lg font-semibold text-gray-800">
+                                {% if talent.id_document_type == 'passport' %}
+                                📘 Passeport
+                                {% elif talent.id_document_type == 'national_id' %}
+                                🪪 Carte d'identité nationale
+                                {% else %}
+                                {{ talent.id_document_type }}
+                                {% endif %}
+                            </p>
+                            {% if decrypted.id_document_number %}
+                            <p class="text-sm text-gray-600 mt-3">Numéro de document</p>
+                            <p class="text-lg font-semibold text-gray-800 font-mono">{{ decrypted.id_document_number }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
                     {% endif %}
                 </div>
             </div>
-            {% endif %}
         </div>
 
         <!-- BLOC SÉPARÉ: Coordonnées -->

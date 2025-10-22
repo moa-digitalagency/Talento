@@ -171,7 +171,7 @@
                 <tr class="bg-purple-100 border-b-2 border-purple-300">
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Code Projet</th>
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Nom Complet</th>
-                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Code CINEMA</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Pièce d'identité</th>
                     <th class="px-4 py-3 text-left text-sm font-bold text-gray-800">Type de Talent</th>
                     <th class="px-4 py-3 text-center text-sm font-bold text-gray-800">Actions</th>
                 </tr>
@@ -188,7 +188,12 @@
                         {{ pt.cinema_talent.first_name }} {{ pt.cinema_talent.last_name }}
                     </td>
                     <td class="px-4 py-3">
-                        <span class="text-sm text-gray-600">{{ pt.cinema_talent.unique_code }}</span>
+                        <span class="text-sm text-gray-600 font-mono">
+                            {% if pt.cinema_talent.id_document_type %}
+                                {% if pt.cinema_talent.id_document_type == 'passport' %}📘{% elif pt.cinema_talent.id_document_type == 'national_id' %}🪪{% endif %}
+                            {% endif %}
+                            {{ pt.cinema_talent.id_document_number_initials if pt.cinema_talent.id_document_number_initials else 'Non renseigné' }}
+                        </span>
                     </td>
                     <td class="px-4 py-3">
                         <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-semibold border border-blue-300">
