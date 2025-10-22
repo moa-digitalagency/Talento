@@ -1,9 +1,9 @@
 """
 Générateur de code unique pour les talents CINEMA
-Format: PPVVVNNNNNNNG (12 caractères)
+Format: PPVVVNNNNNG (10 caractères)
 - PP: Code pays ISO-2 (2 lettres)
 - VVV: 3 premières lettres de la ville (en majuscules)
-- NNNNNN: Numéro séquentiel (6 chiffres)
+- NNNN: Numéro séquentiel (4 chiffres)
 - G: Genre (M/F)
 """
 from app import db
@@ -44,7 +44,7 @@ def generate_cinema_unique_code(country_name, city_name, gender):
         gender (str): Genre (M/F)
     
     Returns:
-        str: Code unique de 12 caractères (PPVVVNNNNNNNG)
+        str: Code unique de 10 caractères (PPVVVNNNNNG)
     
     Note:
         Le numéro séquentiel est incrémenté par PAYS uniquement, 
@@ -69,20 +69,27 @@ def generate_cinema_unique_code(country_name, city_name, gender):
     max_sequence = 0
     if all_talents:
         for talent in all_talents:
-            if talent.unique_code and len(talent.unique_code) >= 11:
+            if talent.unique_code:
                 try:
-                    # Extraire le numéro séquentiel (positions 5-11)
-                    sequence_num = int(talent.unique_code[5:11])
-                    max_sequence = max(max_sequence, sequence_num)
+                    # Gérer les anciens codes (12 chars: PPVVVNNNNNNNG) et nouveaux (10 chars: PPVVVNNNNNG)
+                    # Extraire tous les chiffres entre la position 5 et le dernier caractère (genre)
+                    if len(talent.unique_code) >= 10:
+                        # Extraire la partie numérique (entre ville et genre)
+                        # Pour ancien format (12 chars): position 5-11 (6 chiffres)
+                        # Pour nouveau format (10 chars): position 5-9 (4 chiffres)
+                        numeric_part = talent.unique_code[5:-1]  # Tout sauf le genre à la fin
+                        # Ne garder que les chiffres
+                        sequence_num = int(''.join(c for c in numeric_part if c.isdigit()))
+                        max_sequence = max(max_sequence, sequence_num)
                 except (ValueError, IndexError):
                     continue
     
     next_number = max_sequence + 1
     
-    # Formatter le numéro sur 6 chiffres
-    sequence = str(next_number).zfill(6)
+    # Formatter le numéro sur 4 chiffres
+    sequence = str(next_number).zfill(4)
     
-    # Construire le code final: PPVVVNNNNNNNG
+    # Construire le code final: PPVVVNNNNNG
     unique_code = f"{country_code}{city_code}{sequence}{gender}"
     
     return unique_code

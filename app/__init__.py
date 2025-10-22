@@ -258,6 +258,17 @@ def create_app(config_class=Config):
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Veuillez vous connecter pour accéder à cette page.'
     
+    @app.template_filter('from_json')
+    def from_json_filter(value):
+        """Filtre pour parser les chaînes JSON dans les templates"""
+        if not value:
+            return []
+        try:
+            import json
+            return json.loads(value)
+        except (ValueError, TypeError):
+            return []
+    
     from app.routes import auth, profile, admin, main, api, cinema
     from app.routes import api_v1
     app.register_blueprint(auth.bp)
