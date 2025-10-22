@@ -25,7 +25,7 @@
                         <div class="hidden md:flex items-center space-x-4">
                             <a href="{{ url_for('main.index') }}" class="px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-semibold flex items-center gap-2">
                                 {% if current_user.is_admin %}
-                                    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="" class="w-5 h-5">
+                                    <img src="{{ url_for('static', filename='img/favicon.ico') }}" alt="" class="w-5 h-5">
                                     <span>Dashboard</span>
                                 {% else %}
                                     <span>👤</span>
@@ -86,7 +86,7 @@
                 {% if current_user.is_authenticated %}
                     <a href="{{ url_for('main.index') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-all font-semibold">
                         {% if current_user.is_admin %}
-                            <img src="{{ url_for('static', filename='img/logo.svg') }}" alt="" class="w-5 h-5 inline mr-2">
+                            <img src="{{ url_for('static', filename='img/favicon.ico') }}" alt="" class="w-5 h-5 inline mr-2">
                             <span>Dashboard</span>
                         {% else %}
                             <span>👤</span>
