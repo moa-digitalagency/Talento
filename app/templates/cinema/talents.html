@@ -156,10 +156,10 @@
         </div>
         
         <div class="mt-6 flex gap-3">
-            <button class="px-6 py-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-bold rounded-lg transition-all">
+            <button class="px-4 py-2 border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold rounded-lg transition-all">
                 🔍 Rechercher
             </button>
-            <button class="px-6 py-3 bg-white text-gray-700 font-bold rounded-lg border-2 border-gray-300 hover:bg-gray-50 transition-all">
+            <button class="px-4 py-2 bg-white text-gray-700 font-semibold rounded-lg border-2 border-gray-300 hover:bg-gray-50 transition-all">
                 🔄 Réinitialiser
             </button>
         </div>
@@ -174,15 +174,15 @@
             <h2 class="text-2xl font-bold text-gray-800">Base de Données des Talents</h2>
         </div>
         <div class="flex flex-wrap gap-3">
-            <button id="deleteSelectedBtn" class="px-6 py-3 bg-red-50 text-red-700 font-bold rounded-lg border-2 border-red-500 hover:bg-red-600 hover:text-white transition-all items-center gap-2 hidden">
+            <button id="deleteSelectedBtn" class="px-4 py-2 bg-red-50 text-red-700 font-semibold rounded-lg border-2 border-red-500 hover:bg-red-600 hover:text-white transition-all items-center gap-2 hidden">
                 <span>🗑️</span>
                 <span>Supprimer la sélection</span>
             </button>
-            <a href="{{ url_for('cinema.print_talents_list') }}" target="_blank" class="px-6 py-3 bg-blue-50 text-blue-700 font-bold rounded-lg border-2 border-blue-500 hover:bg-blue-600 hover:text-white transition-all flex items-center gap-2">
-                <span>🖨️</span>
-                <span>Imprimer la liste</span>
+            <a href="{{ url_for('cinema.print_talents_list') }}" target="_blank" class="px-4 py-2 bg-blue-50 text-blue-700 font-semibold rounded-lg border-2 border-blue-500 hover:bg-blue-600 hover:text-white transition-all flex items-center gap-2">
+                <span>📄</span>
+                <span>Télécharger PDF</span>
             </a>
-            <a href="{{ url_for('cinema.register_talent') }}" class="px-6 py-3 border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-bold rounded-lg transition-all flex items-center gap-2">
+            <a href="{{ url_for('cinema.register_talent') }}" class="px-4 py-2 border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-semibold rounded-lg transition-all flex items-center gap-2">
                 <span>➕</span>
                 <span>Ajouter un Talent</span>
             </a>
@@ -262,14 +262,14 @@
                                 <div class="flex gap-2">
                                     {% if talent.unique_code %}
                                     <a href="{{ url_for('cinema.view_profile', unique_code=talent.unique_code) }}" 
-                                       class="px-4 py-2 border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-semibold rounded-lg transition-all inline-flex items-center gap-2"
+                                       class="px-3 py-1.5 border-2 border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white font-semibold rounded-lg transition-all inline-flex items-center gap-1.5 text-sm"
                                        target="_blank">
                                         <span>👁️</span>
                                         <span>Voir</span>
                                     </a>
                                     {% endif %}
                                     <button onclick="deleteTalent({{ talent.id }}, '{{ talent.first_name }} {{ talent.last_name }}')" 
-                                            class="px-4 py-2 border-2 border-red-500 text-red-600 hover:bg-red-600 hover:text-white font-semibold rounded-lg transition-all inline-flex items-center gap-2">
+                                            class="px-3 py-1.5 border-2 border-red-500 text-red-600 hover:bg-red-600 hover:text-white font-semibold rounded-lg transition-all inline-flex items-center gap-1.5 text-sm">
                                         <span>🗑️</span>
                                         <span>Supprimer</span>
                                     </button>
