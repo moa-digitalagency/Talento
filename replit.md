@@ -18,7 +18,8 @@ Preferred communication style: Simple, everyday language.
 - **Recent Schema Updates (v2.16.0)**: Added website, imdb_url_encrypted, and threads_encrypted fields to User and CinemaTalent models for enhanced profile information.
 
 ### Unique Identification System
-- **Code Format**: PPVVVNNNNG (Country, City, 4 digits, Gender).
+- **Main Code Format**: PPVVVNNNNG (Country, City, 4 digits, Gender).
+- **CINEMA Code Format**: PPVVVNNNNNG (Country, City, 4 digits, Gender) - Updated from 6 to 4 digits with backward compatibility for legacy 6-digit codes.
 - **QR Codes**: Automatically generated and linked to profile URLs for both main and CINEMA profiles.
 
 ### Authentication & Authorization
@@ -56,12 +57,14 @@ Preferred communication style: Simple, everyday language.
 - **Key Endpoints**: Authentication, User management, Talents & Location data, CINEMA specific data and statistics, and Data Exports.
 
 ### CINEMA Module Specifics
-- **Registration Form**: Public form (`/cinema/register`) organized into 9 color-coded sections for identity & contact, origins, residence, languages, physical characteristics, talent types (13 options with multi-select), talents (categorized), social networks (encrypted including Telegram), and photos/productions.
+- **Registration Form**: Public form (`/cinema/register`) organized into 9 color-coded sections for identity & contact, origins, residence, languages, physical characteristics, talent types (13 options with multi-select), talents (categorized), social networks (encrypted including Telegram), and photos/productions. All buttons use outline style (border-2 with hover:bg-fill).
 - **Profile View**: Public profile page (`/cinema/profile/{code}`) mirrors the registration form structure with 9 sections, displaying age (not birth date), encrypted document number, separated contact block, and correctly mapped data (ethnicities in Origins, talent types vs. competences separated).
-- **Features**: Country dropdowns with emoji flags, dynamic city loading, multi-select fields for ethnicities, languages, and talents. All physical characteristic dropdowns (eyes, hair color/type, skin tone, build) are populated from constants.
+- **Talents Management**: Talents list page displays Photo, Nom, Ethnicité (first ethnicity + count), Type de talent (first type + count), and Actions (outline "Voir plus" button). Advanced search filter with 12 criteria: name, talent type, gender, age range, ethnicity, eye color, hair color, skin tone, height, country, languages, and experience level.
+- **Features**: Country dropdowns with emoji flags, dynamic city loading, multi-select fields for ethnicities, languages, and talents. All physical characteristic dropdowns (eyes, hair color/type, skin tone, build) are populated from constants. JSON data parsing via custom `from_json` Jinja2 filter.
 - **TMDb Integration**: Optional server-side API proxy for movie/TV show search in production history, with real-time search and poster display.
 - **Data Model**: `CinemaTalent` model includes personal info with encrypted ID document number, origins vs. residence, physical characteristics, JSON arrays for languages/talent_types/other_talents, encrypted contact/social media (including Telegram), website field (non-encrypted), photo storage, and previous productions as JSON.
 - **Valid Data Values**: Ethnicities from predefined list (Africaine, Arabe, Berbère, Caucasienne/Blanche, etc.), Talent types from CINEMA_TALENT_TYPES constant (Acteur/Actrice Principal(e), Acteur/Actrice Secondaire, Figurant(e), Silhouette, Doublure, Doublure Lumière, Cascadeur/Cascadeuse, Mannequin, Voix Off, Figurant Spécialisé, Choriste, Danseur/Danseuse de fond, Autre).
+- **UI/UX Style**: Consistent outline button style throughout cinema module for better visual hierarchy and modern appearance.
 
 ## External Dependencies
 
