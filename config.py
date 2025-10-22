@@ -5,11 +5,17 @@ from cryptography.fernet import Fernet
 load_dotenv()
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production-2024-talento-maroc'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///talento.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
-    ENCRYPTION_KEY = os.environ.get('ENCRYPTION_KEY') or Fernet.generate_key().decode()
+    # Clé de chiffrement persistante (générer une seule fois)
+    _default_encryption_key = 'gAAAAABmFNqK0qhTMrRCLzprdQycr0cJTIwjm6FfA3G6q9rRkynkFs0='
+    ENCRYPTION_KEY = os.environ.get('ENCRYPTION_KEY') or _default_encryption_key
+    
+    # Configuration CSRF
+    WTF_CSRF_ENABLED = True
+    WTF_CSRF_TIME_LIMIT = None
     
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
     UPLOAD_FOLDER = 'app/static/uploads'
