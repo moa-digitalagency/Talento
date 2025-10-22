@@ -469,8 +469,8 @@ def print_talents_list():
     
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), 
-                          rightMargin=0.8*cm, leftMargin=0.8*cm,
-                          topMargin=1*cm, bottomMargin=1*cm)
+                          rightMargin=0.5*cm, leftMargin=0.5*cm,
+                          topMargin=0.8*cm, bottomMargin=0.8*cm)
     
     elements = []
     styles = getSampleStyleSheet()
@@ -478,18 +478,18 @@ def print_talents_list():
     title_style = ParagraphStyle(
         'CustomTitle',
         parent=styles['Heading1'],
-        fontSize=18,
+        fontSize=16,
         textColor=colors.HexColor('#6B46C1'),
-        spaceAfter=20,
+        spaceAfter=15,
         alignment=TA_CENTER,
         fontName='Helvetica-Bold'
     )
     
     title = Paragraph("Liste des Talents CINEMA - TalentsMaroc.com", title_style)
     elements.append(title)
-    elements.append(Spacer(1, 0.5*cm))
+    elements.append(Spacer(1, 0.3*cm))
     
-    data = [['Nom complet', 'Âge / Genre', 'Document d\'identité', 'Téléphone', 'WhatsApp', 'Ethnicité', 'Type de talent']]
+    data = [['Nom complet', 'Âge / Genre', 'Document d\'identité', 'Téléphone', 'WhatsApp', 'Ethnicité', 'Type de talent', 'Observations']]
     
     for talent in talents_list:
         from app.utils.encryption import decrypt_sensitive_data
@@ -554,30 +554,31 @@ def print_talents_list():
             phone or "-",
             whatsapp or "-",
             ethnicity or "-",
-            talent_type or "-"
+            talent_type or "-",
+            ""
         ])
     
-    table = Table(data, colWidths=[4*cm, 2.5*cm, 3*cm, 2.5*cm, 2.5*cm, 3*cm, 5*cm])
+    table = Table(data, colWidths=[3.5*cm, 2*cm, 2.5*cm, 2.5*cm, 2.5*cm, 2.5*cm, 4*cm, 3.5*cm])
     
     table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#6B46C1')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 11),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TOPPADDING', (0, 0), (-1, 0), 12),
+        ('FONTSIZE', (0, 0), (-1, 0), 9),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
+        ('TOPPADDING', (0, 0), (-1, 0), 8),
         ('BACKGROUND', (0, 1), (-1, -1), colors.white),
         ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
         ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-        ('FONTSIZE', (0, 1), (-1, -1), 9),
-        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#E0E0E0')),
+        ('FONTSIZE', (0, 1), (-1, -1), 8),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#E0E0E0')),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#F9F5FF')]),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 8),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
-        ('TOPPADDING', (0, 1), (-1, -1), 8),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
+        ('LEFTPADDING', (0, 0), (-1, -1), 3),
+        ('RIGHTPADDING', (0, 0), (-1, -1), 3),
+        ('TOPPADDING', (0, 1), (-1, -1), 6),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
     ]))
     
     elements.append(table)

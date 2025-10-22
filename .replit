@@ -22,21 +22,17 @@ args = "Talento Web App"
 name = "Talento Web App"
 author = "agent"
 
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "python app.py"
-waitForPort = 5000
-
 [workflows.workflow.metadata]
 outputType = "webview"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "ENABLE_AUTO_SEED=0 python app.py"
+waitForPort = 5000
 
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 35875
-externalPort = 5000
 
 [[ports]]
 localPort = 36319
