@@ -622,8 +622,9 @@ def print_talents_list():
     from reportlab.lib.pagesizes import A4, landscape
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
     from reportlab.lib.units import cm
-    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
     from reportlab.lib.enums import TA_CENTER
+    import os
     
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=landscape(A4), 
@@ -633,19 +634,39 @@ def print_talents_list():
     elements = []
     styles = getSampleStyleSheet()
     
-    title_style = ParagraphStyle(
-        'CustomTitle',
-        parent=styles['Heading1'],
-        fontSize=16,
-        textColor=colors.HexColor('#6B46C1'),
-        spaceAfter=15,
-        alignment=TA_CENTER,
-        fontName='Helvetica-Bold'
-    )
-    
-    title = Paragraph("Liste des Talents CINEMA - TalentsMaroc.com", title_style)
-    elements.append(title)
-    elements.append(Spacer(1, 0.3*cm))
+    try:
+        logo_path = os.path.join('app', 'static', 'img', 'logo-full.png')
+        if os.path.exists(logo_path):
+            logo = Image(logo_path, width=6*cm, height=1.5*cm)
+            logo.hAlign = 'CENTER'
+            elements.append(logo)
+            elements.append(Spacer(1, 0.3*cm))
+        else:
+            title_style = ParagraphStyle(
+                'CustomTitle',
+                parent=styles['Heading1'],
+                fontSize=16,
+                textColor=colors.HexColor('#6B46C1'),
+                spaceAfter=15,
+                alignment=TA_CENTER,
+                fontName='Helvetica-Bold'
+            )
+            title = Paragraph("LISTE DES TALENTS ASSIGNÉS", title_style)
+            elements.append(title)
+            elements.append(Spacer(1, 0.3*cm))
+    except:
+        title_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=16,
+            textColor=colors.HexColor('#6B46C1'),
+            spaceAfter=15,
+            alignment=TA_CENTER,
+            fontName='Helvetica-Bold'
+        )
+        title = Paragraph("LISTE DES TALENTS ASSIGNÉS", title_style)
+        elements.append(title)
+        elements.append(Spacer(1, 0.3*cm))
     
     data = [['Nom complet', 'Âge / Genre', 'Document d\'identité', 'Téléphone', 'WhatsApp', 'Ethnicité', 'Type de talent', 'Observations']]
     

@@ -10,7 +10,6 @@ Service pour la recherche de films via OMDB API
 import requests
 import os
 
-OMDB_API_KEY = os.environ.get('OMDB_API_KEY', '')
 OMDB_BASE_URL = 'http://www.omdbapi.com/'
 
 def search_movies(query, page=1):
@@ -24,6 +23,8 @@ def search_movies(query, page=1):
     Returns:
         dict: Résultats de recherche ou erreur
     """
+    OMDB_API_KEY = os.environ.get('OMDB_API_KEY', '')
+    
     if not OMDB_API_KEY:
         return {'error': 'OMDB API key not configured'}
     

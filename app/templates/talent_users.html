@@ -112,7 +112,7 @@
             {% if users %}
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white rounded-lg overflow-hidden">
-                    <thead class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white">
+                    <thead class="bg-blue-600 text-white">
                         <tr>
                             <th class="px-6 py-4 text-left">Photo</th>
                             <th class="px-6 py-4 text-left">Nom</th>
@@ -132,7 +132,7 @@
                                      alt="{{ user.full_name }}"
                                      class="w-12 h-12 rounded-full object-cover border-2 border-blue-200">
                                 {% else %}
-                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-lg border-2 border-blue-200">
+                                <div class="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-lg border-2 border-blue-200">
                                     {{ user.first_name[0] if user.first_name else '?' }}{{ user.last_name[0] if user.last_name else '' }}
                                 </div>
                                 {% endif %}

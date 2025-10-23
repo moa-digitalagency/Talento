@@ -55,7 +55,7 @@
                              alt="{{ user.full_name }}" 
                              class="w-48 h-48 rounded-full mx-auto mb-6 object-cover border-4 border-blue-500 shadow-xl">
                         {% else %}
-                        <div class="w-48 h-48 rounded-full mx-auto mb-6 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-6xl font-bold border-4 border-blue-500 shadow-xl">
+                        <div class="w-48 h-48 rounded-full mx-auto mb-6 bg-blue-500 flex items-center justify-center text-white text-6xl font-bold border-4 border-blue-500 shadow-xl">
                             {{ user.first_name[0] if user.first_name else '?' }}{{ user.last_name[0] if user.last_name else '?' }}
                         </div>
                         {% endif %}

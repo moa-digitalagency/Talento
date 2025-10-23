@@ -35,7 +35,7 @@
                          alt="{{ talent.full_name }}" 
                          class="w-48 h-48 rounded-full object-cover border-4 border-blue-500 shadow-xl">
                     {% else %}
-                    <div class="w-48 h-48 rounded-full bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center text-white text-6xl font-bold border-4 border-purple-500 shadow-xl">
+                    <div class="w-48 h-48 rounded-full bg-purple-500 flex items-center justify-center text-white text-6xl font-bold border-4 border-purple-500 shadow-xl">
                         {{ talent.first_name[0] if talent.first_name else '?' }}{{ talent.last_name[0] if talent.last_name else '?' }}
                     </div>
                     {% endif %}
