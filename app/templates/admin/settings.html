@@ -386,13 +386,21 @@
 
                 <script>
                     function checkForUpdates() {
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
+                        
                         fetch('{{ url_for("admin.check_updates") }}', {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json'
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrfToken
                             }
                         })
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Erreur HTTP: ' + response.status);
+                            }
+                            return response.json();
+                        })
                         .then(data => {
                             if (data.error) {
                                 alert('Erreur: ' + data.error);
