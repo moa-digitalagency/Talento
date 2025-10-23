@@ -315,6 +315,7 @@
                     <div class="flex gap-3">
                         <form method="POST" action="{{ url_for('admin.perform_update') }}" class="inline" 
                               onsubmit="return confirm('⚠️ Cette action va mettre à jour l\'application depuis GitHub, installer les dépendances et exécuter les migrations. L\'application redémarrera. Continuer ?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <button type="submit" 
                                     {% if not git_info.has_updates %}disabled{% endif %}
                                     class="px-6 py-3 {% if git_info.has_updates %}bg-white text-cyan-600 border-2 border-cyan-600 hover:bg-cyan-50{% else %}bg-gray-100 text-gray-400 border-2 border-gray-300 cursor-not-allowed{% endif %} font-bold rounded-lg transition-all">
