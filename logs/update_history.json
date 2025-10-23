@@ -1,0 +1,20 @@
+[
+  {
+    "timestamp": "2025-10-23T00:50:44.166899",
+    "steps": [
+      {
+        "name": "Git Pull",
+        "success": true,
+        "output": "Already up to date.\nFrom https://github.com/moa-digitalagency/Talento\n * branch            main       -> FETCH_HEAD\n"
+      },
+      {
+        "name": "Install Dependencies",
+        "success": false,
+        "output": "error: externally-managed-environment\n\n\u00d7 This environment is externally managed\n\u2570\u2500> This command has been disabled as it tries to modify the immutable\n    `/nix/store` filesystem.\n    \n    To use Python with Nix and nixpkgs, have a look at the online documentation:\n    <https://nixos.org/manual/nixpkgs/stable/#python>.\n\nnote: If you believe this is a mistake, please contact your Python installation or OS distribution provider. You can override this, at the risk of breaking your Python installation or OS, by passing --break-system-packages.\nhint: See PEP 668 for the detailed specification.\n"
+      }
+    ],
+    "success": false,
+    "rollback_point": "27620118f0baad713fa1cde9c8748e36e397a9d1",
+    "rolled_back": true
+  }
+]
