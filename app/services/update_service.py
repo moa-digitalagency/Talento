@@ -152,17 +152,26 @@ class UpdateService:
     def install_dependencies():
         """Installe les dépendances depuis requirements.txt"""
         try:
+            # Utilise python -m pip pour garantir qu'on utilise le bon pip
             result = subprocess.run(
-                ['pip', 'install', '-r', 'requirements.txt'],
+                ['python', '-m', 'pip', 'install', '--upgrade', '-r', 'requirements.txt'],
                 capture_output=True,
                 text=True,
-                cwd=os.getcwd()
+                cwd=os.getcwd(),
+                timeout=300  # 5 minutes timeout
             )
             
             success = result.returncode == 0
             output = result.stdout + result.stderr
             
+            if not success:
+                current_app.logger.error(f"Échec de l'installation pip. Code de retour: {result.returncode}")
+                current_app.logger.error(f"Sortie: {output}")
+            
             return success, output
+        except subprocess.TimeoutExpired:
+            current_app.logger.error("Timeout lors de l'installation des dépendances (>5min)")
+            return False, "Timeout: L'installation a pris plus de 5 minutes"
         except Exception as e:
             current_app.logger.error(f"Erreur lors de l'installation des dépendances: {e}")
             return False, str(e)
@@ -238,25 +247,31 @@ class UpdateService:
             return False, log_entry
         
         log_entry['rollback_point'] = rollback_point
+        current_app.logger.info(f"Point de restauration créé: {rollback_point}")
         
         # Étape 1: Pull des mises à jour
+        current_app.logger.info("Début du pull des mises à jour...")
         success_pull, output_pull = UpdateService.pull_updates()
         log_entry['steps'].append({
             'name': 'Git Pull',
             'success': success_pull,
-            'output': output_pull
+            'output': output_pull[:500] if len(output_pull) > 500 else output_pull  # Limiter la taille
         })
         
         if not success_pull:
+            current_app.logger.error("Échec du pull Git")
             UpdateService._save_update_log(log_entry)
             return False, log_entry
         
+        current_app.logger.info("Pull Git réussi")
+        
         # Étape 2: Installation des dépendances
+        current_app.logger.info("Début de l'installation des dépendances...")
         success_deps, output_deps = UpdateService.install_dependencies()
         log_entry['steps'].append({
             'name': 'Install Dependencies',
             'success': success_deps,
-            'output': output_deps
+            'output': output_deps[:1000] if len(output_deps) > 1000 else output_deps  # Limiter la taille
         })
         
         if not success_deps:
@@ -266,12 +281,15 @@ class UpdateService:
             UpdateService._save_update_log(log_entry)
             return False, log_entry
         
+        current_app.logger.info("Installation des dépendances réussie")
+        
         # Étape 3: Migrations de la base de données
+        current_app.logger.info("Début des migrations de la base de données...")
         success_migrate, output_migrate = UpdateService.run_migrations()
         log_entry['steps'].append({
             'name': 'Database Migration',
             'success': success_migrate,
-            'output': output_migrate
+            'output': output_migrate[:500] if len(output_migrate) > 500 else output_migrate  # Limiter la taille
         })
         
         if not success_migrate:
@@ -281,8 +299,11 @@ class UpdateService:
             UpdateService._save_update_log(log_entry)
             return False, log_entry
         
+        current_app.logger.info("Migrations de la base de données réussies")
+        
         log_entry['success'] = True
         UpdateService._save_update_log(log_entry)
+        current_app.logger.info("Mise à jour complète réussie!")
         
         return True, log_entry
     
