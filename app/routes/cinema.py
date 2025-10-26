@@ -400,10 +400,69 @@ def register_talent():
             # Previous Productions (JSON)
             talent.previous_productions = request.form.get('previous_productions')
             
+            # Talent Types (Multiple choices from CINEMA_TALENT_TYPES)
+            talent_types = request.form.getlist('talent_types')
+            if talent_types:
+                talent.talent_types = json.dumps(talent_types)
+            
             db.session.add(talent)
+            db.session.flush()
+            
+            # Créer automatiquement un compte User pour permettre la connexion
+            from app.utils.email_service import generate_random_password
+            from app.models.user import User
+            
+            # Vérifier si un User existe déjà avec ce code (ne devrait pas arriver)
+            if not talent.unique_code:
+                flash('Erreur: code unique CINEMA non généré.', 'error')
+                db.session.rollback()
+                return render_template('cinema/register_talent.html', 
+                                     countries=countries,
+                                     nationalities=nationalities,
+                                     languages=LANGUAGES_CINEMA,
+                                     talent_categories=TALENT_CATEGORIES,
+                                     cinema_talent_types=CINEMA_TALENT_TYPES,
+                                     eye_colors=EYE_COLORS,
+                                     hair_colors=HAIR_COLORS,
+                                     hair_types=HAIR_TYPES,
+                                     skin_tones=SKIN_TONES,
+                                     build_types=BUILD_TYPES)
+            
+            # Créer le compte User associé au talent cinéma
+            cinema_user = User()
+            cinema_user.unique_code = talent.unique_code
+            cinema_user.first_name = talent.first_name
+            cinema_user.last_name = talent.last_name
+            cinema_user.email = talent.email
+            cinema_user.gender = talent.gender
+            cinema_user.date_of_birth = talent.date_of_birth
+            cinema_user.is_admin = False
+            cinema_user.account_active = True
+            
+            # Générer un mot de passe aléatoire
+            password = generate_random_password()
+            cinema_user.set_password(password)
+            
+            # Copier la photo si disponible
+            if talent.profile_photo_filename:
+                cinema_user.photo_filename = talent.profile_photo_filename
+            
+            # Copier le QR code
+            cinema_user.qr_code_filename = talent.qr_code_filename
+            
+            db.session.add(cinema_user)
             db.session.commit()
             
-            flash(f'Talent {talent.first_name} {talent.last_name} enregistré avec succès dans CINEMA!', 'success')
+            # Envoyer les emails de confirmation et identifiants
+            try:
+                from app.services.email_service import email_service
+                email_service.send_application_confirmation(cinema_user)
+                email_service.send_login_credentials(cinema_user, password)
+                current_app.logger.info(f"Emails envoyés pour talent CINEMA: {talent.unique_code}")
+            except Exception as e:
+                current_app.logger.error(f"Erreur envoi emails CINEMA: {str(e)}")
+            
+            flash(f'Talent {talent.first_name} {talent.last_name} enregistré avec succès dans CINEMA! Un email avec les identifiants a été envoyé.', 'success')
             return redirect(url_for('cinema.talents'))
             
         except Exception as e:
