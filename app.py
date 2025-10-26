@@ -37,7 +37,7 @@ def ensure_admin_user():
         from app.models.location import Country, City
         
         admin_email = 'admin@talento.com'
-        admin_code = 'MARAB0001N'
+        admin_code = 'MAN0001RAB'
         admin_password = os.environ.get('ADMIN_PASSWORD', '@4dm1n')
         
         admin = User.query.filter(
