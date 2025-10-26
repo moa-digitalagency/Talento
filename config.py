@@ -26,14 +26,16 @@ class Config:
     WTF_CSRF_TIME_LIMIT = None
     
     # Session cookie configuration for Replit proxy/iframe environment
-    SESSION_COOKIE_SECURE = True
+    # In development, use False for SECURE since we're on HTTP
+    # In production with HTTPS, this should be True
+    SESSION_COOKIE_SECURE = os.environ.get('FLASK_ENV') == 'production'
     SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SAMESITE = 'Lax'  # Changed from 'None' to 'Lax' for better compatibility
     
     # Remember cookie configuration
-    REMEMBER_COOKIE_SECURE = True
+    REMEMBER_COOKIE_SECURE = os.environ.get('FLASK_ENV') == 'production'
     REMEMBER_COOKIE_HTTPONLY = True
-    REMEMBER_COOKIE_SAMESITE = 'None'
+    REMEMBER_COOKIE_SAMESITE = 'Lax'
     
     MAX_CONTENT_LENGTH = 10 * 1024 * 1024
     UPLOAD_FOLDER = 'app/static/uploads'
