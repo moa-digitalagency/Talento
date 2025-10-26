@@ -9,7 +9,7 @@ Les identifiants administrateur sont **GARANTIS** de fonctionner à chaque déma
 - **Mot de passe**: `@4dm1n`
 
 ### 🔢 Option 2 : Connexion par Code Unique
-- **Code Unique**: `MARAB0001N`
+- **Code Unique**: `MAN0001RAB`
 - **Mot de passe**: `@4dm1n`
 
 ---
@@ -100,7 +100,7 @@ export DEBUG=False
 **Solutions :**
 
 1. Vérifiez que vous utilisez les bons identifiants :
-   - Email : `admin@talento.com` OU Code : `MARAB0001N`
+   - Email : `admin@talento.com` OU Code : `MAN0001RAB`
    - Mot de passe : `@4dm1n`
 
 2. Réinitialisez le mot de passe admin :

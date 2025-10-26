@@ -436,7 +436,7 @@ gunicorn --bind 0.0.0.0:5000 --reuse-port --workers 4 app:app
 | Champ | Valeur |
 |-------|--------|
 | Email | `admin@talento.com` |
-| Code Unique | `MARAB0001N` |
+| Code Unique | `MAN0001RAB` |
 | Mot de passe | `@4dm1n` |
 
 ⚠️ **IMPORTANT** : Changez le mot de passe admin après la première connexion !

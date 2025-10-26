@@ -541,7 +541,7 @@ gunicorn --bind 0.0.0.0:5000 --reuse-port --workers 4 app:app
 
 **Administrateur**:
 - Email: `admin@talento.com`
-- Code: `MARAB0001N`
+- Code: `MAN0001RAB`
 - Mot de passe: `@4dm1n`
 
 **Démonstration** (5 comptes):
@@ -646,7 +646,7 @@ Content-Type: application/json
   "user": {
     "id": 1,
     "email": "admin@talento.com",
-    "unique_code": "MARAB0001N",
+    "unique_code": "MAN0001RAB",
     "is_admin": true
   }
 }

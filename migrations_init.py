@@ -313,7 +313,7 @@ def create_admin_user():
     print("\n👤 Vérification du compte admin...")
     
     admin_email = 'admin@talento.com'
-    admin_code = 'MARAB0001N'
+    admin_code = 'MAN0001RAB'
     
     admin = User.query.filter(
         (User.email == admin_email) | (User.unique_code == admin_code)
@@ -400,7 +400,7 @@ def create_demo_users():
     demo_users = [
         {
             'email': 'demo1@talento.com',
-            'unique_code': 'MACAS0002M',
+            'unique_code': 'MAM0002CAS',
             'first_name': 'Ahmed',
             'last_name': 'Bennani',
             'gender': 'M',
@@ -427,7 +427,7 @@ def create_demo_users():
         },
         {
             'email': 'demo2@talento.com',
-            'unique_code': 'MARAB0002F',
+            'unique_code': 'MAF0002RAB',
             'first_name': 'Fatima',
             'last_name': 'El Amrani',
             'gender': 'F',
@@ -455,7 +455,7 @@ def create_demo_users():
         },
         {
             'email': 'demo3@talento.com',
-            'unique_code': 'MACAS0003M',
+            'unique_code': 'MAM0003CAS',
             'first_name': 'Youssef',
             'last_name': 'Tazi',
             'gender': 'M',
@@ -480,7 +480,7 @@ def create_demo_users():
         },
         {
             'email': 'demo4@talento.com',
-            'unique_code': 'MARAB0003F',
+            'unique_code': 'MAF0003MAR',
             'first_name': 'Samira',
             'last_name': 'Chraibi',
             'gender': 'F',
@@ -507,7 +507,7 @@ def create_demo_users():
         },
         {
             'email': 'demo5@talento.com',
-            'unique_code': 'MACAS0004M',
+            'unique_code': 'MAM0004TNG',
             'first_name': 'Omar',
             'last_name': 'Alaoui',
             'gender': 'M',

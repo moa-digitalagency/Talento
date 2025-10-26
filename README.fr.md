@@ -132,7 +132,7 @@ L'application sera accessible sur `http://localhost:5000`
 
 **Administrateur** :
 - Email: `admin@talento.com`
-- Code: `MARAB0001N`
+- Code: `MAN0001RAB`
 - Mot de passe: `@4dm1n`
 
 **Démonstration** :

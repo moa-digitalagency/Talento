@@ -206,7 +206,7 @@ def _seed_database_fallback():
             db.session.add(talent)
     
     admin_email = 'admin@talento.com'
-    admin_code = 'MARAB0001N'
+    admin_code = 'MAN0001RAB'
     
     admin = User.query.filter(
         (User.email == admin_email) | (User.unique_code == admin_code)
@@ -401,7 +401,7 @@ def _ensure_admin_exists(db, logger):
         
         # ÉTAPE 2: Créer ou mettre à jour l'admin
         admin_email = 'admin@talento.com'
-        admin_code = 'MARAB0001N'
+        admin_code = 'MAN0001RAB'
         admin_password = os.environ.get('ADMIN_PASSWORD', '@4dm1n')
         
         admin = User.query.filter(
