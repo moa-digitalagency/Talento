@@ -1,15 +1,15 @@
-{% extends "base.html" %}
+{% extends "cinema/base_cinema.html" %}
 
 {% block title %}Présences - {{ project.name }} - TalentsMaroc.com{% endblock %}
 
-{% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+{% block cinema_content %}
+<div class="w-full">
     <!-- Header -->
     <div class="mb-8">
         <div class="flex items-center justify-between mb-4">
             <div>
                 <div class="flex items-center gap-3 mb-2">
-                    <a href="{{ url_for('presence.index') }}" class="text-blue-600 hover:text-blue-800">
+                    <a href="{{ url_for('presence.index') }}" class="text-purple-600 hover:text-purple-800 font-semibold">
                         ← Retour
                     </a>
                 </div>
@@ -34,13 +34,30 @@
         </div>
     </div>
 
-    <!-- Scanner / Saisie de code -->
-    <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border-2 border-dashed border-blue-300 mb-8">
+    <!-- Scanner QR Code / Saisie de code -->
+    <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border-2 border-dotted border-purple-400 mb-8">
         <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
             <span>🎯</span>
             <span>Enregistrer une présence</span>
         </h2>
         
+        <!-- Bouton pour activer/désactiver le scanner -->
+        <div class="mb-4 flex gap-4">
+            <button id="toggle-scanner" class="btn-primary px-6 py-3 text-lg">
+                <span>📷</span> <span id="scanner-btn-text">Scanner QR Code</span>
+            </button>
+            <button id="manual-entry-btn" class="btn-secondary px-6 py-3 text-lg">
+                <span>⌨️</span> Saisie manuelle
+            </button>
+        </div>
+        
+        <!-- Zone du scanner QR -->
+        <div id="scanner-container" class="hidden mb-4">
+            <div id="qr-reader" class="rounded-lg overflow-hidden border-2 border-solid border-purple-500"></div>
+            <p class="text-sm text-gray-600 mt-2 text-center">Positionnez le QR code devant la caméra</p>
+        </div>
+        
+        <!-- Formulaire de saisie manuelle -->
         <form id="attendance-form" class="flex gap-4">
             <input type="hidden" name="project_id" value="{{ project.id }}">
             <div class="flex-1">
@@ -49,7 +66,7 @@
                        id="cinema-code-input"
                        name="cinema_talent_code" 
                        placeholder="Ex: MACAS0001M"
-                       class="w-full px-4 py-3 text-lg font-mono border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+                       class="w-full px-4 py-3 text-lg font-mono border-2 border-solid border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"
                        autofocus
                        autocomplete="off">
             </div>
@@ -64,8 +81,8 @@
     </div>
 
     <!-- Liste des présences du jour -->
-    <div class="bg-white rounded-lg border-2 border-gray-200 overflow-hidden">
-        <div class="p-6 border-b-2 border-gray-200 bg-gray-50">
+    <div class="bg-white rounded-lg border-2 border-solid border-gray-300 overflow-hidden">
+        <div class="p-6 border-b-2 border-dotted border-purple-300 bg-gradient-to-r from-blue-50 to-purple-50">
             <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
                 <span>👥</span>
                 <span>Présences du jour ({{ talents_data|length }} talents)</span>
@@ -74,7 +91,7 @@
         
         <div class="overflow-x-auto">
             <table class="w-full">
-                <thead class="bg-gray-100 border-b-2 border-gray-200">
+                <thead class="bg-gray-100 border-b-2 border-dotted border-gray-300">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Code</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Nom</th>
@@ -87,7 +104,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     {% for item in talents_data %}
-                    <tr class="hover:bg-gray-50 transition-colors" data-code="{{ item.code }}">
+                    <tr class="hover:bg-purple-50 transition-colors" data-code="{{ item.code }}">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="font-mono text-sm font-semibold text-gray-800">{{ item.code }}</span>
                         </td>
@@ -163,7 +180,7 @@
         </div>
     </div>
     
-    <!-- Bouton d'export -->
+    <!-- Boutons d'export -->
     <div class="mt-6 flex justify-end gap-4">
         <a href="{{ url_for('presence.export_attendance', project_id=project.id, period='day') }}" 
            class="btn-secondary px-4 py-2">
@@ -180,13 +197,19 @@
     </div>
 </div>
 
+<!-- Bibliothèque HTML5 QR Code Scanner -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
 <script>
-document.getElementById('attendance-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+let html5QrcodeScanner = null;
+let isScanning = false;
+
+// Fonction pour traiter le scan (QR code ou saisie manuelle)
+async function processAttendance(code) {
+    const formData = new FormData();
+    formData.append('project_id', '{{ project.id }}');
+    formData.append('cinema_talent_code', code);
     
-    const form = e.target;
-    const formData = new FormData(form);
-    const input = document.getElementById('cinema-code-input');
     const feedback = document.getElementById('scan-feedback');
     
     try {
@@ -199,30 +222,114 @@ document.getElementById('attendance-form').addEventListener('submit', async (e) 
         
         // Afficher le feedback
         feedback.className = 'mt-4 p-4 rounded-lg border-2 ' + 
-            (result.success ? 'bg-green-50 border-green-500 text-green-800' : 'bg-red-50 border-red-500 text-red-800');
+            (result.success ? 'bg-green-50 border-green-500 text-green-800 font-semibold' : 'bg-red-50 border-red-500 text-red-800');
         feedback.textContent = result.message;
         feedback.classList.remove('hidden');
-        
-        // Réinitialiser le formulaire
-        input.value = '';
-        input.focus();
         
         // Recharger la page après 1.5 secondes en cas de succès
         if (result.success) {
             setTimeout(() => {
                 location.reload();
             }, 1500);
+        } else {
+            // Cacher le feedback après 5 secondes en cas d'erreur
+            setTimeout(() => {
+                feedback.classList.add('hidden');
+            }, 5000);
         }
-        
-        // Cacher le feedback après 5 secondes
-        setTimeout(() => {
-            feedback.classList.add('hidden');
-        }, 5000);
         
     } catch (error) {
         feedback.className = 'mt-4 p-4 rounded-lg border-2 bg-red-50 border-red-500 text-red-800';
         feedback.textContent = 'Erreur de connexion: ' + error.message;
         feedback.classList.remove('hidden');
+    }
+}
+
+// Gestion du scanner QR Code
+document.getElementById('toggle-scanner').addEventListener('click', function() {
+    const scannerContainer = document.getElementById('scanner-container');
+    const scannerBtnText = document.getElementById('scanner-btn-text');
+    const manualForm = document.getElementById('attendance-form');
+    
+    if (!isScanning) {
+        // Démarrer le scanner
+        scannerContainer.classList.remove('hidden');
+        manualForm.classList.add('hidden');
+        scannerBtnText.textContent = 'Arrêter le Scanner';
+        this.classList.remove('btn-primary');
+        this.classList.add('bg-red-600', 'hover:bg-red-700', 'text-white');
+        
+        html5QrcodeScanner = new Html5Qrcode("qr-reader");
+        
+        html5QrcodeScanner.start(
+            { facingMode: "environment" }, // Caméra arrière par défaut
+            {
+                fps: 10,
+                qrbox: { width: 250, height: 250 }
+            },
+            (decodedText, decodedResult) => {
+                // QR code scanné avec succès
+                processAttendance(decodedText);
+            },
+            (errorMessage) => {
+                // Erreur de scan (normal, se produit continuellement)
+            }
+        ).catch((err) => {
+            console.error("Erreur lors du démarrage du scanner:", err);
+            alert("Impossible d'accéder à la caméra. Veuillez autoriser l'accès à la caméra.");
+        });
+        
+        isScanning = true;
+    } else {
+        // Arrêter le scanner
+        if (html5QrcodeScanner) {
+            html5QrcodeScanner.stop().then(() => {
+                scannerContainer.classList.add('hidden');
+                manualForm.classList.remove('hidden');
+                scannerBtnText.textContent = 'Scanner QR Code';
+                this.classList.add('btn-primary');
+                this.classList.remove('bg-red-600', 'hover:bg-red-700');
+                isScanning = false;
+            });
+        }
+    }
+});
+
+// Bouton saisie manuelle
+document.getElementById('manual-entry-btn').addEventListener('click', function() {
+    const scannerContainer = document.getElementById('scanner-container');
+    const manualForm = document.getElementById('attendance-form');
+    const scannerBtn = document.getElementById('toggle-scanner');
+    const scannerBtnText = document.getElementById('scanner-btn-text');
+    
+    // Arrêter le scanner s'il est actif
+    if (isScanning && html5QrcodeScanner) {
+        html5QrcodeScanner.stop().then(() => {
+            scannerContainer.classList.add('hidden');
+            manualForm.classList.remove('hidden');
+            scannerBtnText.textContent = 'Scanner QR Code';
+            scannerBtn.classList.add('btn-primary');
+            scannerBtn.classList.remove('bg-red-600', 'hover:bg-red-700');
+            isScanning = false;
+            document.getElementById('cinema-code-input').focus();
+        });
+    } else {
+        scannerContainer.classList.add('hidden');
+        manualForm.classList.remove('hidden');
+        document.getElementById('cinema-code-input').focus();
+    }
+});
+
+// Gestion du formulaire de saisie manuelle
+document.getElementById('attendance-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const input = document.getElementById('cinema-code-input');
+    const code = input.value.trim();
+    
+    if (code) {
+        await processAttendance(code);
+        input.value = '';
     }
 });
 

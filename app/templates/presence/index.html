@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "cinema/base_cinema.html" %}
 
 {% block title %}Gestion des Présences - TalentsMaroc.com{% endblock %}
 
-{% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+{% block cinema_content %}
+<div class="w-full">
     <!-- Header -->
     <div class="mb-8">
         <h1 class="text-4xl font-bold text-gray-800 mb-2 flex items-center gap-3">
@@ -14,10 +14,10 @@
     </div>
 
     <!-- Liste des projets -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {% for project in projects %}
         <a href="{{ url_for('presence.project_attendance', project_id=project.id) }}" 
-           class="block bg-white rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg transition-all p-6">
+           class="block bg-white rounded-lg border-2 border-dotted border-purple-300 hover:border-purple-500 hover:shadow-lg transition-all p-6">
             <div class="flex items-start justify-between mb-4">
                 <div class="flex-1">
                     <h3 class="text-xl font-bold text-gray-800 mb-2">{{ project.name }}</h3>
@@ -40,7 +40,7 @@
                 </span>
             </div>
             
-            <div class="mt-4 pt-4 border-t border-gray-200">
+            <div class="mt-4 pt-4 border-t-2 border-dotted border-gray-200">
                 <div class="flex items-center justify-between text-sm">
                     <span class="text-gray-600">👥 Talents assignés:</span>
                     <span class="font-bold text-gray-800">{{ project.project_talents|length }}</span>
