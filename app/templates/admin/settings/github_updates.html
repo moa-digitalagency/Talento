@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Mises à jour GitHub - Paramètres{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+        
+        <div class="mb-6">
+            <a href="{{ url_for('admin.settings') }}" class="text-blue-600 hover:underline mb-4 inline-block">← Retour aux paramètres</a>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">🔄 Mises à jour GitHub</h1>
+            <p class="text-gray-600">Gérer les mises à jour du code depuis GitHub</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="mb-4 p-4 rounded-lg border-2 {% if category == 'success' %}bg-green-50 border-green-300 text-green-800{% elif category == 'error' %}bg-red-50 border-red-300 text-red-800{% else %}bg-blue-50 border-blue-300 text-blue-800{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">📊 État du dépôt</h2>
+            
+            {% if git_info %}
+            <div class="space-y-3">
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="font-bold text-gray-700">Branche actuelle</span>
+                    <span class="font-mono text-sm bg-blue-100 px-3 py-1 rounded">{{ git_info.branch }}</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="font-bold text-gray-700">Dernier commit</span>
+                    <span class="font-mono text-xs text-gray-600">{{ git_info.commit_hash[:8] if git_info.commit_hash else 'N/A' }}</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                    <span class="font-bold text-gray-700">Modifications en cours</span>
+                    <span class="{% if git_info.has_changes %}text-orange-600{% else %}text-green-600{% endif %} font-bold">
+                        {% if git_info.has_changes %}⚠️ Oui{% else %}✅ Non{% endif %}
+                    </span>
+                </div>
+            </div>
+            {% else %}
+            <div class="p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
+                <p class="text-yellow-800">⚠️ Impossible de récupérer les informations Git</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">🔄 Actions disponibles</h2>
+            
+            <div class="space-y-3">
+                <form method="POST" action="{{ url_for('admin.git_pull') }}">
+                    <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2">
+                        <span>⬇️</span>
+                        <span>Récupérer les dernières mises à jour (git pull)</span>
+                    </button>
+                </form>
+                
+                <form method="POST" action="{{ url_for('admin.git_status') }}">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2">
+                        <span>📋</span>
+                        <span>Vérifier l'état (git status)</span>
+                    </button>
+                </form>
+                
+                <button onclick="alert('Cette fonctionnalité nécessite une confirmation supplémentaire')" 
+                        class="w-full bg-gray-400 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg transition flex items-center justify-center gap-2">
+                    <span>↩️</span>
+                    <span>Annuler les modifications locales (git reset)</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">📜 Historique des mises à jour</h2>
+            
+            {% if update_history and update_history|length > 0 %}
+            <div class="space-y-3">
+                {% for update in update_history %}
+                <div class="p-4 border-l-4 {% if update.success %}border-green-500 bg-green-50{% else %}border-red-500 bg-red-50{% endif %} rounded">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-bold text-gray-800">{{ update.type | upper }}</span>
+                        <span class="text-xs text-gray-500">{{ update.timestamp }}</span>
+                    </div>
+                    <p class="text-sm text-gray-700">{{ update.message }}</p>
+                    {% if update.details %}
+                    <p class="text-xs text-gray-600 mt-1">{{ update.details }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="p-4 bg-gray-50 rounded-lg text-center text-gray-500">
+                Aucune mise à jour enregistrée
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="mt-6 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
+            <h3 class="font-bold text-yellow-800 mb-2">⚠️ Avertissement</h3>
+            <p class="text-sm text-yellow-800">
+                Les mises à jour depuis GitHub peuvent écraser vos modifications locales. 
+                Assurez-vous d'avoir sauvegardé vos données importantes avant de procéder.
+            </p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

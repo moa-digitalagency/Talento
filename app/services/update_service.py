@@ -372,16 +372,67 @@ class UpdateService:
             return []
     
     @staticmethod
+    def has_local_changes():
+        """Vérifie s'il y a des modifications locales non committées"""
+        try:
+            result = subprocess.run(
+                ['git', 'status', '--porcelain'],
+                capture_output=True,
+                text=True,
+                cwd=os.getcwd()
+            )
+            return bool(result.stdout.strip())
+        except Exception as e:
+            current_app.logger.error(f"Erreur lors de la vérification des modifications: {e}")
+            return False
+    
+    @staticmethod
+    def git_pull():
+        """Wrapper pour pull_updates avec format de réponse standard"""
+        success, output = UpdateService.pull_updates()
+        return {
+            'success': success,
+            'message': output if output else ('Mise à jour réussie' if success else 'Échec de la mise à jour')
+        }
+    
+    @staticmethod
+    def git_status():
+        """Récupère le statut Git"""
+        try:
+            result = subprocess.run(
+                ['git', 'status', '--short'],
+                capture_output=True,
+                text=True,
+                cwd=os.getcwd()
+            )
+            if result.returncode == 0:
+                status = result.stdout.strip()
+                return {
+                    'success': True,
+                    'message': status if status else 'Aucune modification en cours'
+                }
+            return {
+                'success': False,
+                'message': 'Erreur lors de la récupération du statut'
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'message': str(e)
+            }
+    
+    @staticmethod
     def get_git_info():
         """Récupère toutes les informations Git"""
         has_updates, update_count = UpdateService.check_updates_available()
         
         return {
             'git_available': UpdateService.check_git_available(),
-            'current_branch': UpdateService.get_current_branch(),
-            'current_commit': UpdateService.get_current_commit(),
+            'branch': UpdateService.get_current_branch(),
+            'commit_hash': UpdateService.get_current_commit(),
             'remote_url': UpdateService.get_remote_url(),
             'has_updates': has_updates,
             'update_count': update_count,
+            'has_changes': UpdateService.has_local_changes(),
             'recent_commits': UpdateService.get_commit_logs(5)
         }

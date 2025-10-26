@@ -321,6 +321,32 @@ def settings():
     return render_template('admin/settings.html', admin_users=admin_users, config=config_info, db_diagnostics=db_diagnostics, git_info=git_info, update_history=update_history)
 
 
+@bp.route('/settings/api-keys')
+@login_required
+@admin_required
+def settings_api_keys():
+    sendgrid_key = AppSettings.get('sendgrid_api_key', '') or os.environ.get('SENDGRID_API_KEY', '')
+    openrouter_key = AppSettings.get('openrouter_api_key', '') or os.environ.get('OPENROUTER_API_KEY', '')
+    sender_email = AppSettings.get('sender_email', 'noreply@myoneart.com')
+    
+    sendgrid_configured = bool(sendgrid_key)
+    openrouter_configured = bool(openrouter_key)
+    
+    def mask_key(key):
+        if not key or len(key) < 8:
+            return ''
+        return key[:4] + '*' * (len(key) - 8) + key[-4:]
+    
+    config_info = {
+        'sendgrid': sendgrid_configured,
+        'openrouter': openrouter_configured,
+        'sendgrid_key_masked': mask_key(sendgrid_key) if sendgrid_configured else '',
+        'openrouter_key_masked': mask_key(openrouter_key) if openrouter_configured else '',
+        'sendgrid_from': sender_email
+    }
+    
+    return render_template('admin/settings/api_keys.html', config=config_info)
+
 @bp.route('/settings/email-templates')
 @login_required
 @admin_required
@@ -368,6 +394,42 @@ def settings_users():
 @admin_required
 def settings_cache():
     return render_template('admin/settings/cache.html')
+
+@bp.route('/settings/github')
+@login_required
+@admin_required
+def settings_github():
+    git_info = UpdateService.get_git_info()
+    update_history = UpdateService.get_update_history(10)
+    return render_template('admin/settings/github_updates.html', git_info=git_info, update_history=update_history)
+
+@bp.route('/git/pull', methods=['POST'])
+@login_required
+@admin_required
+def git_pull():
+    try:
+        result = UpdateService.git_pull()
+        if result.get('success'):
+            flash(f'Mise à jour réussie! {result.get("message", "")}', 'success')
+        else:
+            flash(f'Erreur lors de la mise à jour: {result.get("message", "")}', 'error')
+    except Exception as e:
+        flash(f'Erreur: {str(e)}', 'error')
+    return redirect(url_for('admin.settings_github'))
+
+@bp.route('/git/status', methods=['POST'])
+@login_required
+@admin_required
+def git_status():
+    try:
+        result = UpdateService.git_status()
+        if result.get('success'):
+            flash(f'État Git: {result.get("message", "")}', 'info')
+        else:
+            flash(f'Erreur: {result.get("message", "")}', 'error')
+    except Exception as e:
+        flash(f'Erreur: {str(e)}', 'error')
+    return redirect(url_for('admin.settings_github'))
 
 @bp.route('/user/<int:user_id>/promote-admin', methods=['POST'])
 @login_required
