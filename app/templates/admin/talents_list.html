@@ -18,7 +18,7 @@ www.myoneart.com
                     <h1 class="text-3xl font-bold text-gray-900 mb-2">⭐ Gestion des Talents</h1>
                     <p class="text-gray-600">Gérer la liste des talents disponibles sur la plateforme</p>
                 </div>
-                <a href="{{ url_for('admin.talent_add') }}" class="btn-primary">
+                <a href="{{ url_for('admin.new_talent') }}" class="btn-primary">
                     ➕ Ajouter un Talent
                 </a>
             </div>
@@ -70,12 +70,8 @@ www.myoneart.com
                 </div>
                 
                 <div class="flex space-x-2">
-                    <a href="{{ url_for('admin.talent_edit', talent_id=talent.id) }}" 
-                       class="flex-1 bg-blue-50 text-blue-700 px-3 py-2 rounded-lg border-2 border-blue-400 hover:bg-blue-100 transition-all text-center text-sm font-semibold">
-                        ✏️ Modifier
-                    </a>
-                    <form method="POST" action="{{ url_for('admin.talent_delete', talent_id=talent.id) }}" 
-                          onsubmit="return confirm('Supprimer ce talent ?');" class="flex-1">
+                    <form method="POST" action="{{ url_for('admin.delete_talent', talent_id=talent.id) }}" 
+                          onsubmit="return confirm('Supprimer ce talent ?');" class="w-full">
                         <button type="submit" 
                                 {% if user_count > 0 %}disabled{% endif %}
                                 class="w-full bg-red-50 text-red-700 px-3 py-2 rounded-lg border-2 border-red-400 hover:bg-red-100 transition-all text-sm font-semibold
