@@ -49,6 +49,10 @@ Preferred communication style: Simple, everyday language.
 ### Routing Structure
 - **Blueprints**: Organized into `main`, `auth`, `profile`, `admin`, `api`, `cinema`, and `api_v1` for modularity.
 
+### Contract Management
+- **Main Contracts Page**: `/contrats` - Accessible from main navigation for all talents. Currently under development with planned features including contract creation, electronic signature, tracking, notifications, archiving, and PDF export.
+- **Cinema Contracts Page**: `/cinema/contrats` - Dedicated contracts management for cinema talents. Accessible from cinema module sidebar with same planned features tailored for film industry contracts.
+
 ### REST API v1
 - **Base URL**: `/api/v1`.
 - **Authentication**: Session-based (cookies). CSRF Protection exempt for all API v1 routes.
