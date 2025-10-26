@@ -70,6 +70,7 @@ class User(UserMixin, db.Model):
     cv_analyzed_at = db.Column(db.DateTime)
     
     is_admin = db.Column(db.Boolean, default=False)
+    role = db.Column(db.String(50), default='user')
     account_active = db.Column(db.Boolean, default=True)
     
     qr_code_filename = db.Column(db.String(255))
