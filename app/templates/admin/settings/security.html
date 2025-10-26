@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Sécurité - Paramètres{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">❤️ Sécurité</h1>
+                <p class="text-gray-600 mt-2">Paramètres de sécurité et accès</p>
+            </div>
+            <a href="{{ url_for('admin.settings') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                ← Retour aux paramètres
+            </a>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6 border-2 border-dashed border-red-400">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">Paramètres de sécurité</h3>
+            <p class="text-gray-600">Configuration de la sécurité de la plateforme.</p>
+            
+            <div class="mt-6 space-y-4">
+                <div class="p-4 bg-red-50 rounded border border-red-200">
+                    <h4 class="font-bold text-gray-700">Options disponibles :</h4>
+                    <ul class="mt-2 list-disc list-inside text-gray-600">
+                        <li>Authentification à deux facteurs</li>
+                        <li>Politique de mots de passe</li>
+                        <li>Sessions et déconnexion automatique</li>
+                        <li>Journaux de sécurité</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

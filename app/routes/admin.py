@@ -291,34 +291,79 @@ def edit_user(user_id):
 @login_required
 @admin_required
 def settings():
-    admin_users = User.query.filter(User.is_admin == True).order_by(User.created_at).all()
-    
-    sendgrid_key = AppSettings.get('sendgrid_api_key', '') or os.environ.get('SENDGRID_API_KEY', '')
-    openrouter_key = AppSettings.get('openrouter_api_key', '') or os.environ.get('OPENROUTER_API_KEY', '')
-    sender_email = AppSettings.get('sender_email', 'noreply@myoneart.com')
-    
-    sendgrid_configured = bool(sendgrid_key)
-    openrouter_configured = bool(openrouter_key)
-    
-    def mask_key(key):
-        if not key or len(key) < 8:
-            return ''
-        return key[:4] + '*' * (len(key) - 8) + key[-4:]
-    
-    config_info = {
-        'sendgrid': sendgrid_configured,
-        'openrouter': openrouter_configured,
-        'sendgrid_key_masked': mask_key(sendgrid_key) if sendgrid_configured else '',
-        'openrouter_key_masked': mask_key(openrouter_key) if openrouter_configured else '',
-        'sendgrid_from': sender_email,
-        'database_type': 'PostgreSQL' if 'postgresql' in current_app.config.get('SQLALCHEMY_DATABASE_URI', '').lower() else 'SQLite'
-    }
-    
-    db_diagnostics = DatabaseService.get_full_diagnostics()
-    git_info = UpdateService.get_git_info()
-    update_history = UpdateService.get_update_history(5)
-    
-    return render_template('admin/settings.html', admin_users=admin_users, config=config_info, db_diagnostics=db_diagnostics, git_info=git_info, update_history=update_history)
+    return render_template('admin/settings.html')
+
+@bp.route('/settings/talents')
+@login_required
+@admin_required
+def settings_talents():
+    return render_template('admin/settings/talents.html')
+
+@bp.route('/settings/security')
+@login_required
+@admin_required
+def settings_security():
+    return render_template('admin/settings/security.html')
+
+@bp.route('/settings/productions')
+@login_required
+@admin_required
+def settings_productions():
+    return render_template('admin/settings/productions.html')
+
+@bp.route('/settings/projects')
+@login_required
+@admin_required
+def settings_projects():
+    return render_template('admin/settings/projects.html')
+
+@bp.route('/settings/email-templates')
+@login_required
+@admin_required
+def settings_email_templates():
+    return render_template('admin/settings/email_templates.html')
+
+@bp.route('/settings/backups')
+@login_required
+@admin_required
+def settings_backups():
+    return render_template('admin/settings/backups.html')
+
+@bp.route('/settings/roles')
+@login_required
+@admin_required
+def settings_roles():
+    return render_template('admin/settings/roles.html')
+
+@bp.route('/settings/system')
+@login_required
+@admin_required
+def settings_system():
+    return render_template('admin/settings/system.html')
+
+@bp.route('/settings/activity-logs')
+@login_required
+@admin_required
+def settings_activity_logs():
+    return render_template('admin/settings/activity_logs.html')
+
+@bp.route('/settings/security-logs')
+@login_required
+@admin_required
+def settings_security_logs():
+    return render_template('admin/settings/security_logs.html')
+
+@bp.route('/settings/users')
+@login_required
+@admin_required
+def settings_users():
+    return render_template('admin/settings/users.html')
+
+@bp.route('/settings/cache')
+@login_required
+@admin_required
+def settings_cache():
+    return render_template('admin/settings/cache.html')
 
 @bp.route('/user/<int:user_id>/promote-admin', methods=['POST'])
 @login_required

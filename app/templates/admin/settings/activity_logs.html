@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Logs d'Activités - Paramètres{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">📊 Logs d'Activités</h1>
+                <p class="text-gray-600 mt-2">Consulter l'historique des actions utilisateurs</p>
+            </div>
+            <a href="{{ url_for('admin.settings') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">← Retour</a>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6 border-2 border-dashed border-blue-400">
+            <h3 class="text-lg font-bold text-gray-800 mb-4">Logs d'activités</h3>
+            <p class="text-gray-600">Historique des actions effectuées sur la plateforme.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
