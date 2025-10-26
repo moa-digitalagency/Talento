@@ -8,41 +8,52 @@ www.myoneart.com
 
 /* Corporate Theme Overrides */
 
-/* GLOBAL SIZE REDUCTION */
+/* GLOBAL SIZE REDUCTION - Ajusté pour meilleure lisibilité */
 * {
-    font-size: 0.9rem !important;
-}
-
-h1, .text-4xl {
-    font-size: 1.5rem !important;
-}
-
-h2, .text-3xl {
-    font-size: 1.25rem !important;
-}
-
-h3, .text-2xl {
-    font-size: 1.1rem !important;
-}
-
-.text-xl {
-    font-size: 1rem !important;
-}
-
-.text-lg {
     font-size: 0.95rem !important;
 }
 
+h1, .text-4xl {
+    font-size: 1.6rem !important;
+}
+
+h2, .text-3xl {
+    font-size: 1.3rem !important;
+}
+
+h3, .text-2xl {
+    font-size: 1.15rem !important;
+}
+
+.text-xl {
+    font-size: 1.05rem !important;
+}
+
+.text-lg {
+    font-size: 1rem !important;
+}
+
 .text-base {
-    font-size: 0.9rem !important;
+    font-size: 0.95rem !important;
 }
 
 .text-sm {
-    font-size: 0.8rem !important;
+    font-size: 0.875rem !important;
 }
 
 .text-xs {
-    font-size: 0.7rem !important;
+    font-size: 0.8rem !important;
+}
+
+/* Tables et listes - taille augmentée pour lisibilité */
+table td, table th, 
+.table td, .table th {
+    font-size: 0.9rem !important;
+}
+
+/* Texte dans les cartes et blocs */
+.bg-white p, .bg-white span, .bg-white div {
+    font-size: 0.9rem !important;
 }
 
 /* Reset gradients to solid colors */
