@@ -38,7 +38,7 @@ www.myoneart.com
                         </a>
                         
                         <a href="{{ url_for('cinema.productions') }}" 
-                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.endpoint == 'cinema.productions' %}bg-purple-100 text-purple-700 font-bold border-2 border-purple-500{% else %}text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent{% endif %}">
+                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.endpoint in ['cinema.productions', 'cinema.production_detail', 'cinema.edit_production', 'cinema.new_production'] %}bg-purple-100 text-purple-700 font-bold border-2 border-purple-500{% else %}text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent{% endif %}">
                             <span class="text-2xl">🎬</span>
                             <span>Productions</span>
                         </a>
