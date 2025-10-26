@@ -23,116 +23,116 @@
             {% endif %}
         {% endwith %}
 
-        <!-- Grid de blocs de fonctionnalités -->
+        <!-- Grid de blocs de paramètres -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             <!-- 1. Gestion des Talents -->
-            <a href="{{ url_for('admin.talents_list') }}" class="block bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">⭐</span>
                     <h3 class="text-lg font-bold text-gray-800">Gestion des Talents</h3>
                 </div>
                 <p class="text-sm text-gray-600">Gérer les profils de talents et leurs compétences</p>
-            </a>
+            </div>
 
             <!-- 2. Sécurité -->
-            <a href="#" class="block bg-red-50 border-2 border-dashed border-red-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-red-50 border-2 border-dashed border-red-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">❤️</span>
                     <h3 class="text-lg font-bold text-gray-800">Sécurité</h3>
                 </div>
                 <p class="text-sm text-gray-600">Paramètres de sécurité et accès</p>
-            </a>
+            </div>
 
-            <!-- 3. Gestion des Productions -->
-            <a href="{{ url_for('cinema.productions') }}" class="block bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <!-- 3. Productions -->
+            <div class="bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🏢</span>
                     <h3 class="text-lg font-bold text-gray-800">Productions</h3>
                 </div>
                 <p class="text-sm text-gray-600">Gérer les boîtes de production cinématographique</p>
-            </a>
+            </div>
 
-            <!-- 4. Gestion des Projets -->
-            <a href="{{ url_for('cinema.projects') }}" class="block bg-purple-50 border-2 border-dashed border-purple-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <!-- 4. Projets -->
+            <div class="bg-purple-50 border-2 border-dashed border-purple-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🎬</span>
                     <h3 class="text-lg font-bold text-gray-800">Projets</h3>
                 </div>
                 <p class="text-sm text-gray-600">Configurer les projets et castings</p>
-            </a>
+            </div>
 
             <!-- 5. Templates Email -->
-            <a href="#" class="block bg-indigo-50 border-2 border-dashed border-indigo-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-indigo-50 border-2 border-dashed border-indigo-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">✉️</span>
                     <h3 class="text-lg font-bold text-gray-800">Templates Email</h3>
                 </div>
                 <p class="text-sm text-gray-600">Configurer les modèles d'emails</p>
-            </a>
+            </div>
 
             <!-- 6. Sauvegardes -->
-            <a href="#" class="block bg-orange-50 border-2 border-dashed border-orange-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-orange-50 border-2 border-dashed border-orange-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">💾</span>
                     <h3 class="text-lg font-bold text-gray-800">Sauvegardes</h3>
                 </div>
                 <p class="text-sm text-gray-600">Gérer les sauvegardes et restaurations</p>
-            </a>
+            </div>
 
             <!-- 7. Gestion des Rôles -->
-            <a href="#" class="block bg-pink-50 border-2 border-dashed border-pink-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-pink-50 border-2 border-dashed border-pink-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">👥</span>
                     <h3 class="text-lg font-bold text-gray-800">Gestion des Rôles</h3>
                 </div>
                 <p class="text-sm text-gray-600">Configurer les rôles utilisateur et leurs permissions</p>
-            </a>
+            </div>
 
             <!-- 8. Configuration Système -->
-            <a href="#" class="block bg-cyan-50 border-2 border-dashed border-cyan-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-cyan-50 border-2 border-dashed border-cyan-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🗄️</span>
                     <h3 class="text-lg font-bold text-gray-800">Configuration Système</h3>
                 </div>
                 <p class="text-sm text-gray-600">Paramètres système et base de données</p>
-            </a>
+            </div>
 
             <!-- 9. Logs d'Activités -->
-            <a href="#" class="block bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">📊</span>
                     <h3 class="text-lg font-bold text-gray-800">Logs d'Activités</h3>
                 </div>
                 <p class="text-sm text-gray-600">Consulter l'historique des actions utilisateurs</p>
-            </a>
+            </div>
 
             <!-- 10. Logs de Sécurité -->
-            <a href="#" class="block bg-red-50 border-2 border-dashed border-red-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-red-50 border-2 border-dashed border-red-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🔒</span>
                     <h3 class="text-lg font-bold text-gray-800">Logs de Sécurité</h3>
                 </div>
                 <p class="text-sm text-gray-600">Consulter les événements de sécurité et alertes</p>
-            </a>
+            </div>
 
             <!-- 11. Gestion des Utilisateurs -->
-            <a href="{{ url_for('admin.users') }}" class="block bg-violet-50 border-2 border-dashed border-violet-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-violet-50 border-2 border-dashed border-violet-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">👤</span>
                     <h3 class="text-lg font-bold text-gray-800">Gestion des Utilisateurs</h3>
                 </div>
                 <p class="text-sm text-gray-600">Administrer les comptes utilisateurs et leurs accès</p>
-            </a>
+            </div>
 
             <!-- 12. Vider les Caches -->
-            <a href="#" class="block bg-yellow-50 border-2 border-dashed border-yellow-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-yellow-50 border-2 border-dashed border-yellow-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🧹</span>
                     <h3 class="text-lg font-bold text-gray-800">Vider les Caches</h3>
                 </div>
                 <p class="text-sm text-gray-600">Nettoyer le cache système pour améliorer les performances</p>
-            </a>
+            </div>
 
         </div>
     </div>
