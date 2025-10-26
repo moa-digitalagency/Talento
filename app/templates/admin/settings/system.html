@@ -1,18 +1,105 @@
 {% extends "base.html" %}
 {% block title %}Configuration Système - Paramètres{% endblock %}
 {% block content %}
-<div class="min-h-screen bg-gray-50 py-8 px-4">
-    <div class="max-w-5xl mx-auto">
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">🗄️ Configuration Système</h1>
-                <p class="text-gray-600 mt-2">Paramètres système et base de données</p>
-            </div>
-            <a href="{{ url_for('admin.settings') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">← Retour</a>
+<div class="max-w-6xl mx-auto px-4 py-6">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">🗄️ Configuration Système</h1>
+            <p class="text-gray-600 mt-2">Base de données et paramètres système</p>
         </div>
-        <div class="bg-white rounded-lg shadow p-6 border-2 border-dashed border-cyan-400">
-            <h3 class="text-lg font-bold text-gray-800 mb-4">Paramètres système</h3>
-            <p class="text-gray-600">Configuration du système et de la base de données.</p>
+        <a href="{{ url_for('admin.settings') }}" class="btn-secondary">← Retour aux paramètres</a>
+    </div>
+
+    <div class="card mb-6">
+        <h2 class="text-2xl font-semibold mb-4">📊 État de la base de données</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="text-sm text-gray-600 mb-1">Type de base</p>
+                <p class="text-lg font-semibold">{{ db_info.type if db_info else 'PostgreSQL' }}</p>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="text-sm text-gray-600 mb-1">Statut connexion</p>
+                <p class="text-lg font-semibold {% if db_info and db_info.connected %}text-green-600{% else %}text-red-600{% endif %}">
+                    {% if db_info and db_info.connected %}✓ Connecté{% else %}✗ Déconnecté{% endif %}
+                </p>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <p class="text-sm text-gray-600 mb-1">Tables</p>
+                <p class="text-lg font-semibold">{{ db_info.tables_count if db_info else 'N/A' }}</p>
+            </div>
+        </div>
+
+        <h3 class="text-lg font-semibold mb-3">Statistiques</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-blue-50 p-3 rounded">
+                <p class="text-xs text-gray-600">Utilisateurs</p>
+                <p class="text-2xl font-bold text-blue-600">{{ stats.users if stats else 0 }}</p>
+            </div>
+            <div class="bg-green-50 p-3 rounded">
+                <p class="text-xs text-gray-600">Talents</p>
+                <p class="text-2xl font-bold text-green-600">{{ stats.talents if stats else 0 }}</p>
+            </div>
+            <div class="bg-purple-50 p-3 rounded">
+                <p class="text-xs text-gray-600">Boîtes de production</p>
+                <p class="text-2xl font-bold text-purple-600">{{ stats.productions if stats else 0 }}</p>
+            </div>
+            <div class="bg-orange-50 p-3 rounded">
+                <p class="text-xs text-gray-600">Administrateurs</p>
+                <p class="text-2xl font-bold text-orange-600">{{ stats.admins if stats else 0 }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-6">
+        <h2 class="text-2xl font-semibold mb-4">⚙️ Informations système</h2>
+        
+        <div class="space-y-3">
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                <span class="font-semibold text-gray-700">Version Python</span>
+                <span class="font-mono text-sm">{{ system_info.python_version if system_info else 'N/A' }}</span>
+            </div>
+            
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                <span class="font-semibold text-gray-700">Version Flask</span>
+                <span class="font-mono text-sm">{{ system_info.flask_version if system_info else 'N/A' }}</span>
+            </div>
+            
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                <span class="font-semibold text-gray-700">Environnement</span>
+                <span class="font-mono text-sm">{{ system_info.environment if system_info else 'development' }}</span>
+            </div>
+            
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                <span class="font-semibold text-gray-700">Debug mode</span>
+                <span class="font-mono text-sm {% if system_info and system_info.debug %}text-orange-600{% else %}text-green-600{% endif %}">
+                    {% if system_info and system_info.debug %}Activé{% else %}Désactivé{% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="text-2xl font-semibold mb-4">🔧 Actions de maintenance</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button onclick="alert('Fonctionnalité en développement')" class="btn-secondary">
+                🔄 Optimiser la base de données
+            </button>
+            
+            <button onclick="alert('Fonctionnalité en développement')" class="btn-secondary">
+                🧹 Nettoyer les fichiers temporaires
+            </button>
+            
+            <button onclick="alert('Fonctionnalité en développement')" class="btn-secondary">
+                📊 Analyser les performances
+            </button>
+            
+            <button onclick="alert('Fonctionnalité en développement')" class="btn-secondary">
+                🔍 Vérifier l'intégrité des données
+            </button>
         </div>
     </div>
 </div>

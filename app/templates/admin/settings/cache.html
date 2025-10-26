@@ -1,19 +1,133 @@
 {% extends "base.html" %}
 {% block title %}Vider les Caches - Paramètres{% endblock %}
 {% block content %}
-<div class="min-h-screen bg-gray-50 py-8 px-4">
-    <div class="max-w-5xl mx-auto">
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">🧹 Vider les Caches</h1>
-                <p class="text-gray-600 mt-2">Nettoyer le cache système pour améliorer les performances</p>
+<div class="max-w-6xl mx-auto px-4 py-6">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">🧹 Gestion du Cache</h1>
+            <p class="text-gray-600 mt-2">Nettoyer le cache système pour améliorer les performances</p>
+        </div>
+        <a href="{{ url_for('admin.settings') }}" class="btn-secondary">← Retour aux paramètres</a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} mb-4">
+                {{ message }}
             </div>
-            <a href="{{ url_for('admin.settings') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">← Retour</a>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="card">
+            <h3 class="text-sm text-gray-600 mb-1">Cache système</h3>
+            <p class="text-2xl font-bold text-blue-600">{{ cache_stats.system_size if cache_stats else '0 MB' }}</p>
         </div>
-        <div class="bg-white rounded-lg shadow p-6 border-2 border-dashed border-yellow-400">
-            <h3 class="text-lg font-bold text-gray-800 mb-4">Gestion du cache</h3>
-            <p class="text-gray-600">Nettoyage et optimisation du cache système.</p>
+        
+        <div class="card">
+            <h3 class="text-sm text-gray-600 mb-1">Cache Flask</h3>
+            <p class="text-2xl font-bold text-green-600">{{ cache_stats.flask_size if cache_stats else '0 MB' }}</p>
         </div>
+        
+        <div class="card">
+            <h3 class="text-sm text-gray-600 mb-1">Fichiers temporaires</h3>
+            <p class="text-2xl font-bold text-orange-600">{{ cache_stats.temp_size if cache_stats else '0 MB' }}</p>
+        </div>
+    </div>
+
+    <div class="card mb-6">
+        <h2 class="text-2xl font-semibold mb-4">Nettoyer le cache</h2>
+        <p class="text-gray-600 mb-6">Sélectionnez les types de cache à nettoyer pour libérer de l'espace et améliorer les performances.</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="border-2 border-blue-200 bg-blue-50 rounded-lg p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="text-3xl">🗂️</span>
+                    <h3 class="text-lg font-semibold text-gray-800">Cache Système</h3>
+                </div>
+                <p class="text-sm text-gray-700 mb-4">Nettoie le cache Python et les fichiers compilés (.pyc)</p>
+                <form method="POST" action="{{ url_for('admin.clear_cache', cache_type='system') }}">
+                    <button type="submit" class="btn-primary w-full">
+                        🧹 Nettoyer le cache système
+                    </button>
+                </form>
+            </div>
+
+            <div class="border-2 border-green-200 bg-green-50 rounded-lg p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="text-3xl">⚡</span>
+                    <h3 class="text-lg font-semibold text-gray-800">Cache Flask</h3>
+                </div>
+                <p class="text-sm text-gray-700 mb-4">Nettoie le cache de l'application Flask</p>
+                <form method="POST" action="{{ url_for('admin.clear_cache', cache_type='flask') }}">
+                    <button type="submit" class="btn-primary w-full">
+                        🧹 Nettoyer le cache Flask
+                    </button>
+                </form>
+            </div>
+
+            <div class="border-2 border-orange-200 bg-orange-50 rounded-lg p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="text-3xl">📁</span>
+                    <h3 class="text-lg font-semibold text-gray-800">Fichiers Temporaires</h3>
+                </div>
+                <p class="text-sm text-gray-700 mb-4">Supprime les fichiers temporaires et uploads anciens</p>
+                <form method="POST" action="{{ url_for('admin.clear_cache', cache_type='temp') }}">
+                    <button type="submit" class="btn-primary w-full">
+                        🧹 Nettoyer les fichiers temp
+                    </button>
+                </form>
+            </div>
+
+            <div class="border-2 border-red-200 bg-red-50 rounded-lg p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="text-3xl">🔥</span>
+                    <h3 class="text-lg font-semibold text-gray-800">Tout nettoyer</h3>
+                </div>
+                <p class="text-sm text-gray-700 mb-4">Nettoie tous les types de cache en une seule fois</p>
+                <form method="POST" action="{{ url_for('admin.clear_cache', cache_type='all') }}" 
+                      onsubmit="return confirm('Nettoyer TOUS les caches ?')">
+                    <button type="submit" class="btn-primary w-full bg-red-600 hover:bg-red-700">
+                        🔥 Tout nettoyer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="text-2xl font-semibold mb-4">📊 Dernier nettoyage</h2>
+        
+        <div class="space-y-3">
+            {% if last_clear %}
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                <span class="font-semibold text-gray-700">Cache système</span>
+                <span class="text-sm text-gray-600">{{ last_clear.system if last_clear.system else 'Jamais' }}</span>
+            </div>
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                <span class="font-semibold text-gray-700">Cache Flask</span>
+                <span class="text-sm text-gray-600">{{ last_clear.flask if last_clear.flask else 'Jamais' }}</span>
+            </div>
+            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                <span class="font-semibold text-gray-700">Fichiers temporaires</span>
+                <span class="text-sm text-gray-600">{{ last_clear.temp if last_clear.temp else 'Jamais' }}</span>
+            </div>
+            {% else %}
+            <div class="p-4 bg-gray-50 rounded text-center text-gray-500">
+                Aucun nettoyage n'a encore été effectué
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="alert alert-warning mt-6">
+        <h3 class="font-semibold mb-2">⚠️ Avertissement</h3>
+        <p class="text-sm">
+            Le nettoyage du cache peut temporairement ralentir l'application. 
+            Il est recommandé de le faire pendant les heures creuses.
+        </p>
     </div>
 </div>
 {% endblock %}

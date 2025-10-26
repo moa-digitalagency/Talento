@@ -1,19 +1,119 @@
 {% extends "base.html" %}
 {% block title %}Sauvegardes - Paramètres{% endblock %}
 {% block content %}
-<div class="min-h-screen bg-gray-50 py-8 px-4">
-    <div class="max-w-5xl mx-auto">
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">💾 Sauvegardes</h1>
-                <p class="text-gray-600 mt-2">Gérer les sauvegardes et restaurations</p>
-            </div>
-            <a href="{{ url_for('admin.settings') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">← Retour</a>
+<div class="max-w-6xl mx-auto px-4 py-6">
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">💾 Sauvegardes</h1>
+            <p class="text-gray-600 mt-2">Gérer les sauvegardes et restaurations de la base de données</p>
         </div>
-        <div class="bg-white rounded-lg shadow p-6 border-2 border-dashed border-orange-400">
-            <h3 class="text-lg font-bold text-gray-800 mb-4">Paramètres des sauvegardes</h3>
-            <p class="text-gray-600">Configuration des sauvegardes automatiques et manuelles.</p>
+        <a href="{{ url_for('admin.settings') }}" class="btn-secondary">← Retour aux paramètres</a>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} mb-4">
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="card mb-6">
+        <h2 class="text-2xl font-semibold mb-4">Créer une sauvegarde</h2>
+        <p class="text-gray-600 mb-4">Créez une copie complète de la base de données avant toute modification importante.</p>
+        
+        <form method="POST" action="{{ url_for('admin.create_backup') }}" onsubmit="return confirm('Créer une sauvegarde de la base de données ?')">
+            <button type="submit" class="btn-primary">
+                💾 Créer une sauvegarde maintenant
+            </button>
+        </form>
+    </div>
+
+    <div class="card mb-6">
+        <h2 class="text-2xl font-semibold mb-4">📜 Sauvegardes disponibles</h2>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom du fichier</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Taille</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% if backups and backups|length > 0 %}
+                        {% for backup in backups %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-mono">{{ backup.filename }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ backup.date }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ backup.size }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                                <a href="{{ url_for('admin.download_backup', filename=backup.filename) }}" class="text-primary hover:underline">Télécharger</a>
+                                <button onclick="restoreBackup('{{ backup.filename }}')" class="text-orange-600 hover:underline">Restaurer</button>
+                                <button onclick="deleteBackup('{{ backup.filename }}')" class="text-red-600 hover:underline">Supprimer</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                            Aucune sauvegarde disponible
+                        </td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <div class="alert alert-warning">
+        <h3 class="font-semibold mb-2">⚠️ Important</h3>
+        <ul class="text-sm space-y-1">
+            <li>• Les sauvegardes sont stockées localement sur le serveur</li>
+            <li>• Il est recommandé de télécharger régulièrement les sauvegardes importantes</li>
+            <li>• La restauration d'une sauvegarde écrasera toutes les données actuelles</li>
+            <li>• Créez toujours une sauvegarde avant une mise à jour majeure</li>
+        </ul>
+    </div>
 </div>
+
+<script>
+function restoreBackup(filename) {
+    if (confirm('⚠️ ATTENTION ⚠️\n\nLa restauration de cette sauvegarde écrasera TOUTES les données actuelles.\n\nÊtes-vous absolument certain de vouloir continuer ?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("admin.restore_backup") }}';
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'filename';
+        input.value = filename;
+        
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function deleteBackup(filename) {
+    if (confirm('Supprimer définitivement la sauvegarde ' + filename + ' ?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("admin.delete_backup") }}';
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'filename';
+        input.value = filename;
+        
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
 {% endblock %}
