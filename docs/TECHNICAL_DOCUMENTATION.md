@@ -557,51 +557,67 @@ gunicorn --bind 0.0.0.0:5000 --reuse-port --workers 4 app:app
 
 ### Format Standard (Profils Principaux)
 
-**Structure**: `PPVVVNNNNG` (10 caractères)
+**Structure**: `PPGNNNNVVV` (10 caractères)
 
 | Composant | Description | Exemple |
 |-----------|-------------|---------|
 | **PP** | Code pays ISO-2 | `MA` (Maroc) |
-| **VVV** | 3 premières lettres de la ville | `RAB` (Rabat) |
-| **NNNN** | 4 chiffres **aléatoires** | `0001` |
 | **G** | Genre | `M`, `F`, ou `N` |
+| **NNNN** | 4 chiffres **séquentiels par pays** | `0001` |
+| **VVV** | 3 premières lettres de la ville | `RAB` (Rabat) |
 
-**Exemple**: `MARAB0001N`
+**Exemple**: `MAM0001RAB` (Maroc, Masculin, 1ère personne au Maroc, Rabat)
 
-**Important**: Le numéro est **aléatoire** et vérifié pour unicité.
+**Important**: Le numéro est **séquentiel et incrémenté par pays**, pas par ville:
+- `MAM0001RAB` = 1ère personne au Maroc (de Rabat), genre masculin
+- `MAF0002CAS` = 2ème personne au Maroc (de Casablanca), genre féminin
+- `SNM0001DAK` = 1ère personne au Sénégal (de Dakar), genre masculin
 
 ### Format CINEMA (Talents Cinématographiques)
 
-**Structure**: `PPVVVNNNNNNNG` (12 caractères)
+**Structure**: `PPVVVNNNNNG` (11 caractères)
 
 | Composant | Description | Exemple |
 |-----------|-------------|---------|
 | **PP** | Code pays ISO-2 | `MA` (Maroc) |
 | **VVV** | 3 premières lettres de la ville | `CAS` (Casablanca) |
-| **NNNNNN** | 6 chiffres **séquentiels par pays** | `000001` |
+| **NNNN** | 4 chiffres **séquentiels par pays** | `0001` |
 | **G** | Genre | `M`, `F` |
 
-**Exemple**: `MACAS000001F`
+**Exemple**: `MACAS0001F` (Maroc, Casablanca, 1ère personne CINEMA au Maroc, Femme)
 
-**Important**: Le numéro est **séquentiel par pays**, pas par ville.
+**Important**: Le numéro est **séquentiel par pays**, identique au système standard:
+- `MACAS0001F` = 1ère personne CINEMA au Maroc (de Casablanca)
+- `MARAB0002M` = 2ème personne CINEMA au Maroc (de Rabat)
+- `SNDAG0001F` = 1ère personne CINEMA au Sénégal (de Dakar)
 
-**Rétrocompatibilité**: Le système supporte encore les anciens codes CINEMA à 4 chiffres.
+**Distinction**: Les codes CINEMA se distinguent des codes standards par l'ordre des composants:
+- **Standard**: Pays-Genre-Numéro-Ville (PPGNNNNVVV)
+- **CINEMA**: Pays-Ville-Numéro-Genre (PPVVVNNNNNG)
+
+**Rétrocompatibilité**: Le système supporte encore les anciens codes CINEMA à 6 chiffres (13 caractères total).
 
 ### Format Projets
 
-**Structure**: `PRJ-XXX-YYY`
+**Structure**: `CCIIISSSNNN` (10+ caractères, sans tirets)
 
-- **XXX**: ID du projet (3 chiffres)
-- **YYY**: Numéro séquentiel de talent (3 chiffres)
+| Composant | Description | Exemple |
+|-----------|-------------|---------|
+| **CC** | Code pays (2 lettres) | `MA` |
+| **III** | Initiales de production (2-3 lettres) | `ABC` |
+| **SSS** | ID du projet (3 chiffres) | `001` |
+| **NNN** | Numéro séquentiel de talent (3 chiffres) | `042` |
 
-**Exemple**: `PRJ-001-042` (Projet 1, 42ème talent assigné)
+**Exemple**: `MAABC001042` (Maroc, ABC Productions, Projet 1, 42ème talent assigné)
+
+**Note**: Aucun tiret n'est utilisé dans les codes projets.
 
 ### Génération des Codes
 
 **Utilities**:
-- `app/utils/id_generator.py` - Codes utilisateurs standard
-- `app/utils/cinema_code_generator.py` - Codes CINEMA
-- `app/utils/project_code_generator.py` - Codes projets
+- `app/utils/id_generator.py` - Codes utilisateurs standard (PPGNNNNVVV)
+- `app/utils/cinema_code_generator.py` - Codes CINEMA (PPVVVNNNNNG)
+- `app/utils/project_code_generator.py` - Codes projets (CCIIISSSNNN)
 
 ---
 

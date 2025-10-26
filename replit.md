@@ -4,6 +4,12 @@
 TalentsMaroc.com is a professional web application designed to centralize and showcase talent profiles across Africa, with a strong focus on the film industry through its CINEMA module. It enables individuals to create comprehensive profiles with unique identifiers and QR codes. The platform features advanced administrative tools, AI-powered CV analysis, and multiple data export formats. TalentsMaroc.com aims to be a robust, scalable solution for talent management and discovery, enhancing professional networking and recruitment. The CINEMA module provides a dedicated system for talent registration with detailed fields, public accessibility, and specialized features for film industry professionals.
 
 ## Recent Changes (October 26, 2025)
+- **Codification System Update**: Changed code formats to new specifications:
+  - **Main codes**: Now PPGNNNNVVV (was PPVVVNNNNG) with sequential numbering per country
+  - **CINEMA codes**: Now PPVVVNNNNNG (11 chars with 4 digits, was 12 chars with 6 digits) with sequential numbering per country
+  - **Project codes**: Format CCIIISSSNNN without dashes (no tirets)
+  - Both systems now use country-based incrementation (not random)
+  - Codes distinguished by component order for clear differentiation
 - **Documentation Restructure**: Created comprehensive technical documentation in `docs/TECHNICAL_DOCUMENTATION.md` containing complete system architecture, models, services, routes, security details, and installation instructions.
 - **New README Files**: Completely rewrote README.md and README.fr.md with detailed feature descriptions, use cases, installation guide, and roadmap. The new READMEs provide a complete overview of all platform capabilities for both technical and non-technical users.
 - **Documentation Organization**: Separated technical documentation from user-facing README to improve clarity and accessibility.
@@ -26,8 +32,11 @@ Preferred communication style: Simple, everyday language.
 - **Automatic Data Seeding**: System automatically detects if demo data exists on startup. If missing, creates 5 demo users (demo1-5@talento.com), 3 CINEMA talents (emails ending with @demo.cinema) via `migrations_init.py`, and 2 demo productions (film and series). Idempotent design prevents duplicate creation. Admin account (admin@talento.com / MARAB0001N / @4dm1n) is always guaranteed to exist with required Morocco/Rabat locations.
 
 ### Unique Identification System
-- **Main Code Format**: PPVVVNNNNG (Country, City, 4 digits, Gender).
-- **CINEMA Code Format**: PPVVVNNNNNG (Country, City, 4 digits, Gender) - Updated from 6 to 4 digits with backward compatibility for legacy 6-digit codes.
+- **Main Code Format**: PPGNNNNVVV (Country, Gender, 4 sequential digits per country, City) - 10 characters total.
+- **CINEMA Code Format**: PPVVVNNNNNG (Country, City, 4 sequential digits per country, Gender) - 11 characters total.
+- **Project Code Format**: CCIIISSSNNN (Country, Production Initials, Project ID, Talent Number) - 10+ characters, no dashes.
+- **Numbering**: Both main and CINEMA codes use sequential numbering incremented per country (not per city).
+- **Distinction**: Codes distinguished by component order - Genre before Number for main codes, City before Number for CINEMA codes.
 - **QR Codes**: Automatically generated and linked to profile URLs for both main and CINEMA profiles.
 
 ### Authentication & Authorization
