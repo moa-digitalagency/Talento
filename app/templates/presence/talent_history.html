@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Historique de Présence - {{ talent.first_name }} {{ talent.last_name }} - TalentsMaroc.com{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center gap-3 mb-4">
+            <a href="javascript:history.back()" class="text-blue-600 hover:text-blue-800">
+                ← Retour
+            </a>
+        </div>
+        <div class="flex items-start gap-6">
+            {% if talent.photo_filename %}
+            <img src="{{ url_for('static', filename='uploads/photos/' + talent.photo_filename) }}" 
+                 class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg" alt="">
+            {% else %}
+            <div class="w-24 h-24 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-3xl border-4 border-white shadow-lg">
+                {{ talent.first_name[0] }}{{ talent.last_name[0] }}
+            </div>
+            {% endif %}
+            <div class="flex-1">
+                <h1 class="text-4xl font-bold text-gray-800 mb-2">
+                    {{ talent.first_name }} {{ talent.last_name }}
+                </h1>
+                <p class="text-lg text-gray-600 mb-2">{{ talent.talent_type }}</p>
+                <p class="font-mono text-sm font-semibold text-gray-500">{{ talent.unique_code }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Résumé par projet -->
+    {% for project_id, data in by_project.items() %}
+    <div class="bg-white rounded-lg border-2 border-gray-200 overflow-hidden mb-6">
+        <div class="p-6 border-b-2 border-gray-200 bg-gradient-to-r from-blue-50 to-purple-50">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-1">{{ data.project.name }}</h2>
+                    <p class="text-sm text-gray-600">{{ data.project.production_type }}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-3xl font-bold text-blue-600">{{ data.total_formatted }}</p>
+                    <p class="text-sm text-gray-600">{{ data.days_worked }} jour(s) travaillé(s)</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead class="bg-gray-100 border-b-2 border-gray-200">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Arrivée</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Départ</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Durée</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Enregistré par</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for att in data.attendances %}
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="font-semibold text-gray-800">{{ att.date.strftime('%d/%m/%Y') }}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if att.check_in_time %}
+                            <span class="text-green-600 font-semibold">{{ att.check_in_time.strftime('%H:%M') }}</span>
+                            {% else %}
+                            <span class="text-gray-400">-</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if att.check_out_time %}
+                            <span class="text-orange-600 font-semibold">{{ att.check_out_time.strftime('%H:%M') }}</span>
+                            {% else %}
+                            <span class="text-gray-400">En cours...</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="font-semibold text-blue-600">{{ att.get_duration_formatted() }}</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600">
+                            {{ att.recorder.first_name }} {{ att.recorder.last_name }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-12">
+        <span class="text-6xl mb-4 block">📋</span>
+        <p class="text-xl text-gray-600">Aucune présence enregistrée</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

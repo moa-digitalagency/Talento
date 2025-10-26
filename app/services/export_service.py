@@ -1379,3 +1379,79 @@ class ExportService:
         doc.build(elements)
         buffer.seek(0)
         return buffer.getvalue()
+
+def export_attendance_to_excel(project, attendances, start_date=None, end_date=None):
+    """
+    Exporter les présences d'un projet vers Excel
+    
+    Args:
+        project: Objet Project
+        attendances: Liste d'objets Attendance
+        start_date: Date de début (optionnel)
+        end_date: Date de fin (optionnel)
+        
+    Returns:
+        Response Flask avec le fichier Excel
+    """
+    from flask import send_file
+    from app.models.cinema_talent import CinemaTalent
+    
+    data = []
+    
+    for att in attendances:
+        # Récupérer les infos du talent
+        talent = CinemaTalent.query.filter_by(unique_code=att.cinema_talent_code).first()
+        
+        if talent:
+            data.append({
+                'Date': att.date.strftime('%d/%m/%Y'),
+                'Code Cinéma': att.cinema_talent_code,
+                'Prénom': talent.first_name,
+                'Nom': talent.last_name,
+                'Type': talent.talent_type or 'N/A',
+                'Arrivée': att.check_in_time.strftime('%H:%M') if att.check_in_time else '-',
+                'Départ': att.check_out_time.strftime('%H:%M') if att.check_out_time else 'En cours',
+                'Durée': att.get_duration_formatted(),
+                'Minutes': att.get_duration_minutes(),
+                'Enregistré par': f"{att.recorder.first_name} {att.recorder.last_name}"
+            })
+    
+    df = pd.DataFrame(data)
+    
+    # Créer le fichier Excel
+    output = io.BytesIO()
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+        df.to_excel(writer, sheet_name='Présences', index=False)
+        
+        worksheet = writer.sheets['Présences']
+        
+        # Ajuster la largeur des colonnes
+        for column in worksheet.columns:
+            max_length = 0
+            column = [cell for cell in column]
+            for cell in column:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(cell.value)
+                except:
+                    pass
+            adjusted_width = min(max_length + 2, 50)
+            worksheet.column_dimensions[column[0].column_letter].width = adjusted_width
+    
+    output.seek(0)
+    
+    # Nom du fichier
+    period_str = ""
+    if start_date and end_date:
+        period_str = f"_{start_date.strftime('%Y%m%d')}_{end_date.strftime('%Y%m%d')}"
+    elif start_date:
+        period_str = f"_{start_date.strftime('%Y%m%d')}"
+    
+    filename = f"presences_{project.name.replace(' ', '_')}{period_str}.xlsx"
+    
+    return send_file(
+        output,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        as_attachment=True,
+        download_name=filename
+    )

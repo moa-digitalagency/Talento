@@ -269,7 +269,7 @@ def create_app(config_class=Config):
         except (ValueError, TypeError):
             return []
     
-    from app.routes import auth, profile, admin, main, api, cinema
+    from app.routes import auth, profile, admin, main, api, cinema, presence
     from app.routes import api_v1
     app.register_blueprint(auth.bp)
     app.register_blueprint(profile.bp)
@@ -277,6 +277,7 @@ def create_app(config_class=Config):
     app.register_blueprint(main.bp)
     app.register_blueprint(api.bp)
     app.register_blueprint(cinema.bp)
+    app.register_blueprint(presence.bp)
     app.register_blueprint(api_v1.bp)
     
     # Exemption CSRF pour toutes les routes API v1

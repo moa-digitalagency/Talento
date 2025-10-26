@@ -44,6 +44,12 @@
                                 <span>🎬</span>
                                 <span>CINEMA</span>
                             </a>
+                            {% if current_user.is_admin or current_user.role == 'presence' %}
+                            <a href="{{ url_for('presence.index') }}" class="px-4 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all font-semibold">
+                                <span>📋</span>
+                                <span>Présence</span>
+                            </a>
+                            {% endif %}
                             {% if current_user.is_admin %}
                             <a href="{{ url_for('admin.settings') }}" class="px-4 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all font-semibold">
                                 <span>⚙️</span>
@@ -113,6 +119,12 @@
                         <span>🎬</span>
                         <span class="ml-2">CINEMA</span>
                     </a>
+                    {% if current_user.is_admin or current_user.role == 'presence' %}
+                    <a href="{{ url_for('presence.index') }}" class="block px-4 py-3 text-gray-700 hover:bg-green-50 rounded-lg transition-all font-semibold">
+                        <span>📋</span>
+                        <span class="ml-2">Présence</span>
+                    </a>
+                    {% endif %}
                     {% if current_user.is_admin %}
                     <a href="{{ url_for('admin.settings') }}" class="block px-4 py-3 text-gray-700 hover:bg-green-50 rounded-lg transition-all font-semibold">
                         <span>⚙️</span>
