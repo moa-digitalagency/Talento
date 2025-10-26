@@ -63,18 +63,45 @@ def register():
         import os
         
         try:
+            from app.utils.validation_service import ValidationService
+            
+            # Récupérer et valider l'email et le téléphone avant de créer l'utilisateur
+            email_input = request.form.get('email')
+            phone_input = request.form.get('phone')
+            
+            country_id = request.form.get('country_id')
+            
+            # Déterminer le code pays pour la validation du téléphone
+            country_code = 'MA'  # Par défaut Maroc
+            if country_id:
+                country = Country.query.get(int(country_id))
+                if country:
+                    country_code = country.code
+            
+            # Valider l'email
+            email_validation = ValidationService.validate_email(email_input, check_deliverability=True)
+            if not email_validation.is_valid:
+                flash(f"Email invalide: {email_validation.error_message}", 'error')
+                return render_template('auth/register.html')
+            
+            # Valider le téléphone si fourni
+            if phone_input:
+                phone_validation = ValidationService.validate_phone(phone_input, country_code)
+                if not phone_validation.is_valid:
+                    flash(f"Numéro de téléphone invalide: {phone_validation.error_message}", 'error')
+                    return render_template('auth/register.html')
+            
             user = User()
             user.first_name = request.form.get('first_name')
             user.last_name = request.form.get('last_name')
-            user.email = request.form.get('email')
-            user.phone = request.form.get('phone')
+            user.email = email_validation.normalized_value  # Utiliser l'email normalisé
+            user.phone = phone_validation.normalized_value if phone_input else None  # Format E.164
             user.whatsapp = request.form.get('whatsapp')
             user.address = request.form.get('address')
             user.gender = request.form.get('gender')
             user.passport_number = request.form.get('passport_number')
             user.residence_card = request.form.get('residence_card')
             
-            country_id = request.form.get('country_id')
             city_id = request.form.get('city_id')
             user.country_id = int(country_id) if country_id else None
             user.city_id = int(city_id) if city_id else None

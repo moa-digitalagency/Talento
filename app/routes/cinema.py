@@ -349,7 +349,33 @@ def register_talent():
             if gallery_filenames:
                 talent.gallery_photos = json.dumps(gallery_filenames)
             
-            talent.email = request.form.get('email')
+            # Valider l'email et le téléphone
+            from app.utils.validation_service import ValidationService
+            
+            email_input = request.form.get('email')
+            phone_input = request.form.get('phone')
+            
+            # Déterminer le code pays pour la validation du téléphone
+            country_code_residence = request.form.get('country_of_residence') or 'MA'
+            
+            # Valider l'email
+            email_validation = ValidationService.validate_email(email_input, check_deliverability=True)
+            if not email_validation.is_valid:
+                flash(f"Email invalide: {email_validation.error_message}", 'error')
+                return render_template('cinema/register_talent.html', 
+                                     countries=countries, 
+                                     nationalities=nationalities, 
+                                     languages=LANGUAGES_CINEMA, 
+                                     talent_categories=TALENT_CATEGORIES,
+                                     cinema_talent_types=CINEMA_TALENT_TYPES,
+                                     eye_colors=EYE_COLORS,
+                                     hair_colors=HAIR_COLORS,
+                                     hair_types=HAIR_TYPES,
+                                     skin_tones=SKIN_TONES,
+                                     build_types=BUILD_TYPES)
+            
+            # Utiliser l'email normalisé
+            talent.email = email_validation.normalized_value
             
             existing_talent = CinemaTalent.query.filter_by(email=talent.email).first()
             if existing_talent:
@@ -366,15 +392,48 @@ def register_talent():
                                      skin_tones=SKIN_TONES,
                                      build_types=BUILD_TYPES)
             
-            phone = request.form.get('phone')
-            if phone:
+            # Valider le téléphone si fourni
+            if phone_input:
+                phone_validation = ValidationService.validate_phone(phone_input, country_code_residence)
+                if not phone_validation.is_valid:
+                    flash(f"Numéro de téléphone invalide: {phone_validation.error_message}", 'error')
+                    return render_template('cinema/register_talent.html', 
+                                         countries=countries, 
+                                         nationalities=nationalities, 
+                                         languages=LANGUAGES_CINEMA, 
+                                         talent_categories=TALENT_CATEGORIES,
+                                         cinema_talent_types=CINEMA_TALENT_TYPES,
+                                         eye_colors=EYE_COLORS,
+                                         hair_colors=HAIR_COLORS,
+                                         hair_types=HAIR_TYPES,
+                                         skin_tones=SKIN_TONES,
+                                         build_types=BUILD_TYPES)
+                
+                # Encrypter le téléphone normalisé (format E.164)
                 from app.utils.encryption import encrypt_data
-                talent.phone_encrypted = encrypt_data(phone)
+                talent.phone_encrypted = encrypt_data(phone_validation.normalized_value)
             
+            # Valider WhatsApp si fourni (même logique que téléphone)
             whatsapp = request.form.get('whatsapp')
             if whatsapp:
+                whatsapp_validation = ValidationService.validate_phone(whatsapp, country_code_residence)
+                if not whatsapp_validation.is_valid:
+                    flash(f"Numéro WhatsApp invalide: {whatsapp_validation.error_message}", 'error')
+                    return render_template('cinema/register_talent.html', 
+                                         countries=countries, 
+                                         nationalities=nationalities, 
+                                         languages=LANGUAGES_CINEMA, 
+                                         talent_categories=TALENT_CATEGORIES,
+                                         cinema_talent_types=CINEMA_TALENT_TYPES,
+                                         eye_colors=EYE_COLORS,
+                                         hair_colors=HAIR_COLORS,
+                                         hair_types=HAIR_TYPES,
+                                         skin_tones=SKIN_TONES,
+                                         build_types=BUILD_TYPES)
+                
+                # Encrypter le WhatsApp normalisé
                 from app.utils.encryption import encrypt_data
-                talent.whatsapp_encrypted = encrypt_data(whatsapp)
+                talent.whatsapp_encrypted = encrypt_data(whatsapp_validation.normalized_value)
             
             # Website (not encrypted)
             talent.website = request.form.get('website')
