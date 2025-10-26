@@ -234,7 +234,7 @@ L'application utilise 7 blueprints principaux:
 **Paramètres stockés**:
 - `SENDGRID_API_KEY`, `SENDGRID_FROM_EMAIL`
 - `OPENROUTER_API_KEY`
-- `TMDB_API_KEY`
+- `OMDB_API_KEY`
 - Version de l'application
 
 ---
@@ -318,12 +318,12 @@ L'application utilise 7 blueprints principaux:
 
 ### 7. MovieService (`app/services/movie_service.py`)
 
-**Responsabilité**: Proxy TMDb API
+**Responsabilité**: Proxy OMDB API
 
 **Méthodes**:
 - `search_movies(query)` - Recherche de films/séries
 
-**API**: TMDb (optionnel)
+**API**: OMDB (optionnel)
 
 ---
 
@@ -510,7 +510,7 @@ ENCRYPTION_KEY=your-32-byte-base64-encoded-key
 SENDGRID_API_KEY=SG.xxxxx
 SENDGRID_FROM_EMAIL=noreply@talentsmaroc.com
 OPENROUTER_API_KEY=sk-or-xxxxx
-TMDB_API_KEY=xxxxx
+OMDB_API_KEY=xxxxx
 REPLIT_DEV_DOMAIN=https://your-replit-domain.repl.co
 ADMIN_PASSWORD=@4dm1n
 ```

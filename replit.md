@@ -51,7 +51,7 @@ Preferred communication style: Simple, everyday language.
 
 ### Admin Settings & Configuration
 - **Activity Logs** (`/admin/settings/activity-logs`): Real-time tracking of user actions throughout the platform using LoggingService integration. Displays user activity with timestamps, actions, and details.
-- **API Keys Management** (`/admin/settings/api-keys`): Centralized management for external service API keys (SendGrid, OpenRouter, TMDB, OMDB). Features masked display (first 4 + last 4 characters visible) and status indicators for each service.
+- **API Keys Management** (`/admin/settings/api-keys`): Centralized management for external service API keys (SendGrid, OpenRouter, OMDB). Features masked display (first 4 + last 4 characters visible) and status indicators for each service.
 - **System Settings** (`/admin/settings/system`): Custom HTML head code injection feature allowing administrators to add analytics scripts (Google Analytics, Facebook Pixel), SEO meta tags, or custom CSS/JavaScript to all pages. Uses context processor for site-wide availability with CSRF protection.
 
 ### Contract Management
@@ -91,7 +91,7 @@ Preferred communication style: Simple, everyday language.
 - **Database**: PostgreSQL (production), SQLite (development).
 - **AI Service**: OpenRouter API.
 - **Email Service**: SendGrid API.
-- **Movie Database**: TMDb API (optional, for CINEMA module).
+- **Movie Database**: OMDB API (optional, for CINEMA module).
 
 ### Python Libraries
 - **Web Framework & ORM**: Flask, Flask-SQLAlchemy, Flask-Login, Flask-Mail, Flask-Migrate, Flask-WTF.

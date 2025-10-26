@@ -54,3 +54,4 @@ class Config:
     SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
     
     OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
+    OMDB_API_KEY = os.environ.get('OMDB_API_KEY')

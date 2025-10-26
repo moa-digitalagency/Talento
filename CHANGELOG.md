@@ -5,6 +5,87 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.0] - 2025-10-26
+
+### 🚀 Migration et Déploiement - Préparation Production VPS
+
+#### Migration vers Replit
+- **Migration complète** : Application migrée avec succès vers environnement Replit
+- **Python 3.11** : Installation et configuration complète
+- **Dépendances** : Toutes les dépendances installées depuis requirements.txt
+- **Base de données** : Initialisée avec données de démonstration
+- **Application** : Démarrée avec succès sur port 5000
+
+#### Script de Déploiement VPS (`deploy_vps.sh`)
+- **Nouveau** : Script Bash complet et production-ready pour déploiement automatisé
+- **10 étapes automatisées** :
+  1. Sauvegarde automatique (dump PostgreSQL + fichiers uploads dans archive tar.gz)
+  2. Mise à jour Git (optionnel via variables d'environnement)
+  3. Configuration Python venv + installation dépendances
+  4. Migrations de base de données automatiques
+  5. Configuration Systemd (service auto-démarrage)
+  6. Configuration Nginx (reverse proxy)
+  7. Support SSL/HTTPS (Certbot/Let's Encrypt)
+  8. Tests et vérifications
+  9. Démarrage de l'application
+  10. Résumé et instructions post-déploiement
+
+- **Variables d'environnement** :
+  - `GIT_REPO_URL` : URL du dépôt Git (optionnel)
+  - `GIT_BRANCH` : Branche à déployer (défaut: main)
+  
+- **Corrections critiques** :
+  - Dump SQL PostgreSQL maintenant correctement inclus dans l'archive de sauvegarde
+  - Gestion Git flexible (ne force plus un URL placeholder)
+  - Gestion d'erreurs robuste (l'application ne crashe jamais)
+  - Support multi-DB (SQLite et PostgreSQL)
+
+#### Documentation Complète
+
+**Routes Documentation** (`docs/ROUTES_DOCUMENTATION.md`):
+- **Nouvelle** : Documentation exhaustive de toutes les routes de l'application
+- **8 Blueprints** : main, auth, profile, admin, cinema, presence, api, api_v1
+- **100+ endpoints** : Tous documentés avec méthodes HTTP, paramètres, réponses
+- **Exemples API REST** : Requêtes/réponses JSON pour chaque endpoint
+- **Authentification** : Niveaux d'accès (Public, Authenticated, Admin)
+- **Sécurité** : CSRF, chiffrement, codes d'état HTTP
+- **Limites & Quotas** : Upload, pagination
+
+**README.md mis à jour**:
+- **Section VPS** : Guide complet de déploiement sur VPS
+- **Prérequis** : Ubuntu/Debian, Python 3.11+, PostgreSQL
+- **Utilisation script** : Instructions détaillées avec variables d'environnement
+- **Commandes Systemd** : Gestion du service
+- **SSL/HTTPS** : Configuration Certbot
+- **Sauvegardes** : Procédures de backup/restauration
+- **Dépannage** : Solutions aux problèmes courants
+
+#### Correction TMDB → OMDB
+- **Changement d'API** : Migration de TMDb API vers OMDB API
+- **Fichiers corrigés** : config.py, README.md, replit.md, deploy_vps.sh
+- **Documentation** : Toutes les références TMDB remplacées par OMDB
+- **Service** : movie_service.py utilise déjà OMDB (aucun changement requis)
+- **Compatibilité** : Format de réponse identique pour compatibilité ascendante
+
+#### Fichiers Modifiés
+- ✅ `deploy_vps.sh` - Script de déploiement VPS complet
+- ✅ `docs/ROUTES_DOCUMENTATION.md` - Documentation complète des routes
+- ✅ `README.md` - Section déploiement VPS ajoutée
+- ✅ `config.py` - Ajout OMDB_API_KEY
+- ✅ `replit.md` - Références OMDB
+- ✅ `docs/TECHNICAL_DOCUMENTATION.md` - Références OMDB
+- ✅ `docs/ROUTES_DOCUMENTATION.md` - API OMDB
+
+#### Résultat
+- ✅ **Application prête pour production** : Migration réussie vers Replit
+- ✅ **Déploiement VPS automatisé** : Script turnkey avec toutes les étapes
+- ✅ **Documentation exhaustive** : Routes, API, déploiement
+- ✅ **API films moderne** : OMDB au lieu de TMDb
+- ✅ **Sauvegardes complètes** : Dump SQL inclus dans archives
+- ✅ **Prêt pour publication** : Application testée et fonctionnelle
+
+---
+
 ## [2.30.0] - 2025-10-22
 
 ### 🔍 Synchronisation Totale Formulaire d'Inscription ↔ Recherche Avancée CINEMA

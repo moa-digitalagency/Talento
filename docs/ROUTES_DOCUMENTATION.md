@@ -725,7 +725,7 @@
 ### API CINEMA (internes)
 
 #### `GET /cinema/api/search_movies`
-**Description**: Recherche de films via TMDb API (proxy)
+**Description**: Recherche de films via OMDB API (proxy)
 **Paramètres**: `q` - Terme de recherche
 **Response**: JSON avec résultats de films
 **Utilisation**: Autocomplete dans les formulaires

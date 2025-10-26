@@ -155,7 +155,7 @@ Chaque profil génère automatiquement un QR code unique pour partage facile
 - **Clés API** :
   - SendGrid (envoi d'emails)
   - OpenRouter (analyse IA)
-  - TMDb (recherche de films - optionnel)
+  - OMDB (recherche de films - optionnel)
 - **Configuration Email** :
   - Email expéditeur
   - Test d'envoi
@@ -387,7 +387,7 @@ ENCRYPTION_KEY=votre-cle-de-chiffrement-32-bytes-base64
 SENDGRID_API_KEY=SG.votre-cle-sendgrid
 SENDGRID_FROM_EMAIL=noreply@talentsmaroc.com
 OPENROUTER_API_KEY=sk-or-votre-cle-openrouter
-TMDB_API_KEY=votre-cle-tmdb
+OMDB_API_KEY=votre-cle-omdb
 ADMIN_PASSWORD=@4dm1n
 ```
 
@@ -482,7 +482,7 @@ talentsmaroc/
 │   │   ├── email_service.py     # Envoi d'emails
 │   │   ├── export_service.py    # Exports Excel/CSV/PDF
 │   │   ├── backup_service.py    # Sauvegardes
-│   │   └── movie_service.py     # Proxy TMDb API
+│   │   └── movie_service.py     # Proxy OMDB API
 │   ├── templates/                # Templates Jinja2
 │   │   ├── base.html            # Template de base
 │   │   ├── auth/                # Connexion/inscription
@@ -541,7 +541,7 @@ talentsmaroc/
 ### Services Externes
 - **SendGrid** - Envoi d'emails transactionnels
 - **OpenRouter AI** - Analyse de CV (Llama 3.1 8B)
-- **TMDb API** - Recherche de films (optionnel)
+- **OMDB API** - Recherche de films (optionnel)
 
 ### Traitement de Données
 - **pandas** - Manipulation de données pour exports

@@ -241,7 +241,7 @@ ENCRYPTION_KEY=generez-avec-cryptography-fernet-generatekey
 SENDGRID_API_KEY=
 SENDGRID_FROM_EMAIL=noreply@talentsmaroc.com
 OPENROUTER_API_KEY=
-TMDB_API_KEY=
+OMDB_API_KEY=
 
 # Admin par défaut
 ADMIN_PASSWORD=@4dm1n
