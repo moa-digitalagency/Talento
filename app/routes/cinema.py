@@ -27,6 +27,12 @@ def dashboard():
     total_talents = CinemaTalent.query.filter_by(is_active=True).count()
     return render_template('cinema/dashboard.html', total_talents=total_talents)
 
+@bp.route('/contrats')
+@login_required
+def contrats():
+    """Contrats CINEMA - Gestion des contrats pour le module cinéma"""
+    return render_template('cinema/contrats.html')
+
 @bp.route('/talents')
 @login_required
 def talents():
