@@ -253,6 +253,12 @@ def admin_dashboard():
 def about():
     return render_template('about.html')
 
+@bp.route('/contrats')
+@login_required
+def contrats():
+    """Contrats - Gestion des contrats pour les talents"""
+    return render_template('contrats.html')
+
 @bp.route('/talents')
 @login_required
 def talents():
