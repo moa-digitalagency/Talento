@@ -405,10 +405,26 @@ def settings_system():
         'debug': current_app.debug
     }
     
+    # Récupérer le code personnalisé pour le <head>
+    custom_head_code = AppSettings.get('custom_head_code', '')
+    
     return render_template('admin/settings/system.html', 
                          db_info=db_info, 
                          stats=stats, 
-                         system_info=system_info)
+                         system_info=system_info,
+                         custom_head_code=custom_head_code)
+
+@bp.route('/save-custom-head-code', methods=['POST'])
+@login_required
+@admin_required
+def save_custom_head_code():
+    custom_head_code = request.form.get('custom_head_code', '').strip()
+    
+    # Enregistrer le code personnalisé
+    AppSettings.set('custom_head_code', custom_head_code)
+    
+    flash('Code personnalisé enregistré avec succès.', 'success')
+    return redirect(url_for('admin.settings_system'))
 
 @bp.route('/settings/activity-logs')
 @login_required
