@@ -44,6 +44,31 @@ def check_and_create_tables():
     else:
         print("✅ Toutes les tables existent")
     
+    # Créer la table attendances si elle n'existe pas
+    if 'attendances' not in existing_tables:
+        print("📝 Création de la table attendances...")
+        try:
+            with db.engine.connect() as conn:
+                conn.execute(text("""
+                    CREATE TABLE IF NOT EXISTS attendances (
+                        id SERIAL PRIMARY KEY,
+                        project_id INTEGER NOT NULL REFERENCES projects(id),
+                        cinema_talent_code VARCHAR(11) NOT NULL,
+                        date DATE NOT NULL DEFAULT CURRENT_DATE,
+                        check_in_time TIMESTAMP,
+                        check_out_time TIMESTAMP,
+                        recorded_by INTEGER NOT NULL REFERENCES users(id),
+                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                    )
+                """))
+                conn.commit()
+            print("✅ Table attendances créée avec succès")
+        except Exception as e:
+            print(f"⚠️  Table attendances existe déjà ou erreur: {e}")
+    else:
+        print("✅ Table attendances existe déjà")
+    
     return True
 
 def check_and_add_columns():
@@ -62,7 +87,8 @@ def check_and_add_columns():
         'languages': 'VARCHAR(255)',
         'education': 'TEXT',
         'passport_number_encrypted': 'TEXT',
-        'residence_card_encrypted': 'TEXT'
+        'residence_card_encrypted': 'TEXT',
+        'role': "VARCHAR(50) DEFAULT 'user'"
     }
     
     if 'users' in inspector.get_table_names():

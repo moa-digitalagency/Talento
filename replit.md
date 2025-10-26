@@ -47,11 +47,23 @@ Preferred communication style: Simple, everyday language.
 - **UI/UX Decisions**: Modern, professional aesthetic with solid colors, multi-step registration forms, role-adapted dashboards, enhanced individual profile pages with secure display of initials and QR codes, streamlined navigation, and consistent use of French labels.
 
 ### Routing Structure
-- **Blueprints**: Organized into `main`, `auth`, `profile`, `admin`, `api`, `cinema`, and `api_v1` for modularity.
+- **Blueprints**: Organized into `main`, `auth`, `profile`, `admin`, `api`, `cinema`, `presence`, and `api_v1` for modularity.
 
 ### Contract Management
 - **Main Contracts Page**: `/contrats` - Accessible from main navigation for all talents. Currently under development with planned features including contract creation, electronic signature, tracking, notifications, archiving, and PDF export.
 - **Cinema Contracts Page**: `/cinema/contrats` - Dedicated contracts management for cinema talents. Accessible from cinema module sidebar with same planned features tailored for film industry contracts.
+
+### Attendance Management (Présence)
+- **Access Control**: Accessible only by users with `admin` role or `presence` role. Link visible in main navigation.
+- **Core Features**:
+  - QR code scanning or manual code entry for talent check-in/check-out
+  - Automatic detection: First scan of the day = arrival, second scan = departure
+  - Bulk actions: "Mark all present" and "Auto departure" for all present talents
+  - Project-based attendance tracking linked to CINEMA projects
+  - Attendance history view per talent with duration calculations
+- **Data Export**: Excel export of attendance records by project with customizable date ranges
+- **Database Model**: New `Attendance` model with fields: project_id, cinema_talent_code, check_in_time, check_out_time, recorded_by, date
+- **User Roles**: New `role` field added to User model (values: 'user', 'admin', 'presence')
 
 ### REST API v1
 - **Base URL**: `/api/v1`.

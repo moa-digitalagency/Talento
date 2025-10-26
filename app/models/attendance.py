@@ -7,7 +7,7 @@ www.myoneart.com
 """
 
 from app import db
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 class Attendance(db.Model):
     """Modèle pour gérer les présences des talents cinéma sur les projets"""
@@ -22,7 +22,7 @@ class Attendance(db.Model):
     cinema_talent_code = db.Column(db.String(11), nullable=False)
     
     # Date de la présence
-    date = db.Column(db.Date, nullable=False, default=datetime.utcnow().date)
+    date = db.Column(db.Date, nullable=False, default=date.today)
     
     # Heures d'arrivée et de départ
     check_in_time = db.Column(db.DateTime, nullable=True)
