@@ -269,6 +269,16 @@ def create_app(config_class=Config):
         except (ValueError, TypeError):
             return []
     
+    @app.context_processor
+    def inject_custom_head_code():
+        """Injecter le code personnalisé du <head> dans tous les templates"""
+        try:
+            from app.models.settings import AppSettings
+            custom_head_code = AppSettings.get('custom_head_code', '')
+            return {'CUSTOM_HEAD_CODE': custom_head_code}
+        except Exception:
+            return {'CUSTOM_HEAD_CODE': ''}
+    
     from app.routes import auth, profile, admin, main, api, cinema, presence
     from app.routes import api_v1
     app.register_blueprint(auth.bp)

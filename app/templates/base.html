@@ -7,6 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/corporate.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    
+    {# Code personnalisé injecté depuis les paramètres système #}
+    {% if CUSTOM_HEAD_CODE %}
+    {{ CUSTOM_HEAD_CODE|safe }}
+    {% endif %}
 </head>
 <body class="h-full bg-gray-50">
     <nav class="bg-white border-b-3 border-dotted border-blue-300 shadow-md">
