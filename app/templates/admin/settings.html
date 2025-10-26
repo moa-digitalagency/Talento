@@ -3,91 +3,177 @@
 {% block title %}Paramètres - Administration - TalentsMaroc.com{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gray-50 py-8 px-4">
-    <div class="max-w-6xl mx-auto">
+<div class="min-h-screen bg-gray-50 py-6 px-4">
+    <div class="max-w-7xl mx-auto">
         
         <!-- Header -->
-        <div class="mb-8">
-            <h1 class="text-4xl font-bold text-gray-800 mb-2">⚙️ Paramètres</h1>
-            <p class="text-gray-600">Configuration de l'application et gestion des administrateurs</p>
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">⚙️ Paramètres</h1>
+            <p class="text-gray-600 text-sm">Configuration de l'application et gestion des administrateurs</p>
         </div>
 
         <!-- Messages Flash -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                <div class="mb-6 p-4 rounded-lg border-2 {% if category == 'success' %}bg-green-50 border-green-300 text-green-800{% elif category == 'error' %}bg-red-50 border-red-300 text-red-800{% else %}bg-blue-50 border-blue-300 text-blue-800{% endif %}">
+                <div class="mb-4 p-3 rounded-lg border-2 {% if category == 'success' %}bg-green-50 border-green-300 text-green-800{% elif category == 'error' %}bg-red-50 border-red-300 text-red-800{% else %}bg-blue-50 border-blue-300 text-blue-800{% endif %}">
                     {{ message }}
                 </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
 
+        <!-- Grid de cartes de fonctionnalités -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+            
+            <!-- 1. Clés API -->
+            <a href="#api-keys" class="block bg-blue-50 border-2 border-dashed border-blue-400 rounded-lg p-5 hover:shadow-lg transition-all cursor-pointer">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-3xl">🔑</span>
+                    <h3 class="text-base font-bold text-gray-800">Clés API</h3>
+                </div>
+                <p class="text-sm text-gray-600">Configurer les clés API et accès</p>
+            </a>
+
+            <!-- 2. Sécurité -->
+            <a href="#security" class="block bg-red-50 border-2 border-dashed border-red-400 rounded-lg p-5 hover:shadow-lg transition-all cursor-pointer">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-3xl">❤️</span>
+                    <h3 class="text-base font-bold text-gray-800">Sécurité</h3>
+                </div>
+                <p class="text-sm text-gray-600">Paramètres de sécurité et accès</p>
+            </a>
+
+            <!-- 3. Gestion des Utilisateurs -->
+            <a href="#users" class="block bg-purple-50 border-2 border-dashed border-purple-400 rounded-lg p-5 hover:shadow-lg transition-all cursor-pointer">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-3xl">👥</span>
+                    <h3 class="text-base font-bold text-gray-800">Gestion des Utilisateurs</h3>
+                </div>
+                <p class="text-sm text-gray-600">Administrer les comptes utilisateurs et leurs accès</p>
+            </a>
+
+            <!-- 4. Templates Email -->
+            <a href="#email-test" class="block bg-indigo-50 border-2 border-dashed border-indigo-400 rounded-lg p-5 hover:shadow-lg transition-all cursor-pointer">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-3xl">✉️</span>
+                    <h3 class="text-base font-bold text-gray-800">Templates Email</h3>
+                </div>
+                <p class="text-sm text-gray-600">Configurer les modèles d'emails</p>
+            </a>
+
+            <!-- 5. Sauvegardes -->
+            <a href="#backups" class="block bg-orange-50 border-2 border-dashed border-orange-400 rounded-lg p-5 hover:shadow-lg transition-all cursor-pointer">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-3xl">💾</span>
+                    <h3 class="text-base font-bold text-gray-800">Sauvegardes</h3>
+                </div>
+                <p class="text-sm text-gray-600">Gérer les sauvegardes et restaurations</p>
+            </a>
+
+            <!-- 6. Base de données -->
+            <a href="#database" class="block bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-lg p-5 hover:shadow-lg transition-all cursor-pointer">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-3xl">🗄️</span>
+                    <h3 class="text-base font-bold text-gray-800">Base de données</h3>
+                </div>
+                <p class="text-sm text-gray-600">État et diagnostics de la base de données</p>
+            </a>
+
+            <!-- 7. Mises à jour -->
+            <a href="#updates" class="block bg-cyan-50 border-2 border-dashed border-cyan-400 rounded-lg p-5 hover:shadow-lg transition-all cursor-pointer">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-3xl">🔄</span>
+                    <h3 class="text-base font-bold text-gray-800">Mises à jour</h3>
+                </div>
+                <p class="text-sm text-gray-600">Mettre à jour l'application depuis GitHub</p>
+            </a>
+
+            <!-- 8. Logs d'Activités -->
+            <a href="#activity-logs" class="block bg-blue-50 border-2 border-dashed border-blue-400 rounded-lg p-5 hover:shadow-lg transition-all cursor-pointer">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-3xl">📊</span>
+                    <h3 class="text-base font-bold text-gray-800">Logs d'Activités</h3>
+                </div>
+                <p class="text-sm text-gray-600">Consulter l'historique des actions utilisateurs</p>
+            </a>
+
+            <!-- 9. Vider les Caches -->
+            <a href="#cache" class="block bg-yellow-50 border-2 border-dashed border-yellow-400 rounded-lg p-5 hover:shadow-lg transition-all cursor-pointer">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="text-3xl">🧹</span>
+                    <h3 class="text-base font-bold text-gray-800">Vider les Caches</h3>
+                </div>
+                <p class="text-sm text-gray-600">Nettoyer le cache système pour améliorer les performances</p>
+            </a>
+
+        </div>
+
         <!-- Configuration API Keys -->
-        <div class="section-blue p-8 mb-8">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="text-4xl">🔑</span>
-                <h2 class="text-2xl font-bold text-gray-800">Clés API et Configuration</h2>
+        <div id="api-keys" class="section-blue p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-3xl">🔑</span>
+                <h2 class="text-xl font-bold text-gray-800">Clés API et Configuration</h2>
             </div>
             
-            <form method="POST" action="{{ url_for('admin.save_settings') }}" class="space-y-6">
+            <form method="POST" action="{{ url_for('admin.save_settings') }}" class="space-y-4">
                 <!-- SendGrid Configuration -->
-                <div class="bg-white p-6 rounded-lg border-2 {% if config.sendgrid %}border-green-300{% else %}border-orange-300{% endif %}">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <span class="text-3xl">📧</span>
-                            <h3 class="text-lg font-bold text-gray-800">SendGrid API Key</h3>
+                <div class="bg-white p-4 rounded-lg border-2 {% if config.sendgrid %}border-green-300{% else %}border-orange-300{% endif %}">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">📧</span>
+                            <h3 class="text-base font-bold text-gray-800">SendGrid API Key</h3>
                         </div>
-                        <span class="px-3 py-1 rounded-full text-sm font-semibold {% if config.sendgrid %}bg-green-100 text-green-700{% else %}bg-orange-100 text-orange-700{% endif %}">
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold {% if config.sendgrid %}bg-green-100 text-green-700{% else %}bg-orange-100 text-orange-700{% endif %}">
                             {% if config.sendgrid %}✅ Configuré{% else %}⚠️ Non configuré{% endif %}
                         </span>
                     </div>
-                    <p class="text-gray-600 text-sm mb-4">Clé API pour l'envoi automatique des emails (confirmation, identifiants)</p>
+                    <p class="text-gray-600 text-xs mb-3">Clé API pour l'envoi automatique des emails (confirmation, identifiants)</p>
                     <input type="password" 
                            name="sendgrid_api_key" 
                            value="{{ config.sendgrid_key_masked }}" 
                            placeholder="SG.xxxxxxxxxxxxxxxxxxxxxxxxx"
-                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm">
+                           class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm">
                     <p class="text-xs text-gray-500 mt-2">💡 Obtenez votre clé sur <a href="https://sendgrid.com" target="_blank" class="text-blue-600 hover:underline">sendgrid.com</a></p>
                 </div>
 
                 <!-- OpenRouter Configuration -->
-                <div class="bg-white p-6 rounded-lg border-2 {% if config.openrouter %}border-green-300{% else %}border-orange-300{% endif %}">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <span class="text-3xl">🤖</span>
-                            <h3 class="text-lg font-bold text-gray-800">OpenRouter API Key</h3>
+                <div class="bg-white p-4 rounded-lg border-2 {% if config.openrouter %}border-green-300{% else %}border-orange-300{% endif %}">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">🤖</span>
+                            <h3 class="text-base font-bold text-gray-800">OpenRouter API Key</h3>
                         </div>
-                        <span class="px-3 py-1 rounded-full text-sm font-semibold {% if config.openrouter %}bg-green-100 text-green-700{% else %}bg-orange-100 text-orange-700{% endif %}">
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold {% if config.openrouter %}bg-green-100 text-green-700{% else %}bg-orange-100 text-orange-700{% endif %}">
                             {% if config.openrouter %}✅ Configuré{% else %}⚠️ Non configuré{% endif %}
                         </span>
                     </div>
-                    <p class="text-gray-600 text-sm mb-4">Clé API pour l'analyse intelligente des CV par IA</p>
+                    <p class="text-gray-600 text-xs mb-3">Clé API pour l'analyse intelligente des CV par IA</p>
                     <input type="password" 
                            name="openrouter_api_key" 
                            value="{{ config.openrouter_key_masked }}" 
                            placeholder="sk-or-v1-xxxxxxxxxxxxxxxxxxxxxxxx"
-                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm">
+                           class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-sm">
                     <p class="text-xs text-gray-500 mt-2">💡 Obtenez votre clé sur <a href="https://openrouter.ai" target="_blank" class="text-blue-600 hover:underline">openrouter.ai</a></p>
                 </div>
 
                 <!-- Email Configuration -->
-                <div class="bg-white p-6 rounded-lg border-2 border-blue-300">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="text-3xl">✉️</span>
-                        <h3 class="text-lg font-bold text-gray-800">Email Expéditeur</h3>
+                <div class="bg-white p-4 rounded-lg border-2 border-blue-300">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="text-2xl">✉️</span>
+                        <h3 class="text-base font-bold text-gray-800">Email Expéditeur</h3>
                     </div>
-                    <p class="text-gray-600 text-sm mb-4">Adresse email qui apparaîtra comme expéditeur des emails automatiques</p>
+                    <p class="text-gray-600 text-xs mb-3">Adresse email qui apparaîtra comme expéditeur des emails automatiques</p>
                     <input type="email" 
                            name="sender_email" 
                            value="{{ config.sendgrid_from }}" 
                            placeholder="noreply@myoneart.com"
-                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
                 </div>
 
                 <!-- Save Button -->
                 <div class="flex justify-end">
-                    <button type="submit" class="px-8 py-3 bg-white text-blue-600 font-bold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all">
+                    <button type="submit" class="px-6 py-2 bg-white text-blue-600 font-bold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all text-sm">
                         Enregistrer les paramètres
                     </button>
                 </div>
@@ -95,43 +181,43 @@
         </div>
 
         <!-- Email Test Section -->
-        <div class="section-green p-8 mb-8">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="text-4xl">📮</span>
-                <h2 class="text-2xl font-bold text-gray-800">Test d'envoi d'email</h2>
+        <div id="email-test" class="section-green p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-3xl">📮</span>
+                <h2 class="text-xl font-bold text-gray-800">Test d'envoi d'email</h2>
             </div>
             
-            <p class="text-gray-600 mb-4">Testez la configuration SendGrid en envoyant un email de test</p>
+            <p class="text-gray-600 mb-3 text-sm">Testez la configuration SendGrid en envoyant un email de test</p>
             
-            <form method="POST" action="{{ url_for('admin.test_email') }}" class="space-y-4">
+            <form method="POST" action="{{ url_for('admin.test_email') }}" class="space-y-3">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Email destinataire</label>
+                    <label class="block text-xs font-semibold text-gray-700 mb-2">Email destinataire</label>
                     <input type="email" 
                            name="test_email" 
                            placeholder="votre.email@exemple.com"
                            required
-                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                           class="w-full px-3 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm">
                 </div>
                 <button type="submit" 
                         {% if not config.sendgrid %}disabled{% endif %}
-                        class="px-6 py-3 {% if config.sendgrid %}bg-white text-green-600 border-2 border-green-600 hover:bg-green-50{% else %}bg-gray-100 text-gray-400 border-2 border-gray-300 cursor-not-allowed{% endif %} font-bold rounded-lg transition-all">
+                        class="px-5 py-2 {% if config.sendgrid %}bg-white text-green-600 border-2 border-green-600 hover:bg-green-50{% else %}bg-gray-100 text-gray-400 border-2 border-gray-300 cursor-not-allowed{% endif %} font-bold rounded-lg transition-all text-sm">
                     Envoyer un email de test
                 </button>
                 {% if not config.sendgrid %}
-                <p class="text-sm text-orange-600">⚠️ Configurez d'abord la clé SendGrid API ci-dessus pour activer cette fonctionnalité</p>
+                <p class="text-xs text-orange-600">⚠️ Configurez d'abord la clé SendGrid API ci-dessus pour activer cette fonctionnalité</p>
                 {% endif %}
             </form>
         </div>
 
         <!-- Administrateurs -->
-        <div class="section-purple p-8 mb-8">
-            <div class="flex items-center justify-between mb-6">
+        <div id="users" class="section-purple p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-3">
-                    <span class="text-4xl">👥</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Utilisateurs Administrateurs</h2>
+                    <span class="text-3xl">👥</span>
+                    <h2 class="text-xl font-bold text-gray-800">Utilisateurs Administrateurs</h2>
                 </div>
                 <a href="{{ url_for('admin.create_admin_user') }}" 
-                   class="px-6 py-3 bg-white text-purple-600 font-bold rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition-all">
+                   class="px-4 py-2 bg-white text-purple-600 font-bold rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition-all text-sm">
                     Créer un nouvel admin
                 </a>
             </div>
@@ -140,44 +226,44 @@
                 <table class="min-w-full divide-y divide-purple-200">
                     <thead class="bg-purple-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Nom complet</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Email</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Code unique</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date de création</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Nom complet</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Email</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Code unique</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Date de création</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-purple-100">
                         {% for admin in admin_users %}
                         <tr class="hover:bg-purple-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-4 py-3 whitespace-nowrap">
                                 <div class="flex items-center">
                                     {% if admin.photo_filename %}
                                     <img src="{{ url_for('static', filename='uploads/photos/' + admin.photo_filename) }}" 
                                          alt="{{ admin.full_name }}" 
-                                         class="w-10 h-10 rounded-full mr-3 object-cover border-2 border-purple-300">
+                                         class="w-8 h-8 rounded-full mr-2 object-cover border-2 border-purple-300">
                                     {% else %}
-                                    <div class="w-10 h-10 rounded-full mr-3 bg-purple-500 flex items-center justify-center text-white text-sm font-bold border-2 border-purple-300">
+                                    <div class="w-8 h-8 rounded-full mr-2 bg-purple-500 flex items-center justify-center text-white text-xs font-bold border-2 border-purple-300">
                                         {{ admin.first_name[0] if admin.first_name else '?' }}{{ admin.last_name[0] if admin.last_name else '?' }}
                                     </div>
                                     {% endif %}
                                     <div>
-                                        <div class="text-sm font-medium text-gray-900">{{ admin.full_name }}</div>
+                                        <div class="text-xs font-medium text-gray-900">{{ admin.full_name }}</div>
                                         {% if admin.id == current_user.id %}
                                         <div class="text-xs text-purple-600 font-semibold">Vous</div>
                                         {% endif %}
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ admin.email }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600">{{ admin.formatted_code }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ admin.created_at.strftime('%d/%m/%Y') }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <td class="px-4 py-3 whitespace-nowrap text-xs text-gray-700">{{ admin.email }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-xs font-mono text-gray-600">{{ admin.formatted_code }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-xs text-gray-600">{{ admin.created_at.strftime('%d/%m/%Y') }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-xs">
                                 {% if admin.id != current_user.id and admin_users|length > 1 %}
                                 <form method="POST" action="{{ url_for('admin.demote_admin', user_id=admin.id) }}" 
                                       onsubmit="return confirm('Êtes-vous sûr de vouloir retirer les droits administrateur à {{ admin.full_name }} ?');" 
                                       class="inline">
-                                    <button type="submit" class="px-3 py-1 bg-red-100 text-red-700 rounded border border-red-300 hover:bg-red-200 transition-all text-xs font-semibold">
+                                    <button type="submit" class="px-2 py-1 bg-red-100 text-red-700 rounded border border-red-300 hover:bg-red-200 transition-all text-xs font-semibold">
                                         Retirer admin
                                     </button>
                                 </form>
@@ -192,22 +278,22 @@
             </div>
 
             <!-- Promote existing user -->
-            <div class="mt-6 bg-purple-50 p-6 rounded-lg border-2 border-purple-300">
-                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <div class="mt-4 bg-purple-50 p-4 rounded-lg border-2 border-purple-300">
+                <h3 class="text-base font-bold text-gray-800 mb-3 flex items-center gap-2">
                     <span>⬆️</span>
                     <span>Promouvoir un utilisateur existant en administrateur</span>
                 </h3>
-                <p class="text-sm text-gray-600 mb-4">Sélectionnez un utilisateur existant dans la liste pour lui donner les droits administrateur.</p>
+                <p class="text-xs text-gray-600 mb-3">Sélectionnez un utilisateur existant dans la liste pour lui donner les droits administrateur.</p>
                 
                 <form method="POST" action="#" id="promote-form" onsubmit="return confirmPromotion();">
-                    <div class="flex gap-3">
-                        <select name="user_id" id="user-select" class="flex-1 px-4 py-2 border-2 border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" required>
+                    <div class="flex gap-2">
+                        <select name="user_id" id="user-select" class="flex-1 px-3 py-2 border-2 border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" required>
                             <option value="">-- Sélectionnez un utilisateur --</option>
                         </select>
-                        <button type="button" onclick="loadNonAdminUsers()" class="px-4 py-2 bg-white text-blue-600 font-semibold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all">
+                        <button type="button" onclick="loadNonAdminUsers()" class="px-3 py-2 bg-white text-blue-600 font-semibold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all text-sm">
                             Charger les utilisateurs
                         </button>
-                        <button type="submit" class="px-6 py-2 bg-white text-purple-600 font-semibold rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition-all">
+                        <button type="submit" class="px-5 py-2 bg-white text-purple-600 font-semibold rounded-lg border-2 border-purple-600 hover:bg-purple-50 transition-all text-sm">
                             Promouvoir
                         </button>
                     </div>
@@ -271,59 +357,59 @@
         </div>
 
         <!-- GitHub Update Section -->
-        <div class="section-cyan p-8 mb-8">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="text-4xl">🔄</span>
-                <h2 class="text-2xl font-bold text-gray-800">Mise à jour depuis GitHub</h2>
+        <div id="updates" class="section-cyan p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-3xl">🔄</span>
+                <h2 class="text-xl font-bold text-gray-800">Mise à jour depuis GitHub</h2>
             </div>
             
             {% if git_info.git_available %}
                 <!-- Git Status -->
-                <div class="bg-white p-6 rounded-lg border-2 border-cyan-300 mb-4">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <div class="bg-white p-4 rounded-lg border-2 border-cyan-300 mb-3">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
                             <span>📦</span>
                             <span>État du repository</span>
                         </h3>
                         {% if git_info.has_updates %}
-                        <span class="px-3 py-1 rounded-full text-sm font-semibold bg-orange-100 text-orange-700">
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-700">
                             ⚠️ {{ git_info.update_count }} mise(s) à jour disponible(s)
                         </span>
                         {% else %}
-                        <span class="px-3 py-1 rounded-full text-sm font-semibold bg-green-100 text-green-700">
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
                             ✅ À jour
                         </span>
                         {% endif %}
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="grid grid-cols-2 gap-3 mb-3">
                         <div>
-                            <p class="text-sm text-gray-600">Branche actuelle</p>
-                            <p class="font-mono text-sm font-semibold text-gray-800">{{ git_info.current_branch }}</p>
+                            <p class="text-xs text-gray-600">Branche actuelle</p>
+                            <p class="font-mono text-xs font-semibold text-gray-800">{{ git_info.current_branch }}</p>
                         </div>
                         <div>
-                            <p class="text-sm text-gray-600">Commit actuel</p>
-                            <p class="font-mono text-sm font-semibold text-gray-800">{{ git_info.current_commit }}</p>
+                            <p class="text-xs text-gray-600">Commit actuel</p>
+                            <p class="font-mono text-xs font-semibold text-gray-800">{{ git_info.current_commit }}</p>
                         </div>
                     </div>
                     
-                    <div class="mb-4">
-                        <p class="text-sm text-gray-600 mb-1">Repository distant</p>
+                    <div class="mb-3">
+                        <p class="text-xs text-gray-600 mb-1">Repository distant</p>
                         <p class="font-mono text-xs text-gray-700 break-all bg-gray-50 p-2 rounded">{{ git_info.remote_url }}</p>
                     </div>
                     
-                    <div class="flex gap-3">
+                    <div class="flex gap-2">
                         <form method="POST" action="{{ url_for('admin.perform_update') }}" class="inline" 
                               onsubmit="return confirm('⚠️ Cette action va mettre à jour l\'application depuis GitHub, installer les dépendances et exécuter les migrations. L\'application redémarrera. Continuer ?');">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <button type="submit" 
                                     {% if not git_info.has_updates %}disabled{% endif %}
-                                    class="px-6 py-3 {% if git_info.has_updates %}bg-white text-cyan-600 border-2 border-cyan-600 hover:bg-cyan-50{% else %}bg-gray-100 text-gray-400 border-2 border-gray-300 cursor-not-allowed{% endif %} font-bold rounded-lg transition-all">
+                                    class="px-5 py-2 {% if git_info.has_updates %}bg-white text-cyan-600 border-2 border-cyan-600 hover:bg-cyan-50{% else %}bg-gray-100 text-gray-400 border-2 border-gray-300 cursor-not-allowed{% endif %} font-bold rounded-lg transition-all text-sm">
                                 Mettre à jour maintenant
                             </button>
                         </form>
                         <button onclick="checkForUpdates()" 
-                                class="px-6 py-3 bg-white text-blue-600 font-bold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all">
+                                class="px-5 py-2 bg-white text-blue-600 font-bold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all text-sm">
                             Vérifier les mises à jour
                         </button>
                     </div>
@@ -331,17 +417,17 @@
 
                 <!-- Recent Commits -->
                 {% if git_info.recent_commits %}
-                <div class="bg-white p-6 rounded-lg border-2 border-cyan-300 mb-4">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <div class="bg-white p-4 rounded-lg border-2 border-cyan-300 mb-3">
+                    <h3 class="text-base font-bold text-gray-800 mb-3 flex items-center gap-2">
                         <span>📝</span>
                         <span>Commits récents</span>
                     </h3>
                     <div class="space-y-2">
                         {% for commit in git_info.recent_commits %}
-                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <div class="bg-gray-50 p-2 rounded-lg border border-gray-200">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
-                                    <p class="text-sm font-semibold text-gray-800">{{ commit.message }}</p>
+                                    <p class="text-xs font-semibold text-gray-800">{{ commit.message }}</p>
                                     <p class="text-xs text-gray-600 mt-1">
                                         <span class="font-mono">{{ commit.hash }}</span> • 
                                         {{ commit.author }} • 
@@ -357,15 +443,15 @@
 
                 <!-- Update History -->
                 {% if update_history %}
-                <div class="bg-white p-6 rounded-lg border-2 border-cyan-300">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <div class="bg-white p-4 rounded-lg border-2 border-cyan-300">
+                    <h3 class="text-base font-bold text-gray-800 mb-3 flex items-center gap-2">
                         <span>📜</span>
                         <span>Historique des mises à jour</span>
                     </h3>
                     <div class="space-y-2">
                         {% for update in update_history|reverse %}
-                        <div class="bg-gray-50 p-3 rounded-lg border {% if update.success %}border-green-200{% else %}border-red-200{% endif %}">
-                            <div class="flex items-center justify-between mb-2">
+                        <div class="bg-gray-50 p-2 rounded-lg border {% if update.success %}border-green-200{% else %}border-red-200{% endif %}">
+                            <div class="flex items-center justify-between mb-1">
                                 <span class="text-xs font-mono text-gray-600">{{ update.timestamp[:19] }}</span>
                                 <span class="px-2 py-1 rounded text-xs font-semibold {% if update.success %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
                                     {% if update.success %}✅ Succès{% else %}❌ Échec{% endif %}
@@ -397,234 +483,62 @@
                         })
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error('Erreur HTTP: ' + response.status);
+                                throw new Error('Network response was not ok');
                             }
                             return response.json();
                         })
                         .then(data => {
-                            if (data.error) {
-                                alert('Erreur: ' + data.error);
+                            if (data.success) {
+                                alert('✅ Vérification terminée. Rechargement de la page...');
+                                location.reload();
                             } else {
-                                if (data.has_updates) {
-                                    alert(`✅ ${data.count} mise(s) à jour disponible(s)! Rechargez la page pour voir les détails.`);
-                                    location.reload();
-                                } else {
-                                    alert('✅ Aucune mise à jour disponible. Vous êtes à jour!');
-                                }
+                                alert('❌ Erreur: ' + (data.message || 'Impossible de vérifier les mises à jour'));
                             }
                         })
                         .catch(error => {
-                            alert('Erreur lors de la vérification: ' + error);
+                            console.error('Error:', error);
+                            alert('❌ Une erreur est survenue lors de la vérification des mises à jour');
                         });
                     }
                 </script>
             {% else %}
-                <div class="bg-orange-50 p-6 rounded-lg border-2 border-orange-300">
-                    <p class="text-orange-800 font-semibold mb-2">⚠️ Git n'est pas disponible sur ce système</p>
-                    <p class="text-sm text-orange-700">La fonctionnalité de mise à jour automatique depuis GitHub nécessite Git.</p>
+                <div class="bg-white p-4 rounded-lg border-2 border-orange-300">
+                    <p class="text-orange-600 text-sm">⚠️ Git n'est pas disponible sur ce système. Les mises à jour automatiques sont désactivées.</p>
                 </div>
             {% endif %}
         </div>
 
-        <!-- Database Info -->
-        <div class="section-pink p-8 mb-8">
-            <!-- Bloc avec bordure pointillée -->
-            <div class="bg-white p-6 rounded-lg border-2 border-dotted border-pink-500">
-                
-                <!-- Titre avec icône DANS le bloc -->
-                <div class="flex items-center gap-3 mb-6">
-                    <span class="text-4xl">🗄️</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Base de données</h2>
-                </div>
-                
-                <!-- Connection Status -->
-                <div class="mb-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-gray-800">État de la connexion</h3>
-                        <span class="px-3 py-1 rounded-full text-sm font-semibold {% if db_diagnostics.connection_status %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
-                            {% if db_diagnostics.connection_status %}Connecté{% else %}Déconnecté{% endif %}
-                        </span>
-                    </div>
-                    <div class="space-y-2 text-sm">
-                        <p class="text-gray-700"><strong>Type :</strong> {{ db_diagnostics.connection.type }}</p>
-                        <p class="text-gray-700 font-mono text-xs break-all"><strong>URI :</strong> {{ db_diagnostics.connection.uri_masked }}</p>
-                    </div>
-                </div>
-
-                <!-- Séparateur -->
-                <div class="border-t border-gray-200 my-6"></div>
-
-                <!-- Database Statistics -->
-                <div class="mb-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Statistiques</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                            <p class="text-xs text-gray-600 mb-1">Utilisateurs</p>
-                            <p class="text-2xl font-bold text-blue-600">{{ db_diagnostics.table_stats.users }}</p>
-                            <p class="text-xs text-gray-500 mt-1">{{ db_diagnostics.table_stats.users_active }} actifs</p>
-                        </div>
-                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200">
-                            <p class="text-xs text-gray-600 mb-1">Administrateurs</p>
-                            <p class="text-2xl font-bold text-purple-600">{{ db_diagnostics.table_stats.users_admin }}</p>
-                        </div>
-                        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-                            <p class="text-xs text-gray-600 mb-1">Talents</p>
-                            <p class="text-2xl font-bold text-green-600">{{ db_diagnostics.table_stats.talents }}</p>
-                        </div>
-                        <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                            <p class="text-xs text-gray-600 mb-1">Pays / Villes</p>
-                            <p class="text-2xl font-bold text-orange-600">{{ db_diagnostics.table_stats.countries }} / {{ db_diagnostics.table_stats.cities }}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-4 pt-4 border-t border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="text-sm text-gray-700"><strong>Taille de la base :</strong> {{ db_diagnostics.size }}</p>
-                                <p class="text-sm text-gray-700"><strong>Dernière migration :</strong> <span class="font-mono">{{ db_diagnostics.last_migration }}</span></p>
-                            </div>
-                            <div class="text-xs text-gray-500">
-                                <p>{{ db_diagnostics.table_stats.user_talents }} associations talents</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Séparateur -->
-                <div class="border-t border-gray-200 my-6"></div>
-
-                <!-- Tables List -->
-                <div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Tables ({{ db_diagnostics.tables|length }})</h3>
-                    <div class="flex flex-wrap gap-2">
-                        {% for table in db_diagnostics.tables %}
-                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-mono border border-gray-300">{{ table }}</span>
-                        {% endfor %}
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-
-        <!-- Backup & Restore Section -->
-        <div class="section-orange p-8 mb-8">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="text-4xl">💾</span>
-                <h2 class="text-2xl font-bold text-gray-800">Sauvegarde & Restauration</h2>
+        <!-- Database Diagnostics -->
+        <div id="database" class="section-emerald p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-3xl">🗄️</span>
+                <h2 class="text-xl font-bold text-gray-800">Diagnostics Base de Données</h2>
             </div>
             
-            <div class="bg-white p-6 rounded-lg border-2 border-orange-300">
-                <div class="flex items-center gap-3 mb-4">
-                    <span class="text-3xl">📦</span>
-                    <h3 class="text-lg font-bold text-gray-800">Exporter les données</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="bg-white p-3 rounded-lg border-2 border-emerald-300">
+                    <p class="text-xs text-gray-600">Type de base de données</p>
+                    <p class="text-sm font-bold text-gray-800">{{ config.database_type }}</p>
                 </div>
-                <p class="text-gray-600 text-sm mb-4">
-                    Téléchargez une copie complète de tous les profils utilisateurs pour créer une sauvegarde de vos données. Utilisez ces exports pour archiver vos données ou les analyser hors ligne.
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                    <a href="{{ url_for('admin.export_excel') }}" 
-                       class="px-6 py-3 bg-white text-green-600 font-bold rounded-lg border-2 border-green-600 hover:bg-green-50 transition-all text-center">
-                        Excel
-                    </a>
-                    <a href="{{ url_for('admin.export_csv') }}" 
-                       class="px-6 py-3 bg-white text-blue-600 font-bold rounded-lg border-2 border-blue-600 hover:bg-blue-50 transition-all text-center">
-                        CSV
-                    </a>
-                    <a href="{{ url_for('admin.export_pdf') }}" 
-                       class="px-6 py-3 bg-white text-red-600 font-bold rounded-lg border-2 border-red-600 hover:bg-red-50 transition-all text-center">
-                        PDF
-                    </a>
-                </div>
-                <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                    <p class="text-blue-800 font-semibold mb-2">💡 Conseil de sauvegarde</p>
-                    <p class="text-sm text-blue-700">
-                        Il est recommandé de télécharger vos données au format Excel ou CSV régulièrement (hebdomadaire ou mensuelle) pour protéger vos informations. Ces fichiers peuvent être ouverts dans Excel, Google Sheets ou tout autre tableur.
+                
+                <div class="bg-white p-3 rounded-lg border-2 border-emerald-300">
+                    <p class="text-xs text-gray-600">État</p>
+                    <p class="text-sm font-bold {% if db_diagnostics.connection_ok %}text-green-600{% else %}text-red-600{% endif %}">
+                        {% if db_diagnostics.connection_ok %}✅ Connectée{% else %}❌ Déconnectée{% endif %}
                     </p>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-lg border-2 border-orange-300 mt-6">
-                <div class="flex items-center gap-3 mb-4">
-                    <span class="text-3xl">⬆️</span>
-                    <h3 class="text-lg font-bold text-gray-800">Importer des données</h3>
-                </div>
-                <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                    <p class="text-orange-800 font-semibold mb-2">⚠️ Fonctionnalité en développement</p>
-                    <p class="text-sm text-orange-700 mb-3">
-                        L'importation automatique de données depuis Excel ou CSV sera disponible dans une future mise à jour.
-                    </p>
-                    <p class="text-sm text-orange-700">
-                        Pour importer des données actuellement : utilisez le formulaire d'inscription pour ajouter de nouveaux profils, ou contactez un administrateur système pour une importation en masse via la base de données.
-                    </p>
+            {% if db_diagnostics.tables %}
+            <div class="mt-3 bg-white p-4 rounded-lg border-2 border-emerald-300">
+                <h3 class="text-base font-bold text-gray-800 mb-2">Tables ({{ db_diagnostics.tables|length }})</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    {% for table in db_diagnostics.tables %}
+                    <div class="text-xs bg-emerald-50 px-2 py-1 rounded border border-emerald-200">{{ table }}</div>
+                    {% endfor %}
                 </div>
             </div>
-
-            <!-- Sauvegarde Complète -->
-            <div class="bg-white p-6 rounded-lg border-2 border-dotted border-green-500 mt-6">
-                <h3 class="text-lg font-bold text-gray-800 mb-4">Sauvegarde Complète de l'Application</h3>
-                <p class="text-gray-600 text-sm mb-4">
-                    Créez une sauvegarde complète incluant tous les profils (avec données décryptées), fichiers uploadés, configuration et base de données. Cette sauvegarde peut être utilisée pour restaurer l'application sur une nouvelle instance.
-                </p>
-                <form method="POST" action="{{ url_for('admin.create_backup') }}">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <button type="submit" 
-                            class="w-full px-6 py-3 bg-white text-green-600 font-bold rounded-lg border-2 border-green-600 hover:bg-green-50 transition-all">
-                        Créer une sauvegarde complète (ZIP)
-                    </button>
-                </form>
-                <div class="bg-green-50 p-4 rounded-lg border border-green-200 mt-4">
-                    <p class="text-green-800 font-semibold mb-2">Contenu de la sauvegarde</p>
-                    <ul class="text-sm text-green-700 space-y-1">
-                        <li>• Tous les profils utilisateurs (données décryptées)</li>
-                        <li>• Fichiers uploadés (photos, CVs, QR codes)</li>
-                        <li>• Configuration de l'application</li>
-                        <li>• Base de données complète</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Restauration Complète -->
-            <div class="bg-white p-6 rounded-lg border-2 border-dotted border-red-500 mt-6">
-                <h3 class="text-lg font-bold text-gray-800 mb-4">Restauration Complète</h3>
-                <p class="text-gray-600 text-sm mb-4">
-                    Restaurez l'application depuis un fichier de sauvegarde ZIP. <strong class="text-red-600">Attention : Cette action remplacera TOUTES les données actuelles !</strong>
-                </p>
-                <form method="POST" action="{{ url_for('admin.restore_backup') }}" enctype="multipart/form-data"
-                      onsubmit="return confirm('ATTENTION\n\nCette action va REMPLACER toutes les données actuelles par celles du fichier de sauvegarde.\n\n• Tous les utilisateurs actuels seront supprimés\n• Tous les fichiers actuels seront remplacés\n• Toute la configuration actuelle sera remplacée\n\nÊtes-vous ABSOLUMENT SÛR de vouloir continuer ?');">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                Fichier de sauvegarde (ZIP)
-                            </label>
-                            <input type="file" 
-                                   name="backup_file" 
-                                   accept=".zip"
-                                   required
-                                   id="backup_file_input"
-                                   class="block w-full text-sm text-gray-700 file:mr-4 file:py-3 file:px-6 file:rounded-lg file:border-2 file:border-blue-600 file:text-sm file:font-bold file:bg-white file:text-blue-600 hover:file:bg-blue-50 file:cursor-pointer border-2 border-gray-300 rounded-lg cursor-pointer bg-white hover:bg-gray-50 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        <button type="submit" 
-                                class="w-full px-6 py-3 bg-white text-red-600 font-bold rounded-lg border-2 border-red-600 hover:bg-red-50 transition-all">
-                            Restaurer depuis la sauvegarde
-                        </button>
-                    </div>
-                </form>
-                <div class="bg-red-50 p-4 rounded-lg border border-red-200 mt-4">
-                    <p class="text-red-800 font-semibold mb-2">Avertissement important</p>
-                    <p class="text-sm text-red-700">
-                        La restauration est une opération irréversible. Assurez-vous d'avoir créé une sauvegarde de vos données actuelles avant de procéder à une restauration.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bouton Retour -->
-        <div class="mb-6">
-            <a href="{{ url_for('main.index') }}" 
-               class="px-6 py-3 bg-white text-gray-700 font-bold rounded-lg border-2 border-gray-600 hover:bg-gray-50 transition-all">
-                Retour au Dashboard
-            </a>
+            {% endif %}
         </div>
 
     </div>
