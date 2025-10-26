@@ -627,6 +627,187 @@ Le système détecte automatiquement les changements de schéma au démarrage :
 
 ---
 
+## 🚀 Déploiement sur VPS
+
+### Script de Déploiement Automatisé
+
+Un script Bash complet (`deploy_vps.sh`) est fourni pour automatiser le déploiement sur VPS.
+
+#### Prérequis VPS
+- Ubuntu 20.04/22.04 ou Debian 11/12
+- Python 3.11+
+- PostgreSQL 14+ (ou utiliser SQLite)
+- Git (optionnel, pour mises à jour automatiques)
+- Accès sudo pour configuration Nginx/Systemd
+
+#### Utilisation Rapide
+
+```bash
+# 1. Rendre le script exécutable
+chmod +x deploy_vps.sh
+
+# 2. (Optionnel) Configurer le dépôt Git
+export GIT_REPO_URL="https://github.com/votre-compte/talentsmaroc.git"
+export GIT_BRANCH="main"  # ou "production"
+
+# 3. Lancer le déploiement
+./deploy_vps.sh
+```
+
+#### Fonctionnalités du Script
+
+Le script effectue automatiquement :
+
+1. **Sauvegarde Automatique**
+   - Dump PostgreSQL complet (inclus dans l'archive)
+   - Tous les fichiers uploads (photos, CVs, QR codes)
+   - Fichier .env (configuration)
+   - Archive compressée avec horodatage
+
+2. **Mise à Jour du Code**
+   - Git pull depuis le dépôt distant (si configuré)
+   - Ou utilisation des fichiers locaux
+   - Gestion intelligente des conflits
+
+3. **Configuration Python**
+   - Création/activation de l'environnement virtuel
+   - Installation de toutes les dépendances
+   - Mise à jour de pip
+
+4. **Base de Données**
+   - Exécution des migrations
+   - Initialisation des données de démonstration
+   - Création des répertoires nécessaires
+
+5. **Service Systemd** (optionnel)
+   - Configuration du service auto-démarrage
+   - Intégration avec Gunicorn
+   - Gestion des logs
+
+6. **Nginx Reverse Proxy** (optionnel)
+   - Configuration complète
+   - Support SSL/HTTPS (via Certbot)
+   - Optimisations de performance
+
+#### Variables d'Environnement
+
+Le script supporte les variables suivantes :
+
+| Variable | Description | Défaut |
+|----------|-------------|--------|
+| `GIT_REPO_URL` | URL du dépôt Git | (aucun - fichiers locaux) |
+| `GIT_BRANCH` | Branche à déployer | `main` |
+
+#### Exemple de Déploiement Complet
+
+```bash
+# Configuration
+export GIT_REPO_URL="https://github.com/mycompany/talentsmaroc.git"
+export GIT_BRANCH="production"
+
+# Lancer le déploiement
+./deploy_vps.sh
+
+# Le script vous guidera à travers :
+# 1. Sauvegarde de l'existant
+# 2. Mise à jour du code
+# 3. Installation des dépendances
+# 4. Migrations de base de données
+# 5. Configuration Systemd (optionnel)
+# 6. Configuration Nginx (optionnel)
+# 7. Démarrage de l'application
+```
+
+#### Commandes Systemd (après installation)
+
+```bash
+# Démarrer l'application
+sudo systemctl start talentsmaroc
+
+# Arrêter l'application
+sudo systemctl stop talentsmaroc
+
+# Redémarrer l'application
+sudo systemctl restart talentsmaroc
+
+# Voir le statut
+sudo systemctl status talentsmaroc
+
+# Voir les logs en temps réel
+sudo journalctl -u talentsmaroc -f
+```
+
+#### Configuration SSL avec Let's Encrypt
+
+Après avoir configuré Nginx, installez un certificat SSL gratuit :
+
+```bash
+# Installer Certbot
+sudo apt install certbot python3-certbot-nginx -y
+
+# Obtenir et installer le certificat
+sudo certbot --nginx -d votre-domaine.com -d www.votre-domaine.com
+
+# Le renouvellement est automatique
+```
+
+#### Sauvegardes et Restauration
+
+**Créer une sauvegarde manuelle** :
+```bash
+./deploy_vps.sh
+# Choisir "Ne pas démarrer" à la fin
+# La sauvegarde sera dans backups/backup_YYYYMMDD_HHMMSS.tar.gz
+```
+
+**Restaurer une sauvegarde** :
+```bash
+# 1. Extraire l'archive
+cd backups
+tar -xzf backup_20241026_143000.tar.gz
+
+# 2. Restaurer la base de données
+psql $DATABASE_URL < db_20241026_143000.sql
+
+# 3. Restaurer les fichiers uploads
+cp -r app/static/uploads/* ../app/static/uploads/
+
+# 4. Redémarrer l'application
+sudo systemctl restart talentsmaroc
+```
+
+#### Dépannage
+
+**Le port 5000 est déjà utilisé** :
+```bash
+# Trouver le processus
+lsof -i :5000
+
+# Arrêter le processus
+sudo kill -9 <PID>
+```
+
+**Erreur de connexion PostgreSQL** :
+```bash
+# Vérifier le service PostgreSQL
+sudo systemctl status postgresql
+
+# Vérifier DATABASE_URL dans .env
+cat .env | grep DATABASE_URL
+```
+
+**Les modifications ne s'appliquent pas** :
+```bash
+# Forcer le redémarrage
+sudo systemctl stop talentsmaroc
+sudo systemctl start talentsmaroc
+
+# Vérifier les logs
+sudo journalctl -u talentsmaroc -n 100
+```
+
+---
+
 ## 🤝 Support et Contact
 
 ### Assistance Technique

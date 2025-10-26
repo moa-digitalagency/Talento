@@ -4,6 +4,21 @@
 # Script de Déploiement VPS - TalentsMaroc.com
 # Par: MOA Digital Agency LLC - Aisance KALONJI
 # Description: Script automatisé pour déployer l'application sur un VPS
+#
+# UTILISATION:
+#   ./deploy_vps.sh
+#
+# VARIABLES D'ENVIRONNEMENT OPTIONNELLES:
+#   GIT_REPO_URL - URL du dépôt Git (ex: https://github.com/user/talentsmaroc.git)
+#   GIT_BRANCH   - Branche à déployer (défaut: main)
+#
+# EXEMPLE:
+#   export GIT_REPO_URL="https://github.com/myaccount/talentsmaroc.git"
+#   export GIT_BRANCH="production"
+#   ./deploy_vps.sh
+#
+# NOTE: Si les variables ne sont pas définies, le script utilisera les fichiers
+#       locaux sans faire de git pull.
 ###############################################################################
 
 set -e  # Arrêter en cas d'erreur
@@ -38,13 +53,13 @@ print_info() {
     echo -e "${BLUE}ℹ️  $1${NC}"
 }
 
-# Configuration
+# Configuration (peut être surchargée par variables d'environnement)
 APP_DIR="$(pwd)"
 APP_NAME="talentsmaroc"
 VENV_DIR="$APP_DIR/venv"
 BACKUP_DIR="$APP_DIR/backups"
-GIT_REPO_URL="https://github.com/votre-username/talentsmaroc.git"  # À modifier
-BRANCH="main"  # ou "production"
+GIT_REPO_URL="${GIT_REPO_URL:-}"  # Variable d'environnement ou vide si non-git
+BRANCH="${GIT_BRANCH:-main}"
 PYTHON_VERSION="python3.11"
 
 # Vérifier que le script est exécuté depuis le bon répertoire
@@ -64,25 +79,38 @@ if [ -f "$APP_DIR/talento.db" ] || [ ! -z "$DATABASE_URL" ]; then
     
     BACKUP_DATE=$(date +%Y%m%d_%H%M%S)
     BACKUP_FILE="$BACKUP_DIR/backup_$BACKUP_DATE.tar.gz"
+    DB_DUMP_FILE="$BACKUP_DIR/db_$BACKUP_DATE.sql"
     
     print_info "Création de la sauvegarde: $BACKUP_FILE"
     
     # Sauvegarder la base de données et les uploads
     if [ ! -z "$DATABASE_URL" ]; then
         # PostgreSQL backup
-        pg_dump $DATABASE_URL > "$BACKUP_DIR/db_$BACKUP_DATE.sql" 2>/dev/null || true
+        print_info "Sauvegarde de la base de données PostgreSQL..."
+        pg_dump $DATABASE_URL > "$DB_DUMP_FILE" 2>/dev/null && {
+            print_success "Base de données sauvegardée: $DB_DUMP_FILE"
+        } || {
+            print_warning "Impossible de sauvegarder PostgreSQL (pg_dump peut ne pas être installé)"
+            DB_DUMP_FILE=""
+        }
     fi
     
-    # Archiver les fichiers importants
-    tar -czf "$BACKUP_FILE" \
-        --exclude='venv' \
-        --exclude='__pycache__' \
-        --exclude='.git' \
-        --exclude='*.pyc' \
-        "app/static/uploads/" \
-        "*.db" \
-        ".env" \
-        2>/dev/null || true
+    # Archiver les fichiers importants (y compris le dump SQL si créé)
+    BACKUP_FILES=()
+    [ -d "app/static/uploads" ] && BACKUP_FILES+=("app/static/uploads/")
+    [ -f "*.db" ] && BACKUP_FILES+=("*.db")
+    [ -f ".env" ] && BACKUP_FILES+=(".env")
+    [ ! -z "$DB_DUMP_FILE" ] && [ -f "$DB_DUMP_FILE" ] && BACKUP_FILES+=("$DB_DUMP_FILE")
+    
+    if [ ${#BACKUP_FILES[@]} -gt 0 ]; then
+        tar -czf "$BACKUP_FILE" \
+            --exclude='venv' \
+            --exclude='__pycache__' \
+            --exclude='.git' \
+            --exclude='*.pyc' \
+            "${BACKUP_FILES[@]}" \
+            2>/dev/null || true
+    fi
     
     print_success "Sauvegarde créée: $BACKUP_FILE"
 else
@@ -96,33 +124,50 @@ print_header "ÉTAPE 2: Mise à jour du code depuis Git"
 
 # Vérifier si c'est un dépôt Git
 if [ -d ".git" ]; then
-    print_info "Mise à jour depuis Git..."
+    print_info "Dépôt Git détecté. Mise à jour depuis Git..."
     
-    # Sauvegarder les modifications locales (si nécessaire)
-    git stash save "Auto-stash avant déploiement $(date)" || true
+    # Vérifier si un remote est configuré
+    if ! git remote get-url origin &>/dev/null; then
+        if [ -z "$GIT_REPO_URL" ]; then
+            print_warning "Aucun remote Git configuré et GIT_REPO_URL non défini"
+            print_info "Pour configurer Git remote:"
+            echo "  export GIT_REPO_URL='https://github.com/username/talentsmaroc.git'"
+            echo "  git remote add origin \$GIT_REPO_URL"
+            print_info "Passage à l'étape suivante..."
+        else
+            print_info "Configuration du remote origin: $GIT_REPO_URL"
+            git remote add origin "$GIT_REPO_URL"
+        fi
+    fi
     
-    # Récupérer les dernières modifications
-    git fetch origin
-    
-    # Merger ou reset selon votre stratégie
-    print_info "Fusion des modifications..."
-    git pull origin $BRANCH || {
-        print_error "Impossible de récupérer les modifications"
-        print_warning "Tentative de récupération des changements stashés..."
-        git stash pop || true
-        exit 1
-    }
-    
-    # Restaurer les modifications locales si nécessaire
-    # git stash pop || true
-    
-    print_success "Code mis à jour depuis Git"
+    # Si remote configuré, faire le pull
+    if git remote get-url origin &>/dev/null; then
+        # Sauvegarder les modifications locales
+        git stash save "Auto-stash avant déploiement $(date)" 2>/dev/null || true
+        
+        # Récupérer les dernières modifications
+        print_info "Récupération des modifications depuis $BRANCH..."
+        git fetch origin 2>/dev/null || {
+            print_warning "Impossible de fetch depuis le remote"
+        }
+        
+        # Merger
+        git pull origin $BRANCH 2>/dev/null && {
+            print_success "Code mis à jour depuis Git"
+        } || {
+            print_warning "Impossible de pull depuis $BRANCH, peut-être pas de connexion ou remote incorrect"
+            print_info "Continution avec la version locale..."
+        }
+    fi
 else
-    print_warning "Le répertoire n'est pas un dépôt Git"
-    print_info "Pour initialiser Git:"
-    echo "  git init"
-    echo "  git remote add origin $GIT_REPO_URL"
-    echo "  git pull origin $BRANCH"
+    print_info "Pas un dépôt Git - déploiement depuis fichiers locaux"
+    
+    if [ ! -z "$GIT_REPO_URL" ]; then
+        print_info "Pour initialiser un dépôt Git:"
+        echo "  git init"
+        echo "  git remote add origin $GIT_REPO_URL"
+        echo "  git pull origin $BRANCH"
+    fi
 fi
 
 # ============================================================================
