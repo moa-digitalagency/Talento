@@ -88,9 +88,11 @@ TalentsMaroc.com est une application web professionnelle conçue pour centralise
 
 ### 🎯 Codification Unique
 
-- **Codes Standards** : PPVVVNNNNG (10 caractères, ex: MARAB0001N)
-- **Codes CINEMA** : PPVVVNNNNNNNG (12 caractères, ex: MACAS000001F)
-- **Codes Projets** : PRJ-XXX-YYY
+- **Codes Standards** : PPGNNNNVVV (10 caractères, ex: MAM0001RAB) - Incrémentation par pays
+- **Codes CINEMA** : PPVVVNNNNNG (11 caractères, ex: MACAS0001F) - Incrémentation par pays
+- **Codes Projets** : CCIIISSSNNN (10+ caractères, ex: MAABC001001) - Sans tirets
+
+**Distinction** : Les codes CINEMA et standards se distinguent par l'ordre des composants (Ville avant Numéro pour CINEMA, Genre avant Numéro pour standards).
 
 ---
 

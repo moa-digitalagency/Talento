@@ -313,34 +313,41 @@ Base de données pré-remplie avec les principales villes de chaque pays :
 ### 🎯 Système de Codification Unique
 
 #### Codes Utilisateurs Standards
-**Format** : `PPVVVNNNNG` (10 caractères)
+**Format** : `PPGNNNNVVV` (10 caractères)
 - **PP** : Code pays ISO-2 (ex: MA pour Maroc)
-- **VVV** : 3 premières lettres de la ville (ex: RAB pour Rabat)
-- **NNNN** : 4 chiffres aléatoires
 - **G** : Genre (M, F, ou N)
+- **NNNN** : 4 chiffres séquentiels **par pays** (incrémentation globale par pays)
+- **VVV** : 3 premières lettres de la ville (ex: RAB pour Rabat)
 
-**Exemple** : `MARAB0001N`
+**Exemple** : `MAM0001RAB`
+
+**Important** : Le numéro est séquentiel et incrémenté **par pays**, pas par ville:
+- `MAM0001RAB` = 1ère personne au Maroc (de Rabat), genre masculin
+- `MAF0002CAS` = 2ème personne au Maroc (de Casablanca), genre féminin
+- `SNM0001DAK` = 1ère personne au Sénégal (de Dakar), genre masculin
 
 #### Codes CINEMA
-**Format** : `PPVVVNNNNNNNG` (12 caractères)
-- **PP** : Code pays ISO-2
-- **VVV** : 3 premières lettres de la ville
-- **NNNNNN** : 6 chiffres séquentiels **par pays** (pas par ville)
+**Format** : `PPVVVNNNNNG` (11 caractères)
+- **PP** : Code pays ISO-2 (ex: MA pour Maroc)
+- **VVV** : 3 premières lettres de la ville (ex: CAS pour Casablanca)
+- **NNNN** : 4 chiffres séquentiels **par pays** (incrémentation globale par pays)
 - **G** : Genre (M ou F)
 
-**Exemple** : `MACAS000001F` (1ère personne enregistrée au Maroc)
+**Exemple** : `MACAS0001F`
 
-**Important** : Le compteur est global par pays, donc:
-- `MACAS000001F` = 1ère personne au Maroc (Casablanca)
-- `MARAB000002M` = 2ème personne au Maroc (Rabat)
-- `FRPAR000001F` = 1ère personne en France (Paris)
+**Important** : Le compteur est global par pays (identique aux codes standards):
+- `MACAS0001F` = 1ère personne CINEMA au Maroc (de Casablanca)
+- `MARAB0002M` = 2ème personne CINEMA au Maroc (de Rabat)
+- `SNDAG0001F` = 1ère personne CINEMA au Sénégal (de Dakar)
+
+**Distinction** : Les codes CINEMA se distinguent des codes standards par l'ordre des composants (Ville avant Numéro pour CINEMA, Genre avant Numéro pour standards).
 
 #### Codes Projets
-**Format** : `PRJ-XXX-YYY`
+**Format** : `PRJXXXYYY` (9 caractères, pas de tirets)
 - **XXX** : ID du projet (3 chiffres)
 - **YYY** : Numéro d'assignation du talent (3 chiffres)
 
-**Exemple** : `PRJ-001-042` (Projet 1, 42ème talent assigné)
+**Exemple** : `PRJ001042` (Projet 1, 42ème talent assigné)
 
 ---
 
