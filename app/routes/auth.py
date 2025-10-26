@@ -85,6 +85,7 @@ def register():
                 return render_template('auth/register.html')
             
             # Valider le téléphone si fourni
+            phone_validation = None
             if phone_input:
                 phone_validation = ValidationService.validate_phone(phone_input, country_code)
                 if not phone_validation.is_valid:
@@ -95,7 +96,7 @@ def register():
             user.first_name = request.form.get('first_name')
             user.last_name = request.form.get('last_name')
             user.email = email_validation.normalized_value  # Utiliser l'email normalisé
-            user.phone = phone_validation.normalized_value if phone_input else None  # Format E.164
+            user.phone = phone_validation.normalized_value if phone_validation else None  # Format E.164
             user.whatsapp = request.form.get('whatsapp')
             user.address = request.form.get('address')
             user.gender = request.form.get('gender')

@@ -89,20 +89,6 @@ class EmailValidator:
 class PhoneValidator:
     """Validateur de numéro de téléphone international"""
     
-    # Mapping des codes pays vers régions ISO
-    COUNTRY_CODE_TO_REGION = {
-        'MA': 'MA',  # Maroc
-        'FR': 'FR',  # France
-        'DZ': 'DZ',  # Algérie
-        'TN': 'TN',  # Tunisie
-        'SN': 'SN',  # Sénégal
-        'CI': 'CI',  # Côte d'Ivoire
-        'CM': 'CM',  # Cameroun
-        'US': 'US',  # États-Unis
-        'GB': 'GB',  # Royaume-Uni
-        'CA': 'CA',  # Canada
-    }
-    
     @staticmethod
     def validate(phone_str, default_region='MA'):
         """
@@ -220,10 +206,6 @@ class PhoneValidator:
                 error_message=error_message
             )
     
-    @staticmethod
-    def get_region_for_country_code(country_code):
-        """Retourne la région ISO pour un code pays donné"""
-        return PhoneValidator.COUNTRY_CODE_TO_REGION.get(country_code, 'MA')
 
 
 class ValidationService:
@@ -236,9 +218,39 @@ class ValidationService:
     
     @staticmethod
     def validate_phone(phone, country_code='MA'):
-        """Valide un numéro de téléphone"""
-        region = PhoneValidator.get_region_for_country_code(country_code)
-        return PhoneValidator.validate(phone, region)
+        """
+        Valide un numéro de téléphone
+        
+        Args:
+            phone: Le numéro de téléphone à valider
+            country_code: Code pays ISO-2 (ex: 'MA', 'FR', 'US')
+        
+        Returns:
+            ValidationResult avec le numéro validé ou une erreur
+        """
+        # Vérifier si le code pays est supporté
+        if not country_code:
+            country_code = 'MA'
+        
+        # Normaliser le code
+        country_code = country_code.upper().strip()
+        
+        # Vérifier que phonenumbers supporte ce code pays
+        try:
+            calling_code = phonenumbers.country_code_for_region(country_code)
+            if not calling_code or calling_code <= 0:
+                return ValidationResult(
+                    is_valid=False,
+                    error_message=f"Le code pays '{country_code}' n'est pas reconnu pour la validation téléphonique. Veuillez sélectionner un pays valide."
+                )
+        except Exception:
+            return ValidationResult(
+                is_valid=False,
+                error_message=f"Le code pays '{country_code}' n'est pas supporté pour la validation téléphonique. Veuillez sélectionner un pays valide."
+            )
+        
+        # Le code pays est valide, procéder à la validation du numéro
+        return PhoneValidator.validate(phone, country_code)
     
     @staticmethod
     def validate_contact_info(email, phone, country_code='MA'):
