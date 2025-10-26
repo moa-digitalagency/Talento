@@ -320,29 +320,6 @@ def settings():
     
     return render_template('admin/settings.html', admin_users=admin_users, config=config_info, db_diagnostics=db_diagnostics, git_info=git_info, update_history=update_history)
 
-@bp.route('/settings/talents')
-@login_required
-@admin_required
-def settings_talents():
-    return render_template('admin/settings/talents.html')
-
-@bp.route('/settings/security')
-@login_required
-@admin_required
-def settings_security():
-    return render_template('admin/settings/security.html')
-
-@bp.route('/settings/productions')
-@login_required
-@admin_required
-def settings_productions():
-    return render_template('admin/settings/productions.html')
-
-@bp.route('/settings/projects')
-@login_required
-@admin_required
-def settings_projects():
-    return render_template('admin/settings/projects.html')
 
 @bp.route('/settings/email-templates')
 @login_required
@@ -477,6 +454,48 @@ def test_email():
             flash('Échec de l\'envoi de l\'email de test.', 'error')
     except Exception as e:
         flash(f'Erreur lors de l\'envoi de l\'email: {str(e)}', 'error')
+    
+    return redirect(url_for('admin.settings'))
+
+@bp.route('/test-openrouter', methods=['POST'])
+@login_required
+@admin_required
+def test_openrouter():
+    import requests
+    
+    openrouter_key = AppSettings.get('openrouter_api_key', '') or os.environ.get('OPENROUTER_API_KEY', '')
+    
+    if not openrouter_key:
+        flash('Clé OpenRouter API non configurée.', 'error')
+        return redirect(url_for('admin.settings'))
+    
+    try:
+        response = requests.post(
+            'https://openrouter.ai/api/v1/chat/completions',
+            headers={
+                'Authorization': f'Bearer {openrouter_key}',
+                'Content-Type': 'application/json',
+                'HTTP-Referer': request.host_url,
+            },
+            json={
+                'model': 'meta-llama/llama-3.1-8b-instruct:free',
+                'messages': [
+                    {
+                        'role': 'user',
+                        'content': 'Réponds juste "OK" si tu me reçois.'
+                    }
+                ],
+                'max_tokens': 10
+            },
+            timeout=15
+        )
+        
+        if response.status_code == 200:
+            flash('OpenRouter API fonctionne correctement! ✅', 'success')
+        else:
+            flash(f'Erreur OpenRouter: {response.status_code} - {response.text[:200]}', 'error')
+    except Exception as e:
+        flash(f'Erreur lors du test OpenRouter: {str(e)}', 'error')
     
     return redirect(url_for('admin.settings'))
 

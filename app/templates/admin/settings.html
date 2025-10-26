@@ -26,57 +26,13 @@
         <!-- Grid de blocs de paramètres -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
-            <!-- 1. Gestion des Talents -->
-            <div class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 hover:shadow-lg transition-all">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">⭐</span>
-                    <h3 class="text-lg font-bold text-gray-800">Gestion des Talents</h3>
-                </div>
-                <p class="text-sm text-gray-600 mb-3">Gérer les profils de talents et leurs compétences</p>
-                <a href="{{ url_for('admin.talents_list') }}" class="text-blue-600 text-sm font-bold hover:underline">→ Voir tous les talents</a>
-            </div>
-
-            <!-- 2. Sécurité -->
-            <div class="bg-red-50 border-2 border-dashed border-red-400 rounded-xl p-6 hover:shadow-lg transition-all">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">❤️</span>
-                    <h3 class="text-lg font-bold text-gray-800">Sécurité</h3>
-                </div>
-                <p class="text-sm text-gray-600 mb-3">Paramètres de sécurité et accès</p>
-                <form method="POST" action="{{ url_for('admin.create_backup') }}" class="mt-2">
-                    <button type="submit" class="w-full px-3 py-2 bg-white text-red-600 font-bold rounded border-2 border-red-400 hover:bg-red-100 transition text-sm">
-                        💾 Créer une sauvegarde
-                    </button>
-                </form>
-            </div>
-
-            <!-- 3. Productions -->
-            <div class="bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-6 hover:shadow-lg transition-all">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">🏢</span>
-                    <h3 class="text-lg font-bold text-gray-800">Productions</h3>
-                </div>
-                <p class="text-sm text-gray-600 mb-3">Gérer les boîtes de production cinématographique</p>
-                <a href="{{ url_for('cinema.productions') }}" class="text-emerald-600 text-sm font-bold hover:underline">→ Voir les productions</a>
-            </div>
-
-            <!-- 4. Projets -->
-            <div class="bg-purple-50 border-2 border-dashed border-purple-400 rounded-xl p-6 hover:shadow-lg transition-all">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">🎬</span>
-                    <h3 class="text-lg font-bold text-gray-800">Projets</h3>
-                </div>
-                <p class="text-sm text-gray-600 mb-3">Configurer les projets et castings</p>
-                <a href="{{ url_for('cinema.projects') }}" class="text-purple-600 text-sm font-bold hover:underline">→ Voir les projets</a>
-            </div>
-
-            <!-- 5. Templates Email -->
+            <!-- 1. API & Email -->
             <div class="bg-indigo-50 border-2 border-dashed border-indigo-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">✉️</span>
-                    <h3 class="text-lg font-bold text-gray-800">Templates Email</h3>
+                    <span class="text-3xl">🔑</span>
+                    <h3 class="text-lg font-bold text-gray-800">Clés API</h3>
                 </div>
-                <p class="text-sm text-gray-600 mb-3">Configurer les modèles d'emails</p>
+                <p class="text-sm text-gray-600 mb-3">Configuration des clés API et services</p>
                 
                 <form method="POST" action="{{ url_for('admin.save_settings') }}" class="space-y-2">
                     <!-- SendGrid -->
@@ -91,19 +47,34 @@
                         <input type="email" name="sender_email" value="{{ config.sendgrid_from }}" class="w-full px-2 py-1 border rounded text-xs">
                     </div>
                     
+                    <!-- OpenRouter API -->
+                    <div>
+                        <label class="text-xs font-bold">🤖 OpenRouter API</label>
+                        <input type="password" name="openrouter_api_key" value="{{ config.openrouter_key_masked }}" placeholder="sk-or-xxx..." class="w-full px-2 py-1 border rounded text-xs">
+                    </div>
+                    
                     <button type="submit" class="w-full px-3 py-1.5 bg-white text-indigo-600 font-bold rounded border-2 border-indigo-400 hover:bg-indigo-50 transition text-xs">💾 Enregistrer</button>
                 </form>
                 
                 <!-- Test Email -->
-                <form method="POST" action="{{ url_for('admin.test_email') }}" class="mt-2">
-                    <input type="email" name="test_email" placeholder="test@exemple.com" required class="w-full px-2 py-1 border rounded text-xs mb-1">
-                    <button type="submit" {% if not config.sendgrid %}disabled{% endif %} class="w-full px-3 py-1.5 {% if config.sendgrid %}bg-white text-indigo-600 border-2 border-indigo-400 hover:bg-indigo-50{% else %}bg-gray-100 text-gray-400 border-2 border-gray-300 cursor-not-allowed{% endif %} font-bold rounded transition text-xs">
-                        📮 Envoyer un test
-                    </button>
-                </form>
+                <div class="mt-2 space-y-1">
+                    <form method="POST" action="{{ url_for('admin.test_email') }}">
+                        <input type="email" name="test_email" placeholder="test@exemple.com" required class="w-full px-2 py-1 border rounded text-xs mb-1">
+                        <button type="submit" {% if not config.sendgrid %}disabled{% endif %} class="w-full px-3 py-1.5 {% if config.sendgrid %}bg-white text-indigo-600 border-2 border-indigo-400 hover:bg-indigo-50{% else %}bg-gray-100 text-gray-400 border-2 border-gray-300 cursor-not-allowed{% endif %} font-bold rounded transition text-xs">
+                            📮 Test Email
+                        </button>
+                    </form>
+                    
+                    <!-- Test OpenRouter -->
+                    <form method="POST" action="{{ url_for('admin.test_openrouter') }}">
+                        <button type="submit" {% if not config.openrouter %}disabled{% endif %} class="w-full px-3 py-1.5 {% if config.openrouter %}bg-white text-purple-600 border-2 border-purple-400 hover:bg-purple-50{% else %}bg-gray-100 text-gray-400 border-2 border-gray-300 cursor-not-allowed{% endif %} font-bold rounded transition text-xs">
+                            🤖 Test OpenRouter
+                        </button>
+                    </form>
+                </div>
             </div>
 
-            <!-- 6. Sauvegardes -->
+            <!-- 2. Sauvegardes -->
             <div class="bg-orange-50 border-2 border-dashed border-orange-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">💾</span>
@@ -125,7 +96,7 @@
                 </form>
             </div>
 
-            <!-- 7. Gestion des Rôles -->
+            <!-- 3. Gestion des Rôles -->
             <div class="bg-pink-50 border-2 border-dashed border-pink-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">👥</span>
@@ -149,7 +120,7 @@
                 </a>
             </div>
 
-            <!-- 8. Configuration Système -->
+            <!-- 4. Configuration Système -->
             <div class="bg-cyan-50 border-2 border-dashed border-cyan-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🗄️</span>
@@ -190,7 +161,7 @@
                 </div>
             </div>
 
-            <!-- 9. Logs d'Activités -->
+            <!-- 5. Logs d'Activités -->
             <div class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">📊</span>
@@ -204,7 +175,7 @@
                 </div>
             </div>
 
-            <!-- 10. Logs de Sécurité -->
+            <!-- 6. Logs de Sécurité -->
             <div class="bg-red-50 border-2 border-dashed border-red-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🔒</span>
@@ -225,7 +196,7 @@
                 </div>
             </div>
 
-            <!-- 11. Gestion des Utilisateurs -->
+            <!-- 7. Gestion des Utilisateurs -->
             <div class="bg-violet-50 border-2 border-dashed border-violet-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">👤</span>
@@ -238,7 +209,7 @@
                 </a>
             </div>
 
-            <!-- 12. Vider les Caches -->
+            <!-- 8. Vider les Caches -->
             <div class="bg-yellow-50 border-2 border-dashed border-yellow-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🧹</span>
