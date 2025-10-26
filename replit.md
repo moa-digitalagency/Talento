@@ -49,6 +49,11 @@ Preferred communication style: Simple, everyday language.
 ### Routing Structure
 - **Blueprints**: Organized into `main`, `auth`, `profile`, `admin`, `api`, `cinema`, `presence`, and `api_v1` for modularity.
 
+### Admin Settings & Configuration
+- **Activity Logs** (`/admin/settings/activity-logs`): Real-time tracking of user actions throughout the platform using LoggingService integration. Displays user activity with timestamps, actions, and details.
+- **API Keys Management** (`/admin/settings/api-keys`): Centralized management for external service API keys (SendGrid, OpenRouter, TMDB, OMDB). Features masked display (first 4 + last 4 characters visible) and status indicators for each service.
+- **System Settings** (`/admin/settings/system`): Custom HTML head code injection feature allowing administrators to add analytics scripts (Google Analytics, Facebook Pixel), SEO meta tags, or custom CSS/JavaScript to all pages. Uses context processor for site-wide availability with CSRF protection.
+
 ### Contract Management
 - **Main Contracts Page**: `/contrats` - Accessible from main navigation for all talents. Currently under development with planned features including contract creation, electronic signature, tracking, notifications, archiving, and PDF export.
 - **Cinema Contracts Page**: `/cinema/contrats` - Dedicated contracts management for cinema talents. Accessible from cinema module sidebar with same planned features tailored for film industry contracts.
