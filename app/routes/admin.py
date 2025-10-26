@@ -327,10 +327,12 @@ def settings():
 def settings_api_keys():
     sendgrid_key = AppSettings.get('sendgrid_api_key', '') or os.environ.get('SENDGRID_API_KEY', '')
     openrouter_key = AppSettings.get('openrouter_api_key', '') or os.environ.get('OPENROUTER_API_KEY', '')
+    omdb_key = AppSettings.get('omdb_api_key', '') or os.environ.get('OMDB_API_KEY', '')
     sender_email = AppSettings.get('sender_email', 'noreply@myoneart.com')
     
     sendgrid_configured = bool(sendgrid_key)
     openrouter_configured = bool(openrouter_key)
+    omdb_configured = bool(omdb_key)
     
     def mask_key(key):
         if not key or len(key) < 8:
@@ -340,8 +342,10 @@ def settings_api_keys():
     config_info = {
         'sendgrid': sendgrid_configured,
         'openrouter': openrouter_configured,
+        'omdb': omdb_configured,
         'sendgrid_key_masked': mask_key(sendgrid_key) if sendgrid_configured else '',
         'openrouter_key_masked': mask_key(openrouter_key) if openrouter_configured else '',
+        'omdb_key_masked': mask_key(omdb_key) if omdb_configured else '',
         'sendgrid_from': sender_email
     }
     
@@ -541,6 +545,7 @@ def demote_admin(user_id):
 def save_settings():
     sendgrid_key = request.form.get('sendgrid_api_key', '').strip()
     openrouter_key = request.form.get('openrouter_api_key', '').strip()
+    omdb_key = request.form.get('omdb_api_key', '').strip()
     sender_email = request.form.get('sender_email', '').strip() or 'noreply@myoneart.com'
     
     if sendgrid_key and not sendgrid_key.startswith('*'):
@@ -549,10 +554,13 @@ def save_settings():
     if openrouter_key and not openrouter_key.startswith('*'):
         AppSettings.set('openrouter_api_key', openrouter_key)
     
+    if omdb_key and not omdb_key.startswith('*'):
+        AppSettings.set('omdb_api_key', omdb_key)
+    
     AppSettings.set('sender_email', sender_email)
     
     flash('Paramètres sauvegardés avec succès.', 'success')
-    return redirect(url_for('admin.settings'))
+    return redirect(url_for('admin.settings_api_keys'))
 
 @bp.route('/test-email', methods=['POST'])
 @login_required
