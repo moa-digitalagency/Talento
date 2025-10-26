@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Paramètres - Administration - TalentsMaroc.com{% endblock %}
+{% block title %}Paramètres - Administration{% endblock %}
 
 {% block content %}
 <div class="min-h-screen bg-gray-50 py-8 px-4">
@@ -27,112 +27,235 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             <!-- 1. Gestion des Talents -->
-            <a href="{{ url_for('admin.settings_talents') }}" class="block bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">⭐</span>
                     <h3 class="text-lg font-bold text-gray-800">Gestion des Talents</h3>
                 </div>
-                <p class="text-sm text-gray-600">Gérer les profils de talents et leurs compétences</p>
-            </a>
+                <p class="text-sm text-gray-600 mb-3">Gérer les profils de talents et leurs compétences</p>
+                <a href="{{ url_for('admin.talents_list') }}" class="text-blue-600 text-sm font-bold hover:underline">→ Voir tous les talents</a>
+            </div>
 
             <!-- 2. Sécurité -->
-            <a href="{{ url_for('admin.settings_security') }}" class="block bg-red-50 border-2 border-dashed border-red-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-red-50 border-2 border-dashed border-red-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">❤️</span>
                     <h3 class="text-lg font-bold text-gray-800">Sécurité</h3>
                 </div>
-                <p class="text-sm text-gray-600">Paramètres de sécurité et accès</p>
-            </a>
+                <p class="text-sm text-gray-600 mb-3">Paramètres de sécurité et accès</p>
+                <form method="POST" action="{{ url_for('admin.create_backup') }}" class="mt-2">
+                    <button type="submit" class="w-full px-3 py-2 bg-white text-red-600 font-bold rounded border-2 border-red-400 hover:bg-red-100 transition text-sm">
+                        💾 Créer une sauvegarde
+                    </button>
+                </form>
+            </div>
 
             <!-- 3. Productions -->
-            <a href="{{ url_for('admin.settings_productions') }}" class="block bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🏢</span>
                     <h3 class="text-lg font-bold text-gray-800">Productions</h3>
                 </div>
-                <p class="text-sm text-gray-600">Gérer les boîtes de production cinématographique</p>
-            </a>
+                <p class="text-sm text-gray-600 mb-3">Gérer les boîtes de production cinématographique</p>
+                <a href="{{ url_for('cinema.productions') }}" class="text-emerald-600 text-sm font-bold hover:underline">→ Voir les productions</a>
+            </div>
 
             <!-- 4. Projets -->
-            <a href="{{ url_for('admin.settings_projects') }}" class="block bg-purple-50 border-2 border-dashed border-purple-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-purple-50 border-2 border-dashed border-purple-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🎬</span>
                     <h3 class="text-lg font-bold text-gray-800">Projets</h3>
                 </div>
-                <p class="text-sm text-gray-600">Configurer les projets et castings</p>
-            </a>
+                <p class="text-sm text-gray-600 mb-3">Configurer les projets et castings</p>
+                <a href="{{ url_for('cinema.projects') }}" class="text-purple-600 text-sm font-bold hover:underline">→ Voir les projets</a>
+            </div>
 
             <!-- 5. Templates Email -->
-            <a href="{{ url_for('admin.settings_email_templates') }}" class="block bg-indigo-50 border-2 border-dashed border-indigo-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-indigo-50 border-2 border-dashed border-indigo-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">✉️</span>
                     <h3 class="text-lg font-bold text-gray-800">Templates Email</h3>
                 </div>
-                <p class="text-sm text-gray-600">Configurer les modèles d'emails</p>
-            </a>
+                <p class="text-sm text-gray-600 mb-3">Configurer les modèles d'emails</p>
+                
+                <form method="POST" action="{{ url_for('admin.save_settings') }}" class="space-y-2">
+                    <!-- SendGrid -->
+                    <div>
+                        <label class="text-xs font-bold">📧 SendGrid API</label>
+                        <input type="password" name="sendgrid_api_key" value="{{ config.sendgrid_key_masked }}" placeholder="SG.xxx..." class="w-full px-2 py-1 border rounded text-xs">
+                    </div>
+                    
+                    <!-- Email Expéditeur -->
+                    <div>
+                        <label class="text-xs font-bold">✉️ Email expéditeur</label>
+                        <input type="email" name="sender_email" value="{{ config.sendgrid_from }}" class="w-full px-2 py-1 border rounded text-xs">
+                    </div>
+                    
+                    <button type="submit" class="w-full px-3 py-1.5 bg-white text-indigo-600 font-bold rounded border-2 border-indigo-400 hover:bg-indigo-50 transition text-xs">💾 Enregistrer</button>
+                </form>
+                
+                <!-- Test Email -->
+                <form method="POST" action="{{ url_for('admin.test_email') }}" class="mt-2">
+                    <input type="email" name="test_email" placeholder="test@exemple.com" required class="w-full px-2 py-1 border rounded text-xs mb-1">
+                    <button type="submit" {% if not config.sendgrid %}disabled{% endif %} class="w-full px-3 py-1.5 {% if config.sendgrid %}bg-white text-indigo-600 border-2 border-indigo-400 hover:bg-indigo-50{% else %}bg-gray-100 text-gray-400 border-2 border-gray-300 cursor-not-allowed{% endif %} font-bold rounded transition text-xs">
+                        📮 Envoyer un test
+                    </button>
+                </form>
+            </div>
 
             <!-- 6. Sauvegardes -->
-            <a href="{{ url_for('admin.settings_backups') }}" class="block bg-orange-50 border-2 border-dashed border-orange-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-orange-50 border-2 border-dashed border-orange-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">💾</span>
                     <h3 class="text-lg font-bold text-gray-800">Sauvegardes</h3>
                 </div>
-                <p class="text-sm text-gray-600">Gérer les sauvegardes et restaurations</p>
-            </a>
+                <p class="text-sm text-gray-600 mb-3">Gérer les sauvegardes et restaurations</p>
+                
+                <form method="POST" action="{{ url_for('admin.create_backup') }}" class="mb-2">
+                    <button type="submit" class="w-full px-3 py-2 bg-white text-orange-600 font-bold rounded border-2 border-orange-400 hover:bg-orange-100 transition text-sm">
+                        📦 Créer sauvegarde
+                    </button>
+                </form>
+                
+                <form method="POST" action="{{ url_for('admin.restore_backup') }}" enctype="multipart/form-data" class="mt-2">
+                    <input type="file" name="backup_file" accept=".zip" class="w-full text-xs mb-1">
+                    <button type="submit" class="w-full px-3 py-1.5 bg-white text-orange-600 font-bold rounded border-2 border-orange-400 hover:bg-orange-100 transition text-xs">
+                        ⬆️ Restaurer
+                    </button>
+                </form>
+            </div>
 
             <!-- 7. Gestion des Rôles -->
-            <a href="{{ url_for('admin.settings_roles') }}" class="block bg-pink-50 border-2 border-dashed border-pink-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-pink-50 border-2 border-dashed border-pink-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">👥</span>
                     <h3 class="text-lg font-bold text-gray-800">Gestion des Rôles</h3>
                 </div>
-                <p class="text-sm text-gray-600">Configurer les rôles utilisateur et leurs permissions</p>
-            </a>
+                <p class="text-sm text-gray-600 mb-3">Configurer les rôles utilisateur et leurs permissions</p>
+                
+                <div class="space-y-1 max-h-32 overflow-y-auto">
+                    {% for admin in admin_users %}
+                    <div class="bg-white p-2 rounded border text-xs flex items-center justify-between">
+                        <span class="font-medium">{{ admin.full_name }}</span>
+                        {% if admin.id == current_user.id %}
+                        <span class="text-pink-600 font-bold">Vous</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <a href="{{ url_for('admin.create_admin_user') }}" class="mt-2 block w-full px-3 py-1.5 bg-white text-pink-600 font-bold rounded border-2 border-pink-400 hover:bg-pink-50 transition text-xs text-center">
+                    ➕ Créer un admin
+                </a>
+            </div>
 
             <!-- 8. Configuration Système -->
-            <a href="{{ url_for('admin.settings_system') }}" class="block bg-cyan-50 border-2 border-dashed border-cyan-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-cyan-50 border-2 border-dashed border-cyan-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🗄️</span>
                     <h3 class="text-lg font-bold text-gray-800">Configuration Système</h3>
                 </div>
-                <p class="text-sm text-gray-600">Paramètres système et base de données</p>
-            </a>
+                <p class="text-sm text-gray-600 mb-3">Paramètres système et base de données</p>
+                
+                <div class="space-y-2">
+                    <div class="bg-white p-2 rounded border">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-bold">Type BD</span>
+                            <span class="font-mono">{{ config.database_type }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-2 rounded border">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-bold">État</span>
+                            <span class="{% if db_diagnostics.connection_ok %}text-green-600{% else %}text-red-600{% endif %}">
+                                {% if db_diagnostics.connection_ok %}✅ Connectée{% else %}❌ Déconnectée{% endif %}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    {% if db_diagnostics.tables %}
+                    <div class="bg-white p-2 rounded border">
+                        <span class="text-xs font-bold block mb-1">📊 Tables ({{ db_diagnostics.tables|length }})</span>
+                        <div class="flex flex-wrap gap-1">
+                            {% for table in db_diagnostics.tables[:4] %}
+                            <span class="text-xs bg-cyan-100 px-1 py-0.5 rounded">{{ table }}</span>
+                            {% endfor %}
+                            {% if db_diagnostics.tables|length > 4 %}
+                            <span class="text-xs text-gray-500">+{{ db_diagnostics.tables|length - 4 }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
 
             <!-- 9. Logs d'Activités -->
-            <a href="{{ url_for('admin.settings_activity_logs') }}" class="block bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">📊</span>
                     <h3 class="text-lg font-bold text-gray-800">Logs d'Activités</h3>
                 </div>
-                <p class="text-sm text-gray-600">Consulter l'historique des actions utilisateurs</p>
-            </a>
+                <p class="text-sm text-gray-600 mb-3">Consulter l'historique des actions utilisateurs</p>
+                
+                <div class="bg-white p-3 rounded border text-xs">
+                    <span class="font-bold block mb-1">📝 Dernières actions</span>
+                    <p class="text-gray-500">Fonctionnalité en développement</p>
+                </div>
+            </div>
 
             <!-- 10. Logs de Sécurité -->
-            <a href="{{ url_for('admin.settings_security_logs') }}" class="block bg-red-50 border-2 border-dashed border-red-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-red-50 border-2 border-dashed border-red-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🔒</span>
                     <h3 class="text-lg font-bold text-gray-800">Logs de Sécurité</h3>
                 </div>
-                <p class="text-sm text-gray-600">Consulter les événements de sécurité et alertes</p>
-            </a>
+                <p class="text-sm text-gray-600 mb-3">Consulter les événements de sécurité et alertes</p>
+                
+                <div class="space-y-2">
+                    <div class="bg-white p-2 rounded border text-xs">
+                        <span class="font-bold block">🚨 Tentatives échouées</span>
+                        <p class="text-gray-500">0 cette semaine</p>
+                    </div>
+                    
+                    <div class="bg-white p-2 rounded border text-xs">
+                        <span class="font-bold block">✅ Connexions réussies</span>
+                        <p class="text-gray-500">{{ admin_users|length }} admin(s)</p>
+                    </div>
+                </div>
+            </div>
 
             <!-- 11. Gestion des Utilisateurs -->
-            <a href="{{ url_for('admin.settings_users') }}" class="block bg-violet-50 border-2 border-dashed border-violet-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-violet-50 border-2 border-dashed border-violet-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">👤</span>
                     <h3 class="text-lg font-bold text-gray-800">Gestion des Utilisateurs</h3>
                 </div>
-                <p class="text-sm text-gray-600">Administrer les comptes utilisateurs et leurs accès</p>
-            </a>
+                <p class="text-sm text-gray-600 mb-3">Administrer les comptes utilisateurs et leurs accès</p>
+                
+                <a href="{{ url_for('admin.users') }}" class="block w-full px-3 py-2 bg-white text-violet-600 font-bold rounded border-2 border-violet-400 hover:bg-violet-50 transition text-sm text-center">
+                    👥 Voir tous les utilisateurs
+                </a>
+            </div>
 
             <!-- 12. Vider les Caches -->
-            <a href="{{ url_for('admin.settings_cache') }}" class="block bg-yellow-50 border-2 border-dashed border-yellow-400 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all cursor-pointer">
+            <div class="bg-yellow-50 border-2 border-dashed border-yellow-400 rounded-xl p-6 hover:shadow-lg transition-all">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🧹</span>
                     <h3 class="text-lg font-bold text-gray-800">Vider les Caches</h3>
                 </div>
-                <p class="text-sm text-gray-600">Nettoyer le cache système pour améliorer les performances</p>
-            </a>
+                <p class="text-sm text-gray-600 mb-3">Nettoyer le cache système pour améliorer les performances</p>
+                
+                <div class="space-y-2">
+                    <button class="w-full px-3 py-2 bg-white text-yellow-600 font-bold rounded border-2 border-yellow-400 hover:bg-yellow-50 transition text-xs">
+                        🗑️ Vider cache navigateur
+                    </button>
+                    
+                    <button class="w-full px-3 py-2 bg-white text-yellow-600 font-bold rounded border-2 border-yellow-400 hover:bg-yellow-50 transition text-xs">
+                        🔄 Vider cache serveur
+                    </button>
+                </div>
+            </div>
 
         </div>
     </div>

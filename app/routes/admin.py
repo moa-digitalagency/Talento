@@ -291,7 +291,34 @@ def edit_user(user_id):
 @login_required
 @admin_required
 def settings():
-    return render_template('admin/settings.html')
+    admin_users = User.query.filter(User.is_admin == True).order_by(User.created_at).all()
+    
+    sendgrid_key = AppSettings.get('sendgrid_api_key', '') or os.environ.get('SENDGRID_API_KEY', '')
+    openrouter_key = AppSettings.get('openrouter_api_key', '') or os.environ.get('OPENROUTER_API_KEY', '')
+    sender_email = AppSettings.get('sender_email', 'noreply@myoneart.com')
+    
+    sendgrid_configured = bool(sendgrid_key)
+    openrouter_configured = bool(openrouter_key)
+    
+    def mask_key(key):
+        if not key or len(key) < 8:
+            return ''
+        return key[:4] + '*' * (len(key) - 8) + key[-4:]
+    
+    config_info = {
+        'sendgrid': sendgrid_configured,
+        'openrouter': openrouter_configured,
+        'sendgrid_key_masked': mask_key(sendgrid_key) if sendgrid_configured else '',
+        'openrouter_key_masked': mask_key(openrouter_key) if openrouter_configured else '',
+        'sendgrid_from': sender_email,
+        'database_type': 'PostgreSQL' if 'postgresql' in current_app.config.get('SQLALCHEMY_DATABASE_URI', '').lower() else 'SQLite'
+    }
+    
+    db_diagnostics = DatabaseService.get_full_diagnostics()
+    git_info = UpdateService.get_git_info()
+    update_history = UpdateService.get_update_history(5)
+    
+    return render_template('admin/settings.html', admin_users=admin_users, config=config_info, db_diagnostics=db_diagnostics, git_info=git_info, update_history=update_history)
 
 @bp.route('/settings/talents')
 @login_required
