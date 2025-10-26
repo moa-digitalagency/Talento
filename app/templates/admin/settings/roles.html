@@ -13,7 +13,7 @@
             </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <!-- Administrateur -->
             <div class="bg-green-50 border-2 border-dashed border-green-400 rounded-xl p-6">
                 <div class="flex items-center gap-3 mb-4">
@@ -51,6 +51,47 @@
                     <div class="flex items-center gap-2 text-sm">
                         <span class="text-green-600 font-bold">✓</span>
                         <span class="text-gray-700">Mises à jour GitHub</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rôle Présence -->
+            <div class="bg-purple-50 border-2 border-dashed border-purple-400 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-4xl">📋</span>
+                    <h3 class="text-2xl font-bold text-gray-800">Présence</h3>
+                </div>
+                <p class="text-sm text-gray-700 mb-4">Accès spécialisé pour la gestion des présences CINEMA</p>
+                
+                <h4 class="font-semibold text-gray-800 mb-3 text-lg">Permissions:</h4>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Accès au module CINEMA</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Gestion des présences</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Scan QR codes talents</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Enregistrement arrivées/départs</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Export des présences</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-red-600 font-bold">✗</span>
+                        <span class="text-gray-500">Pas d'accès à l'administration</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-red-600 font-bold">✗</span>
+                        <span class="text-gray-500">Pas de modification des projets</span>
                     </div>
                 </div>
             </div>
@@ -100,13 +141,17 @@
                 <h3 class="text-2xl font-bold text-gray-800">Attribution des rôles</h3>
             </div>
             <p class="text-gray-700 mb-4">
-                Pour donner ou retirer les droits administrateur à un utilisateur, 
-                utilisez la page Gestion des Administrateurs.
+                Pour gérer les rôles des utilisateurs, utilisez les pages suivantes:
             </p>
             
-            <a href="{{ url_for('admin.settings_users') }}" class="inline-block bg-white border-2 border-pink-600 text-pink-600 px-6 py-3 rounded-lg hover:bg-pink-50 font-semibold transition-all">
-                → Gérer les administrateurs
-            </a>
+            <div class="flex gap-4">
+                <a href="{{ url_for('admin.settings_users') }}" class="inline-block bg-white border-2 border-pink-600 text-pink-600 px-6 py-3 rounded-lg hover:bg-pink-50 font-semibold transition-all">
+                    → Gérer les administrateurs
+                </a>
+                <a href="{{ url_for('cinema.team') }}" class="inline-block bg-white border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-lg hover:bg-purple-50 font-semibold transition-all">
+                    → Gérer l'équipe technique (Rôle Présence)
+                </a>
+            </div>
         </div>
     </div>
 </div>

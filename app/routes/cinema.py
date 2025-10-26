@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from app import db
 from app.models.cinema_talent import CinemaTalent
 from app.models.production import Production
-from app.models import Country
+from app.models import Country, User
 from app.constants import (
     LANGUAGES_CINEMA, TALENT_CATEGORIES, CINEMA_TALENT_TYPES,
     EYE_COLORS, HAIR_COLORS, HAIR_TYPES, SKIN_TONES, BUILD_TYPES
@@ -244,7 +244,131 @@ def delete_production(production_id):
 @login_required
 def team():
     """Équipe Technique CINEMA - Gestion de l'équipe technique"""
-    return render_template('cinema/team.html')
+    # Vérification des permissions - seulement les admins peuvent accéder
+    if not current_user.is_admin:
+        flash('Accès réservé aux administrateurs.', 'error')
+        return redirect(url_for('cinema.dashboard'))
+    
+    # Récupérer uniquement les membres de l'équipe (admins et rôle presence)
+    team_members = User.query.filter(
+        (User.is_admin == True) | (User.role == 'presence')
+    ).order_by(User.created_at.desc()).all()
+    
+    # Calculer les statistiques à partir des membres de l'équipe uniquement
+    admin_count = sum(1 for member in team_members if member.is_admin)
+    presence_count = sum(1 for member in team_members if member.role == 'presence' and not member.is_admin)
+    
+    return render_template('cinema/team.html', 
+                         team_members=team_members,
+                         admin_count=admin_count,
+                         presence_count=presence_count)
+
+@bp.route('/team/add', methods=['POST'])
+@login_required
+def add_team_member():
+    """Ajouter un nouveau membre à l'équipe"""
+    if not current_user.is_admin:
+        flash('Accès non autorisé.', 'error')
+        return redirect(url_for('cinema.team'))
+    
+    try:
+        # Vérifier si l'email existe déjà
+        existing_user = User.query.filter_by(email=request.form.get('email')).first()
+        if existing_user:
+            flash('Un utilisateur avec cet email existe déjà.', 'error')
+            return redirect(url_for('cinema.team'))
+        
+        # Créer le nouvel utilisateur
+        user = User()
+        user.first_name = request.form.get('first_name')
+        user.last_name = request.form.get('last_name')
+        user.email = request.form.get('email')
+        user.phone = request.form.get('phone', '')
+        user.set_password(request.form.get('password'))
+        
+        # Attribuer le rôle
+        role = request.form.get('role')
+        if role == 'admin':
+            user.is_admin = True
+            user.role = 'user'
+        elif role == 'presence':
+            user.is_admin = False
+            user.role = 'presence'
+        else:
+            user.is_admin = False
+            user.role = 'user'
+        
+        user.account_active = True
+        
+        # Assigner un code unique et pays/ville par défaut
+        from app.models.location import Country, City
+        morocco = Country.query.filter_by(code='MA').first()
+        casablanca = City.query.filter_by(code='CAS').first()
+        
+        if morocco and casablanca:
+            user.country_id = morocco.id
+            user.city_id = casablanca.id
+            user.gender = 'N'  # Non spécifié
+            
+            # Générer le code unique
+            from app.utils.id_generator import generate_unique_code
+            user.unique_code = generate_unique_code(morocco.code, user.gender, casablanca.code)
+        
+        db.session.add(user)
+        db.session.commit()
+        
+        flash(f'Membre {user.first_name} {user.last_name} ajouté avec succès!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erreur lors de l\'ajout du membre: {str(e)}', 'error')
+    
+    return redirect(url_for('cinema.team'))
+
+@bp.route('/team/<int:member_id>/edit', methods=['POST'])
+@login_required
+def edit_team_member(member_id):
+    """Modifier un membre de l'équipe"""
+    if not current_user.is_admin:
+        flash('Accès non autorisé.', 'error')
+        return redirect(url_for('cinema.team'))
+    
+    try:
+        user = User.query.get_or_404(member_id)
+        
+        # Vérifier si l'email existe déjà (sauf pour l'utilisateur actuel)
+        existing_user = User.query.filter(User.email == request.form.get('email'), User.id != member_id).first()
+        if existing_user:
+            flash('Un autre utilisateur avec cet email existe déjà.', 'error')
+            return redirect(url_for('cinema.team'))
+        
+        # Mise à jour des informations
+        user.first_name = request.form.get('first_name')
+        user.last_name = request.form.get('last_name')
+        user.email = request.form.get('email')
+        
+        # Attribuer le rôle
+        role = request.form.get('role')
+        if role == 'admin':
+            user.is_admin = True
+            user.role = 'user'
+        elif role == 'presence':
+            user.is_admin = False
+            user.role = 'presence'
+        else:
+            user.is_admin = False
+            user.role = 'user'
+        
+        # Statut du compte
+        user.account_active = request.form.get('account_active') == 'on'
+        
+        db.session.commit()
+        
+        flash(f'Membre {user.first_name} {user.last_name} modifié avec succès!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erreur lors de la modification du membre: {str(e)}', 'error')
+    
+    return redirect(url_for('cinema.team'))
 
 @bp.route('/api/search_movies', methods=['GET'])
 def api_search_movies():
