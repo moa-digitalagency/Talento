@@ -8,6 +8,43 @@ www.myoneart.com
 
 /* Corporate Theme Overrides */
 
+/* GLOBAL SIZE REDUCTION */
+* {
+    font-size: 0.9rem !important;
+}
+
+h1, .text-4xl {
+    font-size: 1.5rem !important;
+}
+
+h2, .text-3xl {
+    font-size: 1.25rem !important;
+}
+
+h3, .text-2xl {
+    font-size: 1.1rem !important;
+}
+
+.text-xl {
+    font-size: 1rem !important;
+}
+
+.text-lg {
+    font-size: 0.95rem !important;
+}
+
+.text-base {
+    font-size: 0.9rem !important;
+}
+
+.text-sm {
+    font-size: 0.8rem !important;
+}
+
+.text-xs {
+    font-size: 0.7rem !important;
+}
+
 /* Reset gradients to solid colors */
 .gradient-bg {
     background: #f9fafb !important;
