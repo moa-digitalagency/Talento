@@ -3,6 +3,11 @@
 ## Overview
 TalentsMaroc.com is a professional web application designed to centralize and showcase talent profiles across Africa, with a strong focus on the film industry through its CINEMA module. It enables individuals to create comprehensive profiles with unique identifiers and QR codes. The platform features advanced administrative tools, AI-powered CV analysis, and multiple data export formats. TalentsMaroc.com aims to be a robust, scalable solution for talent management and discovery, enhancing professional networking and recruitment. The CINEMA module provides a dedicated system for talent registration with detailed fields, public accessibility, and specialized features for film industry professionals.
 
+## Recent Changes (October 26, 2025)
+- **Documentation Restructure**: Created comprehensive technical documentation in `docs/TECHNICAL_DOCUMENTATION.md` containing complete system architecture, models, services, routes, security details, and installation instructions.
+- **New README Files**: Completely rewrote README.md and README.fr.md with detailed feature descriptions, use cases, installation guide, and roadmap. The new READMEs provide a complete overview of all platform capabilities for both technical and non-technical users.
+- **Documentation Organization**: Separated technical documentation from user-facing README to improve clarity and accessibility.
+
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
