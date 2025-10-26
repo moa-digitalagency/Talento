@@ -1,71 +1,113 @@
 {% extends "base.html" %}
 {% block title %}Gestion des Rôles - Paramètres{% endblock %}
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 py-6">
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-800">👥 Gestion des Rôles</h1>
-            <p class="text-gray-600 mt-2">Configurer les rôles utilisateur et leurs permissions</p>
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">👥 Gestion des Rôles</h1>
+                <p class="text-gray-600 mt-2">Configurer les rôles utilisateur et leurs permissions</p>
+            </div>
+            <a href="{{ url_for('admin.settings') }}" class="bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 font-semibold">
+                ← Retour aux paramètres
+            </a>
         </div>
-        <a href="{{ url_for('admin.settings') }}" class="btn-secondary">← Retour aux paramètres</a>
-    </div>
 
-    <div class="card mb-6">
-        <h2 class="text-2xl font-semibold mb-4">Rôles disponibles</h2>
-        <p class="text-gray-600 mb-6">La plateforme Talento utilise un système de rôles pour gérer les permissions.</p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <!-- Administrateur -->
-            <div class="border-2 border-green-200 bg-green-50 rounded-lg p-6">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">👑</span>
-                    <h3 class="text-xl font-semibold text-gray-800">Administrateur</h3>
+            <div class="bg-green-50 border-2 border-dashed border-green-400 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-4xl">👑</span>
+                    <h3 class="text-2xl font-bold text-gray-800">Administrateur</h3>
                 </div>
                 <p class="text-sm text-gray-700 mb-4">Accès complet à toutes les fonctionnalités de la plateforme</p>
                 
-                <h4 class="font-semibold text-gray-800 mb-2">Permissions:</h4>
-                <ul class="text-sm text-gray-700 space-y-1">
-                    <li>✓ Gestion complète des utilisateurs</li>
-                    <li>✓ Gestion des talents et profils</li>
-                    <li>✓ Gestion des boîtes de production</li>
-                    <li>✓ Configuration système</li>
-                    <li>✓ Gestion des clés API</li>
-                    <li>✓ Sauvegardes et restaurations</li>
-                    <li>✓ Mises à jour GitHub</li>
-                </ul>
+                <h4 class="font-semibold text-gray-800 mb-3 text-lg">Permissions:</h4>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Gestion complète des utilisateurs</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Gestion des talents et profils</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Gestion des boîtes de production</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Configuration système</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Gestion des clés API</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Sauvegardes et restaurations</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Mises à jour GitHub</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Utilisateur Standard -->
-            <div class="border-2 border-blue-200 bg-blue-50 rounded-lg p-6">
-                <div class="flex items-center gap-3 mb-3">
-                    <span class="text-3xl">👤</span>
-                    <h3 class="text-xl font-semibold text-gray-800">Utilisateur Standard (Talent)</h3>
+            <div class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-4xl">👤</span>
+                    <h3 class="text-2xl font-bold text-gray-800">Utilisateur Standard</h3>
                 </div>
-                <p class="text-sm text-gray-700 mb-4">Accès limité au profil personnel</p>
+                <p class="text-sm text-gray-700 mb-4">Accès limité au profil personnel uniquement</p>
                 
-                <h4 class="font-semibold text-gray-800 mb-2">Permissions:</h4>
-                <ul class="text-sm text-gray-700 space-y-1">
-                    <li>✓ Modifier son propre profil</li>
-                    <li>✓ Télécharger son CV</li>
-                    <li>✓ Voir son code talent</li>
-                    <li>✓ Modifier ses informations personnelles</li>
-                    <li>✗ Pas d'accès à l'administration</li>
-                    <li>✗ Pas d'accès aux autres profils</li>
-                </ul>
+                <h4 class="font-semibold text-gray-800 mb-3 text-lg">Permissions:</h4>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Modifier son propre profil</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Télécharger son CV</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Voir son code talent</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-green-600 font-bold">✓</span>
+                        <span class="text-gray-700">Modifier ses informations personnelles</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-red-600 font-bold">✗</span>
+                        <span class="text-gray-500">Pas d'accès à l'administration</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-sm">
+                        <span class="text-red-600 font-bold">✗</span>
+                        <span class="text-gray-500">Pas d'accès aux autres profils</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="card">
-        <h2 class="text-2xl font-semibold mb-4">Attribution des rôles</h2>
-        <p class="text-gray-600 mb-4">
-            Pour donner ou retirer les droits administrateur à un utilisateur, 
-            utilisez la page <a href="{{ url_for('admin.settings_users') }}" class="text-primary hover:underline font-semibold">Gestion des Administrateurs</a>.
-        </p>
-        
-        <a href="{{ url_for('admin.settings_users') }}" class="btn-primary">
-            → Gérer les administrateurs
-        </a>
+        <!-- Attribution des rôles -->
+        <div class="bg-pink-50 border-2 border-dashed border-pink-400 rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">⚙️</span>
+                <h3 class="text-2xl font-bold text-gray-800">Attribution des rôles</h3>
+            </div>
+            <p class="text-gray-700 mb-4">
+                Pour donner ou retirer les droits administrateur à un utilisateur, 
+                utilisez la page Gestion des Administrateurs.
+            </p>
+            
+            <a href="{{ url_for('admin.settings_users') }}" class="inline-block bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 font-semibold">
+                → Gérer les administrateurs
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}

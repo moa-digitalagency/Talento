@@ -1,108 +1,129 @@
 {% extends "base.html" %}
 {% block title %}Mises à jour GitHub - Paramètres{% endblock %}
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-6">
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-800">🔄 Mises à jour GitHub</h1>
-            <p class="text-gray-600 mt-2">Gérer les mises à jour du code depuis GitHub</p>
-        </div>
-        <a href="{{ url_for('admin.settings') }}" class="btn-secondary">← Retour aux paramètres</a>
-    </div>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }} mb-4">
-                {{ message }}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">🔄 Mises à jour GitHub</h1>
+                <p class="text-gray-600 mt-2">Gérer les mises à jour du code depuis GitHub</p>
             </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-
-    <div class="card mb-6">
-        <h2 class="text-2xl font-semibold mb-4">📊 État du dépôt</h2>
-        
-        {% if git_info %}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <p class="text-sm text-gray-600 mb-1">Branche actuelle</p>
-                <p class="text-lg font-semibold font-mono">{{ git_info.branch }}</p>
-            </div>
-            
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <p class="text-sm text-gray-600 mb-1">Dernier commit</p>
-                <p class="text-lg font-semibold font-mono">{{ git_info.commit_hash[:8] if git_info.commit_hash else 'N/A' }}</p>
-            </div>
-            
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <p class="text-sm text-gray-600 mb-1">Modifications locales</p>
-                <p class="text-lg font-semibold {% if git_info.has_changes %}text-orange-600{% else %}text-green-600{% endif %}">
-                    {% if git_info.has_changes %}⚠️ Oui{% else %}✓ Non{% endif %}
-                </p>
-            </div>
+            <a href="{{ url_for('admin.settings') }}" class="bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 font-semibold">
+                ← Retour aux paramètres
+            </a>
         </div>
-        {% else %}
-        <div class="alert alert-warning">
-            ⚠️ Impossible de récupérer les informations Git
-        </div>
-        {% endif %}
-    </div>
 
-    <div class="card mb-6">
-        <h2 class="text-2xl font-semibold mb-4">🔄 Actions disponibles</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <form method="POST" action="{{ url_for('admin.git_pull') }}">
-                <button type="submit" class="btn-primary w-full">
-                    ⬇️ Récupérer les mises à jour
-                </button>
-            </form>
-            
-            <form method="POST" action="{{ url_for('admin.git_status') }}">
-                <button type="submit" class="btn-secondary w-full">
-                    📋 Vérifier l'état
-                </button>
-            </form>
-            
-            <button onclick="alert('Cette fonctionnalité nécessite une confirmation supplémentaire')" 
-                    class="btn-secondary w-full opacity-50">
-                ↩️ Annuler les modifications
-            </button>
-        </div>
-    </div>
-
-    <div class="card mb-6">
-        <h2 class="text-2xl font-semibold mb-4">📜 Historique des mises à jour</h2>
-        
-        {% if update_history and update_history|length > 0 %}
-        <div class="space-y-3">
-            {% for update in update_history %}
-            <div class="border-l-4 {% if update.success %}border-green-500 bg-green-50{% else %}border-red-500 bg-red-50{% endif %} p-4 rounded">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="font-semibold">{{ update.type | upper if update.type else 'UPDATE' }}</span>
-                    <span class="text-xs text-gray-500">{{ update.timestamp }}</span>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="mb-4 p-4 rounded-lg border-2 {% if category == 'success' %}bg-green-50 border-green-300 text-green-800{% elif category == 'error' %}bg-red-50 border-red-300 text-red-800{% else %}bg-blue-50 border-blue-300 text-blue-800{% endif %}">
+                    {{ message }}
                 </div>
-                <p class="text-sm text-gray-700">{{ update.message if update.message else 'Mise à jour effectuée' }}</p>
-                {% if update.details %}
-                <p class="text-xs text-gray-600 mt-1">{{ update.details }}</p>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="bg-gray-50 p-6 rounded-lg text-center text-gray-500">
-            Aucune mise à jour enregistrée
-        </div>
-        {% endif %}
-    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-    <div class="alert alert-warning">
-        <h3 class="font-semibold mb-2">⚠️ Avertissement de sécurité</h3>
-        <p class="text-sm">
-            Les mises à jour depuis GitHub peuvent écraser vos modifications locales. 
-            Assurez-vous d'avoir sauvegardé vos données importantes avant de procéder.
-        </p>
+        <!-- État du dépôt -->
+        <div class="bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">📊</span>
+                <h3 class="text-2xl font-bold text-gray-800">État du dépôt</h3>
+            </div>
+            
+            {% if git_info %}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white rounded-lg p-4 border-2 border-emerald-200">
+                    <p class="text-sm text-gray-600 mb-1">Branche actuelle</p>
+                    <p class="text-lg font-semibold font-mono text-gray-800">{{ git_info.branch }}</p>
+                </div>
+                
+                <div class="bg-white rounded-lg p-4 border-2 border-emerald-200">
+                    <p class="text-sm text-gray-600 mb-1">Dernier commit</p>
+                    <p class="text-lg font-semibold font-mono text-gray-800">{{ git_info.commit_hash[:8] if git_info.commit_hash else 'N/A' }}</p>
+                </div>
+                
+                <div class="bg-white rounded-lg p-4 border-2 border-emerald-200">
+                    <p class="text-sm text-gray-600 mb-1">Modifications locales</p>
+                    <p class="text-lg font-semibold {% if git_info.has_changes %}text-orange-600{% else %}text-green-600{% endif %}">
+                        {% if git_info.has_changes %}⚠️ Oui{% else %}✓ Non{% endif %}
+                    </p>
+                </div>
+            </div>
+            {% else %}
+            <div class="bg-yellow-100 border-2 border-yellow-300 rounded-lg p-4 text-center">
+                <span class="text-yellow-700">⚠️ Impossible de récupérer les informations Git</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Actions disponibles -->
+        <div class="bg-indigo-50 border-2 border-dashed border-indigo-400 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">🔄</span>
+                <h3 class="text-2xl font-bold text-gray-800">Actions disponibles</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <form method="POST" action="{{ url_for('admin.git_pull') }}">
+                    <button type="submit" class="w-full bg-indigo-600 text-white px-4 py-3 rounded-lg hover:bg-indigo-700 font-semibold">
+                        ⬇️ Récupérer les mises à jour
+                    </button>
+                </form>
+                
+                <form method="POST" action="{{ url_for('admin.git_status') }}">
+                    <button type="submit" class="w-full bg-gray-600 text-white px-4 py-3 rounded-lg hover:bg-gray-700 font-semibold">
+                        📋 Vérifier l'état
+                    </button>
+                </form>
+                
+                <button onclick="alert('Cette fonctionnalité nécessite une confirmation supplémentaire')" 
+                        class="w-full bg-gray-300 text-gray-500 px-4 py-3 rounded-lg cursor-not-allowed font-semibold">
+                    ↩️ Annuler les modifications
+                </button>
+            </div>
+        </div>
+
+        <!-- Historique des mises à jour -->
+        <div class="bg-white border-2 border-dashed border-gray-300 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-3xl">📜</span>
+                <h3 class="text-2xl font-bold text-gray-800">Historique des mises à jour</h3>
+            </div>
+            
+            {% if update_history and update_history|length > 0 %}
+            <div class="space-y-3">
+                {% for update in update_history %}
+                <div class="border-l-4 {% if update.success %}border-green-500 bg-green-50{% else %}border-red-500 bg-red-50{% endif %} p-4 rounded-lg">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-semibold text-gray-800">{{ update.type | upper if update.type else 'UPDATE' }}</span>
+                        <span class="text-xs text-gray-500">{{ update.timestamp }}</span>
+                    </div>
+                    <p class="text-sm text-gray-700">{{ update.message if update.message else 'Mise à jour effectuée' }}</p>
+                    {% if update.details %}
+                    <p class="text-xs text-gray-600 mt-1">{{ update.details }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="bg-gray-50 p-8 rounded-lg text-center text-gray-500 border-2 border-gray-200">
+                <span class="text-5xl mb-2 block">📝</span>
+                <p class="font-semibold">Aucune mise à jour enregistrée</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Avertissement de sécurité -->
+        <div class="bg-red-50 border-2 border-dashed border-red-400 rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="text-3xl">⚠️</span>
+                <h3 class="font-semibold text-lg text-gray-800">Avertissement de sécurité</h3>
+            </div>
+            <p class="text-sm text-gray-700">
+                Les mises à jour depuis GitHub peuvent écraser vos modifications locales. 
+                Assurez-vous d'avoir sauvegardé vos données importantes avant de procéder.
+            </p>
+        </div>
     </div>
 </div>
 {% endblock %}

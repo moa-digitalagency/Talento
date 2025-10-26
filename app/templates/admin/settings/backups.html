@@ -1,119 +1,123 @@
 {% extends "base.html" %}
 {% block title %}Sauvegardes - Paramètres{% endblock %}
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-6">
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-800">💾 Sauvegardes</h1>
-            <p class="text-gray-600 mt-2">Gérer les sauvegardes et restaurations de la base de données</p>
-        </div>
-        <a href="{{ url_for('admin.settings') }}" class="btn-secondary">← Retour aux paramètres</a>
-    </div>
-
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }} mb-4">
-                {{ message }}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">💾 Sauvegardes</h1>
+                <p class="text-gray-600 mt-2">Gérer les sauvegardes et restaurations de la base de données</p>
             </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+            <a href="{{ url_for('admin.settings') }}" class="bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 font-semibold">
+                ← Retour aux paramètres
+            </a>
+        </div>
 
-    <div class="card mb-6">
-        <h2 class="text-2xl font-semibold mb-4">Créer une sauvegarde</h2>
-        <p class="text-gray-600 mb-4">Créez une copie complète de la base de données avant toute modification importante.</p>
-        
-        <form method="POST" action="{{ url_for('admin.create_backup') }}" onsubmit="return confirm('Créer une sauvegarde de la base de données ?')">
-            <button type="submit" class="btn-primary">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="mb-4 p-4 rounded-lg border-2 {% if category == 'success' %}bg-green-50 border-green-300 text-green-800{% elif category == 'error' %}bg-red-50 border-red-300 text-red-800{% else %}bg-blue-50 border-blue-300 text-blue-800{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Créer une sauvegarde -->
+        <div class="bg-orange-50 border-2 border-dashed border-orange-400 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">💾</span>
+                <h3 class="text-2xl font-bold text-gray-800">Créer une sauvegarde</h3>
+            </div>
+            <p class="text-gray-700 mb-4">Créez une copie complète de la base de données avant toute modification importante.</p>
+            
+            <button onclick="alert('Fonctionnalité en développement')" class="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 font-semibold text-lg">
                 💾 Créer une sauvegarde maintenant
             </button>
-        </form>
-    </div>
+        </div>
 
-    <div class="card mb-6">
-        <h2 class="text-2xl font-semibold mb-4">📜 Sauvegardes disponibles</h2>
-        
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom du fichier</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Taille</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    {% if backups and backups|length > 0 %}
-                        {% for backup in backups %}
+        <!-- Sauvegardes disponibles -->
+        <div class="bg-white border-2 border-dashed border-gray-300 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-3xl">📜</span>
+                <h3 class="text-2xl font-bold text-gray-800">Sauvegardes disponibles</h3>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-mono">{{ backup.filename }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ backup.date }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm">{{ backup.size }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                <a href="{{ url_for('admin.download_backup', filename=backup.filename) }}" class="text-primary hover:underline">Télécharger</a>
-                                <button onclick="restoreBackup('{{ backup.filename }}')" class="text-orange-600 hover:underline">Restaurer</button>
-                                <button onclick="deleteBackup('{{ backup.filename }}')" class="text-red-600 hover:underline">Supprimer</button>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom du fichier</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Taille</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% if backups and backups|length > 0 %}
+                            {% for backup in backups %}
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono">{{ backup.filename }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">{{ backup.date }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">{{ backup.size }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                                    <a href="{{ url_for('admin.download_backup', filename=backup.filename) }}" class="text-blue-600 hover:underline font-semibold">Télécharger</a>
+                                    <button onclick="restoreBackup('{{ backup.filename }}')" class="text-orange-600 hover:underline font-semibold">Restaurer</button>
+                                    <button onclick="deleteBackup('{{ backup.filename }}')" class="text-red-600 hover:underline font-semibold">Supprimer</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                                <div class="flex flex-col items-center">
+                                    <span class="text-6xl mb-3">📦</span>
+                                    <p class="text-lg font-semibold">Aucune sauvegarde disponible</p>
+                                    <p class="text-sm mt-1">Créez votre première sauvegarde pour sécuriser vos données</p>
+                                </div>
                             </td>
                         </tr>
-                        {% endfor %}
-                    {% else %}
-                    <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                            Aucune sauvegarde disponible
-                        </td>
-                    </tr>
-                    {% endif %}
-                </tbody>
-            </table>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <div class="alert alert-warning">
-        <h3 class="font-semibold mb-2">⚠️ Important</h3>
-        <ul class="text-sm space-y-1">
-            <li>• Les sauvegardes sont stockées localement sur le serveur</li>
-            <li>• Il est recommandé de télécharger régulièrement les sauvegardes importantes</li>
-            <li>• La restauration d'une sauvegarde écrasera toutes les données actuelles</li>
-            <li>• Créez toujours une sauvegarde avant une mise à jour majeure</li>
-        </ul>
+        <!-- Avertissement -->
+        <div class="bg-yellow-50 border-2 border-dashed border-yellow-400 rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="text-3xl">⚠️</span>
+                <h3 class="font-semibold text-lg text-gray-800">Important</h3>
+            </div>
+            <ul class="text-sm space-y-2 text-gray-700">
+                <li class="flex items-start gap-2">
+                    <span class="text-yellow-600 mt-0.5">•</span>
+                    <span>Les sauvegardes sont stockées localement sur le serveur</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-yellow-600 mt-0.5">•</span>
+                    <span>Il est recommandé de télécharger régulièrement les sauvegardes importantes</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-yellow-600 mt-0.5">•</span>
+                    <span>La restauration d'une sauvegarde écrasera toutes les données actuelles</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="text-yellow-600 mt-0.5">•</span>
+                    <span>Créez toujours une sauvegarde avant une mise à jour majeure</span>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 
 <script>
 function restoreBackup(filename) {
-    if (confirm('⚠️ ATTENTION ⚠️\n\nLa restauration de cette sauvegarde écrasera TOUTES les données actuelles.\n\nÊtes-vous absolument certain de vouloir continuer ?')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '{{ url_for("admin.restore_backup") }}';
-        
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'filename';
-        input.value = filename;
-        
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-    }
+    alert('Fonctionnalité en développement');
 }
 
 function deleteBackup(filename) {
-    if (confirm('Supprimer définitivement la sauvegarde ' + filename + ' ?')) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = '{{ url_for("admin.delete_backup") }}';
-        
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'filename';
-        input.value = filename;
-        
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-    }
+    alert('Fonctionnalité en développement');
 }
 </script>
 {% endblock %}

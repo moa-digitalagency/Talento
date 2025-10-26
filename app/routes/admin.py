@@ -435,7 +435,7 @@ def settings_security_logs():
 @admin_required
 def settings_users():
     admins = User.query.filter(User.is_admin == True).all()
-    non_admins = User.query.filter(User.is_admin == False).order_by(User.full_name).all()
+    non_admins = User.query.filter(User.is_admin == False).order_by(User.first_name).all()
     return render_template('admin/settings/users.html', admins=admins, non_admins=non_admins)
 
 @bp.route('/settings/cache')

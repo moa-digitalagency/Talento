@@ -1,105 +1,121 @@
 {% extends "base.html" %}
 {% block title %}Configuration Système - Paramètres{% endblock %}
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-6">
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-800">🗄️ Configuration Système</h1>
-            <p class="text-gray-600 mt-2">Base de données et paramètres système</p>
-        </div>
-        <a href="{{ url_for('admin.settings') }}" class="btn-secondary">← Retour aux paramètres</a>
-    </div>
-
-    <div class="card mb-6">
-        <h2 class="text-2xl font-semibold mb-4">📊 État de la base de données</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <p class="text-sm text-gray-600 mb-1">Type de base</p>
-                <p class="text-lg font-semibold">{{ db_info.type if db_info else 'PostgreSQL' }}</p>
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">🗄️ Configuration Système</h1>
+                <p class="text-gray-600 mt-2">Base de données et paramètres système</p>
             </div>
-            
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <p class="text-sm text-gray-600 mb-1">Statut connexion</p>
-                <p class="text-lg font-semibold {% if db_info and db_info.connected %}text-green-600{% else %}text-red-600{% endif %}">
-                    {% if db_info and db_info.connected %}✓ Connecté{% else %}✗ Déconnecté{% endif %}
-                </p>
-            </div>
-            
-            <div class="bg-gray-50 p-4 rounded-lg">
-                <p class="text-sm text-gray-600 mb-1">Tables</p>
-                <p class="text-lg font-semibold">{{ db_info.tables_count if db_info else 'N/A' }}</p>
-            </div>
+            <a href="{{ url_for('admin.settings') }}" class="bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 font-semibold">
+                ← Retour aux paramètres
+            </a>
         </div>
 
-        <h3 class="text-lg font-semibold mb-3">Statistiques</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="bg-blue-50 p-3 rounded">
-                <p class="text-xs text-gray-600">Utilisateurs</p>
-                <p class="text-2xl font-bold text-blue-600">{{ stats.users if stats else 0 }}</p>
+        <!-- État de la base de données -->
+        <div class="bg-cyan-50 border-2 border-dashed border-cyan-400 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">📊</span>
+                <h3 class="text-2xl font-bold text-gray-800">État de la base de données</h3>
             </div>
-            <div class="bg-green-50 p-3 rounded">
-                <p class="text-xs text-gray-600">Talents</p>
-                <p class="text-2xl font-bold text-green-600">{{ stats.talents if stats else 0 }}</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div class="bg-white rounded-lg p-4 border-2 border-cyan-200">
+                    <p class="text-sm text-gray-600 mb-1">Type de base</p>
+                    <p class="text-lg font-semibold text-gray-800">{{ db_info.type if db_info else 'PostgreSQL' }}</p>
+                </div>
+                
+                <div class="bg-white rounded-lg p-4 border-2 border-cyan-200">
+                    <p class="text-sm text-gray-600 mb-1">Statut connexion</p>
+                    <p class="text-lg font-semibold {% if db_info and db_info.connected %}text-green-600{% else %}text-red-600{% endif %}">
+                        {% if db_info and db_info.connected %}✓ Connecté{% else %}✗ Déconnecté{% endif %}
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-lg p-4 border-2 border-cyan-200">
+                    <p class="text-sm text-gray-600 mb-1">Tables</p>
+                    <p class="text-lg font-semibold text-gray-800">{{ db_info.tables_count if db_info else 'N/A' }}</p>
+                </div>
             </div>
-            <div class="bg-purple-50 p-3 rounded">
-                <p class="text-xs text-gray-600">Boîtes de production</p>
-                <p class="text-2xl font-bold text-purple-600">{{ stats.productions if stats else 0 }}</p>
-            </div>
-            <div class="bg-orange-50 p-3 rounded">
-                <p class="text-xs text-gray-600">Administrateurs</p>
-                <p class="text-2xl font-bold text-orange-600">{{ stats.admins if stats else 0 }}</p>
+
+            <h4 class="text-lg font-semibold mb-3 text-gray-800">Statistiques</h4>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div class="bg-blue-100 border-2 border-blue-300 rounded-lg p-3">
+                    <p class="text-xs text-gray-600">Utilisateurs</p>
+                    <p class="text-2xl font-bold text-blue-600">{{ stats.users if stats else 0 }}</p>
+                </div>
+                <div class="bg-green-100 border-2 border-green-300 rounded-lg p-3">
+                    <p class="text-xs text-gray-600">Talents</p>
+                    <p class="text-2xl font-bold text-green-600">{{ stats.talents if stats else 0 }}</p>
+                </div>
+                <div class="bg-purple-100 border-2 border-purple-300 rounded-lg p-3">
+                    <p class="text-xs text-gray-600">Boîtes de production</p>
+                    <p class="text-2xl font-bold text-purple-600">{{ stats.productions if stats else 0 }}</p>
+                </div>
+                <div class="bg-orange-100 border-2 border-orange-300 rounded-lg p-3">
+                    <p class="text-xs text-gray-600">Administrateurs</p>
+                    <p class="text-2xl font-bold text-orange-600">{{ stats.admins if stats else 0 }}</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="card mb-6">
-        <h2 class="text-2xl font-semibold mb-4">⚙️ Informations système</h2>
-        
-        <div class="space-y-3">
-            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
-                <span class="font-semibold text-gray-700">Version Python</span>
-                <span class="font-mono text-sm">{{ system_info.python_version if system_info else 'N/A' }}</span>
+        <!-- Informations système -->
+        <div class="bg-indigo-50 border-2 border-dashed border-indigo-400 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">⚙️</span>
+                <h3 class="text-2xl font-bold text-gray-800">Informations système</h3>
             </div>
             
-            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
-                <span class="font-semibold text-gray-700">Version Flask</span>
-                <span class="font-mono text-sm">{{ system_info.flask_version if system_info else 'N/A' }}</span>
-            </div>
-            
-            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
-                <span class="font-semibold text-gray-700">Environnement</span>
-                <span class="font-mono text-sm">{{ system_info.environment if system_info else 'development' }}</span>
-            </div>
-            
-            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
-                <span class="font-semibold text-gray-700">Debug mode</span>
-                <span class="font-mono text-sm {% if system_info and system_info.debug %}text-orange-600{% else %}text-green-600{% endif %}">
-                    {% if system_info and system_info.debug %}Activé{% else %}Désactivé{% endif %}
-                </span>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center p-3 bg-white rounded-lg border-2 border-indigo-200">
+                    <span class="font-semibold text-gray-700">Version Python</span>
+                    <span class="font-mono text-sm bg-indigo-100 px-3 py-1 rounded">{{ system_info.python_version if system_info else 'N/A' }}</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-3 bg-white rounded-lg border-2 border-indigo-200">
+                    <span class="font-semibold text-gray-700">Version Flask</span>
+                    <span class="font-mono text-sm bg-indigo-100 px-3 py-1 rounded">{{ system_info.flask_version if system_info else 'N/A' }}</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-3 bg-white rounded-lg border-2 border-indigo-200">
+                    <span class="font-semibold text-gray-700">Environnement</span>
+                    <span class="font-mono text-sm bg-indigo-100 px-3 py-1 rounded">{{ system_info.environment if system_info else 'development' }}</span>
+                </div>
+                
+                <div class="flex justify-between items-center p-3 bg-white rounded-lg border-2 border-indigo-200">
+                    <span class="font-semibold text-gray-700">Debug mode</span>
+                    <span class="font-mono text-sm px-3 py-1 rounded {% if system_info and system_info.debug %}bg-orange-100 text-orange-600{% else %}bg-green-100 text-green-600{% endif %}">
+                        {% if system_info and system_info.debug %}Activé{% else %}Désactivé{% endif %}
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="card">
-        <h2 class="text-2xl font-semibold mb-4">🔧 Actions de maintenance</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <button onclick="alert('Fonctionnalité en développement')" class="btn-secondary">
-                🔄 Optimiser la base de données
-            </button>
+        <!-- Actions de maintenance -->
+        <div class="bg-yellow-50 border-2 border-dashed border-yellow-400 rounded-xl p-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">🔧</span>
+                <h3 class="text-2xl font-bold text-gray-800">Actions de maintenance</h3>
+            </div>
             
-            <button onclick="alert('Fonctionnalité en développement')" class="btn-secondary">
-                🧹 Nettoyer les fichiers temporaires
-            </button>
-            
-            <button onclick="alert('Fonctionnalité en développement')" class="btn-secondary">
-                📊 Analyser les performances
-            </button>
-            
-            <button onclick="alert('Fonctionnalité en développement')" class="btn-secondary">
-                🔍 Vérifier l'intégrité des données
-            </button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="alert('Fonctionnalité en développement')" class="bg-white border-2 border-yellow-400 text-gray-700 px-4 py-3 rounded-lg hover:bg-yellow-100 font-semibold">
+                    🔄 Optimiser la base de données
+                </button>
+                
+                <button onclick="alert('Fonctionnalité en développement')" class="bg-white border-2 border-yellow-400 text-gray-700 px-4 py-3 rounded-lg hover:bg-yellow-100 font-semibold">
+                    🧹 Nettoyer les fichiers temporaires
+                </button>
+                
+                <button onclick="alert('Fonctionnalité en développement')" class="bg-white border-2 border-yellow-400 text-gray-700 px-4 py-3 rounded-lg hover:bg-yellow-100 font-semibold">
+                    📊 Analyser les performances
+                </button>
+                
+                <button onclick="alert('Fonctionnalité en développement')" class="bg-white border-2 border-yellow-400 text-gray-700 px-4 py-3 rounded-lg hover:bg-yellow-100 font-semibold">
+                    🔍 Vérifier l'intégrité des données
+                </button>
+            </div>
         </div>
     </div>
 </div>
