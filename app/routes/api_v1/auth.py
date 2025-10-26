@@ -34,7 +34,7 @@ def api_login():
         "user": {
             "id": 1,
             "email": "user@example.com",
-            "unique_code": "MARAB0001M",
+            "unique_code": "MAM0001RAB",
             "first_name": "John",
             "last_name": "Doe",
             "is_admin": false
@@ -134,7 +134,7 @@ def api_current_user():
         "user": {
             "id": 1,
             "email": "user@example.com",
-            "unique_code": "MARAB0001M",
+            "unique_code": "MAM0001RAB",
             "first_name": "John",
             "last_name": "Doe",
             "is_admin": false,
