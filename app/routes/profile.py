@@ -29,9 +29,10 @@ def view():
     profile_type = 'admin' if current_user.is_admin else 'user'
     cinema_talent = None
     
-    # Vérifier si l'utilisateur est aussi un talent cinéma
-    if current_user.email:
-        cinema_talent = CinemaTalent.query.filter_by(email=current_user.email).first()
+    # Vérifier si l'utilisateur est aussi un talent cinéma via le code unique (sécurisé)
+    # Ne jamais utiliser l'email seul pour lier les profils car plusieurs users peuvent avoir le même email
+    if current_user.unique_code:
+        cinema_talent = CinemaTalent.query.filter_by(unique_code=current_user.unique_code).first()
         if cinema_talent:
             profile_type = 'cinema'
     
@@ -59,17 +60,16 @@ def dashboard():
 def edit():
     if request.method == 'POST':
         try:
-            current_user.first_name = request.form.get('first_name', '').strip()
-            current_user.last_name = request.form.get('last_name', '').strip()
+            # SÉCURITÉ: Les champs suivants sont VERROUILLÉS et ne peuvent pas être modifiés
+            # - first_name, last_name (identité)
+            # - email (identifiant)
+            # - date_of_birth (âge)
+            # - gender (identité)
+            # - passport_number, residence_card (documents)
+            # - unique_code (identifiant unique)
+            # Ces champs sont ignorés même si présents dans le POST
             
-            dob_str = request.form.get('date_of_birth')
-            if dob_str:
-                try:
-                    current_user.date_of_birth = datetime.strptime(dob_str, '%Y-%m-%d').date()
-                except ValueError:
-                    pass
-            
-            current_user.gender = request.form.get('gender')
+            # Champs modifiables uniquement
             current_user.phone = request.form.get('phone', '').strip() or None
             current_user.whatsapp = request.form.get('whatsapp', '').strip() or None
             current_user.address = request.form.get('address', '').strip() or None

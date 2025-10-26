@@ -4,6 +4,26 @@
 TalentsMaroc.com is a professional web application designed to centralize and showcase talent profiles across Africa, with a strong focus on the film industry through its CINEMA module. It enables individuals to create comprehensive profiles with unique identifiers and QR codes. The platform features advanced administrative tools, AI-powered CV analysis, and multiple data export formats. TalentsMaroc.com aims to be a robust, scalable solution for talent management and discovery, enhancing professional networking and recruitment. The CINEMA module provides a dedicated system for talent registration with detailed fields, public accessibility, and specialized features for film industry professionals.
 
 ## Recent Changes (October 26, 2025)
+- **Profile System Implementation (v2.19.0)**: Complete user profile system with:
+  - Profile viewing route (`/profile/`) with automatic type detection (admin, regular talent, or cinema talent)
+  - Profile editing with locked fields: identity (name, age), email, and ID documents cannot be modified by users
+  - Comprehensive edit form (`/profile/edit`) with sections for photo, contact, professional info, skills, CV, and social media
+  - All profile sections use colorful dotted-border design (border-2 border-dashed) consistent with CINEMA module
+  - "Profil" navigation link added before "Déconnexion" in both desktop and mobile menus
+- **Email Notifications (v2.19.0)**: Automatic email system for new talent registrations:
+  - Regular talents (via `/auth/register`) automatically receive confirmation email and login credentials (unique code + password)
+  - CINEMA talents (via `/cinema/register`) now automatically get a User account created and receive login credentials email
+  - Both registration processes use SendGrid API via `email_service.send_login_credentials()` and `send_application_confirmation()`
+  - Passwords are randomly generated using `generate_random_password()` from `app.utils.email_service`
+- **Dual Email Support (v2.19.0)**: Email constraint modified to allow dual usage:
+  - Removed `unique=True` constraint from User.email field in database model
+  - Same email can now be used for both regular talent AND cinema talent accounts
+  - Unique identifier remains the code (PPGNNNNVVV for regular, PPVVVNNNNNG for cinema)
+  - Login system supports both email and unique code as identifiers
+- **CINEMA Auto-Account Creation (v2.19.0)**: When a cinema talent registers:
+  - System automatically creates a corresponding User account with same email and cinema unique code
+  - User account enables cinema talents to log in and manage their profile
+  - QR code and profile photo are synchronized between CinemaTalent and User records
 - **Codification System Update**: Changed code formats to new specifications:
   - **Main codes**: Now PPGNNNNVVV (was PPVVVNNNNG) with sequential numbering per country
   - **CINEMA codes**: Now PPVVVNNNNNG (11 chars with 4 digits, was 12 chars with 6 digits) with sequential numbering per country
