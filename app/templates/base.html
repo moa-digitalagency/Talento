@@ -46,6 +46,10 @@
                                 <span>Paramètres</span>
                             </a>
                             {% endif %}
+                            <a href="{{ url_for('profile.view') }}" class="px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all font-semibold">
+                                <span>👤</span>
+                                <span>Profil</span>
+                            </a>
                             <a href="{{ url_for('auth.logout') }}" class="btn-secondary px-4">
                                 <span>🚪</span>
                                 <span>Déconnexion</span>
@@ -107,6 +111,10 @@
                         <span class="ml-2">Paramètres</span>
                     </a>
                     {% endif %}
+                    <a href="{{ url_for('profile.view') }}" class="block px-4 py-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all font-semibold">
+                        <span>👤</span>
+                        <span class="ml-2">Profil</span>
+                    </a>
                     <a href="{{ url_for('auth.logout') }}" class="block px-4 py-3 text-gray-700 hover:bg-red-50 rounded-lg transition-all font-semibold">
                         <span>🚪</span>
                         <span class="ml-2">Déconnexion</span>

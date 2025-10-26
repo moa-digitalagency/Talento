@@ -12,6 +12,7 @@ from app import db
 from app.models.user import User
 from app.models.talent import UserTalent, Talent
 from app.models.location import Country, City
+from app.models.cinema_talent import CinemaTalent
 from app.utils.file_handler import save_file
 from app.services.cv_analyzer import CVAnalyzerService
 import os
@@ -19,6 +20,34 @@ import json
 from datetime import datetime
 
 bp = Blueprint('profile', __name__, url_prefix='/profile')
+
+@bp.route('/')
+@login_required
+def view():
+    """Affiche le profil de l'utilisateur connecté selon son type"""
+    # Déterminer le type d'utilisateur
+    profile_type = 'admin' if current_user.is_admin else 'user'
+    cinema_talent = None
+    
+    # Vérifier si l'utilisateur est aussi un talent cinéma
+    if current_user.email:
+        cinema_talent = CinemaTalent.query.filter_by(email=current_user.email).first()
+        if cinema_talent:
+            profile_type = 'cinema'
+    
+    # Préparer l'analyse CV si disponible
+    cv_analysis_data = None
+    if current_user.cv_analysis:
+        try:
+            cv_analysis_data = json.loads(current_user.cv_analysis)
+        except:
+            cv_analysis_data = None
+    
+    return render_template('profile/view.html', 
+                         user=current_user,
+                         cinema_talent=cinema_talent,
+                         profile_type=profile_type,
+                         cv_analysis=cv_analysis_data)
 
 @bp.route('/dashboard')
 @login_required
@@ -137,7 +166,8 @@ def edit():
                          user_talent_ids=user_talent_ids)
 
 @bp.route('/view/<unique_code>')
-def view(unique_code):
+def view_public(unique_code):
+    """Affiche le profil public d'un utilisateur via son code unique"""
     user = User.query.filter_by(unique_code=unique_code.replace('-', '')).first_or_404()
     
     cv_analysis_data = None
@@ -147,4 +177,4 @@ def view(unique_code):
         except:
             cv_analysis_data = None
     
-    return render_template('profile/view.html', user=user, cv_analysis=cv_analysis_data)
+    return render_template('profile/view.html', user=user, cv_analysis=cv_analysis_data, profile_type='user', cinema_talent=None)
