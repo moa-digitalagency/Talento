@@ -20,6 +20,16 @@ class BackupService:
     """Service de sauvegarde et restauration"""
     
     @staticmethod
+    def list_backups():
+        """
+        Lister les sauvegardes disponibles
+        Retourne une liste de dictionnaires avec les informations sur chaque backup
+        """
+        # Pour l'instant, retourne une liste vide
+        # Cette fonctionnalité peut être développée pour lister les backups stockés
+        return []
+    
+    @staticmethod
     def create_full_backup():
         """
         Créer une sauvegarde complète de l'application

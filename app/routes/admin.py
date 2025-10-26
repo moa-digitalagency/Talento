@@ -357,7 +357,12 @@ def settings_email_templates():
 @login_required
 @admin_required
 def settings_backups():
-    return render_template('admin/settings/backups.html')
+    try:
+        backups = BackupService.list_backups()
+    except Exception as e:
+        backups = []
+        flash(f'Erreur lors de la récupération des sauvegardes: {str(e)}', 'error')
+    return render_template('admin/settings/backups.html', backups=backups)
 
 @bp.route('/settings/roles')
 @login_required
@@ -369,19 +374,61 @@ def settings_roles():
 @login_required
 @admin_required
 def settings_system():
-    return render_template('admin/settings/system.html')
+    import sys
+    import flask
+    from app.models.production import Production
+    
+    # Informations de la base de données
+    db_info = {
+        'type': 'PostgreSQL',
+        'connected': True,
+        'tables_count': len(db.metadata.tables)
+    }
+    
+    # Statistiques
+    stats = {
+        'users': User.query.count(),
+        'talents': Talent.query.count(),
+        'productions': Production.query.count(),
+        'admins': User.query.filter(User.is_admin == True).count()
+    }
+    
+    # Informations système
+    system_info = {
+        'python_version': f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+        'flask_version': flask.__version__,
+        'environment': os.environ.get('FLASK_ENV', 'development'),
+        'debug': current_app.debug
+    }
+    
+    return render_template('admin/settings/system.html', 
+                         db_info=db_info, 
+                         stats=stats, 
+                         system_info=system_info)
 
 @bp.route('/settings/activity-logs')
 @login_required
 @admin_required
 def settings_activity_logs():
-    return render_template('admin/settings/activity_logs.html')
+    # Fonctionnalité en développement - retourner liste vide
+    logs = []
+    return render_template('admin/settings/activity_logs.html', logs=logs)
 
 @bp.route('/settings/security-logs')
 @login_required
 @admin_required
 def settings_security_logs():
-    return render_template('admin/settings/security_logs.html')
+    # Fonctionnalité en développement - retourner données vides
+    security_stats = {
+        'failed_attempts': 0,
+        'suspicious': 0,
+        'blocked_ips': 0,
+        'alerts': 0
+    }
+    security_logs = []
+    return render_template('admin/settings/security_logs.html', 
+                         security_stats=security_stats, 
+                         security_logs=security_logs)
 
 @bp.route('/settings/users')
 @login_required
@@ -395,7 +442,14 @@ def settings_users():
 @login_required
 @admin_required
 def settings_cache():
-    return render_template('admin/settings/cache.html')
+    # Données fictives pour le cache (fonctionnalité en développement)
+    cache_stats = {
+        'system_size': '0 MB',
+        'flask_size': '0 MB',
+        'temp_size': '0 MB'
+    }
+    last_clear = None
+    return render_template('admin/settings/cache.html', cache_stats=cache_stats, last_clear=last_clear)
 
 @bp.route('/settings/github')
 @login_required
