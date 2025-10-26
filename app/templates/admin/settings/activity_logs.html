@@ -76,20 +76,34 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         {% if logs and logs|length > 0 %}
                             {% for log in logs %}
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">{{ log.timestamp }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ log.user }}</td>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ log.formatted_date }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <div class="font-medium text-gray-900">{{ log.username }}</div>
+                                    <div class="text-xs text-gray-500">{{ log.user_email }}</div>
+                                    {% if log.user_code %}<div class="text-xs text-gray-400">{{ log.user_code }}</div>{% endif %}
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <span class="px-2 py-1 text-xs font-semibold rounded-full 
                                         {% if log.action_type == 'create' %}bg-green-100 text-green-800
                                         {% elif log.action_type == 'update' %}bg-blue-100 text-blue-800
                                         {% elif log.action_type == 'delete' %}bg-red-100 text-red-800
-                                        {% else %}bg-gray-100 text-gray-800{% endif %}">
-                                        {{ log.action }}
+                                        {% elif log.action_type == 'login' %}bg-indigo-100 text-indigo-800
+                                        {% elif log.action_type == 'logout' %}bg-gray-100 text-gray-800
+                                        {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                                        {{ log.action_display }}
                                     </span>
+                                    {% if log.action_category %}<div class="text-xs text-gray-500 mt-1">{{ log.action_category }}</div>{% endif %}
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-500">{{ log.details }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-500">{{ log.ip }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-500">
+                                    {{ log.action_description }}
+                                    {% if log.resource_type %}<div class="text-xs text-gray-400 mt-1">{{ log.resource_type }} #{{ log.resource_id }}</div>{% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <div class="font-mono text-gray-900">{{ log.ip_address }}</div>
+                                    {% if log.browser %}<div class="text-xs text-gray-500">{{ log.browser }} {{ log.browser_version }}</div>{% endif %}
+                                    {% if log.operating_system %}<div class="text-xs text-gray-400">{{ log.operating_system }}</div>{% endif %}
+                                </td>
                             </tr>
                             {% endfor %}
                         {% else %}

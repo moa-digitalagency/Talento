@@ -100,22 +100,37 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         {% if security_logs and security_logs|length > 0 %}
                             {% for log in security_logs %}
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">{{ log.timestamp }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">{{ log.type }}</td>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ log.formatted_date }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                                        {{ log.event_display }}
+                                    </span>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <span class="px-2 py-1 text-xs font-semibold rounded-full
                                         {% if log.severity == 'critical' %}bg-red-100 text-red-800
-                                        {% elif log.severity == 'high' %}bg-orange-100 text-orange-800
-                                        {% elif log.severity == 'medium' %}bg-yellow-100 text-yellow-800
-                                        {% else %}bg-gray-100 text-gray-800{% endif %}">
-                                        {{ log.severity_label }}
+                                        {% elif log.severity == 'warning' %}bg-orange-100 text-orange-800
+                                        {% else %}bg-blue-100 text-blue-800{% endif %}">
+                                        {{ log.severity_display }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-700">{{ log.description }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono">{{ log.ip }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-700">
+                                    {{ log.description }}
+                                    {% if log.attempted_username %}<div class="text-xs text-gray-500 mt-1">Utilisateur: {{ log.attempted_username }}</div>{% endif %}
+                                    {% if log.action_taken %}<div class="text-xs text-red-600 mt-1">Action: {{ log.action_taken }}</div>{% endif %}
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    <button class="text-purple-600 hover:underline font-semibold">Détails</button>
+                                    <div class="font-mono text-gray-900">{{ log.ip_address }}</div>
+                                    {% if log.browser %}<div class="text-xs text-gray-500">{{ log.browser }}</div>{% endif %}
+                                    {% if log.device_type %}<div class="text-xs text-gray-400">{{ log.device_type }}</div>{% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    {% if log.resolved %}
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Résolu</span>
+                                    {% else %}
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">En attente</span>
+                                    {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}
@@ -142,8 +157,9 @@
                 <h3 class="font-semibold text-lg">À propos des logs de sécurité</h3>
             </div>
             <p class="text-sm text-gray-700">
-                Cette fonctionnalité est actuellement en développement. 
-                Les logs de sécurité permettront de détecter et surveiller les activités suspectes.
+                Les logs de sécurité enregistrent tous les événements de sécurité importants : tentatives de connexion échouées,
+                activités suspectes, modifications de permissions, etc. Ces informations sont essentielles pour maintenir 
+                la sécurité de la plateforme.
             </p>
         </div>
     </div>

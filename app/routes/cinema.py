@@ -24,8 +24,21 @@ bp = Blueprint('cinema', __name__, url_prefix='/cinema')
 @login_required
 def dashboard():
     """Dashboard CINEMA - Aperçu général du module cinéma"""
+    from app.models.project import Project
+    
+    # Statistiques
+    total_productions = Production.query.filter_by(is_active=True).count()
     total_talents = CinemaTalent.query.filter_by(is_active=True).count()
-    return render_template('cinema/dashboard.html', total_talents=total_talents)
+    total_projects = Project.query.filter_by(is_active=True).count()
+    total_team_members = User.query.filter(
+        (User.is_admin == True) | (User.role == 'presence')
+    ).count()
+    
+    return render_template('cinema/dashboard.html', 
+                         total_productions=total_productions,
+                         total_talents=total_talents,
+                         total_projects=total_projects,
+                         total_team_members=total_team_members)
 
 @bp.route('/contrats')
 @login_required

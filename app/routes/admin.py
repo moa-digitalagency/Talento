@@ -410,22 +410,31 @@ def settings_system():
 @login_required
 @admin_required
 def settings_activity_logs():
-    # Fonctionnalité en développement - retourner liste vide
-    logs = []
+    from app.services.logging_service import LoggingService
+    logs = LoggingService.get_recent_activities(limit=100)
     return render_template('admin/settings/activity_logs.html', logs=logs)
 
 @bp.route('/settings/security-logs')
 @login_required
 @admin_required
 def settings_security_logs():
-    # Fonctionnalité en développement - retourner données vides
+    from app.services.logging_service import LoggingService
+    from app.models.security_log import SecurityLog
+    
+    # Calculer les statistiques
+    failed_attempts = SecurityLog.query.filter_by(event_type='failed_login').count()
+    suspicious = SecurityLog.query.filter_by(severity='warning').count()
+    critical = SecurityLog.query.filter_by(severity='critical').count()
+    unresolved = SecurityLog.query.filter_by(resolved=False).count()
+    
     security_stats = {
-        'failed_attempts': 0,
-        'suspicious': 0,
-        'blocked_ips': 0,
-        'alerts': 0
+        'failed_attempts': failed_attempts,
+        'suspicious': suspicious,
+        'blocked_ips': 0,  # À implémenter plus tard
+        'alerts': critical + unresolved
     }
-    security_logs = []
+    
+    security_logs = LoggingService.get_security_logs(limit=100)
     return render_template('admin/settings/security_logs.html', 
                          security_stats=security_stats, 
                          security_logs=security_logs)

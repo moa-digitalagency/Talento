@@ -98,3 +98,4 @@ requests==2.31.0
 sendgrid
 sqlalchemy
 Werkzeug==3.0.1
+user-agents
