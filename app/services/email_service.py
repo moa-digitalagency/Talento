@@ -11,8 +11,14 @@ class EmailService:
     """Service pour l'envoi d'emails via SendGrid"""
     
     def __init__(self, api_key=None, from_email=None):
-        self.api_key = api_key or os.environ.get('SENDGRID_API_KEY')
-        self.from_email = from_email or os.environ.get('SENDGRID_FROM_EMAIL', 'noreply@myoneart.com')
+        # Essayer d'abord AppSettings, puis les variables d'environnement
+        try:
+            from app.models.settings import AppSettings
+            self.api_key = api_key or AppSettings.get('sendgrid_api_key') or os.environ.get('SENDGRID_API_KEY')
+            self.from_email = from_email or AppSettings.get('sender_email') or os.environ.get('SENDGRID_FROM_EMAIL', 'noreply@myoneart.com')
+        except:
+            self.api_key = api_key or os.environ.get('SENDGRID_API_KEY')
+            self.from_email = from_email or os.environ.get('SENDGRID_FROM_EMAIL', 'noreply@myoneart.com')
         
     def send_email(self, to_email, subject, html_content, attachments=None):
         """
@@ -28,8 +34,20 @@ class EmailService:
             True si envoyé avec succès, False sinon
         """
         if not self.api_key:
-            current_app.logger.error("SendGrid API key manquante")
+            error_msg = "❌ SendGrid API key manquante. Configurez SENDGRID_API_KEY dans les variables d'environnement ou dans /admin/settings/api-keys"
+            current_app.logger.error(error_msg)
+            print(f"🔴 {error_msg}")
             return False
+        
+        if not self.from_email:
+            error_msg = "❌ Email expéditeur manquant. Configurez SENDGRID_FROM_EMAIL"
+            current_app.logger.error(error_msg)
+            print(f"🔴 {error_msg}")
+            return False
+        
+        print(f"📧 Tentative d'envoi email à: {to_email}")
+        print(f"📤 Expéditeur: {self.from_email}")
+        print(f"📝 Sujet: {subject}")
             
         try:
             message = Mail(
@@ -53,14 +71,27 @@ class EmailService:
             response = sg.send(message)
             
             if response.status_code in [200, 201, 202]:
-                current_app.logger.info(f"Email envoyé avec succès à {to_email}")
+                success_msg = f"✅ Email envoyé avec succès à {to_email}"
+                current_app.logger.info(success_msg)
+                print(success_msg)
                 return True
             else:
-                current_app.logger.error(f"Erreur SendGrid: {response.status_code}")
+                error_msg = f"❌ Erreur SendGrid - Code: {response.status_code}, Body: {response.body}"
+                current_app.logger.error(error_msg)
+                print(f"🔴 {error_msg}")
                 return False
                 
         except Exception as e:
-            current_app.logger.error(f"Erreur envoi email: {str(e)}")
+            import traceback
+            error_details = traceback.format_exc()
+            error_msg = f"❌ Erreur SendGrid: {str(e)}"
+            current_app.logger.error(f"{error_msg}\n{error_details}")
+            print(f"🔴 ERREUR SENDGRID DÉTAILLÉE:")
+            print(f"   Message: {str(e)}")
+            print(f"   Type: {type(e).__name__}")
+            print(f"   API Key présente: {bool(self.api_key)}")
+            print(f"   From Email: {self.from_email}")
+            print(f"   Traceback:\n{error_details}")
             return False
     
     def send_application_confirmation(self, user, profile_pdf_path=None):

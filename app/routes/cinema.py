@@ -791,6 +791,42 @@ def view_profile(unique_code):
                          parsed=parsed_data,
                          country_flags=country_flags)
 
+@bp.route('/resend_credentials/<unique_code>', methods=['POST'])
+@login_required
+def resend_credentials_cinema(unique_code):
+    """Renvoie les identifiants de connexion par email pour un talent CINEMA"""
+    if not current_user.is_admin:
+        flash('Accès non autorisé.', 'error')
+        return redirect(url_for('main.index'))
+    
+    talent = CinemaTalent.query.filter_by(unique_code=unique_code).first_or_404()
+    
+    try:
+        from app.services.email_service import email_service
+        from app.utils.email_service import generate_random_password
+        
+        cinema_user = User.query.filter_by(unique_code=unique_code).first()
+        if not cinema_user:
+            flash('Utilisateur associé non trouvé.', 'error')
+            return redirect(url_for('cinema.view_talent', code=unique_code))
+        
+        new_password = generate_random_password()
+        cinema_user.set_password(new_password)
+        
+        email_sent = email_service.send_login_credentials(cinema_user, new_password)
+        
+        if email_sent:
+            db.session.commit()
+            flash(f'Les identifiants ont été renvoyés à {talent.email}', 'success')
+        else:
+            db.session.rollback()
+            flash(f'Erreur lors de l\'envoi de l\'email. Vérifiez la configuration SendGrid.', 'error')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erreur: {str(e)}', 'error')
+    
+    return redirect(url_for('cinema.view_talent', code=unique_code))
+
 @bp.route('/export/pdf/<code>')
 def export_pdf(code):
     """Télécharger le profil CINEMA en PDF"""
