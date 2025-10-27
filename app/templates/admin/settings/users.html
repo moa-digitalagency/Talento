@@ -65,6 +65,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 {% if admin.id != current_user.id and admins|length > 1 %}
                                 <form method="POST" action="{{ url_for('admin.demote_admin', user_id=admin.id) }}" class="inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                     <button type="submit" class="text-red-600 hover:text-red-800 font-semibold" onclick="return confirm('Retirer les droits administrateur à {{ admin.full_name }} ?')">
                                         Révoquer
                                     </button>
@@ -109,6 +110,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.city.name if user.city else 'N/A' }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <form method="POST" action="{{ url_for('admin.promote_admin', user_id=user.id) }}" class="inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                         <button type="submit" class="bg-white border-2 border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 font-semibold text-sm transition-all" onclick="return confirm('Donner les droits administrateur à {{ user.full_name }} ?')">
                                             Promouvoir
                                         </button>
