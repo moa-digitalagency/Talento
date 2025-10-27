@@ -148,15 +148,24 @@ class BulkActionManager {
         }
 
         const ids = Array.from(this.selectedIds);
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         
         fetch('/admin/bulk/delete', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
             },
             body: JSON.stringify({ ids: ids })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(text);
+                });
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 alert(`✅ ${data.deleted_count} utilisateur(s) supprimé(s) avec succès`);
@@ -166,7 +175,8 @@ class BulkActionManager {
             }
         })
         .catch(error => {
-            alert('Erreur lors de la suppression: ' + error);
+            console.error('Erreur lors de la suppression:', error);
+            alert('Erreur lors de la suppression: ' + error.message);
         });
     }
 }

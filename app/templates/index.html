@@ -273,6 +273,7 @@
                                     <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}" 
                                           onsubmit="return confirm('⚠️ Êtes-vous sûr de vouloir supprimer {{ user.full_name }} ? Cette action est irréversible.');" 
                                           class="inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                         <button type="submit" class="px-2 sm:px-3 py-1 bg-red-100 text-red-700 font-semibold rounded-lg border border-red-500 hover:bg-red-200 transition-all text-xs sm:text-sm">
                                             🗑️ <span class="hidden sm:inline">Supprimer</span>
                                         </button>
