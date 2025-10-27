@@ -256,29 +256,13 @@ EOF
     echo "  python -c \"from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())\""
 fi
 
-# Charger les variables d'environnement
+# Charger les variables d'environnement si le fichier existe
 set -a
 [ -f .env ] && . .env
 set +a
 
-# Vérifier les variables critiques
-print_info "Vérification des variables d'environnement..."
-
-missing_vars=()
-[ -z "$SECRET_KEY" ] && missing_vars+=("SECRET_KEY")
-[ -z "$DATABASE_URL" ] && missing_vars+=("DATABASE_URL")
-[ -z "$ENCRYPTION_KEY" ] && missing_vars+=("ENCRYPTION_KEY")
-
-if [ ${#missing_vars[@]} -gt 0 ]; then
-    print_warning "Variables d'environnement non configurées (valeurs par défaut seront utilisées):"
-    for var in "${missing_vars[@]}"; do
-        echo "  - $var"
-    done
-    print_info "L'application utilisera les valeurs par défaut de config.py"
-    print_info "Pour configurer ces variables, éditez le fichier .env"
-else
-    print_success "Configuration vérifiée"
-fi
+print_info "Variables d'environnement chargées (fichier .env optionnel)"
+print_success "L'application utilisera config.py pour les valeurs par défaut"
 
 # ============================================================================
 # ÉTAPE 6: BASE DE DONNÉES
