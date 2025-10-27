@@ -534,7 +534,7 @@ flask db upgrade
 python app.py
 
 # Production (avec Gunicorn)
-gunicorn --bind 0.0.0.0:5000 --reuse-port --workers 4 app:app
+gunicorn --bind 0.0.0.0:5004 --reuse-port --workers 4 app:app
 ```
 
 ### Comptes par Défaut

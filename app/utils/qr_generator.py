@@ -32,7 +32,7 @@ def generate_qr_code(unique_code, save_path, profile_type='user'):
             else:
                 profile_url = f"{replit_domain}/cinema/profile/{unique_code}"
         else:
-            profile_url = f"http://localhost:5000/cinema/profile/{unique_code}"
+            profile_url = f"http://localhost:5004/cinema/profile/{unique_code}"
     else:  # user profile (default)
         if replit_domain:
             if not replit_domain.startswith('http'):
@@ -40,7 +40,7 @@ def generate_qr_code(unique_code, save_path, profile_type='user'):
             else:
                 profile_url = f"{replit_domain}/profile/view/{unique_code}"
         else:
-            profile_url = f"http://localhost:5000/profile/view/{unique_code}"
+            profile_url = f"http://localhost:5004/profile/view/{unique_code}"
     
     qr = qrcode.QRCode(
         version=1,

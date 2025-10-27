@@ -18,12 +18,12 @@ Bienvenue dans la documentation API de TalentsMaroc.com ! / Welcome to TalentsMa
 ### Base URL
 ```
 Production: https://your-domain.com/api/v1
-Development: http://localhost:5000/api/v1
+Development: http://localhost:5004/api/v1
 ```
 
 ### Authentication
 ```bash
-curl -X POST http://localhost:5000/api/v1/auth/login \
+curl -X POST http://localhost:5004/api/v1/auth/login \
   -H "Content-Type: application/json" \
   -d '{"identifier":"admin@talento.com","password":"@4dm1n"}' \
   -c cookies.txt
@@ -31,7 +31,7 @@ curl -X POST http://localhost:5000/api/v1/auth/login \
 
 ### Test Endpoint
 ```bash
-curl -X GET http://localhost:5000/api/v1/auth/me \
+curl -X GET http://localhost:5004/api/v1/auth/me \
   -b cookies.txt
 ```
 

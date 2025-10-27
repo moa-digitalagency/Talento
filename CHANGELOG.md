@@ -14,7 +14,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Python 3.11** : Installation et configuration complète
 - **Dépendances** : Toutes les dépendances installées depuis requirements.txt
 - **Base de données** : Initialisée avec données de démonstration
-- **Application** : Démarrée avec succès sur port 5000
+- **Application** : Démarrée avec succès sur port 5004
 
 #### Script de Déploiement VPS (`deploy_vps.sh`)
 - **Nouveau** : Script Bash complet et production-ready pour déploiement automatisé

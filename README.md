@@ -419,12 +419,12 @@ python migrations_init.py
 # Mode développement
 python app.py
 
-# L'application sera accessible sur http://localhost:5000
+# L'application sera accessible sur http://localhost:5004
 ```
 
 **Mode production** (avec Gunicorn) :
 ```bash
-gunicorn --bind 0.0.0.0:5000 --reuse-port --workers 4 app:app
+gunicorn --bind 0.0.0.0:5004 --reuse-port --workers 4 app:app
 ```
 
 ---
@@ -778,10 +778,10 @@ sudo systemctl restart talentsmaroc
 
 #### Dépannage
 
-**Le port 5000 est déjà utilisé** :
+**Le port 5004 est déjà utilisé** :
 ```bash
 # Trouver le processus
-lsof -i :5000
+lsof -i :5004
 
 # Arrêter le processus
 sudo kill -9 <PID>

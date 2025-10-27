@@ -75,7 +75,7 @@ class EmailService:
             True si envoyé, False sinon
         """
         try:
-            domain = os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')
+            domain = os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5004')
             profile_url = f"https://{domain}/profile/view/{user.unique_code}"
             
             html_content = f"""
@@ -162,7 +162,7 @@ class EmailService:
             True si envoyé, False sinon
         """
         try:
-            domain = os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5000')
+            domain = os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5004')
             login_url = f"https://{domain}/login"
             
             html_content = f"""

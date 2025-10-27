@@ -57,7 +57,7 @@ class CVAnalyzerService:
                 headers={
                     'Authorization': f'Bearer {api_key}',
                     'Content-Type': 'application/json',
-                    'HTTP-Referer': os.environ.get('REPLIT_DEV_DOMAIN', 'http://localhost:5000'),
+                    'HTTP-Referer': os.environ.get('REPLIT_DEV_DOMAIN', 'http://localhost:5004'),
                 },
                 json={
                     'model': 'meta-llama/llama-3.1-8b-instruct:free',

@@ -126,7 +126,7 @@ python migrations_init.py
 python app.py
 ```
 
-L'application sera accessible sur `http://localhost:5000`
+L'application sera accessible sur `http://localhost:5004`
 
 ### Comptes par Défaut
 

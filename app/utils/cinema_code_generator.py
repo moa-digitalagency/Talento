@@ -133,5 +133,5 @@ def generate_cinema_qr_url(unique_code):
     from flask import current_app
     
     # En production, utiliser le domaine Replit
-    base_url = current_app.config.get('BASE_URL', 'http://localhost:5000')
+    base_url = current_app.config.get('BASE_URL', 'http://localhost:5004')
     return f"{base_url}/cinema/profile/{unique_code}"
