@@ -208,5 +208,5 @@ if __name__ == '__main__':
         ensure_admin_user()
         ensure_demo_productions()
     # Port 5000 pour Replit (requis), 5004 pour VPS (voir deploy_vps.sh)
-    port = int(os.environ.get('PORT', 5000))
+    port = int(os.environ.get('PORT', 5004))
     app.run(host='0.0.0.0', port=port, debug=True)
