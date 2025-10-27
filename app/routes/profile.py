@@ -25,6 +25,11 @@ bp = Blueprint('profile', __name__, url_prefix='/profile')
 @login_required
 def view():
     """Affiche le profil de l'utilisateur connecté selon son type"""
+    # Si un unique_code est passé en paramètre, rediriger vers la vue publique
+    unique_code = request.args.get('unique_code')
+    if unique_code:
+        return redirect(url_for('profile.view_public', unique_code=unique_code))
+    
     # Déterminer le type d'utilisateur
     profile_type = 'admin' if current_user.is_admin else 'user'
     cinema_talent = None

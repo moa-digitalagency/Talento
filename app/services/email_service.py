@@ -7,6 +7,31 @@ from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileT
 import base64
 from flask import current_app, render_template
 
+def get_application_domain():
+    """
+    Détecte le domaine de l'application selon l'environnement (Replit, VPS, ou autre)
+    
+    Returns:
+        str: Le domaine de l'application (ex: 'talentsmaroc.com' ou 'app-name.replit.app')
+    """
+    # 1. Essayer d'abord la variable d'environnement personnalisée (pour VPS)
+    domain = os.environ.get('APP_DOMAIN')
+    if domain:
+        return domain
+    
+    # 2. Essayer le domaine Replit (pour déploiements Replit)
+    domain = os.environ.get('REPLIT_DEV_DOMAIN')
+    if domain:
+        return domain
+    
+    # 3. Essayer REPLIT_DOMAINS (format: domain1.repl.co,domain2.repl.co)
+    domains = os.environ.get('REPLIT_DOMAINS')
+    if domains:
+        return domains.split(',')[0].strip()
+    
+    # 4. Fallback: localhost avec port
+    return 'localhost:5000'
+
 class EmailService:
     """Service pour l'envoi d'emails via SendGrid"""
     
@@ -106,7 +131,7 @@ class EmailService:
             True si envoyé, False sinon
         """
         try:
-            domain = os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5004')
+            domain = get_application_domain()
             profile_url = f"https://{domain}/profile/view/{user.unique_code}"
             
             html_content = f"""
@@ -193,7 +218,7 @@ class EmailService:
             True si envoyé, False sinon
         """
         try:
-            domain = os.environ.get('REPLIT_DEV_DOMAIN', 'localhost:5004')
+            domain = get_application_domain()
             login_url = f"https://{domain}/login"
             
             html_content = f"""

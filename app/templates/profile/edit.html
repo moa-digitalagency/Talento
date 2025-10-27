@@ -9,11 +9,19 @@
         <!-- En-tête -->
         <div class="mb-6 flex items-center justify-between">
             <h1 class="text-3xl font-bold text-gray-800">Modifier mon profil</h1>
-            <a href="{{ url_for('profile.view') }}" 
-               class="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-lg border-2 border-gray-500 hover:bg-gray-200 transition-all flex items-center gap-2">
-                <span>◀️</span>
-                <span>Retour au profil</span>
-            </a>
+            <div class="flex gap-3">
+                <a href="{{ url_for('profile.view_public', unique_code=user.unique_code) }}" 
+                   target="_blank"
+                   class="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg border-2 border-blue-700 hover:bg-blue-700 transition-all flex items-center gap-2">
+                    <span>👁️</span>
+                    <span>Voir profil public</span>
+                </a>
+                <a href="{{ url_for('profile.view') }}" 
+                   class="px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-lg border-2 border-gray-500 hover:bg-gray-200 transition-all flex items-center gap-2">
+                    <span>◀️</span>
+                    <span>Retour au profil</span>
+                </a>
+            </div>
         </div>
 
         <!-- Informations verrouillées -->
