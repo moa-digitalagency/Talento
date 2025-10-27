@@ -17,7 +17,7 @@ www.myoneart.com
         <!-- En-tête -->
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-4xl font-bold text-indigo-600">✏️ Modifier le Profil</h1>
-            <a href="{{ url_for('profile.view', unique_code=user.unique_code) }}" 
+            <a href="{{ url_for('profile.view_public', unique_code=user.unique_code) }}" 
                class="btn-secondary px-6">
                 ← Retour
             </a>
@@ -283,7 +283,7 @@ www.myoneart.com
                 <button type="submit" class="btn-primary flex-1 py-4 text-lg font-semibold">
                     💾 Enregistrer les modifications
                 </button>
-                <a href="{{ url_for('profile.view', unique_code=user.unique_code) }}" 
+                <a href="{{ url_for('profile.view_public', unique_code=user.unique_code) }}" 
                    class="btn-secondary px-8 py-4 text-lg font-semibold">
                     ❌ Annuler
                 </a>

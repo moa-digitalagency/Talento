@@ -20,6 +20,13 @@
                     <span>✏️</span>
                     <span>Modifier</span>
                 </a>
+                <form method="POST" action="{{ url_for('profile.resend_credentials', unique_code=user.unique_code) }}" class="w-full sm:w-auto" onsubmit="return confirm('Renvoyer les identifiants par email à {{ user.email }} ?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-cyan-100 text-cyan-700 font-bold rounded-lg border-2 border-cyan-500 hover:bg-cyan-200 transition-all flex items-center justify-center gap-2 text-sm sm:text-base">
+                        <span>📧</span>
+                        <span>Renvoyer identifiants</span>
+                    </button>
+                </form>
                 <form method="POST" action="{{ url_for('admin.toggle_active', user_id=user.id) }}" class="w-full sm:w-auto">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <button type="submit" class="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 {% if user.account_active %}bg-orange-100 text-orange-700 border-orange-500{% else %}bg-green-100 text-green-700 border-green-500{% endif %} font-bold rounded-lg border-2 hover:{% if user.account_active %}bg-orange-200{% else %}bg-green-200{% endif %} transition-all flex items-center justify-center gap-2 text-sm sm:text-base">

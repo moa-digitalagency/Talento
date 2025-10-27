@@ -42,7 +42,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.phone }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.city.name if user.city else 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <a href="{{ url_for('profile.view', unique_code=user.formatted_code) }}" class="text-primary hover:underline">Voir</a>
+                            <a href="{{ url_for('profile.view_public', unique_code=user.unique_code) }}" class="text-primary hover:underline">Voir</a>
                         </td>
                     </tr>
                     {% endfor %}

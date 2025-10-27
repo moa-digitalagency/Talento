@@ -178,3 +178,36 @@ def view_public(unique_code):
             cv_analysis_data = None
     
     return render_template('profile/view.html', user=user, cv_analysis=cv_analysis_data, profile_type='user', cinema_talent=None)
+
+@bp.route('/resend_credentials/<unique_code>', methods=['POST'])
+@login_required
+def resend_credentials(unique_code):
+    """Renvoie les identifiants de connexion par email"""
+    if not current_user.is_admin:
+        flash('Accès non autorisé.', 'error')
+        return redirect(url_for('main.index'))
+    
+    user = User.query.filter_by(unique_code=unique_code).first_or_404()
+    
+    try:
+        from app.services.email_service import email_service
+        from app.utils.id_generator import generate_random_password
+        
+        # Générer un nouveau mot de passe
+        new_password = generate_random_password()
+        user.set_password(new_password)
+        
+        # Envoyer les nouveaux identifiants par email
+        email_sent = email_service.send_login_credentials(user, new_password)
+        
+        if email_sent:
+            db.session.commit()
+            flash(f'Les identifiants ont été renvoyés à {user.email}', 'success')
+        else:
+            db.session.rollback()
+            flash(f'Erreur lors de l\'envoi de l\'email. Vérifiez la configuration SendGrid.', 'error')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erreur: {str(e)}', 'error')
+    
+    return redirect(url_for('profile.view_public', unique_code=unique_code))
