@@ -293,6 +293,17 @@ def create_app(config_class=Config):
     # Exemption CSRF pour toutes les routes API v1
     csrf.exempt(api_v1.bp)
     
+    # Désactiver le cache pour éviter les problèmes avec les mises à jour
+    @app.after_request
+    def add_no_cache_headers(response):
+        """Ajouter des en-têtes pour désactiver le cache navigateur"""
+        # Ne pas mettre en cache les pages HTML et les données JSON
+        if response.content_type and ('text/html' in response.content_type or 'application/json' in response.content_type):
+            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '-1'
+        return response
+    
     # Gestionnaire d'erreur 404 pour gérer les URLs mal encodées
     @app.errorhandler(404)
     def handle_404(e):

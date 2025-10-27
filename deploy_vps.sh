@@ -265,6 +265,18 @@ print_info "Variables d'environnement chargées (fichier .env optionnel)"
 print_success "L'application utilisera config.py pour les valeurs par défaut"
 
 # ============================================================================
+# ÉTAPE 5.5: NETTOYAGE DU CACHE PYTHON
+# ============================================================================
+print_header "ÉTAPE 5.5: Nettoyage des caches Python"
+
+print_info "Suppression des fichiers .pyc et __pycache__..."
+find . -type f -name '*.pyc' -delete 2>/dev/null || true
+find . -type d -name '__pycache__' -exec rm -rf {} + 2>/dev/null || true
+find . -type f -name '*.pyo' -delete 2>/dev/null || true
+
+print_success "Cache Python nettoyé"
+
+# ============================================================================
 # ÉTAPE 6: BASE DE DONNÉES
 # ============================================================================
 print_header "ÉTAPE 6: Initialisation de la base de données"
@@ -468,7 +480,7 @@ fi
 # ============================================================================
 print_header "ÉTAPE 10: Démarrage de l'application"
 
-read -p "Comment voulez-vous démarrer l'application? (1=Systemd, 2=Manuel Gunicorn, 3=Développement Flask, 4=Ne pas démarrer): " -n 1 -r
+read -p "Comment voulez-vous démarrer l'application? (1=Systemd, 2=PM2, 3=Manuel Gunicorn, 4=Développement Flask, 5=Ne pas démarrer): " -n 1 -r
 echo
 
 case $REPLY in
@@ -485,23 +497,62 @@ case $REPLY in
         fi
         ;;
     2)
+        if command -v pm2 &> /dev/null; then
+            print_info "Démarrage via PM2..."
+            # Arrêter l'ancien processus PM2 s'il existe
+            pm2 delete talento 2>/dev/null || true
+            
+            # Définir la variable PORT pour que l'app utilise 5004
+            export PORT=5004
+            
+            # Démarrer avec PM2
+            pm2 start app.py --name talento --interpreter python3 \
+                --env production \
+                --max-memory-restart 500M \
+                --log logs/pm2.log
+            
+            # Sauvegarder la configuration PM2
+            pm2 save
+            
+            # Afficher le statut
+            sleep 2
+            pm2 list
+            print_success "Application démarrée via PM2"
+            print_info "Commandes PM2 utiles:"
+            echo "  - Logs en direct: pm2 logs talento"
+            echo "  - Redémarrer: pm2 restart talento"
+            echo "  - Arrêter: pm2 stop talento"
+            echo "  - Statut: pm2 list"
+        else
+            print_error "PM2 non installé"
+            print_info "Installation de PM2:"
+            echo "  sudo npm install -g pm2"
+            echo "  pm2 startup  # Configuration auto-démarrage"
+        fi
+        ;;
+    3)
         print_info "Démarrage manuel avec Gunicorn..."
         print_warning "L'application tournera en arrière-plan"
+        export PORT=5004
         nohup gunicorn --bind 0.0.0.0:5004 --reuse-port --workers 4 --timeout 120 app:app > logs/gunicorn.log 2>&1 &
         sleep 2
         print_success "Gunicorn démarré (PID: $!)"
         print_info "Logs: tail -f logs/gunicorn.log"
         ;;
-    3)
+    4)
         print_info "Démarrage en mode développement Flask..."
         print_warning "Ceci est destiné au développement uniquement!"
+        export PORT=5004
         python app.py
         ;;
-    4)
+    5)
         print_info "Application non démarrée"
         print_info "Pour démarrer manuellement:"
         echo "  source venv/bin/activate"
+        echo "  export PORT=5004"
         echo "  gunicorn --bind 0.0.0.0:5004 --workers 4 app:app"
+        echo "  # Ou avec PM2:"
+        echo "  pm2 start app.py --name talento --interpreter python3"
         ;;
     *)
         print_warning "Choix invalide"
