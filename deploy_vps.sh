@@ -335,7 +335,7 @@ User=$USER
 Group=$USER
 WorkingDirectory=$APP_DIR
 Environment="PATH=$VENV_DIR/bin"
-ExecStart=$VENV_DIR/bin/gunicorn --bind 0.0.0.0:5000 --reuse-port --workers 4 --timeout 120 app:app
+ExecStart=$VENV_DIR/bin/gunicorn --bind 0.0.0.0:5004 --reuse-port --workers 4 --timeout 120 app:app
 ExecReload=/bin/kill -s HUP \$MAINPID
 Restart=always
 RestartSec=3
@@ -393,7 +393,7 @@ server {
     
     # Proxy vers Gunicorn
     location / {
-        proxy_pass http://127.0.0.1:5000;
+        proxy_pass http://127.0.0.1:5004;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
@@ -454,13 +454,13 @@ python -c "from app import create_app; app = create_app(); print('✅ Applicatio
 }
 
 # Vérifier les ports
-print_info "Vérification du port 5000..."
-if lsof -Pi :5000 -sTCP:LISTEN -t >/dev/null 2>&1 ; then
-    print_warning "Le port 5000 est déjà utilisé"
-    print_info "Processus utilisant le port 5000:"
-    lsof -i :5000 || true
+print_info "Vérification du port 5004..."
+if lsof -Pi :5004 -sTCP:LISTEN -t >/dev/null 2>&1 ; then
+    print_warning "Le port 5004 est déjà utilisé"
+    print_info "Processus utilisant le port 5004:"
+    lsof -i :5004 || true
 else
-    print_success "Port 5000 disponible"
+    print_success "Port 5004 disponible"
 fi
 
 # ============================================================================
@@ -487,7 +487,7 @@ case $REPLY in
     2)
         print_info "Démarrage manuel avec Gunicorn..."
         print_warning "L'application tournera en arrière-plan"
-        nohup gunicorn --bind 0.0.0.0:5000 --reuse-port --workers 4 --timeout 120 app:app > logs/gunicorn.log 2>&1 &
+        nohup gunicorn --bind 0.0.0.0:5004 --reuse-port --workers 4 --timeout 120 app:app > logs/gunicorn.log 2>&1 &
         sleep 2
         print_success "Gunicorn démarré (PID: $!)"
         print_info "Logs: tail -f logs/gunicorn.log"
@@ -501,7 +501,7 @@ case $REPLY in
         print_info "Application non démarrée"
         print_info "Pour démarrer manuellement:"
         echo "  source venv/bin/activate"
-        echo "  gunicorn --bind 0.0.0.0:5000 --workers 4 app:app"
+        echo "  gunicorn --bind 0.0.0.0:5004 --workers 4 app:app"
         ;;
     *)
         print_warning "Choix invalide"
@@ -523,7 +523,7 @@ echo "  🌐 URL de l'application:"
 if [ ! -z "$DOMAIN_NAME" ]; then
     echo "     http://$DOMAIN_NAME"
 else
-    echo "     http://$(hostname -I | awk '{print $1}'):5000"
+    echo "     http://$(hostname -I | awk '{print $1}'):5004"
 fi
 echo ""
 
