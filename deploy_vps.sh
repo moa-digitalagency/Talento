@@ -270,15 +270,15 @@ missing_vars=()
 [ -z "$ENCRYPTION_KEY" ] && missing_vars+=("ENCRYPTION_KEY")
 
 if [ ${#missing_vars[@]} -gt 0 ]; then
-    print_error "Variables d'environnement manquantes:"
+    print_warning "Variables d'environnement non configurées (valeurs par défaut seront utilisées):"
     for var in "${missing_vars[@]}"; do
         echo "  - $var"
     done
-    print_info "Éditez le fichier .env et relancez le script"
-    exit 1
+    print_info "L'application utilisera les valeurs par défaut de config.py"
+    print_info "Pour configurer ces variables, éditez le fichier .env"
+else
+    print_success "Configuration vérifiée"
 fi
-
-print_success "Configuration vérifiée"
 
 # ============================================================================
 # ÉTAPE 6: BASE DE DONNÉES
