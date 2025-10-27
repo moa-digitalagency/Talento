@@ -28,7 +28,7 @@
 | CSS Framework | Tailwind CSS | CDN |
 | Migration DB | Flask-Migrate (Alembic) | 4.0.5 |
 | Email Service | SendGrid | Latest |
-| AI Service | OpenRouter API | meta-llama/llama-3.1-8b-instruct |
+| AI Service | OpenRouter API | google/gemini-2.5-flash |
 | Cryptographie | Fernet (cryptography) | Latest |
 | Hachage Mots de Passe | bcrypt | 4.1.2 |
 
@@ -252,7 +252,7 @@ L'application utilise 7 blueprints principaux:
 - `_parse_ai_response(ai_response)` - Parsing de la réponse JSON
 - `_calculate_profile_score(analysis)` - Calcul du score (0-100)
 
-**API Utilisée**: OpenRouter AI (meta-llama/llama-3.1-8b-instruct:free)
+**API Utilisée**: OpenRouter AI (google/gemini-2.5-flash)
 
 **Retour**:
 ```json
