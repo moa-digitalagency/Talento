@@ -629,7 +629,7 @@ def test_openrouter():
                 'HTTP-Referer': request.host_url,
             },
             json={
-                'model': 'meta-llama/llama-3.1-8b-instruct:free',
+                'model': 'google/gemini-2.5-flash',
                 'messages': [
                     {
                         'role': 'user',
