@@ -191,7 +191,7 @@ def resend_credentials(unique_code):
     
     try:
         from app.services.email_service import email_service
-        from app.utils.id_generator import generate_random_password
+        from app.utils.email_service import generate_random_password
         
         # Générer un nouveau mot de passe
         new_password = generate_random_password()

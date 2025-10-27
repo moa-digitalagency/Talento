@@ -67,6 +67,7 @@
 
         <!-- Formulaire d'édition -->
         <form method="POST" action="{{ url_for('profile.edit') }}" enctype="multipart/form-data" class="space-y-8">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             
             <!-- Photo de profil -->
             <div class="bg-white border-2 border-blue-400 border-dashed rounded-lg p-6">

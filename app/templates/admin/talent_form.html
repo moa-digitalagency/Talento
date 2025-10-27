@@ -24,6 +24,7 @@ www.myoneart.com
         <!-- Formulaire -->
         <div class="section-green p-8">
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <!-- Nom du talent -->
                 <div class="mb-6">
                     <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
