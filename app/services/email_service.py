@@ -58,25 +58,37 @@ class EmailService:
         Returns:
             True si envoyé avec succès, False sinon
         """
-        if not self.api_key:
+        # Récupérer la clé API à chaque envoi pour supporter la mise à jour à chaud
+        api_key = self.api_key
+        from_email = self.from_email
+        
+        try:
+            from app.models.settings import AppSettings
+            api_key = AppSettings.get('sendgrid_api_key') or api_key
+            from_email = AppSettings.get('sender_email') or from_email
+        except:
+            pass
+        
+        if not api_key:
             error_msg = "❌ SendGrid API key manquante. Configurez SENDGRID_API_KEY dans les variables d'environnement ou dans /admin/settings/api-keys"
             current_app.logger.error(error_msg)
             print(f"🔴 {error_msg}")
             return False
         
-        if not self.from_email:
+        if not from_email:
             error_msg = "❌ Email expéditeur manquant. Configurez SENDGRID_FROM_EMAIL"
             current_app.logger.error(error_msg)
             print(f"🔴 {error_msg}")
             return False
         
         print(f"📧 Tentative d'envoi email à: {to_email}")
-        print(f"📤 Expéditeur: {self.from_email}")
+        print(f"📤 Expéditeur: {from_email}")
         print(f"📝 Sujet: {subject}")
+        print(f"🔑 API Key (premiers 8 chars): {api_key[:8] if api_key else 'None'}...")
             
         try:
             message = Mail(
-                from_email=self.from_email,
+                from_email=from_email,
                 to_emails=to_email,
                 subject=subject,
                 html_content=html_content
@@ -92,7 +104,7 @@ class EmailService:
                     )
                     message.add_attachment(attachment)
             
-            sg = SendGridAPIClient(self.api_key)
+            sg = SendGridAPIClient(api_key)
             response = sg.send(message)
             
             if response.status_code in [200, 201, 202]:
