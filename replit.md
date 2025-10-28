@@ -7,7 +7,7 @@ TalentsMaroc.com is a professional web application designed to centralize and sh
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (October 2025)
-- **Navigation Basée sur les Rôles** (28 Oct 2025): Implémentation d'un menu de navigation dynamique qui s'adapte au rôle de l'utilisateur. Les administrateurs voient Dashboard, Talents, Contrats, CINEMA, Présence, Paramètres. Les utilisateurs avec rôle "presence" voient Présence et CINEMA. Les talents standards voient Accueil, Talents, Contrats. Tous les utilisateurs ont accès à "Mon Profil" et "Déconnexion". Le menu est cohérent sur desktop et mobile.
+- **Navigation Basée sur les Rôles** (28 Oct 2025): Implémentation d'un menu de navigation dynamique simplifié qui s'adapte au rôle de l'utilisateur. Les administrateurs voient Dashboard, Talents, Contrats, CINEMA, Présence, Paramètres, Mon Profil, Déconnexion. Les utilisateurs avec rôle "presence" voient Présence, Mon Profil, Déconnexion. Les talents standards voient Accueil, Mon Profil, Déconnexion. Le menu est cohérent sur desktop et mobile.
 - **QR Code Multi-Plateforme**: Système de génération de QR codes portable fonctionnant sur Replit, VPS, serveurs dédiés via configuration BASE_URL.
 - **Boutons Profil Améliorés**: Page de profil avec 3 boutons principaux (Modifier profil, Télécharger profil, Modifier mot de passe) avec style de contour plein (border-2).
 - **Script de Régénération QR Codes** (28 Oct 2025): Nouveau script `regenerate_qrcodes.py` pour régénérer tous les QR codes avec l'URL correcte lors d'un changement d'environnement.
