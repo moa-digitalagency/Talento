@@ -28,12 +28,66 @@
                 <div class="flex items-center">
                     {% if current_user.is_authenticated %}
                         <!-- Desktop Navigation -->
-                        <div class="hidden md:flex items-center space-x-4">
-                            <a href="{{ url_for('profile.view') }}" class="px-4 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all font-semibold">
+                        <div class="hidden md:flex items-center space-x-2">
+                            {% if current_user.is_admin %}
+                                <!-- Menu Admin -->
+                                <a href="{{ url_for('admin.dashboard') }}" class="px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-semibold text-sm">
+                                    <span>📊</span>
+                                    <span>Dashboard</span>
+                                </a>
+                                <a href="{{ url_for('admin.users') }}" class="px-3 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all font-semibold text-sm">
+                                    <span>🎯</span>
+                                    <span>Talents</span>
+                                </a>
+                                <a href="{{ url_for('main.contrats') }}" class="px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all font-semibold text-sm">
+                                    <span>📄</span>
+                                    <span>Contrats</span>
+                                </a>
+                                <a href="{{ url_for('cinema.dashboard') }}" class="px-3 py-2 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all font-semibold text-sm">
+                                    <span>🎬</span>
+                                    <span>CINEMA</span>
+                                </a>
+                                {% if current_user.role == 'presence' or current_user.is_admin %}
+                                <a href="{{ url_for('presence.index') }}" class="px-3 py-2 text-gray-700 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all font-semibold text-sm">
+                                    <span>✅</span>
+                                    <span>Présence</span>
+                                </a>
+                                {% endif %}
+                                <a href="{{ url_for('admin.settings') }}" class="px-3 py-2 text-gray-700 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all font-semibold text-sm">
+                                    <span>⚙️</span>
+                                    <span>Paramètres</span>
+                                </a>
+                            {% elif current_user.role == 'presence' %}
+                                <!-- Menu Présence -->
+                                <a href="{{ url_for('presence.index') }}" class="px-3 py-2 text-gray-700 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all font-semibold text-sm">
+                                    <span>✅</span>
+                                    <span>Présence</span>
+                                </a>
+                                <a href="{{ url_for('cinema.dashboard') }}" class="px-3 py-2 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all font-semibold text-sm">
+                                    <span>🎬</span>
+                                    <span>CINEMA</span>
+                                </a>
+                            {% else %}
+                                <!-- Menu Talent/Utilisateur standard -->
+                                <a href="{{ url_for('main.index') }}" class="px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-semibold text-sm">
+                                    <span>🏠</span>
+                                    <span>Accueil</span>
+                                </a>
+                                <a href="{{ url_for('main.talents') }}" class="px-3 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all font-semibold text-sm">
+                                    <span>🎯</span>
+                                    <span>Talents</span>
+                                </a>
+                                <a href="{{ url_for('main.contrats') }}" class="px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all font-semibold text-sm">
+                                    <span>📄</span>
+                                    <span>Contrats</span>
+                                </a>
+                            {% endif %}
+                            <!-- Menu commun pour tous -->
+                            <a href="{{ url_for('profile.view') }}" class="px-3 py-2 text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all font-semibold text-sm">
                                 <span>👤</span>
-                                <span>Profil</span>
+                                <span>Mon Profil</span>
                             </a>
-                            <a href="{{ url_for('auth.logout') }}" class="btn-secondary px-4">
+                            <a href="{{ url_for('auth.logout') }}" class="btn-secondary px-3 py-2 text-sm">
                                 <span>🚪</span>
                                 <span>Déconnexion</span>
                             </a>
@@ -71,9 +125,63 @@
             <!-- Mobile Menu Dropdown -->
             <div id="mobile-menu" class="hidden md:hidden pb-4 pt-2 border-t border-blue-200 mt-2">
                 {% if current_user.is_authenticated %}
+                    {% if current_user.is_admin %}
+                        <!-- Menu Mobile Admin -->
+                        <a href="{{ url_for('admin.dashboard') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-all font-semibold">
+                            <span>📊</span>
+                            <span class="ml-2">Dashboard</span>
+                        </a>
+                        <a href="{{ url_for('admin.users') }}" class="block px-4 py-3 text-gray-700 hover:bg-green-50 rounded-lg transition-all font-semibold">
+                            <span>🎯</span>
+                            <span class="ml-2">Talents</span>
+                        </a>
+                        <a href="{{ url_for('main.contrats') }}" class="block px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-lg transition-all font-semibold">
+                            <span>📄</span>
+                            <span class="ml-2">Contrats</span>
+                        </a>
+                        <a href="{{ url_for('cinema.dashboard') }}" class="block px-4 py-3 text-gray-700 hover:bg-red-50 rounded-lg transition-all font-semibold">
+                            <span>🎬</span>
+                            <span class="ml-2">CINEMA</span>
+                        </a>
+                        {% if current_user.role == 'presence' or current_user.is_admin %}
+                        <a href="{{ url_for('presence.index') }}" class="block px-4 py-3 text-gray-700 hover:bg-yellow-50 rounded-lg transition-all font-semibold">
+                            <span>✅</span>
+                            <span class="ml-2">Présence</span>
+                        </a>
+                        {% endif %}
+                        <a href="{{ url_for('admin.settings') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-all font-semibold">
+                            <span>⚙️</span>
+                            <span class="ml-2">Paramètres</span>
+                        </a>
+                    {% elif current_user.role == 'presence' %}
+                        <!-- Menu Mobile Présence -->
+                        <a href="{{ url_for('presence.index') }}" class="block px-4 py-3 text-gray-700 hover:bg-yellow-50 rounded-lg transition-all font-semibold">
+                            <span>✅</span>
+                            <span class="ml-2">Présence</span>
+                        </a>
+                        <a href="{{ url_for('cinema.dashboard') }}" class="block px-4 py-3 text-gray-700 hover:bg-red-50 rounded-lg transition-all font-semibold">
+                            <span>🎬</span>
+                            <span class="ml-2">CINEMA</span>
+                        </a>
+                    {% else %}
+                        <!-- Menu Mobile Talent/Utilisateur standard -->
+                        <a href="{{ url_for('main.index') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-all font-semibold">
+                            <span>🏠</span>
+                            <span class="ml-2">Accueil</span>
+                        </a>
+                        <a href="{{ url_for('main.talents') }}" class="block px-4 py-3 text-gray-700 hover:bg-green-50 rounded-lg transition-all font-semibold">
+                            <span>🎯</span>
+                            <span class="ml-2">Talents</span>
+                        </a>
+                        <a href="{{ url_for('main.contrats') }}" class="block px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-lg transition-all font-semibold">
+                            <span>📄</span>
+                            <span class="ml-2">Contrats</span>
+                        </a>
+                    {% endif %}
+                    <!-- Menu Mobile commun pour tous -->
                     <a href="{{ url_for('profile.view') }}" class="block px-4 py-3 text-gray-700 hover:bg-indigo-50 rounded-lg transition-all font-semibold">
                         <span>👤</span>
-                        <span class="ml-2">Profil</span>
+                        <span class="ml-2">Mon Profil</span>
                     </a>
                     <a href="{{ url_for('auth.logout') }}" class="block px-4 py-3 text-gray-700 hover:bg-red-50 rounded-lg transition-all font-semibold">
                         <span>🚪</span>
