@@ -6,7 +6,7 @@ Mail : moa@myoneart.com
 www.myoneart.com
 """
 
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, send_file
 from flask_login import login_required, current_user
 from app import db
 from app.models.user import User
@@ -15,8 +15,10 @@ from app.models.location import Country, City
 from app.models.cinema_talent import CinemaTalent
 from app.utils.file_handler import save_file
 from app.services.cv_analyzer import CVAnalyzerService
+from app.services.export_service import ExportService
 import os
 import json
+import io
 from datetime import datetime
 
 bp = Blueprint('profile', __name__, url_prefix='/profile')
@@ -183,6 +185,28 @@ def view_public(unique_code):
             cv_analysis_data = None
     
     return render_template('profile/view.html', user=user, cv_analysis=cv_analysis_data, profile_type='user', cinema_talent=None)
+
+@bp.route('/download-profile')
+@login_required
+def download_profile():
+    """Permet à l'utilisateur de télécharger son propre profil en PDF"""
+    try:
+        pdf_bytes = ExportService.export_talent_card_pdf(current_user)
+        
+        buffer = io.BytesIO(pdf_bytes)
+        buffer.seek(0)
+        
+        filename = f'talento_{current_user.unique_code}_{datetime.now().strftime("%Y%m%d")}.pdf'
+        
+        return send_file(
+            buffer,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        flash(f'Erreur lors de la génération du PDF: {str(e)}', 'error')
+        return redirect(url_for('profile.dashboard'))
 
 @bp.route('/change-password', methods=['GET', 'POST'])
 @login_required
