@@ -13,13 +13,17 @@ from cryptography.fernet import Fernet
 load_dotenv()
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production-2024-talento-maroc'
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    if not SECRET_KEY:
+        raise ValueError("SECRET_KEY environment variable must be set. Generate one with: python -c 'import secrets; print(secrets.token_hex(32))'")
+    
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///talento.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
-    # Clé de chiffrement persistante (générer une seule fois)
-    _default_encryption_key = 'gAAAAABmFNqK0qhTMrRCLzprdQycr0cJTIwjm6FfA3G6q9rRkynkFs0='
-    ENCRYPTION_KEY = os.environ.get('ENCRYPTION_KEY') or _default_encryption_key
+    # Clé de chiffrement (OBLIGATOIRE pour protéger les données sensibles)
+    ENCRYPTION_KEY = os.environ.get('ENCRYPTION_KEY')
+    if not ENCRYPTION_KEY:
+        raise ValueError("ENCRYPTION_KEY environment variable must be set. Generate one with: python -c 'from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())'") 
     
     # Configuration CSRF
     WTF_CSRF_ENABLED = True

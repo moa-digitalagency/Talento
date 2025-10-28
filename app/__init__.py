@@ -425,7 +425,10 @@ def _ensure_admin_exists(db, logger):
         # ÉTAPE 2: Créer ou mettre à jour l'admin
         admin_email = 'admin@talento.com'
         admin_code = 'MAN0001RAB'
-        admin_password = os.environ.get('ADMIN_PASSWORD', '@4dm1n')
+        admin_password = os.environ.get('ADMIN_PASSWORD')
+        if not admin_password:
+            logger.warning("⚠️ ADMIN_PASSWORD non défini dans .env - impossible de créer/mettre à jour l'admin")
+            return
         
         admin = User.query.filter(
             (User.email == admin_email) | (User.unique_code == admin_code)

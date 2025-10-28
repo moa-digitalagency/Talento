@@ -72,9 +72,16 @@ class EncryptionService:
         if not isinstance(encrypted_data, str):
             encrypted_data = str(encrypted_data)
         
-        cipher = EncryptionService._get_cipher()
-        decrypted = cipher.decrypt(encrypted_data.encode())
-        return decrypted.decode()
+        try:
+            cipher = EncryptionService._get_cipher()
+            decrypted = cipher.decrypt(encrypted_data.encode())
+            return decrypted.decode()
+        except Exception as e:
+            # Si le déchiffrement échoue (mauvaise clé), retourner None au lieu de lever une erreur
+            # Cela évite les erreurs 500 lors de la lecture de données chiffrées avec une ancienne clé
+            from flask import current_app
+            current_app.logger.warning(f"Échec du déchiffrement (clé incorrecte?): {str(e)[:100]}")
+            return None
     
     @staticmethod
     def generate_key():
