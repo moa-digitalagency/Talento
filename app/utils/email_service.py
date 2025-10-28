@@ -4,22 +4,26 @@ from app import mail
 import secrets
 import string
 
-def generate_random_password(unique_code=None, length=12):
+def generate_random_password(simple_format=True):
     """
-    Generate a password - uses unique_code if provided, otherwise generates random
+    Generate a password
     
     Args:
-        unique_code: If provided, will be used as the password
-        length: Length of random password if unique_code not provided
+        simple_format: If True, generates "Talent" + 6 random digits (e.g., Talent123456)
+                      If False, generates a complex random password
     
     Returns:
         Password string
     """
-    if unique_code:
-        return unique_code
+    if simple_format:
+        # Format simple mais sécurisé: Talent + 6 chiffres aléatoires
+        # Donne 1,000,000 de combinaisons possibles
+        random_digits = ''.join(secrets.choice(string.digits) for _ in range(6))
+        return f"Talent{random_digits}"
     
+    # Format complexe (pour usage futur si nécessaire)
     alphabet = string.ascii_letters + string.digits + string.punctuation
-    password = ''.join(secrets.choice(alphabet) for _ in range(length))
+    password = ''.join(secrets.choice(alphabet) for _ in range(12))
     return password
 
 def send_confirmation_email(user, password):

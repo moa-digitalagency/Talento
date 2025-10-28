@@ -279,9 +279,9 @@ class EmailService:
                         </div>
                         
                         <div class="warning">
-                            <strong>⚠️ Important :</strong> Pour votre première connexion, utilisez votre code unique comme mot de passe. 
-                            <strong>Nous vous recommandons fortement de changer votre mot de passe dès votre première connexion</strong> 
-                            pour sécuriser votre compte.
+                            <strong>⚠️ Important :</strong> Ce mot de passe est temporaire. 
+                            <strong>Nous vous recommandons vivement de le changer dès votre première connexion</strong> 
+                            depuis votre profil pour sécuriser votre compte.
                         </div>
                         
                         <div style="text-align: center;">
