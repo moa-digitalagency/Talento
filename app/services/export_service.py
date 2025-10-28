@@ -252,18 +252,16 @@ class ExportService:
             spaceAfter=20
         )
         
-        # Tentative d'ajout du logo
+        # Ajout du logo
         logo_path = os.path.join('static', 'img', 'logo-full.png')
-        try:
-            if os.path.exists(logo_path):
+        if os.path.exists(logo_path):
+            try:
                 logo = Image(logo_path, width=2.5*inch, height=1*inch, kind='proportional')
                 logo.hAlign = 'CENTER'
                 elements.append(logo)
                 elements.append(Spacer(1, 10))
-            else:
-                elements.append(Paragraph("TALENTSMAROC.COM - FICHE DE TALENT", header_style))
-        except:
-            elements.append(Paragraph("TALENTSMAROC.COM - FICHE DE TALENT", header_style))
+            except:
+                pass
         
         elements.append(Paragraph("Plateforme de Centralisation des Talents Africain Subsahrien aux Maroc", subtitle_header_style))
         
@@ -717,18 +715,16 @@ class ExportService:
             spaceAfter=20
         )
         
-        # Tentative d'ajout du logo
+        # Ajout du logo
         logo_path = os.path.join('static', 'img', 'logo-full.png')
-        try:
-            if os.path.exists(logo_path):
+        if os.path.exists(logo_path):
+            try:
                 logo = Image(logo_path, width=2.5*inch, height=1*inch, kind='proportional')
                 logo.hAlign = 'CENTER'
                 elements.append(logo)
                 elements.append(Spacer(1, 10))
-            else:
-                elements.append(Paragraph("TalentsMaroc.com", platform_style))
-        except:
-            elements.append(Paragraph("TalentsMaroc.com", platform_style))
+            except:
+                pass
         
         elements.append(Paragraph("CINEMA - FICHE DE TALENT", header_style))
         elements.append(Paragraph("Profil Cinématographique - Talents du Cinéma Africain", subtitle_header_style))
