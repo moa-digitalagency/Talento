@@ -6,6 +6,11 @@ TalentsMaroc.com is a professional web application designed to centralize and sh
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (October 2025)
+- **Navigation Simplifiée**: Menu principal réduit à "Profil" et "Déconnexion" uniquement pour une expérience utilisateur épurée.
+- **QR Code Multi-Plateforme**: Système de génération de QR codes portable fonctionnant sur Replit, VPS, serveurs dédiés via configuration BASE_URL.
+- **Boutons Profil Améliorés**: Page de profil avec 3 boutons principaux (Modifier profil, Télécharger profil, Modifier mot de passe) avec style de contour plein (border-2).
+
 ## System Architecture
 
 ### Application Framework
@@ -29,6 +34,7 @@ Preferred communication style: Simple, everyday language.
 ### File Management
 - **Uploads**: Photos (PNG, JPG, JPEG up to 5MB) and CVs (PDF, DOC, DOCX up to 10MB).
 - **Storage**: Files organized into `photos/`, `cvs/`, `qrcodes/` with UUID-based filenames.
+- **QR Code Generation**: Portable system using `Config.get_base_url()` supporting Replit (auto-detect via REPLIT_DOMAINS), VPS/production (via BASE_URL env variable), and local development (localhost:5000 fallback). See `DEPLOYMENT_CONFIG.md` for deployment configuration.
 
 ### AI Integration
 - **CV Analysis**: OpenRouter AI integration analyzes CVs for skills, summaries, and profile scores.
@@ -44,7 +50,7 @@ Preferred communication style: Simple, everyday language.
 ### Frontend Architecture
 - **Template Engine**: Jinja2.
 - **CSS Framework**: Tailwind CSS (CDN).
-- **UI/UX Decisions**: Modern, professional aesthetic with solid colors, multi-step registration forms, role-adapted dashboards, enhanced individual profile pages with secure display of initials and QR codes, streamlined navigation, and consistent use of French labels.
+- **UI/UX Decisions**: Modern, professional aesthetic with solid colors, multi-step registration forms, streamlined navigation (Profil + Déconnexion only), enhanced profile pages with action buttons (border-2 solid outline style), secure display of initials and QR codes, and consistent use of French labels.
 
 ### Routing Structure
 - **Blueprints**: Organized into `main`, `auth`, `profile`, `admin`, `api`, `cinema`, `presence`, and `api_v1` for modularity.
