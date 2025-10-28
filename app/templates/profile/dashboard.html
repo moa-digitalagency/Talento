@@ -3,58 +3,167 @@
 {% block title %}Mon Profil - TalentsMaroc.com{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 py-8">
-    <!-- Boutons d'action principaux -->
-    <div class="flex flex-wrap gap-3 mb-6">
+<div class="max-w-5xl mx-auto px-4 py-8">
+    <!-- Boutons d'action principaux avec contour plein (border-2) -->
+    <div class="flex flex-wrap gap-4 mb-8">
         <a href="{{ url_for('profile.edit') }}" 
-           class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-bold border-2 border-purple-700 transition-colors inline-flex items-center gap-2">
-            ✏️ Modifier profil
+           class="px-6 py-3 bg-purple-50 text-purple-700 font-bold rounded-lg border-2 border-purple-500 hover:bg-purple-100 transition-all inline-flex items-center justify-center gap-2">
+            <span>✏️</span>
+            <span>Modifier profil</span>
         </a>
         <a href="{{ url_for('admin.export_pdf_individual', user_id=user.id) }}" 
-           class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-bold border-2 border-blue-700 transition-colors inline-flex items-center gap-2">
-            📄 Télécharger profil
+           class="px-6 py-3 bg-blue-50 text-blue-700 font-bold rounded-lg border-2 border-blue-500 hover:bg-blue-100 transition-all inline-flex items-center justify-center gap-2">
+            <span>📥</span>
+            <span>Télécharger profil</span>
         </a>
         <a href="{{ url_for('profile.change_password') }}" 
-           class="bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-bold border-2 border-gray-800 transition-colors inline-flex items-center gap-2">
-            🔐 Modifier mot de passe
+           class="px-6 py-3 bg-gray-700 text-white font-bold rounded-lg border-2 border-gray-800 hover:bg-gray-800 transition-all inline-flex items-center justify-center gap-2">
+            <span>🔐</span>
+            <span>Modifier mot de passe</span>
         </a>
     </div>
     
-    <div class="card mb-6">
-        <div class="flex items-center justify-between mb-4">
-            <h2 class="text-2xl font-semibold">{{ user.full_name }}</h2>
-            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
-                ✓ Actif
-            </span>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <p class="text-gray-600 mb-2"><strong>Code unique:</strong> {{ user.formatted_code }}</p>
-                <p class="text-gray-600 mb-2"><strong>Email:</strong> {{ user.email }}</p>
-                <p class="text-gray-600 mb-2"><strong>Téléphone:</strong> {{ user.phone }}</p>
-                <p class="text-gray-600 mb-2"><strong>WhatsApp:</strong> {{ user.whatsapp }}</p>
-            </div>
-            
-            <div>
-                {% if user.qr_code_filename %}
-                <div class="text-center">
-                    <p class="text-gray-600 mb-2"><strong>Mon QR Code</strong></p>
-                    <img src="{{ url_for('static', filename='uploads/qrcodes/' + user.qr_code_filename) }}" alt="QR Code" class="mx-auto" style="max-width: 150px;">
+    <!-- Bloc principal avec contour pointillé -->
+    <div class="bg-white p-8 rounded-lg border-2 border-dashed border-blue-400 mb-6">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Photo de profil -->
+            <div class="flex-shrink-0 mx-auto lg:mx-0">
+                {% if user.photo_filename %}
+                <img src="{{ url_for('static', filename='uploads/photos/' + user.photo_filename) }}" 
+                     alt="{{ user.full_name }}" 
+                     class="w-48 h-48 rounded-full object-cover border-4 border-blue-500 shadow-xl">
+                {% else %}
+                <div class="w-48 h-48 rounded-full bg-blue-500 flex items-center justify-center text-white text-6xl font-bold border-4 border-blue-500 shadow-xl">
+                    {{ user.first_name[0] if user.first_name else '?' }}{{ user.last_name[0] if user.last_name else '?' }}
                 </div>
                 {% endif %}
             </div>
-        </div>
-        
-        <div class="mt-4">
-            <h3 class="text-lg font-semibold mb-2">Mes Talents</h3>
-            <div class="flex flex-wrap gap-2">
-                {% for user_talent in user.talents %}
-                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                    {{ user_talent.talent.emoji }} {{ user_talent.talent.name }}
-                </span>
-                {% endfor %}
+            
+            <!-- Informations principales -->
+            <div class="flex-1">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-3xl font-bold text-gray-800">{{ user.full_name }}</h2>
+                    <span class="bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-bold border-2 border-green-500">
+                        ✓ Actif
+                    </span>
+                </div>
+                
+                <p class="text-xl text-blue-600 font-mono font-bold mb-6">{{ user.formatted_code }}</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Email -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-300">
+                        <p class="text-sm text-gray-600 font-semibold mb-1">Email</p>
+                        <p class="text-gray-800 font-medium">{{ user.email }}</p>
+                    </div>
+                    
+                    <!-- Téléphone -->
+                    {% if user.phone %}
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-300">
+                        <p class="text-sm text-gray-600 font-semibold mb-1">Téléphone</p>
+                        <p class="text-gray-800 font-medium">{{ user.phone }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- WhatsApp -->
+                    {% if user.whatsapp %}
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-300">
+                        <p class="text-sm text-gray-600 font-semibold mb-1">WhatsApp</p>
+                        <p class="text-gray-800 font-medium">{{ user.whatsapp }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Ville -->
+                    {% if user.city %}
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-300">
+                        <p class="text-sm text-gray-600 font-semibold mb-1">Ville</p>
+                        <p class="text-gray-800 font-medium">{{ user.city.name }}</p>
+                    </div>
+                    {% endif %}
+                </div>
             </div>
+            
+            <!-- QR Code -->
+            {% if user.qr_code_filename %}
+            <div class="flex-shrink-0 mx-auto lg:mx-0">
+                <div class="bg-white p-4 rounded-xl border-2 border-blue-300 shadow-lg">
+                    <p class="text-center text-sm text-gray-600 font-semibold mb-2">Mon QR Code</p>
+                    <img src="{{ url_for('static', filename='uploads/qrcodes/' + user.qr_code_filename) }}" 
+                         alt="QR Code" 
+                         class="w-40 h-40 mx-auto">
+                    <p class="text-xs text-gray-500 text-center mt-2">Scannez pour voir le profil</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Bloc Mes Talents avec contour pointillé -->
+    {% if user.talents %}
+    <div class="bg-white p-6 rounded-lg border-2 border-dashed border-purple-400 mb-6">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">Mes Talents</h3>
+        <div class="flex flex-wrap gap-3">
+            {% for user_talent in user.talents %}
+            <span class="bg-purple-50 text-purple-800 px-4 py-2 rounded-lg text-sm font-semibold border-2 border-purple-300 inline-flex items-center gap-2">
+                <span class="text-lg">{{ user_talent.talent.emoji }}</span>
+                <span>{{ user_talent.talent.name }}</span>
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Bloc Informations Professionnelles avec contour pointillé -->
+    <div class="bg-white p-6 rounded-lg border-2 border-dashed border-green-400">
+        <h3 class="text-2xl font-bold text-gray-800 mb-4">Informations Professionnelles</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% if user.availability %}
+            <div class="bg-green-50 p-4 rounded-lg border border-green-300">
+                <p class="text-sm text-gray-600 font-semibold mb-1">Disponibilité</p>
+                <p class="text-gray-800 font-medium">{{ user.availability }}</p>
+            </div>
+            {% endif %}
+            
+            {% if user.work_mode %}
+            <div class="bg-green-50 p-4 rounded-lg border border-green-300">
+                <p class="text-sm text-gray-600 font-semibold mb-1">Mode de travail</p>
+                <p class="text-gray-800 font-medium">
+                    {% if user.work_mode == 'remote' %}Télétravail
+                    {% elif user.work_mode == 'on_site' %}Sur site
+                    {% else %}Hybride{% endif %}
+                </p>
+            </div>
+            {% endif %}
+            
+            {% if user.years_experience %}
+            <div class="bg-green-50 p-4 rounded-lg border border-green-300">
+                <p class="text-sm text-gray-600 font-semibold mb-1">Expérience</p>
+                <p class="text-gray-800 font-medium">{{ user.years_experience }} ans</p>
+            </div>
+            {% endif %}
+            
+            {% if user.profile_score %}
+            <div class="bg-green-50 p-4 rounded-lg border border-green-300">
+                <p class="text-sm text-gray-600 font-semibold mb-1">Score de profil</p>
+                <p class="text-2xl font-bold {% if user.profile_score >= 70 %}text-green-600{% elif user.profile_score >= 40 %}text-yellow-600{% else %}text-red-600{% endif %}">
+                    {{ user.profile_score }}/100
+                </p>
+            </div>
+            {% endif %}
+            
+            {% if user.cv_filename %}
+            <div class="bg-green-50 p-4 rounded-lg border border-green-300">
+                <p class="text-sm text-gray-600 font-semibold mb-1">CV</p>
+                <p class="text-gray-800 font-medium">✓ Disponible</p>
+            </div>
+            {% endif %}
+            
+            {% if user.created_at %}
+            <div class="bg-green-50 p-4 rounded-lg border border-green-300">
+                <p class="text-sm text-gray-600 font-semibold mb-1">Membre depuis</p>
+                <p class="text-gray-800 font-medium">{{ user.created_at.strftime('%d/%m/%Y') }}</p>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
