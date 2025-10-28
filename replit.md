@@ -12,6 +12,9 @@ Preferred communication style: Simple, everyday language.
 - **Boutons Profil Améliorés**: Page de profil avec 3 boutons principaux (Modifier profil, Télécharger profil, Modifier mot de passe) avec style de contour plein (border-2).
 - **Script de Régénération QR Codes** (28 Oct 2025): Nouveau script `regenerate_qrcodes.py` pour régénérer tous les QR codes avec l'URL correcte lors d'un changement d'environnement.
 - **Champs Profil Supplémentaires** (28 Oct 2025): Ajout des champs "Langues parlées" (multi-select avec drapeaux) et "Formation & Éducation" (textarea) à la page d'édition de profil utilisateur.
+- **Boutons de Retour Accueil** (28 Oct 2025): Ajout d'un bouton "🏠 Retour à l'accueil" dans les pages /talents et /cinema/talents pour faciliter la navigation.
+- **Correction Affichage Langues** (28 Oct 2025): Les langues s'affichent maintenant proprement sans guillemets ni crochets, avec support des formats JSON et CSV.
+- **Correction PDF Text Wrapping** (28 Oct 2025): Les champs "Langues" et "Éducation" utilisent maintenant le retour à la ligne automatique dans l'export PDF.
 
 ## System Architecture
 
