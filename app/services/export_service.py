@@ -7,6 +7,7 @@ import io
 from datetime import datetime
 from flask import current_app
 import pandas as pd
+import qrcode
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, A4, landscape
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image, PageBreak
@@ -14,9 +15,57 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
 from app.utils.encryption import decrypt_sensitive_data
+from config import Config
 
 class ExportService:
     """Service d'export des données"""
+    
+    @staticmethod
+    def _generate_qr_code_for_pdf(unique_code, profile_type='user', size=1.5):
+        """
+        Génère un QR code en mémoire pour le PDF avec la bonne URL
+        
+        Args:
+            unique_code: Code unique du profil
+            profile_type: 'user' ou 'cinema'
+            size: Taille en inches
+            
+        Returns:
+            Image object pour ReportLab ou None
+        """
+        try:
+            # Obtenir l'URL de base correcte
+            base_url = Config.get_base_url()
+            
+            # Construire l'URL du profil
+            if profile_type == 'cinema':
+                profile_url = f"{base_url}/cinema/profile/{unique_code}"
+            else:
+                profile_url = f"{base_url}/profile/view/{unique_code}"
+            
+            # Générer le QR code en mémoire
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(profile_url)
+            qr.make(fit=True)
+            
+            # Créer l'image en mémoire
+            img = qr.make_image(fill_color="black", back_color="white")
+            
+            # Convertir en bytes pour ReportLab
+            img_buffer = io.BytesIO()
+            img.save(img_buffer, format='PNG')
+            img_buffer.seek(0)
+            
+            # Créer l'élément Image pour ReportLab
+            return Image(img_buffer, width=size*inch, height=size*inch)
+        except Exception as e:
+            print(f"Erreur génération QR code PDF: {e}")
+            return None
     
     @staticmethod
     def export_to_excel(users, filename='talents_export.xlsx'):
@@ -352,17 +401,10 @@ class ExportService:
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ]))
         
-        # QR Code - devrait toujours exister car généré avec le code unique
-        qr_element = None
-        if user.qr_code_filename:
-            try:
-                qr_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'qrcodes', user.qr_code_filename)
-                if os.path.exists(qr_path):
-                    qr_element = Image(qr_path, width=1.5*inch, height=1.5*inch)
-            except:
-                pass
+        # QR Code - généré à la volée avec la bonne URL
+        qr_element = ExportService._generate_qr_code_for_pdf(user.unique_code, profile_type='user', size=1.5)
         
-        # Placeholder simple pour QR code si vraiment absent
+        # Placeholder simple pour QR code si la génération échoue
         if not qr_element:
             qr_placeholder_style = ParagraphStyle(
                 'QRPlaceholder', 
@@ -783,15 +825,8 @@ class ExportService:
             ]))
             photo_element = placeholder_table
         
-        # QR Code
-        qr_element = None
-        if cinema_talent.qr_code_filename:
-            try:
-                qr_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'qrcodes', cinema_talent.qr_code_filename)
-                if os.path.exists(qr_path):
-                    qr_element = Image(qr_path, width=1.5*inch, height=1.5*inch)
-            except:
-                pass
+        # QR Code - généré à la volée avec la bonne URL
+        qr_element = ExportService._generate_qr_code_for_pdf(cinema_talent.unique_code, profile_type='cinema', size=1.5)
         
         # Colonne centrale: Nom, date de naissance, genre
         full_name = f"{cinema_talent.first_name} {cinema_talent.last_name}"
