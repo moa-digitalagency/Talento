@@ -34,6 +34,9 @@ class User(UserMixin, db.Model):
     
     country_id = db.Column(db.Integer, db.ForeignKey('countries.id'))
     city_id = db.Column(db.Integer, db.ForeignKey('cities.id'))
+    nationality = db.Column(db.String(100))
+    residence_country_id = db.Column(db.Integer, db.ForeignKey('countries.id'))
+    residence_city_id = db.Column(db.Integer, db.ForeignKey('cities.id'))
     
     photo_filename = db.Column(db.String(255))
     cv_filename = db.Column(db.String(255))
@@ -78,8 +81,10 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    country = db.relationship('Country', backref='users')
-    city = db.relationship('City', backref='users')
+    country = db.relationship('Country', foreign_keys=[country_id], backref='origin_users')
+    city = db.relationship('City', foreign_keys=[city_id], backref='city_users')
+    residence_country = db.relationship('Country', foreign_keys=[residence_country_id], backref='residence_users')
+    residence_city = db.relationship('City', foreign_keys=[residence_city_id], backref='residence_city_users')
     talents = db.relationship('UserTalent', back_populates='user', cascade='all, delete-orphan')
     
     def set_password(self, password):

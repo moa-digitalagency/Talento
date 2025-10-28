@@ -309,17 +309,31 @@
                 </div>
                 {% endif %}
                 
-                {% if user.city %}
+                {% if user.country %}
                 <div class="bg-green-50 p-4 rounded-lg">
-                    <p class="text-sm text-gray-600 mb-1">🏙️ Ville</p>
-                    <p class="font-semibold text-gray-800">{{ user.city.name }}</p>
+                    <p class="text-sm text-gray-600 mb-1">🌍 Pays d'origine</p>
+                    <p class="font-semibold text-gray-800">{{ user.country.name }}</p>
                 </div>
                 {% endif %}
                 
-                {% if user.country %}
+                {% if user.nationality %}
                 <div class="bg-green-50 p-4 rounded-lg">
-                    <p class="text-sm text-gray-600 mb-1">🌍 Pays</p>
-                    <p class="font-semibold text-gray-800">{{ user.country.name }}</p>
+                    <p class="text-sm text-gray-600 mb-1">🌐 Nationalité</p>
+                    <p class="font-semibold text-gray-800">{{ user.nationality }}</p>
+                </div>
+                {% endif %}
+                
+                {% if user.residence_country %}
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600 mb-1">🏠 Pays de résidence</p>
+                    <p class="font-semibold text-gray-800">{{ user.residence_country.name }}</p>
+                </div>
+                {% endif %}
+                
+                {% if user.residence_city %}
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <p class="text-sm text-gray-600 mb-1">🏙️ Ville de résidence</p>
+                    <p class="font-semibold text-gray-800">{{ user.residence_city.name }}</p>
                 </div>
                 {% endif %}
             </div>

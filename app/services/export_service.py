@@ -91,8 +91,10 @@ class ExportService:
                 'Email': user.email,
                 'Téléphone': user.phone or 'N/A',
                 'WhatsApp': user.whatsapp or 'N/A',
-                'Pays': user.country.name if user.country else 'N/A',
-                'Ville au Maroc': user.city.name if user.city else 'N/A',
+                'Pays d\'origine': user.country.name if user.country else 'N/A',
+                'Nationalité': user.nationality if user.nationality else 'N/A',
+                'Pays de résidence': user.residence_country.name if user.residence_country else 'N/A',
+                'Ville de résidence': user.residence_city.name if user.residence_city else 'N/A',
                 'Genre': user.gender or 'N/A',
                 'Talents': ', '.join(talents_names),
                 'Disponibilité': user.availability or 'N/A',
@@ -149,8 +151,10 @@ class ExportService:
                 'Email': user.email,
                 'Téléphone': user.phone or 'N/A',
                 'WhatsApp': user.whatsapp or 'N/A',
-                'Pays': user.country.name if user.country else 'N/A',
-                'Ville au Maroc': user.city.name if user.city else 'N/A',
+                'Pays d\'origine': user.country.name if user.country else 'N/A',
+                'Nationalité': user.nationality if user.nationality else 'N/A',
+                'Pays de résidence': user.residence_country.name if user.residence_country else 'N/A',
+                'Ville de résidence': user.residence_city.name if user.residence_city else 'N/A',
                 'Genre': user.gender or 'N/A',
                 'Talents': '; '.join(talents_names),
                 'Disponibilité': user.availability or 'N/A',
@@ -194,7 +198,7 @@ class ExportService:
         elements.append(Paragraph("Liste de Talent", title_style))
         elements.append(Spacer(1, 15))
         
-        data = [['Code', 'Nom Complet', 'Talents', 'Ville au Maroc', 'Pays Origine', 'Téléphone', 'WhatsApp']]
+        data = [['Code', 'Nom Complet', 'Talents', 'Pays Origine', 'Ville Résidence', 'Téléphone', 'WhatsApp']]
         
         cell_style = ParagraphStyle(
             'CellStyle',
@@ -212,8 +216,8 @@ class ExportService:
                 user.formatted_code,
                 f"{user.first_name} {user.last_name}",
                 Paragraph(talents_str, cell_style),
-                user.city.name if user.city else 'N/A',
                 user.country.name if user.country else 'N/A',
+                user.residence_city.name if user.residence_city else 'N/A',
                 user.phone if user.phone else 'N/A',
                 user.whatsapp if user.whatsapp else 'N/A'
             ])
@@ -501,7 +505,9 @@ class ExportService:
             ['Date de naissance', (user.date_of_birth.strftime('%d/%m/%Y') + (f' ({user.age} ans)' if user.age else '')) if user.date_of_birth else 'Information non disponible'],
             ['Genre', {'M': 'Masculin', 'F': 'Féminin', 'N': 'Non précisé'}.get(user.gender, 'Information non disponible')],
             ['Pays d\'origine', user.country.name if user.country else 'Information non disponible'],
-            ['Ville au Maroc', user.city.name if user.city else 'Information non disponible'],
+            ['Nationalité', user.nationality if user.nationality else 'Information non disponible'],
+            ['Pays de résidence', user.residence_country.name if user.residence_country else 'Information non disponible'],
+            ['Ville de résidence', user.residence_city.name if user.residence_city else 'Information non disponible'],
             ['Langues', Paragraph(languages_display, content_style)],
             ['Années d\'expérience', str(user.years_experience) + ' ans' if user.years_experience else 'Information non disponible'],
             ['Éducation', Paragraph(user.education or 'Information non disponible', content_style)],

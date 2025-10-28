@@ -148,7 +148,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label for="country_id" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                            🌍 Pays d'origine (Afrique) <span class="text-red-500">*</span>
+                            🌍 Pays d'origine <span class="text-red-500">*</span>
                         </label>
                         <select id="country_id" name="country_id" required 
                                 class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
@@ -156,12 +156,29 @@
                         </select>
                     </div>
                     <div class="space-y-2">
-                        <label for="city_id" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
-                            🏙️ Ville au Maroc <span class="text-red-500">*</span>
+                        <label for="nationality" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            🌐 Nationalité <span class="text-red-500">*</span>
                         </label>
-                        <select id="city_id" name="city_id" required 
+                        <input type="text" id="nationality" name="nationality" required 
+                               placeholder="Ex: Marocaine, Sénégalaise..."
+                               class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
+                    </div>
+                    <div class="space-y-2">
+                        <label for="residence_country_id" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            🏠 Pays de résidence <span class="text-red-500">*</span>
+                        </label>
+                        <select id="residence_country_id" name="residence_country_id" required 
                                 class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
                             <option value="">Sélectionner...</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label for="residence_city_id" class="block text-gray-700 font-semibold text-sm flex items-center gap-2">
+                            🏙️ Ville de résidence <span class="text-red-500">*</span>
+                        </label>
+                        <select id="residence_city_id" name="residence_city_id" required 
+                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
+                            <option value="">Sélectionner d'abord un pays de résidence...</option>
                         </select>
                     </div>
                 </div>
@@ -734,27 +751,52 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('/api/countries')
         .then(res => res.json())
         .then(countries => {
-            const select = document.getElementById('country_id');
+            const countryOriginSelect = document.getElementById('country_id');
+            const countryResidenceSelect = document.getElementById('residence_country_id');
+            
             countries.forEach(country => {
-                const option = document.createElement('option');
-                option.value = country.id;
                 const flag = getCountryFlag(country.code);
-                option.textContent = `${flag} ${country.name}`;
-                select.appendChild(option);
+                
+                const option1 = document.createElement('option');
+                option1.value = country.id;
+                option1.textContent = `${flag} ${country.name}`;
+                countryOriginSelect.appendChild(option1);
+                
+                const option2 = document.createElement('option');
+                option2.value = country.id;
+                option2.textContent = `${flag} ${country.name}`;
+                countryResidenceSelect.appendChild(option2);
             });
         });
     
-    fetch('/api/cities')
-        .then(res => res.json())
-        .then(cities => {
-            const select = document.getElementById('city_id');
-            cities.forEach(city => {
-                const option = document.createElement('option');
-                option.value = city.id;
-                option.textContent = city.name;
-                select.appendChild(option);
+    const residenceCountrySelect = document.getElementById('residence_country_id');
+    const residenceCitySelect = document.getElementById('residence_city_id');
+    
+    residenceCountrySelect.addEventListener('change', function() {
+        const countryId = this.value;
+        residenceCitySelect.innerHTML = '<option value="">Chargement...</option>';
+        
+        if (!countryId) {
+            residenceCitySelect.innerHTML = '<option value="">Sélectionner d\'abord un pays de résidence...</option>';
+            return;
+        }
+        
+        fetch(`/api/cities?country_id=${countryId}`)
+            .then(res => res.json())
+            .then(cities => {
+                residenceCitySelect.innerHTML = '<option value="">Sélectionner...</option>';
+                cities.forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city.id;
+                    option.textContent = city.name;
+                    residenceCitySelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des villes:', error);
+                residenceCitySelect.innerHTML = '<option value="">Erreur de chargement</option>';
             });
-        });
+    });
     
     fetch('/api/talents')
         .then(res => res.json())

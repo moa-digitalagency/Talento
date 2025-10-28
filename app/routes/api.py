@@ -24,7 +24,13 @@ def get_countries():
 
 @bp.route('/cities')
 def get_cities():
-    cities = City.query.order_by(City.name).all()
+    country_id = request.args.get('country_id')
+    
+    if country_id:
+        cities = City.query.filter_by(country_id=int(country_id)).order_by(City.name).all()
+    else:
+        cities = City.query.order_by(City.name).all()
+    
     return jsonify([{
         'id': c.id,
         'name': c.name,

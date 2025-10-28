@@ -103,9 +103,12 @@ def register():
             user.passport_number = request.form.get('passport_number')
             user.residence_card = request.form.get('residence_card')
             
-            city_id = request.form.get('city_id')
             user.country_id = int(country_id) if country_id else None
-            user.city_id = int(city_id) if city_id else None
+            user.nationality = request.form.get('nationality')
+            residence_country_id = request.form.get('residence_country_id')
+            residence_city_id = request.form.get('residence_city_id')
+            user.residence_country_id = int(residence_country_id) if residence_country_id else None
+            user.residence_city_id = int(residence_city_id) if residence_city_id else None
             
             user.portfolio_url = request.form.get('portfolio_url')
             user.website = request.form.get('website_url')
@@ -137,16 +140,16 @@ def register():
                 flash('Cet email est déjà utilisé.', 'error')
                 return render_template('auth/register.html')
             
-            country = Country.query.get(user.country_id)
-            city = City.query.get(user.city_id)
+            residence_country = Country.query.get(user.residence_country_id) if user.residence_country_id else None
+            residence_city = City.query.get(user.residence_city_id) if user.residence_city_id else None
             
-            if not country or not city:
-                flash('Veuillez sélectionner un pays et une ville.', 'error')
+            if not residence_country or not residence_city:
+                flash('Veuillez sélectionner un pays de résidence et une ville de résidence.', 'error')
                 return render_template('auth/register.html')
             
             user.unique_code = generate_unique_user_code(
-                country.code,
-                city.code,
+                residence_country.code,
+                residence_city.code,
                 user.gender or 'N'
             )
             
