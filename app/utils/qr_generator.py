@@ -22,7 +22,7 @@ def generate_qr_code(unique_code, save_path, profile_type='user'):
     Returns:
         str: Filename of saved QR code
     """
-    replit_domain = os.environ.get('REPLIT_DEV_DOMAIN', '')
+    replit_domain = os.environ.get('REPLIT_DOMAINS', '')
     
     # Déterminer l'URL selon le type de profil
     if profile_type == 'cinema':
