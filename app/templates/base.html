@@ -63,23 +63,11 @@
                                     <span>✅</span>
                                     <span>Présence</span>
                                 </a>
-                                <a href="{{ url_for('cinema.dashboard') }}" class="px-3 py-2 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all font-semibold text-sm">
-                                    <span>🎬</span>
-                                    <span>CINEMA</span>
-                                </a>
                             {% else %}
                                 <!-- Menu Talent/Utilisateur standard -->
                                 <a href="{{ url_for('main.index') }}" class="px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-semibold text-sm">
                                     <span>🏠</span>
                                     <span>Accueil</span>
-                                </a>
-                                <a href="{{ url_for('main.talents') }}" class="px-3 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all font-semibold text-sm">
-                                    <span>🎯</span>
-                                    <span>Talents</span>
-                                </a>
-                                <a href="{{ url_for('main.contrats') }}" class="px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all font-semibold text-sm">
-                                    <span>📄</span>
-                                    <span>Contrats</span>
                                 </a>
                             {% endif %}
                             <!-- Menu commun pour tous -->
@@ -159,23 +147,11 @@
                             <span>✅</span>
                             <span class="ml-2">Présence</span>
                         </a>
-                        <a href="{{ url_for('cinema.dashboard') }}" class="block px-4 py-3 text-gray-700 hover:bg-red-50 rounded-lg transition-all font-semibold">
-                            <span>🎬</span>
-                            <span class="ml-2">CINEMA</span>
-                        </a>
                     {% else %}
                         <!-- Menu Mobile Talent/Utilisateur standard -->
                         <a href="{{ url_for('main.index') }}" class="block px-4 py-3 text-gray-700 hover:bg-blue-50 rounded-lg transition-all font-semibold">
                             <span>🏠</span>
                             <span class="ml-2">Accueil</span>
-                        </a>
-                        <a href="{{ url_for('main.talents') }}" class="block px-4 py-3 text-gray-700 hover:bg-green-50 rounded-lg transition-all font-semibold">
-                            <span>🎯</span>
-                            <span class="ml-2">Talents</span>
-                        </a>
-                        <a href="{{ url_for('main.contrats') }}" class="block px-4 py-3 text-gray-700 hover:bg-purple-50 rounded-lg transition-all font-semibold">
-                            <span>📄</span>
-                            <span class="ml-2">Contrats</span>
                         </a>
                     {% endif %}
                     <!-- Menu Mobile commun pour tous -->
