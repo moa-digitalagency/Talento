@@ -469,6 +469,28 @@ class ExportService:
         ]))
         elements.append(identity_title)
         
+        # Style pour le contenu avec text wrapping
+        content_style = ParagraphStyle(
+            'ContentStyle',
+            parent=styles['Normal'],
+            fontSize=10,
+            leading=12,
+            alignment=TA_LEFT
+        )
+        
+        # Parser les langues si c'est du JSON
+        languages_display = 'Information non disponible'
+        if user.languages:
+            try:
+                import json
+                if user.languages.startswith('['):
+                    languages_list = json.loads(user.languages)
+                    languages_display = ', '.join(languages_list)
+                else:
+                    languages_display = user.languages
+            except:
+                languages_display = user.languages
+        
         info_data = [
             ['Email', user.email or 'Information non disponible'],
             ['Téléphone', user.phone or 'Information non disponible'],
@@ -480,9 +502,9 @@ class ExportService:
             ['Genre', {'M': 'Masculin', 'F': 'Féminin', 'N': 'Non précisé'}.get(user.gender, 'Information non disponible')],
             ['Pays d\'origine', user.country.name if user.country else 'Information non disponible'],
             ['Ville au Maroc', user.city.name if user.city else 'Information non disponible'],
-            ['Langues', user.languages or 'Information non disponible'],
+            ['Langues', Paragraph(languages_display, content_style)],
             ['Années d\'expérience', str(user.years_experience) + ' ans' if user.years_experience else 'Information non disponible'],
-            ['Éducation', user.education or 'Information non disponible'],
+            ['Éducation', Paragraph(user.education or 'Information non disponible', content_style)],
         ]
         
         info_table = Table(info_data, colWidths=[2*inch, 4.5*inch])

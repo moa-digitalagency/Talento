@@ -365,7 +365,8 @@
                 <div class="bg-orange-50 p-6 rounded-lg border-2 border-orange-300">
                     <p class="text-sm text-gray-600 mb-3 font-semibold">🌐 Langues parlées</p>
                     <div class="flex flex-wrap gap-2">
-                        {% for lang in user.languages.split(',') %}
+                        {% set languages_list = user.languages|from_json if user.languages and user.languages.startswith('[') else user.languages.split(',') if user.languages else [] %}
+                        {% for lang in languages_list %}
                         <span class="bg-orange-200 px-3 py-1 rounded-full text-sm font-semibold text-orange-800">
                             {{ lang.strip() }}
                         </span>
