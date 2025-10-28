@@ -97,6 +97,16 @@ def edit():
             current_user.portfolio_url = request.form.get('portfolio_url', '').strip() or None
             current_user.website = request.form.get('website', '').strip() or None
             
+            # Languages (multiple selection stored as JSON)
+            languages_list = request.form.getlist('languages')
+            if languages_list:
+                current_user.languages = json.dumps(languages_list, ensure_ascii=False)
+            else:
+                current_user.languages = None
+            
+            # Education
+            current_user.education = request.form.get('education', '').strip() or None
+            
             current_user.linkedin = request.form.get('linkedin', '').strip() or None
             current_user.instagram = request.form.get('instagram', '').strip() or None
             current_user.twitter = request.form.get('twitter', '').strip() or None
@@ -160,17 +170,29 @@ def edit():
             db.session.rollback()
             flash(f'Une erreur est survenue: {str(e)}', 'error')
     
+    from app.constants import LANGUAGES_CINEMA
+    
     countries = Country.query.order_by(Country.name).all()
     cities = City.query.order_by(City.name).all()
     all_talents = Talent.query.order_by(Talent.category, Talent.name).all()
     user_talent_ids = [ut.talent_id for ut in current_user.talents]
+    
+    # Parse user languages from JSON
+    user_languages = []
+    if current_user.languages:
+        try:
+            user_languages = json.loads(current_user.languages)
+        except:
+            user_languages = []
     
     return render_template('profile/edit.html', 
                          user=current_user,
                          countries=countries,
                          cities=cities,
                          all_talents=all_talents,
-                         user_talent_ids=user_talent_ids)
+                         user_talent_ids=user_talent_ids,
+                         all_languages=LANGUAGES_CINEMA,
+                         user_languages=user_languages)
 
 @bp.route('/view/<unique_code>')
 def view_public(unique_code):
