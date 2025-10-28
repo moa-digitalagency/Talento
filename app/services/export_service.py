@@ -253,17 +253,17 @@ class ExportService:
         )
         
         # Tentative d'ajout du logo
-        logo_path = os.path.join('static', 'img', 'logo.png')
+        logo_path = os.path.join('static', 'img', 'logo-full.png')
         try:
             if os.path.exists(logo_path):
-                logo = Image(logo_path, width=1.2*inch, height=1.2*inch, kind='proportional')
+                logo = Image(logo_path, width=2.5*inch, height=1*inch, kind='proportional')
                 logo.hAlign = 'CENTER'
                 elements.append(logo)
                 elements.append(Spacer(1, 10))
             else:
-                elements.append(Paragraph("🌍 TALENTSMAROC.COM - FICHE DE TALENT", header_style))
+                elements.append(Paragraph("TALENTSMAROC.COM - FICHE DE TALENT", header_style))
         except:
-            elements.append(Paragraph("🌍 TALENTSMAROC.COM - FICHE DE TALENT", header_style))
+            elements.append(Paragraph("TALENTSMAROC.COM - FICHE DE TALENT", header_style))
         
         elements.append(Paragraph("Plateforme de Centralisation des Talents Africain Subsahrien aux Maroc", subtitle_header_style))
         
@@ -417,7 +417,7 @@ class ExportService:
         )
         
         # Titre de section
-        identity_title = Table([['👤  IDENTITÉ']], colWidths=[6.5*inch])
+        identity_title = Table([['IDENTITÉ']], colWidths=[6.5*inch])
         identity_title.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, -1), color_blue),
             ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
@@ -466,7 +466,7 @@ class ExportService:
         # ==== SECTION TALENTS & COMPÉTENCES ====
         if user.talents:
             elements.append(PageBreak())
-            talents_title = Table([['🎯  TALENTS & COMPÉTENCES']], colWidths=[6.5*inch])
+            talents_title = Table([['TALENTS & COMPÉTENCES']], colWidths=[6.5*inch])
             talents_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), color_purple),
                 ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
@@ -508,7 +508,7 @@ class ExportService:
             elements.append(Spacer(1, 15))
         
         # ==== SECTION PROFIL PROFESSIONNEL ====
-        prof_title = Table([['💼  PROFIL PROFESSIONNEL']], colWidths=[6.5*inch])
+        prof_title = Table([['PROFIL PROFESSIONNEL']], colWidths=[6.5*inch])
         prof_title.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, -1), color_cyan),
             ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
@@ -525,7 +525,7 @@ class ExportService:
             ['Mode de travail', user.work_mode or 'Information non disponible'],
             ['Fourchette tarifaire', user.rate_range or 'Information non disponible'],
             ['Score de profil', f"{user.profile_score or 0}/100"],
-            ['CV disponible', '✓ Oui' if user.cv_filename else '✗ Non'],
+            ['CV disponible', 'Oui' if user.cv_filename else 'Non'],
             ['Portfolio', user.portfolio_url if user.portfolio_url else 'Information non disponible'],
             ['Date d\'inscription', user.created_at.strftime('%d/%m/%Y') if user.created_at else 'Information non disponible'],
         ]
@@ -550,7 +550,7 @@ class ExportService:
         
         # ==== SECTION BIOGRAPHIE ====
         if user.bio:
-            bio_title = Table([['📝  BIOGRAPHIE']], colWidths=[6.5*inch])
+            bio_title = Table([['BIOGRAPHIE']], colWidths=[6.5*inch])
             bio_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#10B981')),
                 ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
@@ -607,7 +607,7 @@ class ExportService:
         
         # N'afficher la section que s'il y a au moins un réseau social rempli
         if social_links:
-            social_title = Table([['🌐  RÉSEAUX SOCIAUX']], colWidths=[6.5*inch])
+            social_title = Table([['RÉSEAUX SOCIAUX']], colWidths=[6.5*inch])
             social_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#EC4899')),
                 ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
@@ -718,10 +718,10 @@ class ExportService:
         )
         
         # Tentative d'ajout du logo
-        logo_path = os.path.join('static', 'img', 'logo.png')
+        logo_path = os.path.join('static', 'img', 'logo-full.png')
         try:
             if os.path.exists(logo_path):
-                logo = Image(logo_path, width=1.2*inch, height=1.2*inch, kind='proportional')
+                logo = Image(logo_path, width=2.5*inch, height=1*inch, kind='proportional')
                 logo.hAlign = 'CENTER'
                 elements.append(logo)
                 elements.append(Spacer(1, 10))
@@ -1374,7 +1374,7 @@ class ExportService:
         )
         elements.append(Spacer(1, 10))
         elements.append(Paragraph(f"Document généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')}", footer_style))
-        elements.append(Paragraph("🎬 Plateforme TalentsMaroc.com CINEMA - Talents du Cinéma Africain", footer_style))
+        elements.append(Paragraph("Plateforme TalentsMaroc.com CINEMA - Talents du Cinéma Africain", footer_style))
         
         doc.build(elements)
         buffer.seek(0)
