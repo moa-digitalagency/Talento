@@ -55,3 +55,23 @@ class Config:
     
     OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
     OMDB_API_KEY = os.environ.get('OMDB_API_KEY')
+    
+    # URL de base pour les QR codes et liens publics
+    # Fonctionne sur Replit, VPS, ou n'importe quelle plateforme
+    @staticmethod
+    def get_base_url():
+        """Retourne l'URL de base de l'application selon l'environnement"""
+        # 1. Essayer la variable d'environnement BASE_URL (VPS, production personnalisée)
+        base_url = os.environ.get('BASE_URL')
+        if base_url:
+            return base_url.rstrip('/')
+        
+        # 2. Essayer REPLIT_DOMAINS (environnement Replit)
+        replit_domain = os.environ.get('REPLIT_DOMAINS')
+        if replit_domain:
+            if not replit_domain.startswith('http'):
+                return f'https://{replit_domain}'
+            return replit_domain.rstrip('/')
+        
+        # 3. Fallback pour développement local
+        return 'http://localhost:5000'
