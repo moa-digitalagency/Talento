@@ -883,9 +883,9 @@ def main():
             seed_cities()
             seed_talents()
             create_admin_user()
-            create_demo_users()
-            create_demo_cinema_talents()
-            generate_codes_for_cinema_talents()
+            # create_demo_users()  # Désactivé - Ne pas charger les utilisateurs de démo
+            # create_demo_cinema_talents()  # Désactivé - Ne pas charger les profils CINEMA de démo
+            # generate_codes_for_cinema_talents()  # Désactivé - Pas de profils CINEMA de démo à traiter
             generate_qr_codes_for_users()
             
             print("\n" + "=" * 60)
