@@ -10,6 +10,8 @@ Preferred communication style: Simple, everyday language.
 - **Navigation Simplifiée**: Menu principal réduit à "Profil" et "Déconnexion" uniquement pour une expérience utilisateur épurée.
 - **QR Code Multi-Plateforme**: Système de génération de QR codes portable fonctionnant sur Replit, VPS, serveurs dédiés via configuration BASE_URL.
 - **Boutons Profil Améliorés**: Page de profil avec 3 boutons principaux (Modifier profil, Télécharger profil, Modifier mot de passe) avec style de contour plein (border-2).
+- **Script de Régénération QR Codes** (28 Oct 2025): Nouveau script `regenerate_qrcodes.py` pour régénérer tous les QR codes avec l'URL correcte lors d'un changement d'environnement.
+- **Champs Profil Supplémentaires** (28 Oct 2025): Ajout des champs "Langues parlées" (multi-select avec drapeaux) et "Formation & Éducation" (textarea) à la page d'édition de profil utilisateur.
 
 ## System Architecture
 
