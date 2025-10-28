@@ -7,6 +7,8 @@ TalentsMaroc.com is a professional web application designed to centralize and sh
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (October 2025)
+- **Script de Nettoyage de Base de Données** (28 Oct 2025): Nouveau script `clean_all_data.py` pour supprimer toutes les données de démo (utilisateurs, talents CINEMA, productions, projets, présence) tout en préservant les comptes admin et les données de référence (compétences, pays, villes, paramètres). Inclut une gestion sécurisée des transactions avec rollback automatique en cas d'erreur.
+- **Désactivation Données de Démo** (28 Oct 2025): La création automatique des productions de démo au démarrage de l'application a été désactivée (`ensure_demo_productions()` commenté dans `app.py`). La base de données reste propre après nettoyage sans recréation automatique.
 - **Navigation Basée sur les Rôles** (28 Oct 2025): Implémentation d'un menu de navigation dynamique simplifié qui s'adapte au rôle de l'utilisateur. Les administrateurs voient Dashboard, Talents, Contrats, CINEMA, Présence, Paramètres, Mon Profil, Déconnexion. Les utilisateurs avec rôle "presence" voient Présence, Mon Profil, Déconnexion. Les talents standards voient Accueil, Mon Profil, Déconnexion. Le menu est cohérent sur desktop et mobile.
 - **QR Code Multi-Plateforme**: Système de génération de QR codes portable fonctionnant sur Replit, VPS, serveurs dédiés via configuration BASE_URL.
 - **Boutons Profil Améliorés**: Page de profil avec 3 boutons principaux (Modifier profil, Télécharger profil, Modifier mot de passe) avec style de contour plein (border-2).
@@ -30,7 +32,8 @@ Preferred communication style: Simple, everyday language.
     - **Project Code**: CCIIISSSNNN (Country, Production Initials, Project ID, Talent Number) - 10+ characters, no dashes.
     - Both main and CINEMA codes use sequential numbering incremented per country.
     - Codes are distinguished by component order.
-- **Automatic Data Seeding**: System creates demo users, CINEMA talents, productions, and an admin account (admin@talento.com / MAN0001RAB / @4dm1n) if not present.
+- **Automatic Data Seeding**: System creates an admin account (admin@talento.com / MAN0001RAB / @4dm1n) if not present. Demo data creation is disabled by default.
+- **Data Cleanup Script**: `clean_all_data.py` - Safely removes all user-generated data (users, CINEMA talents, productions, projects, attendance records) while preserving admin accounts and reference data (skills, countries, cities, system settings). Features transaction rollback protection.
 
 ### Authentication & Authorization
 - **User Authentication**: Flask-Login, supporting dual login (email OR unique code).
