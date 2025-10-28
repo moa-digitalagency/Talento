@@ -8,11 +8,12 @@ www.myoneart.com
 
 import qrcode
 import os
-from flask import url_for
+from config import Config
 
 def generate_qr_code(unique_code, save_path, profile_type='user'):
     """
     Generate QR code for user or cinema profile
+    Fonctionne sur toutes les plateformes (Replit, VPS, local)
     
     Args:
         unique_code (str): Unique code of the profile
@@ -22,25 +23,14 @@ def generate_qr_code(unique_code, save_path, profile_type='user'):
     Returns:
         str: Filename of saved QR code
     """
-    replit_domain = os.environ.get('REPLIT_DOMAINS', '')
+    # Obtenir l'URL de base selon l'environnement (Replit, VPS, ou local)
+    base_url = Config.get_base_url()
     
-    # Déterminer l'URL selon le type de profil
+    # Construire l'URL complète selon le type de profil
     if profile_type == 'cinema':
-        if replit_domain:
-            if not replit_domain.startswith('http'):
-                profile_url = f"https://{replit_domain}/cinema/profile/{unique_code}"
-            else:
-                profile_url = f"{replit_domain}/cinema/profile/{unique_code}"
-        else:
-            profile_url = f"http://localhost:5004/cinema/profile/{unique_code}"
+        profile_url = f"{base_url}/cinema/profile/{unique_code}"
     else:  # user profile (default)
-        if replit_domain:
-            if not replit_domain.startswith('http'):
-                profile_url = f"https://{replit_domain}/profile/view/{unique_code}"
-            else:
-                profile_url = f"{replit_domain}/profile/view/{unique_code}"
-        else:
-            profile_url = f"http://localhost:5004/profile/view/{unique_code}"
+        profile_url = f"{base_url}/profile/view/{unique_code}"
     
     qr = qrcode.QRCode(
         version=1,
