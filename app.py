@@ -206,7 +206,7 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         ensure_admin_user()
-        ensure_demo_productions()
+        # ensure_demo_productions()  # Désactivé - ne pas créer de données de démo
     # Port 5000 pour Replit (requis), 5004 pour VPS (voir deploy_vps.sh)
     port = int(os.environ.get('PORT', 5004))
     app.run(host='0.0.0.0', port=port, debug=True)
