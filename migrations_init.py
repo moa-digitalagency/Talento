@@ -78,6 +78,9 @@ def check_and_add_columns():
     inspector = inspect(db.engine)
     
     user_columns_to_check = {
+        'nationality': 'VARCHAR(100)',
+        'residence_country_id': 'INTEGER',
+        'residence_city_id': 'INTEGER',
         'availability': 'VARCHAR(50)',
         'work_mode': 'VARCHAR(50)', 
         'rate_range': 'VARCHAR(100)',
@@ -88,7 +91,31 @@ def check_and_add_columns():
         'education': 'TEXT',
         'passport_number_encrypted': 'TEXT',
         'residence_card_encrypted': 'TEXT',
-        'role': "VARCHAR(50) DEFAULT 'user'"
+        'role': "VARCHAR(50) DEFAULT 'user'",
+        'phone_encrypted': 'TEXT',
+        'whatsapp_encrypted': 'TEXT',
+        'address_encrypted': 'TEXT',
+        'linkedin_encrypted': 'TEXT',
+        'imdb_url_encrypted': 'TEXT',
+        'threads_encrypted': 'TEXT',
+        'instagram_encrypted': 'TEXT',
+        'twitter_encrypted': 'TEXT',
+        'facebook_encrypted': 'TEXT',
+        'tiktok_encrypted': 'TEXT',
+        'youtube_encrypted': 'TEXT',
+        'github_encrypted': 'TEXT',
+        'behance_encrypted': 'TEXT',
+        'dribbble_encrypted': 'TEXT',
+        'pinterest_encrypted': 'TEXT',
+        'snapchat_encrypted': 'TEXT',
+        'telegram_encrypted': 'TEXT',
+        'photo_filename': 'VARCHAR(255)',
+        'cv_filename': 'VARCHAR(255)',
+        'portfolio_url': 'VARCHAR(500)',
+        'website': 'VARCHAR(500)',
+        'bio': 'TEXT',
+        'years_experience': 'INTEGER',
+        'qr_code_filename': 'VARCHAR(255)'
     }
     
     if 'users' in inspector.get_table_names():
