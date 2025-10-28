@@ -483,7 +483,7 @@ class ExportService:
                 category = ut.talent.category
                 if category not in talents_by_category:
                     talents_by_category[category] = []
-                talents_by_category[category].append(f"{ut.talent.emoji} {ut.talent.name}")
+                talents_by_category[category].append(ut.talent.name)
             
             talents_data = []
             for category, talents in talents_by_category.items():
