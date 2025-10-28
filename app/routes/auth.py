@@ -31,6 +31,11 @@ def login():
         
         if user and user.check_password(password):
             login_user(user, remember=True)
+            
+            # Vérifier si le mot de passe est toujours le code unique
+            if user.check_password(user.unique_code):
+                flash('🔐 Pour votre sécurité, nous vous recommandons de changer votre mot de passe.', 'warning')
+            
             next_page = request.args.get('next')
             if user.is_admin:
                 return redirect(next_page or url_for('admin.dashboard'))
@@ -150,7 +155,7 @@ def register():
                 user.gender or 'N'
             )
             
-            password = generate_random_password()
+            password = generate_random_password(unique_code=user.unique_code)
             user.set_password(password)
             
             if 'photo' in request.files:

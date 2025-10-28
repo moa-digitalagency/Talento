@@ -279,8 +279,9 @@ class EmailService:
                         </div>
                         
                         <div class="warning">
-                            <strong>⚠️ Important :</strong> Conservez ces identifiants en lieu sûr. 
-                            Vous pourrez modifier votre mot de passe après la première connexion.
+                            <strong>⚠️ Important :</strong> Pour votre première connexion, utilisez votre code unique comme mot de passe. 
+                            <strong>Nous vous recommandons fortement de changer votre mot de passe dès votre première connexion</strong> 
+                            pour sécuriser votre compte.
                         </div>
                         
                         <div style="text-align: center;">

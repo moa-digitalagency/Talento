@@ -4,8 +4,20 @@ from app import mail
 import secrets
 import string
 
-def generate_random_password(length=12):
-    """Generate a secure random password"""
+def generate_random_password(unique_code=None, length=12):
+    """
+    Generate a password - uses unique_code if provided, otherwise generates random
+    
+    Args:
+        unique_code: If provided, will be used as the password
+        length: Length of random password if unique_code not provided
+    
+    Returns:
+        Password string
+    """
+    if unique_code:
+        return unique_code
+    
     alphabet = string.ascii_letters + string.digits + string.punctuation
     password = ''.join(secrets.choice(alphabet) for _ in range(length))
     return password

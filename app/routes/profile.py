@@ -184,6 +184,46 @@ def view_public(unique_code):
     
     return render_template('profile/view.html', user=user, cv_analysis=cv_analysis_data, profile_type='user', cinema_talent=None)
 
+@bp.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    """Permet à l'utilisateur de changer son mot de passe"""
+    if request.method == 'POST':
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        
+        # Vérifier l'ancien mot de passe
+        if not current_user.check_password(current_password):
+            flash('Le mot de passe actuel est incorrect.', 'error')
+            return render_template('profile/change_password.html')
+        
+        # Vérifier que le nouveau mot de passe est différent de l'ancien
+        if current_password == new_password:
+            flash('Le nouveau mot de passe doit être différent de l\'ancien.', 'error')
+            return render_template('profile/change_password.html')
+        
+        # Vérifier la confirmation
+        if new_password != confirm_password:
+            flash('Les nouveaux mots de passe ne correspondent pas.', 'error')
+            return render_template('profile/change_password.html')
+        
+        # Vérifier la longueur minimale
+        if len(new_password) < 6:
+            flash('Le mot de passe doit contenir au moins 6 caractères.', 'error')
+            return render_template('profile/change_password.html')
+        
+        try:
+            current_user.set_password(new_password)
+            db.session.commit()
+            flash('Votre mot de passe a été changé avec succès!', 'success')
+            return redirect(url_for('profile.dashboard'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Une erreur est survenue: {str(e)}', 'error')
+    
+    return render_template('profile/change_password.html')
+
 @bp.route('/resend_credentials/<unique_code>', methods=['POST'])
 @login_required
 def resend_credentials(unique_code):

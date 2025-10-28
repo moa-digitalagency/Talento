@@ -641,8 +641,8 @@ def register_talent():
             cinema_user.is_admin = False
             cinema_user.account_active = True
             
-            # Générer un mot de passe aléatoire
-            password = generate_random_password()
+            # Générer un mot de passe utilisant le code unique
+            password = generate_random_password(unique_code=cinema_user.unique_code)
             cinema_user.set_password(password)
             
             # Copier la photo si disponible
