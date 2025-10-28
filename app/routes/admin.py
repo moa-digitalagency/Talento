@@ -247,6 +247,14 @@ def edit_user(user_id):
         city_id = request.form.get('city_id')
         user.city_id = int(city_id) if city_id else None
         
+        user.nationality = request.form.get('nationality', '').strip() or None
+        
+        residence_country_id = request.form.get('residence_country_id')
+        user.residence_country_id = int(residence_country_id) if residence_country_id else None
+        
+        residence_city_id = request.form.get('residence_city_id')
+        user.residence_city_id = int(residence_city_id) if residence_city_id else None
+        
         user.availability = request.form.get('availability')
         user.work_mode = request.form.get('work_mode')
         user.rate_range = request.form.get('rate_range', '').strip() or None
