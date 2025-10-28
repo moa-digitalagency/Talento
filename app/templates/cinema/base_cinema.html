@@ -25,18 +25,18 @@ www.myoneart.com
                     
                     <!-- Menu de navigation -->
                     <nav class="space-y-2">
-                        <!-- Options désactivées temporairement - seul le profil reste actif -->
-                        <!--
+                        {% if current_user.is_admin %}
+                        <!-- Menu CINEMA pour Admin uniquement -->
                         <a href="{{ url_for('cinema.dashboard') }}" 
                            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.endpoint == 'cinema.dashboard' %}bg-purple-100 text-purple-700 font-bold border-2 border-purple-500{% else %}text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent{% endif %}">
                             <span class="text-2xl">📊</span>
-                            <span>Dashboard</span>
+                            <span>Dashboard Cinema</span>
                         </a>
                         
                         <a href="{{ url_for('cinema.talents') }}" 
                            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.endpoint == 'cinema.talents' %}bg-purple-100 text-purple-700 font-bold border-2 border-purple-500{% else %}text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent{% endif %}">
                             <span class="text-2xl">🎭</span>
-                            <span>Talents</span>
+                            <span>Talents Cinema</span>
                         </a>
                         
                         <a href="{{ url_for('cinema.productions') }}" 
@@ -51,39 +51,24 @@ www.myoneart.com
                             <span>Projets</span>
                         </a>
                         
-                        <a href="{{ url_for('cinema.contrats') }}" 
-                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.endpoint == 'cinema.contrats' %}bg-purple-100 text-purple-700 font-bold border-2 border-purple-500{% else %}text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent{% endif %}">
-                            <span class="text-2xl">📄</span>
-                            <span>Contrat Cinéma</span>
-                        </a>
-                        
-                        {% if current_user.is_admin or current_user.role == 'presence' %}
                         <a href="{{ url_for('presence.index') }}" 
                            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.endpoint and request.endpoint.startswith('presence.') %}bg-purple-100 text-purple-700 font-bold border-2 border-purple-500{% else %}text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent{% endif %}">
                             <span class="text-2xl">📋</span>
-                            <span>Présences</span>
+                            <span>Presences</span>
                         </a>
-                        {% endif %}
+                        
+                        <a href="{{ url_for('cinema.contrats') }}" 
+                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.endpoint == 'cinema.contrats' %}bg-purple-100 text-purple-700 font-bold border-2 border-purple-500{% else %}text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent{% endif %}">
+                            <span class="text-2xl">📄</span>
+                            <span>Contrats Cinema</span>
+                        </a>
                         
                         <a href="{{ url_for('cinema.team') }}" 
                            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.endpoint == 'cinema.team' %}bg-purple-100 text-purple-700 font-bold border-2 border-purple-500{% else %}text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent{% endif %}">
                             <span class="text-2xl">👥</span>
-                            <span>Équipe Technique</span>
+                            <span>Equipe techniques</span>
                         </a>
-                        -->
-                        
-                        <!-- Options actives pour les utilisateurs -->
-                        <a href="{{ url_for('profile.dashboard') }}" 
-                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.endpoint == 'profile.dashboard' %}bg-purple-100 text-purple-700 font-bold border-2 border-purple-500{% else %}text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent{% endif %}">
-                            <span class="text-2xl">👤</span>
-                            <span>Mon Profil</span>
-                        </a>
-                        
-                        <a href="{{ url_for('profile.change_password') }}" 
-                           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all {% if request.endpoint == 'profile.change_password' %}bg-purple-100 text-purple-700 font-bold border-2 border-purple-500{% else %}text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-2 border-transparent{% endif %}">
-                            <span class="text-2xl">🔐</span>
-                            <span>Modifier le mot de passe</span>
-                        </a>
+                        {% endif %}
                     </nav>
                     
                     <!-- Info utilisateur -->
