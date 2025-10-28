@@ -342,7 +342,8 @@ def create_app(config_class=Config):
             safe_auto_migrate(db)
             
             # Auto-détecter si les données demo doivent être créées
-            _ensure_demo_data_exists(db, logger)
+            # Temporarily disabled to speed up startup
+            # _ensure_demo_data_exists(db, logger)
             
             # Garantir que le compte admin existe toujours
             _ensure_admin_exists(db, logger)
