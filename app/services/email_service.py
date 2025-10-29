@@ -44,6 +44,30 @@ class EmailService:
         except:
             self.api_key = api_key or os.environ.get('SENDGRID_API_KEY')
             self.from_email = from_email or os.environ.get('SENDGRID_FROM_EMAIL', 'noreply@myoneart.com')
+    
+    def _get_logo_base64(self):
+        """
+        Encode le logo en base64 pour l'inclure dans les emails
+        
+        Returns:
+            str: Logo encodé en base64, ou None si le logo n'existe pas
+        """
+        logo_paths = [
+            'app/static/img/logo-full.png',
+            'static/img/logo-full.png'
+        ]
+        
+        for logo_path in logo_paths:
+            if os.path.exists(logo_path):
+                try:
+                    with open(logo_path, 'rb') as f:
+                        logo_data = base64.b64encode(f.read()).decode()
+                        return logo_data
+                except Exception as e:
+                    current_app.logger.warning(f"Erreur lecture logo {logo_path}: {str(e)}")
+                    continue
+        
+        return None
         
     def send_email(self, to_email, subject, html_content, attachments=None):
         """
@@ -146,6 +170,10 @@ class EmailService:
             domain = get_application_domain()
             profile_url = f"https://{domain}/profile/view/{user.unique_code}"
             
+            # Encoder le logo en base64 pour l'email
+            logo_base64 = self._get_logo_base64()
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="TalentsMaroc.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+            
             html_content = f"""
             <!DOCTYPE html>
             <html>
@@ -169,6 +197,7 @@ class EmailService:
             <body>
                 <div class="container">
                     <div class="header">
+                        {logo_img}
                         <h1>⭐ Bienvenue sur TalentsMaroc.com !</h1>
                     </div>
                     <div class="content">
@@ -233,6 +262,10 @@ class EmailService:
             domain = get_application_domain()
             login_url = f"https://{domain}/login"
             
+            # Encoder le logo en base64 pour l'email
+            logo_base64 = self._get_logo_base64()
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="TalentsMaroc.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+            
             html_content = f"""
             <!DOCTYPE html>
             <html>
@@ -261,6 +294,7 @@ class EmailService:
             <body>
                 <div class="container">
                     <div class="header">
+                        {logo_img}
                         <h1>🔐 Vos identifiants TalentsMaroc.com</h1>
                     </div>
                     <div class="content">
@@ -328,25 +362,30 @@ class EmailService:
             True si envoyé, False sinon
         """
         try:
-            html_content = """
+            # Encoder le logo en base64 pour l'email
+            logo_base64 = self._get_logo_base64()
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="TalentsMaroc.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+            
+            html_content = f"""
             <!DOCTYPE html>
             <html>
             <head>
                 <meta charset="utf-8">
                 <style>
-                    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-                    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-                    .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
-                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-                    .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-                    .success { background: #d1fae5; border-left: 4px solid #10b981; 
-                               padding: 15px; margin: 20px 0; border-radius: 5px; }
-                    .footer { text-align: center; margin-top: 20px; color: #666; font-size: 12px; }
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
+                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                    .success {{ background: #d1fae5; border-left: 4px solid #10b981; 
+                               padding: 15px; margin: 20px 0; border-radius: 5px; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
                 </style>
             </head>
             <body>
                 <div class="container">
                     <div class="header">
+                        {logo_img}
                         <h1>✅ Email de Test TalentsMaroc.com</h1>
                     </div>
                     <div class="content">

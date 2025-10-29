@@ -1374,6 +1374,7 @@ def print_project_talents_list(project_id):
     from reportlab.pdfgen import canvas
     from reportlab.platypus import Table, TableStyle
     from reportlab.lib.enums import TA_CENTER, TA_LEFT
+    import os
     
     project = Project.query.get_or_404(project_id)
     project_talents = ProjectTalent.query.filter_by(project_id=project_id).all()
@@ -1390,14 +1391,29 @@ def print_project_talents_list(project_id):
         page_width, page_height = landscape(A4)
         c = canvas.Canvas(buffer, pagesize=landscape(A4))
         
+        # Ajouter le logo en haut
+        logo_path = os.path.join('app', 'static', 'img', 'logo-full.png')
+        if not os.path.exists(logo_path):
+            logo_path = os.path.join('static', 'img', 'logo-full.png')
+        
+        if os.path.exists(logo_path):
+            try:
+                # Centrer le logo en haut de la page
+                logo_width = 6*cm
+                logo_height = 1.5*cm
+                c.drawImage(logo_path, (page_width - logo_width)/2, page_height - 1.5*cm, 
+                           width=logo_width, height=logo_height, preserveAspectRatio=True, mask='auto')
+            except:
+                pass
+        
         # En-tête
         c.setFont("Helvetica-Bold", 16)
         c.setFillColor(colors.HexColor('#8B5CF6'))
-        c.drawCentredString(page_width/2, page_height - 2*cm, "LISTE DES TALENTS ASSIGNÉS")
+        c.drawCentredString(page_width/2, page_height - 2.5*cm, "LISTE DES TALENTS ASSIGNÉS")
         
         c.setFont("Helvetica-Bold", 12)
         c.setFillColor(colors.HexColor('#1F2937'))
-        c.drawCentredString(page_width/2, page_height - 2.8*cm, f"Projet: {project.name}")
+        c.drawCentredString(page_width/2, page_height - 3.3*cm, f"Projet: {project.name}")
         
         # Informations complémentaires
         c.setFont("Helvetica", 10)
@@ -1406,10 +1422,10 @@ def print_project_talents_list(project_id):
         info_text += f"Type: {project.production_type} | "
         if project.start_date and project.end_date:
             info_text += f"Période: {project.start_date.strftime('%d/%m/%Y')} - {project.end_date.strftime('%d/%m/%Y')}"
-        c.drawCentredString(page_width/2, page_height - 3.5*cm, info_text)
+        c.drawCentredString(page_width/2, page_height - 4*cm, info_text)
         
         # Tableau des talents
-        table_start_y = page_height - 4.5*cm
+        table_start_y = page_height - 5*cm
         
         # Données du tableau
         data = [['Code Projet', 'Nom Complet', 'Pièce d\'identité', 'Type de Talent', 'Observation']]
