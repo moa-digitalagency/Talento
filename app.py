@@ -221,7 +221,7 @@ if __name__ == '__main__':
         # ensure_demo_productions()  # Désactivé - ne pas créer de données de démo
     
     # Vérification automatique des données au démarrage
-    ensure_essential_data()
+    # ensure_essential_data()  # Désactivé temporairement pour accélérer le démarrage
     
     # Port 5000 pour Replit (requis), 5004 pour VPS (voir deploy_vps.sh)
     port = int(os.environ.get('PORT', 5004))
