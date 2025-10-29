@@ -1,6 +1,6 @@
 # 🚀 Guide de Déploiement - TalentsMaroc.com
 
-**Dernière mise à jour**: 28 Octobre 2025
+**Dernière mise à jour**: 29 Octobre 2025
 
 ---
 
@@ -511,6 +511,29 @@ python3 -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().
 
 ## Dépannage
 
+### Problème : Erreur "AmbiguousForeignKeysError" sur le Dashboard Admin
+
+**Symptôme**: Erreur SQLAlchemy lors du chargement du tableau de bord admin:
+```
+sqlalchemy.exc.AmbiguousForeignKeysError: Can't determine join between 'cities' and 'users'
+```
+
+**Cause**: Le modèle User possède deux clés étrangères vers la table City (`city_id` et `residence_city_id`), ce qui rend certaines jointures ambiguës.
+
+**Solution**: Cette erreur a été corrigée dans la version du 29 octobre 2025. Si vous utilisez une version plus ancienne, mettez à jour le fichier `app/routes/main.py` ligne 223:
+
+**Avant (provoquait l'erreur)**:
+```python
+.join(User).join(Country)
+```
+
+**Après (corrigé)**:
+```python
+.join(User, City.id == User.city_id).join(Country, Country.id == User.country_id)
+```
+
+Cette modification spécifie explicitement quelle clé étrangère utiliser pour la jointure, éliminant ainsi l'ambiguïté.
+
 ### Problème : "Identifiant ou mot de passe incorrect"
 
 **Solutions**:
@@ -575,4 +598,4 @@ Pour plus d'informations :
 
 ---
 
-**Dernière mise à jour**: 28 Octobre 2025
+**Dernière mise à jour**: 29 Octobre 2025
