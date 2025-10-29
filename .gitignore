@@ -19,16 +19,33 @@ instance/
 *.db
 *.sqlite3
 
-# Environment
+# Environment & Configuration (CRITIQUE - Ne jamais committer)
 .env
+.env.local
+.env.production
+*.env
 
-# Uploads
+# Base de données (CRITIQUE - Ne jamais committer)
+*.db
+*.sqlite
+*.sqlite3
+talento.db
+
+# Uploads & Fichiers utilisateur (CRITIQUE - Ne jamais committer)
 app/static/uploads/photos/*
 app/static/uploads/cvs/*
 app/static/uploads/qrcodes/*
+app/static/uploads/cinema/*
 !app/static/uploads/photos/.gitkeep
 !app/static/uploads/cvs/.gitkeep
 !app/static/uploads/qrcodes/.gitkeep
+!app/static/uploads/cinema/.gitkeep
+
+# Sauvegardes (Ne jamais committer)
+backups/
+*.tar.gz
+*.sql
+*.dump
 
 # Node
 node_modules/

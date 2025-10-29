@@ -244,6 +244,27 @@ Le workflow `Talento Web App` est configuré pour :
 
 ---
 
+## Mise à Jour de l'Application
+
+### 🔄 Script de Mise à Jour Sécurisée (Recommandé)
+
+Pour mettre à jour l'application **sans perdre vos données** (base de données, configuration, uploads):
+
+```bash
+./update_app.sh
+```
+
+**Ce script protège automatiquement:**
+- ✅ Base de données (SQLite et PostgreSQL)
+- ✅ Configuration (.env)
+- ✅ Fichiers uploadés (photos, CVs, QR codes)
+- ✅ Sauvegardes automatiques avant mise à jour
+- ✅ Migrations de schéma de base de données
+
+Voir le fichier `README_UPDATE.md` pour plus de détails.
+
+---
+
 ## Déploiement sur VPS
 
 ### Installation Complète
