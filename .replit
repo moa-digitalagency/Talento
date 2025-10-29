@@ -27,16 +27,12 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "PORT=5000 python app.py"
+args = "SECRET_KEY=69e362e1410dc7a73264b72c3fae499fc708aeafe216cc5821f6f5217376c049 ENCRYPTION_KEY=FRsTD3DRzkr8nq9kH80ll374Rgw8G-CZ3Rp1f7wikZI= PORT=5000 python app.py"
 waitForPort = 5000
 
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 39205
-externalPort = 3000
 
 [[ports]]
 localPort = 39459
@@ -69,6 +65,10 @@ externalPort = 6000
 [[ports]]
 localPort = 42949
 externalPort = 3001
+
+[[ports]]
+localPort = 43241
+externalPort = 3000
 
 [[ports]]
 localPort = 43563
