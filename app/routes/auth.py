@@ -51,6 +51,15 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('profile.dashboard'))
     
+    # Préparer les données pour le formulaire (GET et POST pour affichage après erreur)
+    from app.models.location import Country
+    from app.models.talent import Talent
+    from app.data.world_countries import NATIONALITIES_WITH_FLAGS
+    
+    countries = Country.query.order_by(Country.name).all()
+    talents = Talent.query.order_by(Talent.category, Talent.name).all()
+    nationalities = NATIONALITIES_WITH_FLAGS
+    
     if request.method == 'POST':
         from app.models.talent import UserTalent
         from app.models.location import Country, City
@@ -82,7 +91,7 @@ def register():
             email_validation = ValidationService.validate_email(email_input, check_deliverability=True)
             if not email_validation.is_valid:
                 flash(f"Email invalide: {email_validation.error_message}", 'error')
-                return render_template('auth/register.html')
+                return render_template('auth/register.html', countries=countries, talents=talents, nationalities=nationalities)
             
             # Valider le téléphone si fourni
             phone_validation = None
@@ -90,7 +99,7 @@ def register():
                 phone_validation = ValidationService.validate_phone(phone_input, country_code)
                 if not phone_validation.is_valid:
                     flash(f"Numéro de téléphone invalide: {phone_validation.error_message}", 'error')
-                    return render_template('auth/register.html')
+                    return render_template('auth/register.html', countries=countries, talents=talents, nationalities=nationalities)
             
             user = User()
             user.first_name = request.form.get('first_name')
@@ -138,14 +147,14 @@ def register():
             existing_user = User.query.filter_by(email=user.email).first()
             if existing_user:
                 flash('Cet email est déjà utilisé.', 'error')
-                return render_template('auth/register.html')
+                return render_template('auth/register.html', countries=countries, talents=talents, nationalities=nationalities)
             
             residence_country = Country.query.get(user.residence_country_id) if user.residence_country_id else None
             residence_city = City.query.get(user.residence_city_id) if user.residence_city_id else None
             
             if not residence_country or not residence_city:
                 flash('Veuillez sélectionner un pays de résidence et une ville de résidence.', 'error')
-                return render_template('auth/register.html')
+                return render_template('auth/register.html', countries=countries, talents=talents, nationalities=nationalities)
             
             user.unique_code = generate_unique_user_code(
                 residence_country.code,
@@ -213,6 +222,6 @@ def register():
         except Exception as e:
             db.session.rollback()
             flash(f'Une erreur est survenue: {str(e)}', 'error')
-            return render_template('auth/register.html')
+            return render_template('auth/register.html', countries=countries, talents=talents, nationalities=nationalities)
     
-    return render_template('auth/register.html')
+    return render_template('auth/register.html', countries=countries, talents=talents, nationalities=nationalities)
