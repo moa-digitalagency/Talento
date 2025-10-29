@@ -217,7 +217,7 @@ def admin_dashboard():
     top_morocco_cities = db.session.query(
         City.name,
         func.count(User.id).label('user_count')
-    ).join(User).join(Country).filter(
+    ).join(User, City.id == User.city_id).join(Country, Country.id == User.country_id).filter(
         User.account_active == True,
         User.is_admin == False,
         Country.code == 'MA'
