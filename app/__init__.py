@@ -13,6 +13,74 @@ mail = Mail()
 migrate = Migrate()
 csrf = CSRFProtect()
 
+def _ensure_essential_data_loaded():
+    """
+    Vérifier et charger les données essentielles (pays, villes, talents)
+    Cette fonction est appelée au démarrage de l'application
+    """
+    from app.models.location import Country, City
+    from app.models.talent import Talent
+    import subprocess
+    import sys
+    
+    try:
+        countries_count = Country.query.count()
+        cities_count = City.query.count()
+        talents_count = Talent.query.count()
+    except Exception as e:
+        print(f"❌ Erreur lors de la vérification des données: {e}")
+        return
+    
+    MIN_COUNTRIES = 100
+    MIN_CITIES = 1000
+    MIN_TALENTS = 50
+    
+    if countries_count < MIN_COUNTRIES or cities_count < MIN_CITIES or talents_count < MIN_TALENTS:
+        print("\n" + "="*70)
+        print("⚠️  DONNÉES ESSENTIELLES MANQUANTES")
+        print(f"   Pays: {countries_count}/{MIN_COUNTRIES}")
+        print(f"   Villes: {cities_count}/{MIN_CITIES}")
+        print(f"   Talents: {talents_count}/{MIN_TALENTS}")
+        print("🔄 Lancement du script d'initialisation...")
+        print("="*70)
+        
+        try:
+            result = subprocess.run(
+                [sys.executable, 'init_essential_data.py'],
+                capture_output=True,
+                text=True,
+                timeout=120
+            )
+            
+            if result.returncode == 0:
+                print("\n✅ Données essentielles chargées avec succès!")
+                print(result.stdout)
+                
+                countries_count = Country.query.count()
+                cities_count = City.query.count()
+                talents_count = Talent.query.count()
+                print(f"✅ Vérification finale: {countries_count} pays, {cities_count} villes, {talents_count} talents")
+            else:
+                print("\n❌ ERREUR CRITIQUE: Le script d'initialisation a échoué!")
+                print("="*70)
+                print("STDOUT:")
+                print(result.stdout)
+                print("\nSTDERR:")
+                print(result.stderr)
+                print("="*70)
+                print("⚠️  L'application démarrera mais les formulaires seront vides.")
+                print("💡 Correction manuelle: Exécutez 'python init_essential_data.py'")
+                print("="*70)
+        except subprocess.TimeoutExpired:
+            print("❌ Le script d'initialisation a pris trop de temps (timeout 120s)")
+            print("💡 Essayez de l'exécuter manuellement: python init_essential_data.py")
+        except Exception as e:
+            print(f"❌ Erreur inattendue lors de l'initialisation: {e}")
+            import traceback
+            traceback.print_exc()
+    else:
+        print(f"✅ Données essentielles OK: {countries_count} pays, {cities_count} villes, {talents_count} talents")
+
 def seed_database():
     """
     Seed the database with initial data (idempotent)
@@ -342,11 +410,14 @@ def create_app(config_class=Config):
             
             safe_auto_migrate(db)
             
+            # Garantir que les données essentielles (pays, villes, talents) sont chargées
+            _ensure_essential_data_loaded()
+            
             # Auto-détecter si les données demo doivent être créées
             # Temporarily disabled to speed up startup
             # _ensure_demo_data_exists(db, logger)
             
-            # Garantir que le compte admin existe toujours
+            # Garantir que le compte admin existe toujours (après le chargement des données essentielles)
             _ensure_admin_exists(db, logger)
             
             logger.info("✅ Application prête")

@@ -429,6 +429,71 @@ gunicorn --bind 0.0.0.0:5004 --reuse-port --workers 4 app:app
 
 ---
 
+## 🔧 Dépannage et Correction de Problèmes
+
+### Problème : Les listes déroulantes (pays, villes, talents) sont vides
+
+**Symptômes** :
+- Les formulaires d'inscription (utilisateur ou CINEMA) ne montrent aucun pays
+- Les listes de villes sont vides
+- La liste des talents ne se charge pas
+
+**Cause** :
+Les données essentielles (pays, villes, talents) ne sont pas chargées dans la base de données.
+
+**Solution Rapide** :
+
+Exécutez le script d'initialisation des données :
+
+```bash
+# Avec les variables d'environnement nécessaires
+SECRET_KEY=votre-cle python init_essential_data.py
+
+# OU si vous utilisez un fichier .env
+python init_essential_data.py
+```
+
+**Ce que fait le script** :
+- ✅ Charge **194 pays du monde** (pas seulement l'Afrique)
+- ✅ Charge **1711 villes** réparties dans le monde entier
+- ✅ Charge **70 talents** pour l'industrie cinématographique
+- ⚡ Exécution rapide (< 30 secondes)
+- 🔄 Idempotent (peut être exécuté plusieurs fois sans doublon)
+
+**Sortie attendue** :
+```
+======================================================================
+🚀 INITIALISATION DES DONNÉES ESSENTIELLES
+======================================================================
+✅ Tables de base de données vérifiées
+
+🌍 Chargement de tous les pays du monde...
+✅ 194 nouveaux pays ajoutés (Total: 194 pays)
+
+🏙️  Chargement des villes du monde...
+✅ 1711 nouvelles villes ajoutées (Total: 1711 villes)
+
+⭐ Chargement de tous les talents...
+✅ 70 nouveaux talents ajoutés (Total: 70 talents)
+
+======================================================================
+✅ INITIALISATION TERMINÉE AVEC SUCCÈS!
+======================================================================
+```
+
+**Vérification Automatique au Démarrage** :
+
+L'application vérifie automatiquement au démarrage si les données sont présentes :
+- Si < 100 pays : chargement automatique
+- Si < 1000 villes : chargement automatique  
+- Si < 50 talents : chargement automatique
+
+Le script `init_essential_data.py` sera exécuté automatiquement si nécessaire.
+
+**Note** : Ce script peut être lancé à tout moment pour corriger les données manquantes, même avec l'application en cours d'exécution.
+
+---
+
 ## 👨‍💼 Comptes par Défaut
 
 ### Administrateur

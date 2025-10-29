@@ -204,24 +204,9 @@ def ensure_demo_productions():
             db.session.rollback()
             print(f"⚠️  Erreur lors de la création des boîtes de production démo: {e}")
 
-def ensure_essential_data():
-    """Vérifier et charger automatiquement les données essentielles au démarrage"""
-    with app.app_context():
-        from app import ensure_essential_data as check_data
-        print("\n" + "="*60)
-        print("🔍 VÉRIFICATION DES DONNÉES ESSENTIELLES")
-        print("="*60)
-        check_data(db, logger)
-        print("="*60 + "\n")
-
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-        ensure_admin_user()
-        # ensure_demo_productions()  # Désactivé - ne pas créer de données de démo
-    
-    # Vérification automatique des données au démarrage
-    # ensure_essential_data()  # Désactivé temporairement pour accélérer le démarrage
+    # Note: La vérification des données essentielles et la création de l'admin
+    # sont maintenant gérées dans create_app() pour fonctionner avec Gunicorn
     
     # Port 5000 pour Replit (requis), 5004 pour VPS (voir deploy_vps.sh)
     port = int(os.environ.get('PORT', 5004))
