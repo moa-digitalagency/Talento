@@ -837,6 +837,142 @@ Les suggestions d'amélioration sont bienvenues ! Contactez-nous avec :
 
 ---
 
+## 🔄 Guide de Mise à Jour
+
+### Mise à Jour Sécurisée de l'Application
+
+Ce guide explique comment mettre à jour taalentio.com **sans perdre vos données**.
+
+#### 🛡️ Protection Automatique des Données
+
+Le script `update_app.sh` protège automatiquement:
+
+- ✅ **Configuration**: `.env` et toutes les variables d'environnement
+- ✅ **Base de données**: SQLite (`.db`) et PostgreSQL
+- ✅ **Fichiers uploadés**: Photos, CVs, QR codes
+- ✅ **Logs**: Tous les fichiers de log
+- ✅ **Sauvegardes**: Backups existants
+
+#### 🚀 Méthode Simple (Recommandée)
+
+**Mise à jour avec le script automatique:**
+
+```bash
+./update_app.sh
+```
+
+**Ce script va automatiquement:**
+1. ✅ Sauvegarder toutes vos données
+2. ✅ Mettre à jour le code (depuis Git si disponible)
+3. ✅ Installer les nouvelles dépendances
+4. ✅ Migrer le schéma de base de données
+5. ✅ Vérifier l'intégrité de l'application
+6. ✅ Créer une sauvegarde de restauration
+
+#### 📋 Mise à Jour Manuelle (Avancée)
+
+**Étape 1: Sauvegarde**
+
+```bash
+# Créer un répertoire de sauvegarde
+mkdir -p backups
+
+# Sauvegarder la base de données
+cp talento.db backups/talento_$(date +%Y%m%d).db
+
+# Sauvegarder la configuration
+cp .env backups/.env_$(date +%Y%m%d)
+
+# Sauvegarder les uploads
+tar -czf backups/uploads_$(date +%Y%m%d).tar.gz app/static/uploads/
+```
+
+**Étape 2: Mettre à jour le code**
+
+Option A - Depuis Git (VPS):
+```bash
+git stash save "Backup avant mise à jour"
+git pull origin main
+```
+
+Option B - Upload manuel (Replit): Uploader les nouveaux fichiers sans remplacer `.env`, `*.db`, `app/static/uploads/`
+
+**Étape 3: Mettre à jour les dépendances**
+
+```bash
+pip install -r requirements.txt --upgrade
+```
+
+**Étape 4: Migrer la base de données**
+
+```bash
+# Méthode automatique
+python migrations_init.py
+
+# Ou avec Flask-Migrate
+flask db migrate -m "Update schema"
+flask db upgrade
+```
+
+**Étape 5: Redémarrer l'application**
+
+Sur Replit: Redémarrage automatique
+Sur VPS avec systemd: `sudo systemctl restart talento`
+Sur VPS avec PM2: `pm2 restart talento`
+
+#### 🔒 Fichiers Protégés par .gitignore
+
+Ces fichiers ne seront **JAMAIS** modifiés lors d'un `git pull`:
+
+```
+.env                          # Configuration (clés API, secrets)
+*.db                          # Base de données SQLite
+app/static/uploads/           # Tous les fichiers uploadés
+backups/                      # Sauvegardes
+*.tar.gz, *.sql              # Archives et dumps
+```
+
+#### ⚠️ En Cas de Problème
+
+**Restaurer depuis une sauvegarde:**
+
+```bash
+# Lister les sauvegardes
+ls -lh backups/
+
+# Restaurer une sauvegarde spécifique
+tar -xzf backups/backup_20251029_103000.tar.gz
+
+# Ou restaurer la base de données uniquement
+cp backups/talento_20251029.db talento.db
+```
+
+**Vérifier l'intégrité de l'application:**
+
+```bash
+# Tester l'import Python
+python -c "from app import create_app; app = create_app(); print('OK')"
+
+# Vérifier la base de données
+python -c "from app import db; db.create_all(); print('OK')"
+```
+
+#### ✅ Checklist de Mise à Jour
+
+Avant de mettre à jour:
+- [ ] Sauvegarder la base de données
+- [ ] Sauvegarder le fichier .env
+- [ ] Vérifier l'espace disque disponible
+- [ ] Noter la version actuelle
+
+Après la mise à jour:
+- [ ] Vérifier que l'application démarre
+- [ ] Tester la connexion admin
+- [ ] Vérifier que les uploads sont accessibles
+- [ ] Tester une fonctionnalité critique
+
+---
+
 ## 📜 Licence et Crédits
 
 ### Copyright

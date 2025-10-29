@@ -472,3 +472,82 @@ def _ensure_admin_exists(db, logger):
                 logger.info(f"✅ Compte admin OK: {admin_email}")
     except Exception as e:
         logger.error(f"⚠️  Erreur lors de la vérification admin: {e}")
+
+def ensure_essential_data(db, logger=None):
+    """
+    Vérifie et charge automatiquement les données essentielles au démarrage
+    Cette fonction s'assure que les pays, villes et talents sont toujours chargés
+    """
+    try:
+        from app.models.location import Country, City
+        from app.models.talent import Talent
+        import subprocess
+        import sys
+        
+        # Seuil minimum attendu pour chaque type de données
+        MIN_COUNTRIES = 100  # Au moins 100 pays
+        MIN_CITIES = 1000    # Au moins 1000 villes
+        MIN_TALENTS = 50     # Au moins 50 talents
+        
+        # Compter les données actuelles
+        countries_count = Country.query.count()
+        cities_count = City.query.count()
+        cities_with_country = City.query.filter(City.country_id.isnot(None)).count()
+        talents_count = Talent.query.count()
+        
+        print("📊 Vérification des données essentielles...")
+        print(f"   Pays: {countries_count} (min: {MIN_COUNTRIES})")
+        print(f"   Villes: {cities_count} (min: {MIN_CITIES}, avec pays: {cities_with_country})")
+        print(f"   Talents: {talents_count} (min: {MIN_TALENTS})")
+        
+        # Vérifier si les données sont insuffisantes
+        needs_reload = (
+            countries_count < MIN_COUNTRIES or
+            cities_count < MIN_CITIES or
+            cities_with_country < MIN_CITIES or
+            talents_count < MIN_TALENTS
+        )
+        
+        if needs_reload:
+            print("⚠️  Données essentielles manquantes ou incomplètes!")
+            print("🔄 Chargement automatique des données du monde...")
+            
+            # Empêcher la récursion infinie
+            if os.environ.get('SKIP_AUTO_MIGRATION') == '1':
+                print("⚠️  Auto-migration déjà en cours, arrêt pour éviter la récursion")
+                return False
+            
+            # Appeler le script de migration
+            env = os.environ.copy()
+            env['SKIP_AUTO_MIGRATION'] = '1'
+            
+            result = subprocess.run(
+                [sys.executable, 'migrations_init.py'],
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=180
+            )
+            
+            if result.returncode == 0:
+                print("✅ Données essentielles chargées avec succès")
+                
+                # Recompter pour confirmer
+                countries_count = Country.query.count()
+                cities_count = City.query.count()
+                talents_count = Talent.query.count()
+                print(f"📊 Nouvelles statistiques:")
+                print(f"   Pays: {countries_count}")
+                print(f"   Villes: {cities_count}")
+                print(f"   Talents: {talents_count}")
+                return True
+            else:
+                print(f"❌ Erreur lors du chargement des données: {result.stderr[:300]}")
+                return False
+        else:
+            print("✅ Toutes les données essentielles sont présentes")
+            return True
+            
+    except Exception as e:
+        print(f"⚠️  Erreur lors de la vérification des données essentielles: {e}")
+        return False
