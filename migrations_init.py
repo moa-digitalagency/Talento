@@ -132,6 +132,40 @@ def check_and_add_columns():
                 except Exception as e:
                     print(f"⚠️  Colonne {col_name} existe déjà ou erreur: {e}")
     
+    # Vérifier les colonnes de cities
+    cities_columns_to_check = {
+        'country_id': 'INTEGER'
+    }
+    
+    if 'cities' in inspector.get_table_names():
+        existing_cities_columns = [col['name'] for col in inspector.get_columns('cities')]
+        
+        # Agrandir la colonne code de VARCHAR(3) à VARCHAR(10)
+        try:
+            print(f"➕ Modification de la colonne cities.code pour VARCHAR(10)...")
+            with db.engine.connect() as conn:
+                conn.execute(text('ALTER TABLE cities ALTER COLUMN code TYPE VARCHAR(10)'))
+                conn.commit()
+            print(f"✅ Colonne code modifiée")
+        except Exception as e:
+            print(f"⚠️  Colonne code déjà modifiée ou erreur: {e}")
+        
+        for col_name, col_type in cities_columns_to_check.items():
+            if col_name not in existing_cities_columns:
+                print(f"➕ Ajout de la colonne cities.{col_name}...")
+                try:
+                    with db.engine.connect() as conn:
+                        conn.execute(text(f'ALTER TABLE cities ADD COLUMN {col_name} {col_type}'))
+                        # Ajouter la contrainte de clé étrangère
+                        try:
+                            conn.execute(text('ALTER TABLE cities ADD CONSTRAINT fk_cities_country FOREIGN KEY (country_id) REFERENCES countries(id)'))
+                        except:
+                            pass  # La contrainte existe peut-être déjà
+                        conn.commit()
+                    print(f"✅ Colonne {col_name} ajoutée")
+                except Exception as e:
+                    print(f"⚠️  Colonne {col_name} existe déjà ou erreur: {e}")
+    
     # Vérifier les colonnes de cinema_talents
     cinema_columns_to_check = {
         'unique_code': 'VARCHAR(12) UNIQUE',
@@ -174,100 +208,44 @@ def seed_countries():
     return True
 
 def seed_cities():
-    """Remplir la table des villes marocaines - Liste complète triée alphabétiquement"""
-    print("\n🏙️  Initialisation des villes marocaines...")
+    """Remplir la table des villes du monde - Liste complète par pays"""
+    from app.data.world_cities import WORLD_CITIES
     
-    cities_data = [
-        {'name': 'Agadir', 'code': 'AGA'},
-        {'name': 'Aïn Harrouda', 'code': 'AHR'},
-        {'name': 'Al Hoceïma', 'code': 'HOC'},
-        {'name': 'Asilah', 'code': 'ASI'},
-        {'name': 'Azemmour', 'code': 'AZE'},
-        {'name': 'Azrou', 'code': 'AZR'},
-        {'name': 'Ben Guerir', 'code': 'BGU'},
-        {'name': 'Béni Mellal', 'code': 'BEM'},
-        {'name': 'Benslimane', 'code': 'BSL'},
-        {'name': 'Berkane', 'code': 'BRK'},
-        {'name': 'Berrechid', 'code': 'BER'},
-        {'name': 'Boujdour', 'code': 'BJD'},
-        {'name': 'Bouskoura', 'code': 'BOU'},
-        {'name': 'Casablanca', 'code': 'CAS'},
-        {'name': 'Chefchaouen', 'code': 'CHF'},
-        {'name': 'Dakhla', 'code': 'DAK'},
-        {'name': 'El Hajeb', 'code': 'EHJ'},
-        {'name': 'El Jadida', 'code': 'ELJ'},
-        {'name': 'El Kelaa des Sraghna', 'code': 'EKS'},
-        {'name': 'Errachidia', 'code': 'ERR'},
-        {'name': 'Essaouira', 'code': 'ESS'},
-        {'name': 'Fès', 'code': 'FES'},
-        {'name': 'Figuig', 'code': 'FIG'},
-        {'name': 'Fnideq', 'code': 'FNI'},
-        {'name': 'Guelmim', 'code': 'GUE'},
-        {'name': 'Guercif', 'code': 'GCF'},
-        {'name': 'Ifrane', 'code': 'IFR'},
-        {'name': 'Imouzzer Kandar', 'code': 'IMK'},
-        {'name': 'Inezgane', 'code': 'INE'},
-        {'name': 'Jerada', 'code': 'JER'},
-        {'name': 'Kelaat MGouna', 'code': 'KMG'},
-        {'name': 'Kenitra', 'code': 'KEN'},
-        {'name': 'Khémisset', 'code': 'KHE'},
-        {'name': 'Khenifra', 'code': 'KHN'},
-        {'name': 'Khouribga', 'code': 'KHO'},
-        {'name': 'Ksar El Kébir', 'code': 'KSA'},
-        {'name': 'Laâyoune', 'code': 'LAA'},
-        {'name': 'Larache', 'code': 'LAR'},
-        {'name': 'Marrakech', 'code': 'MAR'},
-        {'name': 'Martil', 'code': 'MRT'},
-        {'name': 'Mdiq', 'code': 'MDQ'},
-        {'name': 'Meknès', 'code': 'MEK'},
-        {'name': 'Midelt', 'code': 'MID'},
-        {'name': 'Mohammedia', 'code': 'MOH'},
-        {'name': 'Nador', 'code': 'NAD'},
-        {'name': 'Nouaceur', 'code': 'NOU'},
-        {'name': 'Oualidia', 'code': 'OAL'},
-        {'name': 'Ouarzazate', 'code': 'OZZ'},
-        {'name': 'Oued Zem', 'code': 'OZM'},
-        {'name': 'Ouezzane', 'code': 'OUZ'},
-        {'name': 'Oujda', 'code': 'OUJ'},
-        {'name': 'Rabat', 'code': 'RAB'},
-        {'name': 'Safi', 'code': 'SAF'},
-        {'name': 'Salé', 'code': 'SAL'},
-        {'name': 'Sefrou', 'code': 'SEF'},
-        {'name': 'Settat', 'code': 'SET'},
-        {'name': 'Sidi Bennour', 'code': 'SBN'},
-        {'name': 'Sidi Ifni', 'code': 'SIF'},
-        {'name': 'Sidi Kacem', 'code': 'SKC'},
-        {'name': 'Sidi Slimane', 'code': 'SSL'},
-        {'name': 'Skhirat', 'code': 'SKH'},
-        {'name': 'Smara', 'code': 'SMA'},
-        {'name': 'Tafraout', 'code': 'TAF'},
-        {'name': 'Taghazout', 'code': 'TAG'},
-        {'name': 'Tan-Tan', 'code': 'TAN'},
-        {'name': 'Tanger', 'code': 'TNG'},
-        {'name': 'Taourirt', 'code': 'TAO'},
-        {'name': 'Tarfaya', 'code': 'TRF'},
-        {'name': 'Taroudant', 'code': 'TRD'},
-        {'name': 'Tata', 'code': 'TAT'},
-        {'name': 'Taza', 'code': 'TAZ'},
-        {'name': 'Témara', 'code': 'TEM'},
-        {'name': 'Tétouan', 'code': 'TET'},
-        {'name': 'Tiflet', 'code': 'TIF'},
-        {'name': 'Tinghir', 'code': 'TGH'},
-        {'name': 'Tiznit', 'code': 'TIZ'},
-        {'name': 'Youssoufia', 'code': 'YOU'},
-        {'name': 'Zagora', 'code': 'ZAG'},
-        {'name': 'Zaïo', 'code': 'ZAI'},
-    ]
+    print("\n🏙️  Initialisation des villes du monde...")
     
     count = 0
-    for data in cities_data:
-        if not City.query.filter_by(code=data['code']).first():
-            city = City(**data)
-            db.session.add(city)
-            count += 1
+    total = 0
+    
+    # Pour chaque pays dans WORLD_CITIES
+    for country_code, cities_list in WORLD_CITIES.items():
+        # Trouver le pays correspondant dans la base de données
+        country = Country.query.filter_by(code=country_code).first()
+        
+        if not country:
+            print(f"  ⚠️  Pays {country_code} non trouvé, villes ignorées")
+            continue
+        
+        # Ajouter les villes pour ce pays
+        for city_name in cities_list:
+            total += 1
+            # Générer un code unique pour la ville (code pays + compteur)
+            # Ex: MA-001, FR-001, etc.
+            city_code = f"{country_code}-{total:03d}"
+            
+            # Vérifier si la ville existe déjà (par nom ET pays)
+            existing_city = City.query.filter_by(name=city_name, country_id=country.id).first()
+            
+            if not existing_city:
+                city = City(
+                    name=city_name,
+                    code=city_code,
+                    country_id=country.id
+                )
+                db.session.add(city)
+                count += 1
     
     db.session.commit()
-    print(f"✅ {count} nouvelles villes ajoutées ({len(cities_data)} total)")
+    print(f"✅ {count} nouvelles villes ajoutées ({total} villes pour {len(WORLD_CITIES)} pays)")
     return True
 
 def seed_talents():

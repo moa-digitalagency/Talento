@@ -32,7 +32,10 @@ class City(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    code = db.Column(db.String(3), nullable=False)
+    code = db.Column(db.String(10), nullable=False)
+    country_id = db.Column(db.Integer, db.ForeignKey('countries.id'), nullable=True)
+    
+    country = db.relationship('Country', backref='cities')
     
     def __repr__(self):
         return f'<City {self.code} - {self.name}>'
