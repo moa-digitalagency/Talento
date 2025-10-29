@@ -1,4 +1,4 @@
-# Changelog - TalentsMaroc.com
+# Changelog - taalentio.com
 
 Toutes les modifications notables du projet sont documentées dans ce fichier.
 
@@ -290,7 +290,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 #### En-tête PDF CINEMA Restructuré
 - **Modifié** : Titre du PDF avec retours à la ligne pour meilleure clarté :
-  - Ligne 1 : "TalentsMaroc.com" (taille 22, couleur indigo)
+  - Ligne 1 : "taalentio.com" (taille 22, couleur indigo)
   - Ligne 2 : "CINEMA - FICHE DE TALENT" (taille 18, couleur violet)
   - Ligne 3 : "Profil Cinématographique - Talents du Cinéma Africain" (taille 12, couleur gris)
 - **Amélioré** : Hiérarchie visuelle plus claire et professionnelle
@@ -316,12 +316,12 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### 🎨 Rebranding et Ajout de la Galerie Photo au PDF
 
 #### Rebranding de la Plateforme
-- **Modifié** : Nom de la plateforme de "Talento" → "TalentsMaroc.com" dans tous les fichiers
+- **Modifié** : Nom de la plateforme de "Talento" → "taalentio.com" dans tous les fichiers
 - **Mis à jour** : Tous les templates HTML avec le nouveau nom
 - **Mis à jour** : Tous les fichiers Python (services, routes, utilitaires)
 - **Mis à jour** : Toute la documentation (README, API docs, replit.md)
 - **Mis à jour** : Footer du PDF CINEMA avec le nouveau nom de la plateforme
-- **Mis à jour** : En-têtes de l'application web avec "TalentsMaroc.com"
+- **Mis à jour** : En-têtes de l'application web avec "taalentio.com"
 
 #### Section Galerie Photo Ajoutée au PDF
 - **Ajouté** : Nouvelle section "GALERIE PHOTO" dans le PDF CINEMA
@@ -334,7 +334,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Position** : Ajoutée comme dernière section avant le footer
 
 #### Résultat
-- ✅ **Identité de marque cohérente** : TalentsMaroc.com partout dans l'application
+- ✅ **Identité de marque cohérente** : taalentio.com partout dans l'application
 - ✅ **PDF encore plus complet** : 9 sections au total (3 pages, 17KB)
 - ✅ **Documentation mise à jour** : Toutes les références à "Talento" remplacées
 - ✅ **Expérience utilisateur améliorée** : Nom de plateforme clair et professionnel

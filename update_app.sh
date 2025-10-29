@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################
-# Script de Mise à Jour - TalentsMaroc.com
+# Script de Mise à Jour - taalentio.com
 # Par: MOA Digital Agency LLC - Aisance KALONJI
 # Description: Script sécurisé pour mettre à jour l'application sans perdre de données
 #
@@ -67,7 +67,7 @@ if [ ! -f "app.py" ]; then
     exit 1
 fi
 
-print_header "🚀 MISE À JOUR SÉCURISÉE - TalentsMaroc.com"
+print_header "🚀 MISE À JOUR SÉCURISÉE - taalentio.com"
 
 # ============================================================================
 # ÉTAPE 1: SAUVEGARDE COMPLÈTE
@@ -363,7 +363,7 @@ fi
 print_header "✅ MISE À JOUR TERMINÉE"
 
 echo ""
-print_success "TalentsMaroc.com a été mis à jour avec succès!"
+print_success "taalentio.com a été mis à jour avec succès!"
 echo ""
 
 print_info "📋 RÉSUMÉ DE LA MISE À JOUR:"

@@ -1504,7 +1504,7 @@ def print_project_talents_list(project_id):
         c.setFont("Helvetica", 8)
         c.setFillColor(colors.HexColor('#9CA3AF'))
         from datetime import datetime
-        footer_text = f"TalentsMaroc.com | Imprimé le {datetime.now().strftime('%d/%m/%Y à %H:%M')} | Nombre de talents: {len(project_talents)}"
+        footer_text = f"taalentio.com | Imprimé le {datetime.now().strftime('%d/%m/%Y à %H:%M')} | Nombre de talents: {len(project_talents)}"
         c.drawCentredString(page_width/2, 1*cm, footer_text)
         
         # Finaliser le PDF
@@ -1762,7 +1762,7 @@ def generate_project_badge(project_talent_id):
             c.setFont("Helvetica", 7)
             c.setFillColor(colors.HexColor('#9CA3AF'))
             c.drawCentredString(content_x + content_width/2, y + 0.25*cm, 
-                              f"TalentsMaroc.com | {datetime.now().strftime('%d/%m/%Y')}")
+                              f"taalentio.com | {datetime.now().strftime('%d/%m/%Y')}")
         
         # Lignes de découpage au centre pour faciliter le pliage
         c.setStrokeColor(colors.HexColor('#CCCCCC'))

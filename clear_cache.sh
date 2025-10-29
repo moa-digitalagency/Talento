@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################
-# Script de Nettoyage du Cache - TalentsMaroc.com
+# Script de Nettoyage du Cache - taalentio.com
 # Nettoyage rapide des caches Python et redémarrage de l'application
 ###############################################################################
 
@@ -13,7 +13,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${BLUE}  🧹 Nettoyage du Cache - TalentsMaroc.com${NC}"
+echo -e "${BLUE}  🧹 Nettoyage du Cache - taalentio.com${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 
 # Nettoyage des fichiers cache Python

@@ -1,5 +1,5 @@
 """
-Constantes de l'application TalentsMaroc.com
+Constantes de l'application taalentio.com
 Définit toutes les options standards utilisées dans l'application
 """
 

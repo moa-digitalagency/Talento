@@ -219,7 +219,7 @@ def _seed_database_fallback():
         if morocco and rabat:
             admin = User()
             admin.first_name = 'Admin'
-            admin.last_name = 'TalentsMaroc.com'
+            admin.last_name = 'taalentio.com'
             admin.email = admin_email
             import os
             admin_password = os.environ.get('ADMIN_PASSWORD', '@4dm1n')
@@ -337,7 +337,7 @@ def create_app(config_class=Config):
             import os
             
             logger = app.logger
-            logger.info("🚀 Démarrage de TalentsMaroc.com...")
+            logger.info("🚀 Démarrage de taalentio.com...")
             
             safe_auto_migrate(db)
             

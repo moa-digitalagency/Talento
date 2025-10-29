@@ -1,5 +1,5 @@
 """
-Système de migration automatique robuste pour TalentsMaroc.com
+Système de migration automatique robuste pour taalentio.com
 Gère les nouvelles tables et colonnes sans faire crasher l'application
 """
 import os

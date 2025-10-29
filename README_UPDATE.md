@@ -1,8 +1,8 @@
-# 🔄 Guide de Mise à Jour - TalentsMaroc.com
+# 🔄 Guide de Mise à Jour - taalentio.com
 
 ## Mise à Jour Sécurisée de l'Application
 
-Ce guide explique comment mettre à jour TalentsMaroc.com **sans perdre vos données**.
+Ce guide explique comment mettre à jour taalentio.com **sans perdre vos données**.
 
 ---
 

@@ -1,5 +1,5 @@
 """
-TalentsMaroc.com
+taalentio.com
 Script to regenerate all QR codes with the correct base URL
 
 This script regenerates QR codes for:

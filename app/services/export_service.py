@@ -1448,7 +1448,7 @@ class ExportService:
         )
         elements.append(Spacer(1, 10))
         elements.append(Paragraph(f"Document généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')}", footer_style))
-        elements.append(Paragraph("Plateforme TalentsMaroc.com CINEMA - Talents du Cinéma Africain", footer_style))
+        elements.append(Paragraph("Plateforme taalentio.com CINEMA - Talents du Cinéma Africain", footer_style))
         
         doc.build(elements)
         buffer.seek(0)

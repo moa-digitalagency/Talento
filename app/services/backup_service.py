@@ -1,5 +1,5 @@
 """
-Service de sauvegarde et restauration complète de l'application TalentsMaroc.com
+Service de sauvegarde et restauration complète de l'application taalentio.com
 Permet de créer des backups complets et de restaurer l'application
 """
 import os
@@ -211,7 +211,7 @@ class BackupService:
         """Exporter la configuration de l'application"""
         config_data = {
             'backup_version': '1.0',
-            'app_name': 'TalentsMaroc.com',
+            'app_name': 'taalentio.com',
             'backup_date': datetime.now().isoformat(),
             'database_type': 'sqlite',  # ou PostgreSQL selon config
         }

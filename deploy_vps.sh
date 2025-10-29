@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###############################################################################
-# Script de Déploiement VPS - TalentsMaroc.com
+# Script de Déploiement VPS - taalentio.com
 # Par: MOA Digital Agency LLC - Aisance KALONJI
 # Description: Script automatisé pour déployer l'application sur un VPS
 #
@@ -229,7 +229,7 @@ if [ ! -f ".env" ]; then
     print_info "Création d'un fichier .env template..."
     
     cat > .env << 'EOF'
-# Configuration TalentsMaroc.com
+# Configuration taalentio.com
 # IMPORTANT: Modifiez ces valeurs en production!
 
 # Obligatoires
@@ -338,7 +338,7 @@ if [[ $REPLY =~ ^[OoYy]$ ]]; then
     
     sudo tee "$SERVICE_FILE" > /dev/null << EOF
 [Unit]
-Description=TalentsMaroc.com Flask Application
+Description=taalentio.com Flask Application
 After=network.target postgresql.service
 
 [Service]
@@ -565,7 +565,7 @@ esac
 print_header "DÉPLOIEMENT TERMINÉ"
 
 echo ""
-print_success "TalentsMaroc.com a été déployé avec succès!"
+print_success "taalentio.com a été déployé avec succès!"
 echo ""
 
 print_info "📋 INFORMATIONS IMPORTANTES:"

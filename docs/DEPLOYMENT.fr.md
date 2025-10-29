@@ -1,4 +1,4 @@
-# 🚀 Guide de Déploiement - TalentsMaroc.com
+# 🚀 Guide de Déploiement - taalentio.com
 
 **Dernière mise à jour**: 29 Octobre 2025
 
@@ -35,7 +35,7 @@ pip install -r requirements.txt
 
 ## Configuration de l'URL de Base
 
-TalentsMaroc.com utilise un système intelligent de détection d'URL qui fonctionne automatiquement sur **toutes les plateformes**.
+taalentio.com utilise un système intelligent de détection d'URL qui fonctionne automatiquement sur **toutes les plateformes**.
 
 ### 📍 Comment ça fonctionne ?
 

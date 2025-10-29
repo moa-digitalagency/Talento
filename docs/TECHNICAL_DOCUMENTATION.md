@@ -1,4 +1,4 @@
-# TalentsMaroc.com - Documentation Technique
+# taalentio.com - Documentation Technique
 
 ## Table des Matières
 
@@ -866,4 +866,4 @@ Pour questions techniques ou contributions:
 
 ---
 
-**© 2024 TalentsMaroc.com. Tous droits réservés.**
+**© 2024 taalentio.com. Tous droits réservés.**

@@ -1,5 +1,5 @@
 """
-TalentsMaroc.com
+taalentio.com
 MOA Digital Agency LLC
 Par : Aisance KALONJI
 Mail : moa@myoneart.com
@@ -504,6 +504,10 @@ WORLD_CITIES = {
         'Caracas', 'Maracaibo', 'Valencia', 'Barquisimeto', 'Maracay',
         'Ciudad Guayana', 'Barcelona', 'Maturín', 'San Cristóbal', 'Ciudad Bolívar'
     ],
+    
+
+    # République centrafricaine (CF)
+    "CF": ["Bangui", "Bimbo", "Berbérati", "Carnot", "Bambari", "Bouar", "Bossangoa", "Bria", "Bangassou", "Nola"],
 }
 
 def get_cities_by_country(country_code):
@@ -514,6 +518,8 @@ def get_cities_by_country(country_code):
         country_code: Code ISO-2 du pays (ex: 'MA', 'FR', 'US')
     
     Returns:
-        Liste des villes ou liste vide si le pays n'a pas de villes définies
+        Liste des villes ou liste avec "Autre" si le pays n'a pas de villes définies
     """
-    return WORLD_CITIES.get(country_code, [])
+    # Retourne les villes si elles existent, sinon retourne une liste avec "Autre" pour permettre la saisie manuelle
+    return WORLD_CITIES.get(country_code, ["Autre (saisir manuellement)"])
+

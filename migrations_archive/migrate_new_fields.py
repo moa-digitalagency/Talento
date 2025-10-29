@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-TalentsMaroc.com
+taalentio.com
 MOA Digital Agency LLC
 Par : Aisance KALONJI
 Mail : moa@myoneart.com

@@ -172,7 +172,7 @@ class EmailService:
             
             # Encoder le logo en base64 pour l'email
             logo_base64 = self._get_logo_base64()
-            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="TalentsMaroc.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="taalentio.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
             
             html_content = f"""
             <!DOCTYPE html>
@@ -198,11 +198,11 @@ class EmailService:
                 <div class="container">
                     <div class="header">
                         {logo_img}
-                        <h1>⭐ Bienvenue sur TalentsMaroc.com !</h1>
+                        <h1>⭐ Bienvenue sur taalentio.com !</h1>
                     </div>
                     <div class="content">
                         <h2>Bonjour {user.full_name},</h2>
-                        <p>Nous avons bien reçu votre candidature sur la plateforme TalentsMaroc.com !</p>
+                        <p>Nous avons bien reçu votre candidature sur la plateforme taalentio.com !</p>
                         
                         <p>Votre profil de talent a été créé avec succès. Voici votre code unique :</p>
                         <div class="code">{user.unique_code}</div>
@@ -216,7 +216,7 @@ class EmailService:
                            espace personnel et modifier votre profil.</p>
                         
                         <p style="margin-top: 30px;">Cordialement,<br>
-                        <strong>L'équipe TalentsMaroc.com</strong></p>
+                        <strong>L'équipe taalentio.com</strong></p>
                     </div>
                     <div class="footer">
                         <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
@@ -238,7 +238,7 @@ class EmailService:
             
             return self.send_email(
                 to_email=user.email,
-                subject=f"✅ Candidature reçue - Votre code TalentsMaroc.com : {user.unique_code}",
+                subject=f"✅ Candidature reçue - Votre code taalentio.com : {user.unique_code}",
                 html_content=html_content,
                 attachments=attachments if attachments else None
             )
@@ -264,7 +264,7 @@ class EmailService:
             
             # Encoder le logo en base64 pour l'email
             logo_base64 = self._get_logo_base64()
-            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="TalentsMaroc.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="taalentio.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
             
             html_content = f"""
             <!DOCTYPE html>
@@ -295,11 +295,11 @@ class EmailService:
                 <div class="container">
                     <div class="header">
                         {logo_img}
-                        <h1>🔐 Vos identifiants TalentsMaroc.com</h1>
+                        <h1>🔐 Vos identifiants taalentio.com</h1>
                     </div>
                     <div class="content">
                         <h2>Bonjour {user.full_name},</h2>
-                        <p>Voici vos identifiants de connexion pour accéder à votre espace personnel sur TalentsMaroc.com :</p>
+                        <p>Voici vos identifiants de connexion pour accéder à votre espace personnel sur taalentio.com :</p>
                         
                         <div class="credentials">
                             <div class="credential-item">
@@ -331,7 +331,7 @@ class EmailService:
                         </ul>
                         
                         <p style="margin-top: 30px;">Cordialement,<br>
-                        <strong>L'équipe TalentsMaroc.com</strong></p>
+                        <strong>L'équipe taalentio.com</strong></p>
                     </div>
                     <div class="footer">
                         <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
@@ -343,7 +343,7 @@ class EmailService:
             
             return self.send_email(
                 to_email=user.email,
-                subject="🔐 Vos identifiants de connexion TalentsMaroc.com",
+                subject="🔐 Vos identifiants de connexion taalentio.com",
                 html_content=html_content
             )
             
@@ -364,7 +364,7 @@ class EmailService:
         try:
             # Encoder le logo en base64 pour l'email
             logo_base64 = self._get_logo_base64()
-            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="TalentsMaroc.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="taalentio.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
             
             html_content = f"""
             <!DOCTYPE html>
@@ -386,7 +386,7 @@ class EmailService:
                 <div class="container">
                     <div class="header">
                         {logo_img}
-                        <h1>✅ Email de Test TalentsMaroc.com</h1>
+                        <h1>✅ Email de Test taalentio.com</h1>
                     </div>
                     <div class="content">
                         <div class="success">
@@ -397,7 +397,7 @@ class EmailService:
                         <ul>
                             <li>✅ La clé API SendGrid est valide</li>
                             <li>✅ L'email expéditeur est correctement configuré</li>
-                            <li>✅ Les emails peuvent être envoyés depuis TalentsMaroc.com</li>
+                            <li>✅ Les emails peuvent être envoyés depuis taalentio.com</li>
                         </ul>
                         
                         <p>Vous pouvez maintenant utiliser l'envoi automatique d'emails pour :</p>
@@ -407,10 +407,10 @@ class EmailService:
                         </ul>
                         
                         <p style="margin-top: 30px;">Cordialement,<br>
-                        <strong>L'équipe TalentsMaroc.com</strong></p>
+                        <strong>L'équipe taalentio.com</strong></p>
                     </div>
                     <div class="footer">
-                        <p>Cet email a été envoyé depuis la page de configuration de TalentsMaroc.com.</p>
+                        <p>Cet email a été envoyé depuis la page de configuration de taalentio.com.</p>
                     </div>
                 </div>
             </body>
@@ -419,7 +419,7 @@ class EmailService:
             
             return self.send_email(
                 to_email=to_email,
-                subject="✅ Test de configuration SendGrid - TalentsMaroc.com",
+                subject="✅ Test de configuration SendGrid - taalentio.com",
                 html_content=html_content
             )
             

@@ -1,8 +1,8 @@
-# 🎭 TalentsMaroc.com
+# 🎭 taalentio.com
 
 **La plateforme de centralisation des talents africains avec un focus sur l'industrie cinématographique**
 
-TalentsMaroc.com est une application web professionnelle conçue pour centraliser et mettre en valeur les profils de talents à travers l'Afrique. La plateforme permet aux professionnels de créer des profils détaillés, de valoriser leurs compétences et de se connecter à des opportunités - avec un module dédié CINEMA pour l'industrie audiovisuelle.
+taalentio.com est une application web professionnelle conçue pour centraliser et mettre en valeur les profils de talents à travers l'Afrique. La plateforme permet aux professionnels de créer des profils détaillés, de valoriser leurs compétences et de se connecter à des opportunités - avec un module dédié CINEMA pour l'industrie audiovisuelle.
 
 ---
 
@@ -841,7 +841,7 @@ Les suggestions d'amélioration sont bienvenues ! Contactez-nous avec :
 
 ### Copyright
 
-© 2024 TalentsMaroc.com. Tous droits réservés.
+© 2024 taalentio.com. Tous droits réservés.
 
 ### Développement
 
@@ -851,7 +851,7 @@ Les suggestions d'amélioration sont bienvenues ! Contactez-nous avec :
 
 ### Remerciements
 
-Merci à tous les contributeurs et utilisateurs qui font de TalentsMaroc.com une plateforme de référence pour les talents africains.
+Merci à tous les contributeurs et utilisateurs qui font de taalentio.com une plateforme de référence pour les talents africains.
 
 ---
 
@@ -876,4 +876,4 @@ Devenir **la plateforme de référence** pour la découverte et la gestion des t
 
 ---
 
-**TalentsMaroc.com - Valorisons les talents africains ensemble ! 🌍✨**
+**taalentio.com - Valorisons les talents africains ensemble ! 🌍✨**
