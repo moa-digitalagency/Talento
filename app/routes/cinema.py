@@ -10,6 +10,7 @@ from app.constants import (
 )
 from app.services.movie_service import search_movies
 from app.services.export_service import ExportService
+from app.services.logging_service import LoggingService
 from app.utils.file_handler import save_file
 from app.data.world_countries import NATIONALITIES, NATIONALITIES_WITH_FLAGS
 from app.data.world_cities import get_cities_by_country
@@ -147,11 +148,32 @@ def add_production():
             db.session.add(production)
             db.session.commit()
             
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='create',
+                action_category='production',
+                description=f'Création de la boîte de production "{production.name}"',
+                resource_type='Production',
+                resource_id=production.id,
+                status='success'
+            )
+            
             flash(f'Boîte de production "{production.name}" créée avec succès!', 'success')
             return redirect(url_for('cinema.productions'))
             
         except Exception as e:
             db.session.rollback()
+            
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='create',
+                action_category='production',
+                description='Échec de création de boîte de production',
+                resource_type='Production',
+                status='error',
+                error_message=str(e)
+            )
+            
             flash(f'Erreur lors de la création de la boîte de production: {str(e)}', 'error')
     
     return render_template('cinema/production_form.html')
@@ -230,11 +252,34 @@ def edit_production(production_id):
             production.is_verified = request.form.get('is_verified') == 'on'
             
             db.session.commit()
+            
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='update',
+                action_category='production',
+                description=f'Modification de la boîte de production "{production.name}"',
+                resource_type='Production',
+                resource_id=production.id,
+                status='success'
+            )
+            
             flash(f'Boîte de production "{production.name}" mise à jour avec succès!', 'success')
             return redirect(url_for('cinema.view_production', production_id=production.id))
             
         except Exception as e:
             db.session.rollback()
+            
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='update',
+                action_category='production',
+                description=f'Échec de modification de boîte de production (ID: {production_id})',
+                resource_type='Production',
+                resource_id=production_id,
+                status='error',
+                error_message=str(e)
+            )
+            
             flash(f'Erreur lors de la mise à jour de la boîte de production: {str(e)}', 'error')
     
     return render_template('cinema/production_form.html', production=production)
@@ -244,12 +289,36 @@ def edit_production(production_id):
 def delete_production(production_id):
     """Supprimer une boîte de production (soft delete)"""
     production = Production.query.get_or_404(production_id)
+    production_name = production.name
     try:
         production.is_active = False
         db.session.commit()
-        flash(f'Boîte de production "{production.name}" supprimée avec succès!', 'success')
+        
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='delete',
+            action_category='production',
+            description=f'Suppression de la boîte de production "{production_name}"',
+            resource_type='Production',
+            resource_id=production_id,
+            status='success'
+        )
+        
+        flash(f'Boîte de production "{production_name}" supprimée avec succès!', 'success')
     except Exception as e:
         db.session.rollback()
+        
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='delete',
+            action_category='production',
+            description=f'Échec de suppression de boîte de production "{production_name}"',
+            resource_type='Production',
+            resource_id=production_id,
+            status='error',
+            error_message=str(e)
+        )
+        
         flash(f'Erreur lors de la suppression de la boîte de production: {str(e)}', 'error')
     return redirect(url_for('cinema.productions'))
 
@@ -830,21 +899,47 @@ def resend_credentials_cinema(unique_code):
 @bp.route('/export/pdf/<code>')
 def export_pdf(code):
     """Télécharger le profil CINEMA en PDF"""
-    talent = CinemaTalent.query.filter_by(unique_code=code, is_active=True).first_or_404()
-    
-    pdf_bytes = ExportService.export_cinema_talent_card_pdf(talent)
-    
-    buffer = io.BytesIO(pdf_bytes)
-    buffer.seek(0)
-    
-    filename = f'cinema_{talent.unique_code}_{datetime.now().strftime("%Y%m%d")}.pdf'
-    
-    return send_file(
-        buffer,
-        mimetype='application/pdf',
-        as_attachment=True,
-        download_name=filename
-    )
+    try:
+        talent = CinemaTalent.query.filter_by(unique_code=code, is_active=True).first_or_404()
+        
+        pdf_bytes = ExportService.export_cinema_talent_card_pdf(talent)
+        
+        # Logger l'activité (accessible sans authentification)
+        if current_user.is_authenticated:
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='export',
+                action_category='pdf',
+                description=f'Export PDF du profil cinéma de {talent.first_name} {talent.last_name} ({talent.unique_code})',
+                resource_type='CinemaTalent',
+                resource_id=talent.id,
+                status='success'
+            )
+        
+        buffer = io.BytesIO(pdf_bytes)
+        buffer.seek(0)
+        
+        filename = f'cinema_{talent.unique_code}_{datetime.now().strftime("%Y%m%d")}.pdf'
+        
+        return send_file(
+            buffer,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        if current_user.is_authenticated:
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='export',
+                action_category='pdf',
+                description=f'Échec de l\'export PDF du profil cinéma ({code})',
+                resource_type='CinemaTalent',
+                status='error',
+                error_message=str(e)
+            )
+        flash(f'Erreur lors de l\'export PDF: {str(e)}', 'error')
+        return redirect(url_for('cinema.talents'))
 
 @bp.route('/delete/<int:talent_id>', methods=['POST'])
 @login_required
@@ -860,12 +955,34 @@ def delete_talent(talent_id):
         talent.is_active = False
         db.session.commit()
         
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='delete',
+            action_category='cinema_talent',
+            description=f'Suppression du talent cinéma "{talent_name}"',
+            resource_type='CinemaTalent',
+            resource_id=talent_id,
+            status='success'
+        )
+        
         return jsonify({
             'success': True,
             'message': f'{talent_name} a été supprimé avec succès'
         })
     except Exception as e:
         db.session.rollback()
+        
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='delete',
+            action_category='cinema_talent',
+            description=f'Échec de suppression du talent cinéma (ID: {talent_id})',
+            resource_type='CinemaTalent',
+            resource_id=talent_id,
+            status='error',
+            error_message=str(e)
+        )
+        
         return jsonify({
             'success': False,
             'message': f'Erreur lors de la suppression: {str(e)}'
@@ -894,12 +1011,32 @@ def delete_talents_bulk():
         
         db.session.commit()
         
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='delete',
+            action_category='cinema_talent',
+            description=f'Suppression en lot de {deleted_count} talent(s) cinéma',
+            resource_type='CinemaTalent',
+            status='success'
+        )
+        
         return jsonify({
             'success': True,
             'message': f'{deleted_count} talent(s) supprimé(s) avec succès'
         })
     except Exception as e:
         db.session.rollback()
+        
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='delete',
+            action_category='cinema_talent',
+            description='Échec de suppression en lot de talents cinéma',
+            resource_type='CinemaTalent',
+            status='error',
+            error_message=str(e)
+        )
+        
         return jsonify({
             'success': False,
             'message': f'Erreur lors de la suppression: {str(e)}'

@@ -11,6 +11,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from app.routes.api_v1 import bp
 from app.models.user import User
 from app import db
+from app.services.logging_service import LoggingService
 from datetime import datetime
 import json
 
@@ -66,6 +67,22 @@ def api_login():
         
         if user and user.check_password(password):
             login_user(user, remember=True)
+            
+            # Log successful API login
+            LoggingService.log_activity(
+                user=user,
+                action_type='login',
+                action_category='auth',
+                description=f'Connexion API réussie',
+                status='success'
+            )
+            LoggingService.log_security_event(
+                event_type='successful_login',
+                description=f'Connexion API réussie pour {user.email}',
+                severity='info',
+                user=user
+            )
+            
             return jsonify({
                 'success': True,
                 'message': 'Login successful',
@@ -79,6 +96,14 @@ def api_login():
                 }
             }), 200
         else:
+            # Log failed API login attempt
+            LoggingService.log_security_event(
+                event_type='failed_login',
+                description=f'Tentative de connexion API échouée',
+                severity='warning',
+                attempted_username=identifier
+            )
+            
             return jsonify({
                 'success': False,
                 'error': 'Invalid credentials'

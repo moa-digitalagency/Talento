@@ -121,37 +121,87 @@ def export_csv():
 @login_required
 @admin_required
 def export_pdf():
-    users = User.query.filter(User.is_admin == False).all()
-    pdf_bytes = ExportService.export_list_to_pdf(users, current_user=current_user)
-    
-    buffer = io.BytesIO(pdf_bytes)
-    buffer.seek(0)
-    
-    return send_file(
-        buffer,
-        mimetype='application/pdf',
-        as_attachment=True,
-        download_name=f'talento_export_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf'
-    )
+    try:
+        users = User.query.filter(User.is_admin == False).all()
+        pdf_bytes = ExportService.export_list_to_pdf(users, current_user=current_user)
+        
+        from app.services.logging_service import LoggingService
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='export',
+            action_category='pdf',
+            description=f'Export PDF en lot de {len(users)} utilisateurs',
+            resource_type='User',
+            status='success'
+        )
+        
+        buffer = io.BytesIO(pdf_bytes)
+        buffer.seek(0)
+        
+        return send_file(
+            buffer,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=f'talento_export_{datetime.now().strftime("%Y%m%d_%H%M%S")}.pdf'
+        )
+    except Exception as e:
+        from app.services.logging_service import LoggingService
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='export',
+            action_category='pdf',
+            description='Échec de l\'export PDF en lot des utilisateurs',
+            resource_type='User',
+            status='error',
+            error_message=str(e)
+        )
+        flash(f'Erreur lors de l\'export PDF: {str(e)}', 'error')
+        return redirect(url_for('admin.users'))
 
 @bp.route('/export/pdf/<int:user_id>')
 @login_required
 @admin_required
 def export_pdf_individual(user_id):
-    user = User.query.get_or_404(user_id)
-    pdf_bytes = ExportService.export_talent_card_pdf(user)
-    
-    buffer = io.BytesIO(pdf_bytes)
-    buffer.seek(0)
-    
-    filename = f'talento_{user.unique_code}_{datetime.now().strftime("%Y%m%d")}.pdf'
-    
-    return send_file(
-        buffer,
-        mimetype='application/pdf',
-        as_attachment=True,
-        download_name=filename
-    )
+    try:
+        user = User.query.get_or_404(user_id)
+        pdf_bytes = ExportService.export_talent_card_pdf(user)
+        
+        from app.services.logging_service import LoggingService
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='export',
+            action_category='pdf',
+            description=f'Export PDF individuel du profil de {user.first_name} {user.last_name} ({user.unique_code})',
+            resource_type='User',
+            resource_id=user_id,
+            status='success'
+        )
+        
+        buffer = io.BytesIO(pdf_bytes)
+        buffer.seek(0)
+        
+        filename = f'talento_{user.unique_code}_{datetime.now().strftime("%Y%m%d")}.pdf'
+        
+        return send_file(
+            buffer,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        from app.services.logging_service import LoggingService
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='export',
+            action_category='pdf',
+            description=f'Échec de l\'export PDF individuel (ID: {user_id})',
+            resource_type='User',
+            resource_id=user_id,
+            status='error',
+            error_message=str(e)
+        )
+        flash(f'Erreur lors de l\'export PDF: {str(e)}', 'error')
+        return redirect(url_for('admin.users'))
 
 @bp.route('/analyze-cv/<int:user_id>', methods=['POST'])
 @login_required
@@ -178,20 +228,64 @@ def new_talent():
         category = request.form.get('category')
         
         if not all([name, emoji, category]):
+            from app.services.logging_service import LoggingService
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='create',
+                action_category='talent',
+                description=f'Tentative de création de talent bloquée (champs manquants)',
+                resource_type='Talent',
+                status='blocked'
+            )
             flash('Tous les champs sont requis.', 'error')
             return redirect(url_for('admin.new_talent'))
         
         existing = Talent.query.filter_by(name=name).first()
         if existing:
+            from app.services.logging_service import LoggingService
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='create',
+                action_category='talent',
+                description=f'Tentative de création du talent "{name}" bloquée (doublon)',
+                resource_type='Talent',
+                status='blocked'
+            )
             flash('Ce talent existe déjà.', 'error')
             return redirect(url_for('admin.new_talent'))
         
-        talent = Talent(name=name, emoji=emoji, category=category)
-        db.session.add(talent)
-        db.session.commit()
-        
-        flash('Talent ajouté avec succès.', 'success')
-        return redirect(url_for('main.index'))
+        try:
+            talent = Talent(name=name, emoji=emoji, category=category)
+            db.session.add(talent)
+            db.session.commit()
+            
+            from app.services.logging_service import LoggingService
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='create',
+                action_category='talent',
+                description=f'Création du talent "{name}" ({category})',
+                resource_type='Talent',
+                resource_id=talent.id,
+                status='success'
+            )
+            
+            flash('Talent ajouté avec succès.', 'success')
+            return redirect(url_for('main.index'))
+        except Exception as e:
+            db.session.rollback()
+            from app.services.logging_service import LoggingService
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='create',
+                action_category='talent',
+                description=f'Échec de création du talent "{name}"',
+                resource_type='Talent',
+                status='error',
+                error_message=str(e)
+            )
+            flash(f'Erreur lors de la création du talent: {str(e)}', 'error')
+            return redirect(url_for('admin.new_talent'))
     
     return render_template('admin/talent_form.html')
 
@@ -207,14 +301,37 @@ def talents_list():
 @admin_required
 def delete_talent(talent_id):
     talent = Talent.query.get_or_404(talent_id)
+    talent_name = talent.name
     
     usage_count = UserTalent.query.filter_by(talent_id=talent_id).count()
     if usage_count > 0:
+        from app.services.logging_service import LoggingService
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='delete',
+            action_category='talent',
+            description=f'Tentative de suppression du talent "{talent_name}" bloquée (utilisé par {usage_count} profil(s))',
+            resource_type='Talent',
+            resource_id=talent_id,
+            status='blocked'
+        )
         flash(f'Impossible de supprimer ce talent. Il est utilisé par {usage_count} profil(s).', 'error')
         return redirect(url_for('admin.talents_list'))
     
     db.session.delete(talent)
     db.session.commit()
+    
+    from app.services.logging_service import LoggingService
+    LoggingService.log_activity(
+        user=current_user,
+        action_type='delete',
+        action_category='talent',
+        description=f'Suppression du talent "{talent_name}"',
+        resource_type='Talent',
+        resource_id=talent_id,
+        status='success'
+    )
+    
     flash('Talent supprimé avec succès.', 'success')
     return redirect(url_for('admin.talents_list'))
 
