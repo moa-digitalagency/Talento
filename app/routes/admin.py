@@ -479,14 +479,56 @@ def settings_users():
 @login_required
 @admin_required
 def settings_cache():
-    # Données fictives pour le cache (fonctionnalité en développement)
-    cache_stats = {
-        'system_size': '0 MB',
-        'flask_size': '0 MB',
-        'temp_size': '0 MB'
-    }
+    from app.services.cache_service import CacheService
+    cache_stats = CacheService.get_cache_stats()
     last_clear = None
     return render_template('admin/settings/cache.html', cache_stats=cache_stats, last_clear=last_clear)
+
+@bp.route('/cache/clear-system', methods=['POST'])
+@login_required
+@admin_required
+def cache_clear_system():
+    from app.services.cache_service import CacheService
+    result = CacheService.clear_system_cache()
+    flash(f'Cache système nettoyé! {result.get("removed", 0)} éléments supprimés.', 'success')
+    return redirect(url_for('admin.settings_cache'))
+
+@bp.route('/cache/clear-flask', methods=['POST'])
+@login_required
+@admin_required
+def cache_clear_flask():
+    from app.services.cache_service import CacheService
+    result = CacheService.clear_flask_cache()
+    if result.get('success'):
+        flash(result.get('message', 'Cache Flask nettoyé!'), 'success')
+    else:
+        flash(f'Erreur: {result.get("message")}', 'error')
+    return redirect(url_for('admin.settings_cache'))
+
+@bp.route('/cache/clear-temp', methods=['POST'])
+@login_required
+@admin_required
+def cache_clear_temp():
+    from app.services.cache_service import CacheService
+    result = CacheService.clear_temp_files()
+    if result.get('success'):
+        flash(f'Fichiers temporaires nettoyés! {result.get("removed", 0)} fichiers supprimés.', 'success')
+    else:
+        flash(f'Erreur: {result.get("message")}', 'error')
+    return redirect(url_for('admin.settings_cache'))
+
+@bp.route('/cache/clear-all', methods=['POST'])
+@login_required
+@admin_required
+def cache_clear_all():
+    from app.services.cache_service import CacheService
+    result = CacheService.clear_all()
+    if result.get('success'):
+        messages = '<br>'.join(result.get('results', []))
+        flash(f'Tous les caches nettoyés!<br>{messages}', 'success')
+    else:
+        flash('Erreur lors du nettoyage du cache', 'error')
+    return redirect(url_for('admin.settings_cache'))
 
 @bp.route('/settings/github')
 @login_required
