@@ -481,7 +481,7 @@ def settings_users():
 def settings_cache():
     from app.services.cache_service import CacheService
     cache_stats = CacheService.get_cache_stats()
-    last_clear = None
+    last_clear = CacheService.get_last_clear()
     return render_template('admin/settings/cache.html', cache_stats=cache_stats, last_clear=last_clear)
 
 @bp.route('/cache/clear-system', methods=['POST'])

@@ -58,6 +58,26 @@ class CacheService:
         }
     
     @staticmethod
+    def save_last_clear(cache_type):
+        """Sauvegarder le timestamp du dernier nettoyage"""
+        from app.models.settings import AppSettings
+        from app import db
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        AppSettings.set(f'cache_last_clear_{cache_type}', timestamp)
+        db.session.commit()
+    
+    @staticmethod
+    def get_last_clear():
+        """Récupérer les timestamps des derniers nettoyages"""
+        from app.models.settings import AppSettings
+        return {
+            'system': AppSettings.get('cache_last_clear_system', None),
+            'flask': AppSettings.get('cache_last_clear_flask', None),
+            'temp': AppSettings.get('cache_last_clear_temp', None),
+            'all': AppSettings.get('cache_last_clear_all', None)
+        }
+    
+    @staticmethod
     def clear_system_cache():
         """Nettoyer le cache système (.pyc files)"""
         app_root = Path(__file__).parent.parent
@@ -82,6 +102,7 @@ class CacheService:
                     except:
                         pass
         
+        CacheService.save_last_clear('system')
         return {'success': True, 'removed': removed}
     
     @staticmethod
@@ -93,10 +114,12 @@ class CacheService:
         if flask_cache_path.exists():
             try:
                 shutil.rmtree(flask_cache_path)
+                CacheService.save_last_clear('flask')
                 return {'success': True, 'message': 'Cache Flask nettoyé'}
             except Exception as e:
                 return {'success': False, 'message': str(e)}
         
+        CacheService.save_last_clear('flask')
         return {'success': True, 'message': 'Aucun cache Flask trouvé'}
     
     @staticmethod
@@ -112,10 +135,12 @@ class CacheService:
                     if file.is_file():
                         file.unlink()
                         removed += 1
+                CacheService.save_last_clear('temp')
                 return {'success': True, 'removed': removed}
             except Exception as e:
                 return {'success': False, 'message': str(e)}
         
+        CacheService.save_last_clear('temp')
         return {'success': True, 'removed': 0}
     
     @staticmethod
@@ -132,4 +157,5 @@ class CacheService:
         temp_result = CacheService.clear_temp_files()
         results.append(f"Fichiers temporaires: {temp_result.get('removed', 0)} fichiers supprimés")
         
+        CacheService.save_last_clear('all')
         return {'success': True, 'results': results}
