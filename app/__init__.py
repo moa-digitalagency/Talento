@@ -318,6 +318,47 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     
+    # Configuration du logging détaillé
+    import logging
+    from logging.handlers import RotatingFileHandler
+    import os
+    
+    # Créer le dossier logs s'il n'existe pas
+    if not os.path.exists('logs'):
+        os.mkdir('logs')
+    
+    # Configuration du niveau de log selon l'environnement
+    log_level = logging.DEBUG if app.config.get('DEBUG', False) else logging.INFO
+    app.logger.setLevel(log_level)
+    
+    # Vérifier si nos handlers personnalisés sont déjà présents pour éviter les doublons
+    has_file_handler = any(isinstance(h, RotatingFileHandler) for h in app.logger.handlers)
+    
+    if not has_file_handler:
+        # Handler pour fichier avec rotation
+        file_handler = RotatingFileHandler(
+            'logs/talento.log',
+            maxBytes=10240000,  # 10MB
+            backupCount=10
+        )
+        file_handler.setLevel(log_level)
+        file_formatter = logging.Formatter(
+            '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
+        )
+        file_handler.setFormatter(file_formatter)
+        app.logger.addHandler(file_handler)
+        
+        # Handler pour console avec format coloré
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(log_level)
+        console_formatter = logging.Formatter(
+            '%(levelname)s: %(message)s'
+        )
+        console_handler.setFormatter(console_formatter)
+        app.logger.addHandler(console_handler)
+    
+    app.logger.info('✨ Talento application startup')
+    
     db.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
@@ -373,15 +414,19 @@ def create_app(config_class=Config):
             response.headers['Expires'] = '-1'
         return response
     
-    # Gestionnaire d'erreur 404 pour gérer les URLs mal encodées
+    # Gestionnaires d'erreurs globaux avec logging détaillé
     @app.errorhandler(404)
     def handle_404(e):
-        from flask import request, redirect, url_for
+        from flask import request, redirect, url_for, render_template_string
+        
+        app.logger.warning(f'404 Error: {request.url} - IP: {request.remote_addr}')
+        
         # Si l'URL contient %3F (qui est un ? encodé), rediriger vers login
         if '%3F' in request.url or '%2F' in request.url:
             return redirect(url_for('auth.login'))
+        
         # Sinon, retourner une vraie page 404
-        return f'''
+        return render_template_string('''
         <!DOCTYPE html>
         <html>
         <head>
@@ -392,13 +437,111 @@ def create_app(config_class=Config):
             <div class="text-center">
                 <h1 class="text-6xl font-bold text-gray-800 mb-4">404</h1>
                 <p class="text-xl text-gray-600 mb-8">Page non trouvée</p>
-                <a href="{url_for('auth.login')}" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                <a href="{{ url_for('auth.login') }}" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                     Retour à l'accueil
                 </a>
             </div>
         </body>
         </html>
-        ''', 404
+        '''), 404
+    
+    @app.errorhandler(500)
+    def handle_500(e):
+        from flask import request, render_template_string
+        import traceback
+        
+        # Logger l'erreur avec le stack trace complet
+        app.logger.error(f'500 Error: {request.url} - IP: {request.remote_addr}')
+        app.logger.error(f'Exception: {str(e)}')
+        app.logger.error(f'Traceback: {traceback.format_exc()}')
+        
+        # Logger dans les logs de sécurité si l'utilisateur est connecté
+        try:
+            from flask_login import current_user
+            from app.services.logging_service import LoggingService
+            if current_user and current_user.is_authenticated:
+                LoggingService.log_activity(
+                    user=current_user,
+                    action_type='error',
+                    action_category='system',
+                    description=f'Erreur 500 sur {request.path}',
+                    status='error',
+                    error_message=str(e)
+                )
+        except Exception:
+            pass
+        
+        return render_template_string('''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>500 - Erreur serveur</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+        </head>
+        <body class="bg-gray-50 min-h-screen flex items-center justify-center">
+            <div class="text-center max-w-md mx-auto p-6">
+                <h1 class="text-6xl font-bold text-red-600 mb-4">500</h1>
+                <p class="text-xl text-gray-800 mb-4">Erreur serveur</p>
+                <p class="text-gray-600 mb-8">Une erreur inattendue s'est produite. Nos équipes ont été notifiées.</p>
+                <a href="{{ url_for('auth.login') }}" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Retour à l'accueil
+                </a>
+            </div>
+        </body>
+        </html>
+        '''), 500
+    
+    @app.errorhandler(403)
+    def handle_403(e):
+        from flask import request, render_template_string
+        
+        app.logger.warning(f'403 Forbidden: {request.url} - IP: {request.remote_addr}')
+        
+        return render_template_string('''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>403 - Accès refusé</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+        </head>
+        <body class="bg-gray-50 min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <h1 class="text-6xl font-bold text-orange-600 mb-4">403</h1>
+                <p class="text-xl text-gray-800 mb-4">Accès refusé</p>
+                <p class="text-gray-600 mb-8">Vous n'avez pas les permissions nécessaires pour accéder à cette page.</p>
+                <a href="{{ url_for('auth.login') }}" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Retour à l'accueil
+                </a>
+            </div>
+        </body>
+        </html>
+        '''), 403
+    
+    @app.errorhandler(400)
+    def handle_400(e):
+        from flask import request, render_template_string
+        
+        app.logger.warning(f'400 Bad Request: {request.url} - IP: {request.remote_addr} - Error: {str(e)}')
+        
+        return render_template_string('''
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>400 - Requête invalide</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+        </head>
+        <body class="bg-gray-50 min-h-screen flex items-center justify-center">
+            <div class="text-center">
+                <h1 class="text-6xl font-bold text-yellow-600 mb-4">400</h1>
+                <p class="text-xl text-gray-800 mb-4">Requête invalide</p>
+                <p class="text-gray-600 mb-8">La requête envoyée n'est pas valide.</p>
+                <a href="{{ url_for('auth.login') }}" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    Retour à l'accueil
+                </a>
+            </div>
+        </body>
+        </html>
+        '''), 400
     
     with app.app_context():
         try:

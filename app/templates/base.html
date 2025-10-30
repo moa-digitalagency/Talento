@@ -217,5 +217,8 @@
     {% if current_user.is_authenticated and current_user.is_admin %}
     <script src="{{ url_for('static', filename='js/bulk_actions.js') }}"></script>
     {% endif %}
+    
+    <!-- Error Logger pour capturer et envoyer les erreurs JavaScript au serveur -->
+    <script src="{{ url_for('static', filename='js/error-logger.js') }}"></script>
 </body>
 </html>
