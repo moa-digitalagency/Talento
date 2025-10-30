@@ -7,6 +7,15 @@ taalentio.com is a professional web application designed to centralize and showc
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
+- **2025-10-30**: Implemented Recruiter (Recruteur) role system:
+  - Added new 'recruteur' role to the platform with restricted permissions
+  - Recruiters can access talent management page (/admin/users) with full filtering and AI search capabilities
+  - Recruiters can view and export talent profiles but cannot access admin dashboard, contracts, cinema, or settings
+  - Created recruiter_or_admin_required decorator for access control
+  - Updated navigation menu to show only Talents, Profile, and Logout for recruiters
+  - Added role management interface in admin settings (/admin/settings/users) with promote/demote functionality
+  - Login redirect logic updated to send recruiters directly to talent management page
+  - Recruiters are displayed in separate section in user management with orange-themed UI
 - **2025-10-30**: Implemented advanced search filters and AI-powered talent matching for admin and cinema modules:
   - Added multi-criteria search filters to /admin/users page (name/email, code, availability, work mode, gender, city, talents with AND logic)
   - Integrated AI-powered search in /admin/users with text input and file upload support (PDF, DOCX, TXT up to 10MB)
@@ -70,7 +79,11 @@ Preferred communication style: Simple, everyday language.
 
 ### Authentication & Authorization
 - **User Authentication**: Flask-Login, supporting dual login (email OR unique code).
-- **Access Control**: Role-based (admin, presence, regular users).
+- **Access Control**: Role-based system with four distinct roles:
+  - **Admin**: Full platform access including dashboard, users, contracts, cinema, and all settings
+  - **Recruteur (Recruiter)**: Access to talent management page with filters and AI search, own profile, and export functionality
+  - **Presence**: Access to attendance/check-in system
+  - **User (Regular)**: Standard user access to their own profile
 
 ### File Management
 - **Uploads**: Photos (PNG, JPG, JPEG up to 5MB), CVs (PDF, DOC, DOCX up to 10MB), and SEO images (PNG, JPG, JPEG, GIF, WEBP).
