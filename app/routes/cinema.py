@@ -1472,15 +1472,27 @@ def remove_talent_from_project(project_id, project_talent_id):
 def view_talent_assignment(project_talent_id):
     """Voir les détails complets d'une assignation de talent à un projet"""
     from app.models.project import ProjectTalent
+    from app.models.attendance import Attendance
     
     project_talent = ProjectTalent.query.get_or_404(project_talent_id)
     talent = project_talent.cinema_talent
     project = project_talent.project
     
+    # Récupérer l'historique de présence du talent pour ce projet
+    attendance_history = Attendance.query.filter_by(
+        project_id=project.id,
+        cinema_talent_code=talent.unique_code
+    ).order_by(Attendance.date.desc()).limit(30).all()
+    
+    # Calculer les statistiques de présence
+    total_hours = Attendance.get_talent_total_hours(talent.unique_code, project.id)
+    
     return render_template('cinema/view_talent_assignment.html',
                          project_talent=project_talent,
                          talent=talent,
-                         project=project)
+                         project=project,
+                         attendance_history=attendance_history,
+                         total_hours=total_hours)
 
 @bp.route('/projects/<int:project_id>/delete', methods=['POST'])
 @login_required

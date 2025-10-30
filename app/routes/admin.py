@@ -757,6 +757,106 @@ def git_status():
         flash(f'Erreur: {str(e)}', 'error')
     return redirect(url_for('admin.settings_github'))
 
+@bp.route('/maintenance/optimize-database', methods=['POST'])
+@login_required
+@admin_required
+def maintenance_optimize_database():
+    from app.services.maintenance_service import MaintenanceService
+    from app.services.logging_service import LoggingService
+    
+    try:
+        result = MaintenanceService.optimize_database()
+        if result.get('success'):
+            flash(f'✅ {result.get("message")}', 'success')
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='maintenance',
+                action_category='database',
+                description='Optimisation de la base de données',
+                status='success'
+            )
+        else:
+            flash(f'⚠️  {result.get("message")}', 'error')
+    except Exception as e:
+        flash(f'Erreur: {str(e)}', 'error')
+    return redirect(url_for('admin.settings_system'))
+
+@bp.route('/maintenance/clean-temp-files', methods=['POST'])
+@login_required
+@admin_required
+def maintenance_clean_temp_files():
+    from app.services.maintenance_service import MaintenanceService
+    from app.services.logging_service import LoggingService
+    
+    try:
+        result = MaintenanceService.clean_temp_files()
+        if result.get('success'):
+            flash(f'✅ {result.get("message")}', 'success')
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='maintenance',
+                action_category='files',
+                description='Nettoyage des fichiers temporaires',
+                status='success'
+            )
+        else:
+            flash(f'⚠️  {result.get("message")}', 'error')
+    except Exception as e:
+        flash(f'Erreur: {str(e)}', 'error')
+    return redirect(url_for('admin.settings_system'))
+
+@bp.route('/maintenance/analyze-performance', methods=['POST'])
+@login_required
+@admin_required
+def maintenance_analyze_performance():
+    from app.services.maintenance_service import MaintenanceService
+    from app.services.logging_service import LoggingService
+    
+    try:
+        result = MaintenanceService.analyze_performance()
+        if result.get('success'):
+            metrics_html = '<br>'.join(result.get('metrics', []))
+            status_icon = '✅' if result.get('status') == 'good' else ('⚠️' if result.get('status') == 'warning' else '🚨')
+            flash(f'{status_icon} Analyse terminée:<br>{metrics_html}', 'success' if result.get('status') == 'good' else 'warning')
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='maintenance',
+                action_category='performance',
+                description='Analyse des performances',
+                status='success'
+            )
+        else:
+            flash(f'⚠️  {result.get("message")}', 'error')
+    except Exception as e:
+        flash(f'Erreur: {str(e)}', 'error')
+    return redirect(url_for('admin.settings_system'))
+
+@bp.route('/maintenance/verify-data-integrity', methods=['POST'])
+@login_required
+@admin_required
+def maintenance_verify_data_integrity():
+    from app.services.maintenance_service import MaintenanceService
+    from app.services.logging_service import LoggingService
+    
+    try:
+        result = MaintenanceService.verify_data_integrity()
+        if result.get('success'):
+            issues_html = '<br>'.join(result.get('issues', []))
+            status_icon = '✅' if result.get('status') == 'healthy' else ('⚠️' if result.get('status') == 'warning' else '🚨')
+            flash(f'{status_icon} {result.get("message")}:<br>{issues_html}', 'success' if result.get('status') == 'healthy' else 'warning')
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='maintenance',
+                action_category='integrity',
+                description='Vérification de l\'intégrité des données',
+                status='success'
+            )
+        else:
+            flash(f'⚠️  {result.get("message")}', 'error')
+    except Exception as e:
+        flash(f'Erreur: {str(e)}', 'error')
+    return redirect(url_for('admin.settings_system'))
+
 @bp.route('/user/<int:user_id>/promote-admin', methods=['POST'])
 @login_required
 @admin_required

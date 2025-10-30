@@ -288,21 +288,29 @@
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <button onclick="alert('Fonctionnalité en développement')" class="bg-white border-2 border-yellow-400 text-gray-700 px-4 py-3 rounded-lg hover:bg-yellow-100 font-semibold">
-                    🔄 Optimiser la base de données
-                </button>
+                <form method="POST" action="{{ url_for('admin.maintenance_optimize_database') }}" class="w-full">
+                    <button type="submit" class="w-full bg-white border-2 border-yellow-400 text-gray-700 px-4 py-3 rounded-lg hover:bg-yellow-100 font-semibold transition-colors" onclick="return confirm('Optimiser la base de données ? Cette opération peut prendre quelques minutes.');">
+                        🔄 Optimiser la base de données
+                    </button>
+                </form>
                 
-                <button onclick="alert('Fonctionnalité en développement')" class="bg-white border-2 border-yellow-400 text-gray-700 px-4 py-3 rounded-lg hover:bg-yellow-100 font-semibold">
-                    🧹 Nettoyer les fichiers temporaires
-                </button>
+                <form method="POST" action="{{ url_for('admin.maintenance_clean_temp_files') }}" class="w-full">
+                    <button type="submit" class="w-full bg-white border-2 border-yellow-400 text-gray-700 px-4 py-3 rounded-lg hover:bg-yellow-100 font-semibold transition-colors" onclick="return confirm('Nettoyer les fichiers temporaires de plus de 24h ?');">
+                        🧹 Nettoyer les fichiers temporaires
+                    </button>
+                </form>
                 
-                <button onclick="alert('Fonctionnalité en développement')" class="bg-white border-2 border-yellow-400 text-gray-700 px-4 py-3 rounded-lg hover:bg-yellow-100 font-semibold">
-                    📊 Analyser les performances
-                </button>
+                <form method="POST" action="{{ url_for('admin.maintenance_analyze_performance') }}" class="w-full">
+                    <button type="submit" class="w-full bg-white border-2 border-yellow-400 text-gray-700 px-4 py-3 rounded-lg hover:bg-yellow-100 font-semibold transition-colors">
+                        📊 Analyser les performances
+                    </button>
+                </form>
                 
-                <button onclick="alert('Fonctionnalité en développement')" class="bg-white border-2 border-yellow-400 text-gray-700 px-4 py-3 rounded-lg hover:bg-yellow-100 font-semibold">
-                    🔍 Vérifier l'intégrité des données
-                </button>
+                <form method="POST" action="{{ url_for('admin.maintenance_verify_data_integrity') }}" class="w-full">
+                    <button type="submit" class="w-full bg-white border-2 border-yellow-400 text-gray-700 px-4 py-3 rounded-lg hover:bg-yellow-100 font-semibold transition-colors">
+                        🔍 Vérifier l'intégrité des données
+                    </button>
+                </form>
             </div>
         </div>
     </div>
