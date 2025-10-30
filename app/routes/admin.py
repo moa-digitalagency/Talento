@@ -16,6 +16,7 @@ from app.services.database_service import DatabaseService
 from app.services.update_service import UpdateService
 from app.services.backup_service import BackupService
 from app.services.seo_service import SEOService
+from app.services.maintenance_service import MaintenanceService
 import io
 import os
 import shutil
@@ -761,7 +762,6 @@ def git_status():
 @login_required
 @admin_required
 def maintenance_optimize_database():
-    from app.services.maintenance_service import MaintenanceService
     from app.services.logging_service import LoggingService
     
     try:
@@ -785,7 +785,6 @@ def maintenance_optimize_database():
 @login_required
 @admin_required
 def maintenance_clean_temp_files():
-    from app.services.maintenance_service import MaintenanceService
     from app.services.logging_service import LoggingService
     
     try:
@@ -809,7 +808,6 @@ def maintenance_clean_temp_files():
 @login_required
 @admin_required
 def maintenance_analyze_performance():
-    from app.services.maintenance_service import MaintenanceService
     from app.services.logging_service import LoggingService
     
     try:
@@ -835,7 +833,6 @@ def maintenance_analyze_performance():
 @login_required
 @admin_required
 def maintenance_verify_data_integrity():
-    from app.services.maintenance_service import MaintenanceService
     from app.services.logging_service import LoggingService
     
     try:

@@ -22,33 +22,53 @@ class MaintenanceService:
         """Optimise la base de données PostgreSQL"""
         try:
             results = []
+            success_count = 0
+            error_count = 0
             
             # Récupérer les tables
             inspector = inspect(db.engine)
             tables = inspector.get_table_names()
             
-            # Analyser et optimiser chaque table (VACUUM ANALYZE pour PostgreSQL)
-            with db.engine.connect() as conn:
+            # VACUUM ANALYZE doit être exécuté en dehors d'une transaction
+            # Utiliser raw_connection() pour contourner la gestion transactionnelle de SQLAlchemy
+            raw_conn = db.engine.raw_connection()
+            try:
+                raw_conn.set_isolation_level(0)  # AUTOCOMMIT mode
+                cursor = raw_conn.cursor()
+                
                 for table in tables:
                     try:
-                        # VACUUM ne peut pas être exécuté dans une transaction
-                        conn.execute(text(f"VACUUM ANALYZE {table}").execution_options(autocommit=True))
+                        cursor.execute(f"VACUUM ANALYZE {table}")
                         results.append(f"✅ Table {table} optimisée")
+                        success_count += 1
                     except Exception as e:
                         results.append(f"⚠️  Table {table}: {str(e)}")
+                        error_count += 1
+                        logger.warning(f"Erreur lors de l'optimisation de {table}: {e}")
                 
-                # Statistiques après optimisation
-                conn.commit()
+                cursor.close()
+            finally:
+                raw_conn.close()
             
             # Enregistrer la dernière optimisation
             AppSettings.set('last_db_optimization', datetime.now().isoformat())
             
-            return {
-                'success': True,
-                'message': f'{len(tables)} tables analysées et optimisées',
-                'details': results,
-                'tables_count': len(tables)
-            }
+            if success_count > 0:
+                return {
+                    'success': True,
+                    'message': f'{success_count}/{len(tables)} tables optimisées avec succès',
+                    'details': results,
+                    'tables_count': len(tables),
+                    'success_count': success_count,
+                    'error_count': error_count
+                }
+            else:
+                return {
+                    'success': False,
+                    'message': f'Aucune table optimisée. {error_count} erreurs.',
+                    'details': results,
+                    'tables_count': len(tables)
+                }
             
         except Exception as e:
             logger.error(f"Erreur lors de l'optimisation de la base de données: {e}")
