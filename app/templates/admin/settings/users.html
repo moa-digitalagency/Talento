@@ -81,13 +81,72 @@
             </div>
         </div>
 
+        <!-- Liste des Recruteurs -->
+        <div class="bg-orange-50 border-2 border-dashed border-orange-400 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">🎯</span>
+                <h2 class="text-2xl font-bold text-gray-800">Recruteurs</h2>
+            </div>
+            <p class="text-gray-700 mb-4">Les recruteurs peuvent consulter et filtrer tous les talents, ainsi qu'utiliser la recherche IA.</p>
+            
+            <div class="overflow-x-auto bg-white rounded-lg border-2 border-orange-200">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Code</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom complet</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ville</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% if recruiters and recruiters|length > 0 %}
+                            {% for recruiter in recruiters %}
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ recruiter.formatted_code }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">{{ recruiter.full_name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">{{ recruiter.email }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">{{ recruiter.city.name if recruiter.city else 'N/A' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">
+                                        🎯 Recruteur
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <form method="POST" action="{{ url_for('admin.demote_recruiter', user_id=recruiter.id) }}" class="inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                        <button type="submit" class="text-red-600 hover:text-red-800 font-semibold" onclick="return confirm('Retirer le rôle recruteur à {{ recruiter.full_name }} ?')">
+                                            Révoquer
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                                <div class="flex flex-col items-center">
+                                    <span class="text-6xl mb-3">🎯</span>
+                                    <p class="text-lg font-semibold">Aucun recruteur</p>
+                                    <p class="text-sm mt-1">Aucun utilisateur n'a le rôle de recruteur pour le moment</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- Promouvoir un utilisateur -->
         <div class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6">
             <div class="flex items-center gap-3 mb-4">
                 <span class="text-4xl">⬆️</span>
                 <h2 class="text-2xl font-bold text-gray-800">Promouvoir un utilisateur</h2>
             </div>
-            <p class="text-gray-700 mb-4">Sélectionnez un utilisateur pour lui donner les droits d'administrateur.</p>
+            <p class="text-gray-700 mb-4">Sélectionnez un utilisateur pour lui donner les droits d'administrateur ou de recruteur.</p>
             
             <div class="overflow-x-auto bg-white rounded-lg border-2 border-blue-200">
                 <table class="min-w-full divide-y divide-gray-200">
@@ -101,18 +160,24 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        {% if non_admins and non_admins|length > 0 %}
-                            {% for user in non_admins %}
+                        {% if regular_users and regular_users|length > 0 %}
+                            {% for user in regular_users %}
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">{{ user.formatted_code }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.full_name }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.email }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">{{ user.city.name if user.city else 'N/A' }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
                                     <form method="POST" action="{{ url_for('admin.promote_admin', user_id=user.id) }}" class="inline">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                        <button type="submit" class="bg-white border-2 border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 font-semibold text-sm transition-all" onclick="return confirm('Donner les droits administrateur à {{ user.full_name }} ?')">
-                                            Promouvoir
+                                        <button type="submit" class="bg-white border-2 border-green-600 text-green-600 px-3 py-1.5 rounded-lg hover:bg-green-50 font-semibold text-xs transition-all" onclick="return confirm('Donner les droits administrateur à {{ user.full_name }} ?')">
+                                            👑 Admin
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('admin.promote_recruiter', user_id=user.id) }}" class="inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                        <button type="submit" class="bg-white border-2 border-orange-600 text-orange-600 px-3 py-1.5 rounded-lg hover:bg-orange-50 font-semibold text-xs transition-all" onclick="return confirm('Donner le rôle recruteur à {{ user.full_name }} ?')">
+                                            🎯 Recruteur
                                         </button>
                                     </form>
                                 </td>
@@ -124,7 +189,7 @@
                                 <div class="flex flex-col items-center">
                                     <span class="text-6xl mb-3">👥</span>
                                     <p class="text-lg font-semibold">Aucun utilisateur standard</p>
-                                    <p class="text-sm mt-1">Tous les utilisateurs sont déjà administrateurs</p>
+                                    <p class="text-sm mt-1">Tous les utilisateurs ont déjà des rôles spéciaux</p>
                                 </div>
                             </td>
                         </tr>

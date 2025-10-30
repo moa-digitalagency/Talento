@@ -723,8 +723,9 @@ def settings_security_logs():
 @admin_required
 def settings_users():
     admins = User.query.filter(User.is_admin == True).all()
-    non_admins = User.query.filter(User.is_admin == False).order_by(User.first_name).all()
-    return render_template('admin/settings/users.html', admins=admins, non_admins=non_admins)
+    recruiters = User.query.filter(User.role == 'recruteur').all()
+    regular_users = User.query.filter(and_(User.is_admin == False, User.role != 'recruteur', User.role != 'presence')).order_by(User.first_name).all()
+    return render_template('admin/settings/users.html', admins=admins, recruiters=recruiters, regular_users=regular_users)
 
 @bp.route('/settings/cache')
 @login_required
@@ -951,6 +952,40 @@ def demote_admin(user_id):
     db.session.commit()
     flash(f'{user.full_name} n\'est plus administrateur.', 'success')
     return redirect(url_for('admin.settings'))
+
+@bp.route('/user/<int:user_id>/promote-recruiter', methods=['POST'])
+@login_required
+@admin_required
+def promote_recruiter(user_id):
+    user = User.query.get_or_404(user_id)
+    
+    if user.is_admin:
+        flash('Cet utilisateur est administrateur. Retirez d\'abord ses droits d\'administrateur.', 'error')
+        return redirect(url_for('admin.settings_users'))
+    
+    if user.role == 'recruteur':
+        flash('Cet utilisateur est déjà recruteur.', 'error')
+        return redirect(url_for('admin.settings_users'))
+    
+    user.role = 'recruteur'
+    db.session.commit()
+    flash(f'{user.full_name} est maintenant recruteur.', 'success')
+    return redirect(url_for('admin.settings_users'))
+
+@bp.route('/user/<int:user_id>/demote-recruiter', methods=['POST'])
+@login_required
+@admin_required
+def demote_recruiter(user_id):
+    user = User.query.get_or_404(user_id)
+    
+    if user.role != 'recruteur':
+        flash('Cet utilisateur n\'est pas recruteur.', 'error')
+        return redirect(url_for('admin.settings_users'))
+    
+    user.role = 'user'
+    db.session.commit()
+    flash(f'{user.full_name} n\'est plus recruteur.', 'success')
+    return redirect(url_for('admin.settings_users'))
 
 @bp.route('/save-settings', methods=['POST'])
 @login_required
