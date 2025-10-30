@@ -926,12 +926,30 @@ def bulk_delete():
 @admin_required
 def create_backup():
     """Créer une sauvegarde complète de l'application"""
+    from app.services.logging_service import LoggingService
+    
     zip_path = None
     temp_dir = None
     
     try:
         # Créer le backup
         zip_path, temp_dir = BackupService.create_full_backup()
+        
+        # Log backup creation
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='create',
+            action_category='settings',
+            description='Création d\'une sauvegarde complète',
+            resource_type='Backup',
+            status='success'
+        )
+        LoggingService.log_security_event(
+            event_type='backup_created',
+            description=f'Sauvegarde créée par {current_user.email}',
+            severity='info',
+            user=current_user
+        )
         
         # Définir le nettoyage après l'envoi de la réponse
         @after_this_request
@@ -969,6 +987,8 @@ def create_backup():
 @admin_required
 def restore_backup():
     """Restaurer l'application depuis un fichier de sauvegarde"""
+    from app.services.logging_service import LoggingService
+    
     try:
         # Vérifier qu'un fichier a été uploadé
         if 'backup_file' not in request.files:
@@ -999,8 +1019,34 @@ def restore_backup():
         os.unlink(temp_file.name)
         
         if result['success']:
+            # Log successful restoration
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='update',
+                action_category='settings',
+                description='Restauration réussie depuis une sauvegarde',
+                resource_type='Backup',
+                status='success'
+            )
+            LoggingService.log_security_event(
+                event_type='backup_restored',
+                description=f'Restauration effectuée par {current_user.email}',
+                severity='warning',
+                user=current_user,
+                action_taken='database_restored'
+            )
             flash('Restauration réussie ! L\'application a été restaurée depuis la sauvegarde.', 'success')
         else:
+            # Log failed restoration
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='update',
+                action_category='settings',
+                description=f'Échec de restauration : {result.get("message", "Erreur inconnue")}',
+                resource_type='Backup',
+                status='error',
+                error_message=result.get("message", "Erreur inconnue")
+            )
             flash(f'Erreur lors de la restauration: {result.get("message", "Erreur inconnue")}', 'error')
         
         return redirect(url_for('admin.settings'))

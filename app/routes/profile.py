@@ -16,6 +16,7 @@ from app.models.cinema_talent import CinemaTalent
 from app.utils.file_handler import save_file
 from app.services.cv_analyzer import CVAnalyzerService
 from app.services.export_service import ExportService
+from app.services.logging_service import LoggingService
 import os
 import json
 import io
@@ -163,6 +164,19 @@ def edit():
                     flash(f'Le profil a été mis à jour mais l\'analyse du CV a échoué: {str(e)}', 'warning')
             
             db.session.commit()
+            
+            # Log profile update
+            LoggingService.log_activity(
+                user=current_user,
+                action_type='update',
+                action_category='profile',
+                description='Mise à jour du profil',
+                resource_type='User',
+                resource_id=current_user.id,
+                status='success',
+                metadata={'cv_updated': cv_file_updated, 'talents_count': len(talent_ids)}
+            )
+            
             flash('Votre profil a été mis à jour avec succès.', 'success')
             return redirect(url_for('profile.dashboard'))
             

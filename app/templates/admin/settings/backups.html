@@ -31,9 +31,29 @@
             </div>
             <p class="text-gray-700 mb-4">Créez une copie complète de la base de données avant toute modification importante.</p>
             
-            <button onclick="alert('Fonctionnalité en développement')" class="bg-white border-2 border-orange-600 text-orange-600 px-6 py-3 rounded-lg hover:bg-orange-50 font-semibold text-lg transition-all">
-                💾 Créer une sauvegarde maintenant
-            </button>
+            <form action="{{ url_for('admin.create_backup') }}" method="POST" style="display: inline;">
+                <button type="submit" class="bg-white border-2 border-orange-600 text-orange-600 px-6 py-3 rounded-lg hover:bg-orange-50 font-semibold text-lg transition-all" onclick="return confirm('Créer une sauvegarde complète de l\'application ?')">
+                    💾 Créer une sauvegarde maintenant
+                </button>
+            </form>
+        </div>
+
+        <!-- Restaurer une sauvegarde -->
+        <div class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">♻️</span>
+                <h3 class="text-2xl font-bold text-gray-800">Restaurer une sauvegarde</h3>
+            </div>
+            <p class="text-gray-700 mb-4">Téléchargez un fichier de sauvegarde pour restaurer l'application à un état antérieur.</p>
+            
+            <form action="{{ url_for('admin.restore_backup') }}" method="POST" enctype="multipart/form-data" onsubmit="return confirm('⚠️ ATTENTION : La restauration écrasera TOUTES les données actuelles. Êtes-vous sûr de vouloir continuer ?')">
+                <div class="flex items-center gap-4">
+                    <input type="file" name="backup_file" accept=".zip" required class="border-2 border-gray-300 rounded-lg px-4 py-2 bg-white">
+                    <button type="submit" class="bg-white border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-lg hover:bg-blue-50 font-semibold transition-all">
+                        ♻️ Restaurer cette sauvegarde
+                    </button>
+                </div>
+            </form>
         </div>
 
         <!-- Sauvegardes disponibles -->
@@ -112,12 +132,44 @@
 </div>
 
 <script>
+function createBackup() {
+    if (confirm('Créer une sauvegarde complète de l\'application maintenant ?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("admin.create_backup") }}';
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
 function restoreBackup(filename) {
-    alert('Fonctionnalité en développement');
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.zip';
+    fileInput.onchange = function(e) {
+        if (e.target.files.length > 0) {
+            if (confirm('⚠️ ATTENTION : La restauration écrasera TOUTES les données actuelles. Continuer ?')) {
+                const formData = new FormData();
+                formData.append('backup_file', e.target.files[0]);
+                
+                fetch('{{ url_for("admin.restore_backup") }}', {
+                    method: 'POST',
+                    body: formData
+                }).then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Erreur lors de la restauration');
+                    }
+                });
+            }
+        }
+    };
+    fileInput.click();
 }
 
 function deleteBackup(filename) {
-    alert('Fonctionnalité en développement');
+    alert('Fonctionnalité de suppression à implémenter');
 }
 </script>
 {% endblock %}

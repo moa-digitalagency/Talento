@@ -10,6 +10,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request,
 from flask_login import login_user, logout_user, current_user
 from app import db
 from app.models.user import User
+from app.services.logging_service import LoggingService
 from datetime import datetime
 import json
 import os
@@ -31,17 +32,52 @@ def login():
         
         if user and user.check_password(password):
             login_user(user, remember=True)
+            
+            # Log successful login
+            LoggingService.log_activity(
+                user=user,
+                action_type='login',
+                action_category='auth',
+                description=f'Connexion réussie',
+                status='success'
+            )
+            LoggingService.log_security_event(
+                event_type='successful_login',
+                description=f'Connexion réussie pour {user.email}',
+                severity='info',
+                user=user
+            )
+            
             next_page = request.args.get('next')
             if user.is_admin:
                 return redirect(next_page or url_for('admin.dashboard'))
             return redirect(next_page or url_for('profile.dashboard'))
         else:
+            # Log failed login attempt
+            LoggingService.log_security_event(
+                event_type='failed_login',
+                description=f'Tentative de connexion échouée',
+                severity='warning',
+                attempted_username=identifier
+            )
             flash('Identifiant ou mot de passe incorrect.', 'error')
     
     return render_template('auth/login.html')
 
 @bp.route('/logout')
 def logout():
+    if current_user.is_authenticated:
+        user = current_user._get_current_object()
+        
+        # Log logout
+        LoggingService.log_activity(
+            user=user,
+            action_type='logout',
+            action_category='auth',
+            description='Déconnexion',
+            status='success'
+        )
+    
     logout_user()
     flash('Vous avez été déconnecté avec succès.', 'success')
     return redirect(url_for('main.index'))
@@ -209,6 +245,24 @@ def register():
                     current_app.logger.error(f"Erreur analyse CV: {str(e)}")
             
             db.session.commit()
+            
+            # Log registration
+            LoggingService.log_activity(
+                user=user,
+                action_type='create',
+                action_category='auth',
+                description=f'Nouvelle inscription : {user.full_name} ({user.email})',
+                resource_type='User',
+                resource_id=user.id,
+                status='success',
+                metadata={'talents_count': len(talent_ids), 'has_cv': bool(cv_file_path)}
+            )
+            LoggingService.log_security_event(
+                event_type='new_registration',
+                description=f'Nouveau compte créé : {user.email}',
+                severity='info',
+                user=user
+            )
             
             try:
                 email_service.send_application_confirmation(user)
