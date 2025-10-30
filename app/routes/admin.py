@@ -15,6 +15,7 @@ from app.services.email_service import EmailService
 from app.services.database_service import DatabaseService
 from app.services.update_service import UpdateService
 from app.services.backup_service import BackupService
+from app.services.seo_service import SEOService
 import io
 import os
 import shutil
@@ -416,11 +417,15 @@ def settings_system():
     # Récupérer le code personnalisé pour le <head>
     custom_head_code = AppSettings.get('custom_head_code', '')
     
+    # Récupérer les paramètres SEO
+    seo_settings = SEOService.get_all_settings()
+    
     return render_template('admin/settings/system.html', 
                          db_info=db_info, 
                          stats=stats, 
                          system_info=system_info,
-                         custom_head_code=custom_head_code)
+                         custom_head_code=custom_head_code,
+                         seo_settings=seo_settings)
 
 @bp.route('/save-custom-head-code', methods=['POST'])
 @login_required
@@ -432,6 +437,44 @@ def save_custom_head_code():
     AppSettings.set('custom_head_code', custom_head_code)
     
     flash('Code personnalisé enregistré avec succès.', 'success')
+    return redirect(url_for('admin.settings_system'))
+
+@bp.route('/save-seo-settings', methods=['POST'])
+@login_required
+@admin_required
+def save_seo_settings():
+    from app.services.logging_service import LoggingService
+    
+    # Récupérer tous les champs SEO du formulaire
+    seo_data = {
+        'seo_site_name': request.form.get('seo_site_name', '').strip(),
+        'seo_site_description': request.form.get('seo_site_description', '').strip(),
+        'seo_keywords': request.form.get('seo_keywords', '').strip(),
+        'seo_author': request.form.get('seo_author', '').strip(),
+        'seo_og_type': request.form.get('seo_og_type', 'website').strip(),
+        'seo_og_image': request.form.get('seo_og_image', '').strip(),
+        'seo_twitter_card': request.form.get('seo_twitter_card', 'summary_large_image').strip(),
+        'seo_twitter_handle': request.form.get('seo_twitter_handle', '').strip(),
+        'seo_robots': request.form.get('seo_robots', 'index, follow').strip(),
+        'seo_canonical_url': request.form.get('seo_canonical_url', '').strip(),
+        'seo_language': request.form.get('seo_language', 'fr').strip(),
+        'seo_region': request.form.get('seo_region', 'MA').strip()
+    }
+    
+    # Enregistrer les paramètres SEO
+    SEOService.update_settings(seo_data)
+    
+    # Logger l'activité
+    LoggingService.log_activity(
+        user=current_user,
+        action_type='update',
+        action_category='settings',
+        description='Mise à jour des paramètres SEO',
+        resource_type='SEOSettings',
+        status='success'
+    )
+    
+    flash('Paramètres SEO enregistrés avec succès.', 'success')
     return redirect(url_for('admin.settings_system'))
 
 @bp.route('/settings/activity-logs')

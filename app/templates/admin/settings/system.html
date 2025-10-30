@@ -137,6 +137,147 @@
             </form>
         </div>
 
+        <!-- SEO Settings -->
+        <div class="bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">🔍</span>
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800">Paramètres SEO</h3>
+                    <p class="text-sm text-gray-600">Optimisez votre positionnement dans les moteurs de recherche</p>
+                </div>
+            </div>
+            
+            <form method="POST" action="{{ url_for('admin.save_seo_settings') }}" class="space-y-4">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Site Name -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nom du site</label>
+                        <input type="text" name="seo_site_name" value="{{ seo_settings.seo_site_name }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                               placeholder="Taalentio - Valorisation des Talents">
+                    </div>
+                    
+                    <!-- Author -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Auteur</label>
+                        <input type="text" name="seo_author" value="{{ seo_settings.seo_author }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                               placeholder="MOA Digital Agency LLC">
+                    </div>
+                </div>
+                
+                <!-- Description -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Description du site</label>
+                    <textarea name="seo_site_description" rows="3"
+                              class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                              placeholder="Description de votre site">{{ seo_settings.seo_site_description }}</textarea>
+                </div>
+                
+                <!-- Keywords -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Mots-clés (séparés par des virgules)</label>
+                    <input type="text" name="seo_keywords" value="{{ seo_settings.seo_keywords }}"
+                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                           placeholder="talents, cinéma, production, audiovisuel">
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Canonical URL -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">URL Canonique</label>
+                        <input type="url" name="seo_canonical_url" value="{{ seo_settings.seo_canonical_url }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                               placeholder="https://taalentio.com">
+                    </div>
+                    
+                    <!-- OG Image -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Image Open Graph</label>
+                        <input type="text" name="seo_og_image" value="{{ seo_settings.seo_og_image }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                               placeholder="/static/img/logo-full.png">
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Language -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Langue</label>
+                        <select name="seo_language" 
+                                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none">
+                            <option value="fr" {% if seo_settings.seo_language == 'fr' %}selected{% endif %}>Français</option>
+                            <option value="en" {% if seo_settings.seo_language == 'en' %}selected{% endif %}>English</option>
+                            <option value="ar" {% if seo_settings.seo_language == 'ar' %}selected{% endif %}>العربية</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Region -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Région</label>
+                        <input type="text" name="seo_region" value="{{ seo_settings.seo_region }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                               placeholder="MA">
+                    </div>
+                    
+                    <!-- Robots -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Robots</label>
+                        <select name="seo_robots" 
+                                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none">
+                            <option value="index, follow" {% if seo_settings.seo_robots == 'index, follow' %}selected{% endif %}>Index, Follow</option>
+                            <option value="noindex, follow" {% if seo_settings.seo_robots == 'noindex, follow' %}selected{% endif %}>No Index, Follow</option>
+                            <option value="index, nofollow" {% if seo_settings.seo_robots == 'index, nofollow' %}selected{% endif %}>Index, No Follow</option>
+                            <option value="noindex, nofollow" {% if seo_settings.seo_robots == 'noindex, nofollow' %}selected{% endif %}>No Index, No Follow</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Twitter Handle -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Twitter Handle</label>
+                        <input type="text" name="seo_twitter_handle" value="{{ seo_settings.seo_twitter_handle }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+                               placeholder="@taalentio">
+                    </div>
+                    
+                    <!-- Twitter Card -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Twitter Card</label>
+                        <select name="seo_twitter_card" 
+                                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none">
+                            <option value="summary" {% if seo_settings.seo_twitter_card == 'summary' %}selected{% endif %}>Summary</option>
+                            <option value="summary_large_image" {% if seo_settings.seo_twitter_card == 'summary_large_image' %}selected{% endif %}>Summary Large Image</option>
+                        </select>
+                    </div>
+                    
+                    <!-- OG Type -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Open Graph Type</label>
+                        <select name="seo_og_type" 
+                                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-emerald-500 focus:outline-none">
+                            <option value="website" {% if seo_settings.seo_og_type == 'website' %}selected{% endif %}>Website</option>
+                            <option value="article" {% if seo_settings.seo_og_type == 'article' %}selected{% endif %}>Article</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="bg-blue-50 border-2 border-blue-300 rounded-lg p-4">
+                    <p class="text-sm text-gray-700 flex items-start gap-2">
+                        <span class="text-xl">💡</span>
+                        <span>Ces paramètres améliorent le référencement naturel (SEO) de votre site et son apparence sur les réseaux sociaux.</span>
+                    </p>
+                </div>
+
+                <button type="submit" class="w-full md:w-auto bg-white border-2 border-emerald-600 text-emerald-600 px-8 py-3 rounded-lg hover:bg-emerald-50 font-semibold text-lg transition-all">
+                    💾 Enregistrer les paramètres SEO
+                </button>
+            </form>
+        </div>
+
         <!-- Actions de maintenance -->
         <div class="bg-yellow-50 border-2 border-dashed border-yellow-400 rounded-xl p-6">
             <div class="flex items-center gap-3 mb-4">

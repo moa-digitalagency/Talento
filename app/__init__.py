@@ -419,8 +419,7 @@ def create_app(config_class=Config):
             # _ensure_demo_data_exists(db, logger)
             
             # Garantir que le compte admin existe toujours (après le chargement des données essentielles)
-            # Temporarily disabled for initial import
-            # _ensure_admin_exists(db, logger)
+            _ensure_admin_exists(db, logger)
             
             logger.info("✅ Application prête")
             
@@ -499,10 +498,12 @@ def _ensure_admin_exists(db, logger):
         # ÉTAPE 2: Créer ou mettre à jour l'admin
         admin_email = 'admin@talento.com'
         admin_code = 'MAN0001RAB'
-        admin_password = os.environ.get('ADMIN_PASSWORD')
-        if not admin_password:
-            logger.warning("⚠️ ADMIN_PASSWORD non défini dans .env - impossible de créer/mettre à jour l'admin")
-            return
+        admin_password = os.environ.get('ADMIN_PASSWORD', '@4dm1n')
+        
+        if admin_password == '@4dm1n':
+            logger.info("ℹ️ Utilisation du mot de passe admin par défaut (@4dm1n)")
+        else:
+            logger.info("ℹ️ Utilisation du mot de passe ADMIN_PASSWORD depuis les variables d'environnement")
         
         admin = User.query.filter(
             (User.email == admin_email) | (User.unique_code == admin_code)

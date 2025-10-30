@@ -65,8 +65,8 @@
                 <p class="text-sm text-gray-600 mb-3">Base de données et paramètres système</p>
                 <div class="text-xs">
                     <span class="font-bold">BD:</span> {{ config.database_type }}
-                    <span class="ml-2 {% if db_diagnostics.connection_ok %}text-green-600{% else %}text-red-600{% endif %}">
-                        {% if db_diagnostics.connection_ok %}✅{% else %}❌{% endif %}
+                    <span class="ml-2 {% if db_diagnostics.connection_status %}text-green-600{% else %}text-red-600{% endif %}">
+                        {% if db_diagnostics.connection_status %}✅{% else %}❌{% endif %}
                     </span>
                 </div>
             </a>
