@@ -144,7 +144,7 @@ def delete_user(user_id):
 
 @bp.route('/export/excel')
 @login_required
-@admin_required
+@recruiter_or_admin_required
 def export_excel():
     users = User.query.filter(User.is_admin == False).all()
     excel_bytes = ExportService.export_to_excel(users)
@@ -161,7 +161,7 @@ def export_excel():
 
 @bp.route('/export/csv')
 @login_required
-@admin_required
+@recruiter_or_admin_required
 def export_csv():
     users = User.query.filter(User.is_admin == False).all()
     csv_data = ExportService.export_to_csv(users)
@@ -179,7 +179,7 @@ def export_csv():
 
 @bp.route('/export/pdf')
 @login_required
-@admin_required
+@recruiter_or_admin_required
 def export_pdf():
     try:
         users = User.query.filter(User.is_admin == False).all()
@@ -220,7 +220,7 @@ def export_pdf():
 
 @bp.route('/export/pdf/<int:user_id>')
 @login_required
-@admin_required
+@recruiter_or_admin_required
 def export_pdf_individual(user_id):
     try:
         user = User.query.get_or_404(user_id)
