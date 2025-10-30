@@ -7,6 +7,12 @@ taalentio.com is a professional web application designed to centralize and showc
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
+- **2025-10-30**: Implemented comprehensive activity and security logging across all critical user actions:
+  - Authentication events: login (success/failure), logout, registration with detailed metadata
+  - Profile updates: tracked with metadata on CV uploads and talent modifications
+  - Backup operations: creation and restoration (success/failure) with security event logging
+  - All logs use LoggingService for consistent tracking and audit trail
+- **2025-10-30**: Connected backup/restore UI buttons to backend routes - removed "Fonctionnalité en développement" alert and made backup functionality fully operational
 - **2025-10-30**: Fixed CSRF and session cookie configuration for VPS deployment compatibility - SESSION_COOKIE_SAMESITE set to None, WTF_CSRF_SSL_STRICT disabled
 - **2025-10-30**: Removed all "En développement" (in development) placeholders from admin settings pages
 - **2025-10-30**: Implemented functional cache management system with real-time size calculation and timestamp tracking
@@ -54,9 +60,11 @@ Preferred communication style: Simple, everyday language.
 - **Blueprints**: Organized into `main`, `auth`, `profile`, `admin`, `api`, `cinema`, `presence`, and `api_v1` for modularity.
 
 ### Admin Settings & Configuration
-- **Activity Logs**: Real-time tracking of user actions.
+- **Activity Logs**: Real-time tracking of user actions using LoggingService - captures login, logout, registration, profile updates, backup operations with detailed metadata.
+- **Security Logs**: Comprehensive security event tracking including successful logins, failed login attempts, new registrations, backup operations - all with severity levels and action tracking.
 - **API Keys Management**: Centralized management for external service API keys (SendGrid, OpenRouter, OMDB) with masked display.
 - **System Settings**: Custom HTML head code injection for analytics, SEO, or custom CSS/JS.
+- **Backup & Restore**: Fully functional backup creation (ZIP download) and restoration via file upload - all operations are logged for audit trail.
 
 ### Contract Management
 - **Main Contracts Page**: `/contrats` - Planned features include creation, electronic signature, tracking, notifications, archiving, and PDF export.
