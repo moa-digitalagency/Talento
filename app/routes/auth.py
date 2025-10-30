@@ -51,6 +51,8 @@ def login():
             next_page = request.args.get('next')
             if user.is_admin:
                 return redirect(next_page or url_for('admin.dashboard'))
+            elif user.role == 'recruteur':
+                return redirect(next_page or url_for('admin.users'))
             return redirect(next_page or url_for('profile.dashboard'))
         else:
             # Log failed login attempt

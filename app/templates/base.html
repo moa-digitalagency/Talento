@@ -51,6 +51,12 @@
                                     <span>⚙️</span>
                                     <span>Paramètres</span>
                                 </a>
+                            {% elif current_user.role == 'recruteur' %}
+                                <!-- Menu Recruteur -->
+                                <a href="{{ url_for('admin.users') }}" class="px-3 py-2 text-gray-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all font-semibold text-sm">
+                                    <span>🎯</span>
+                                    <span>Talents</span>
+                                </a>
                             {% elif current_user.role == 'presence' %}
                                 <!-- Menu Présence -->
                                 <a href="{{ url_for('presence.index') }}" class="px-3 py-2 text-gray-700 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-all font-semibold text-sm">
@@ -128,6 +134,12 @@
                         <a href="{{ url_for('admin.settings') }}" class="block px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-all font-semibold">
                             <span>⚙️</span>
                             <span class="ml-2">Paramètres</span>
+                        </a>
+                    {% elif current_user.role == 'recruteur' %}
+                        <!-- Menu Mobile Recruteur -->
+                        <a href="{{ url_for('admin.users') }}" class="block px-4 py-3 text-gray-700 hover:bg-green-50 rounded-lg transition-all font-semibold">
+                            <span>🎯</span>
+                            <span class="ml-2">Talents</span>
                         </a>
                     {% elif current_user.role == 'presence' %}
                         <!-- Menu Mobile Présence -->

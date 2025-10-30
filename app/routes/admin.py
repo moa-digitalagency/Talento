@@ -42,6 +42,21 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def recruiter_or_admin_required(f):
+    """Décorateur pour vérifier que l'utilisateur a le rôle 'recruteur' ou est admin"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            flash('Veuillez vous connecter pour accéder à cette page.', 'error')
+            return redirect(url_for('auth.login'))
+        
+        if not (current_user.is_admin or current_user.role == 'recruteur'):
+            flash('Vous n\'avez pas les droits d\'accès à cette section.', 'error')
+            return redirect(url_for('main.index'))
+        
+        return f(*args, **kwargs)
+    return decorated_function
+
 # Rediriger l'ancien /admin/dashboard vers /
 @bp.route('/dashboard')
 @login_required
@@ -51,7 +66,7 @@ def dashboard():
 
 @bp.route('/users')
 @login_required
-@admin_required
+@recruiter_or_admin_required
 def users():
     search_query = request.args.get('search', '').strip()
     search_code = request.args.get('search_code', '').strip()
