@@ -7,6 +7,14 @@ taalentio.com is a professional web application designed to centralize and showc
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
+- **2025-10-30**: Implemented AI-powered job matching feature:
+  - New "Recherche par IA" section in main dashboard between filters and talents list
+  - Allows paste/upload of job descriptions (PDF, DOCX, TXT files up to 10MB)
+  - AI analyzes all talent profiles including attached CVs using OpenRouter AI
+  - Results page shows matched candidates with scores (0-100), detailed explanations, strengths, and weaknesses
+  - Print-friendly layout with logo header, no overflow or overlapping issues
+  - Secure file handling with extension validation and temp file cleanup
+  - CV extraction using absolute paths for cross-environment compatibility
 - **2025-10-30**: Implemented comprehensive maintenance service system:
   - Database optimization with VACUUM ANALYZE for all PostgreSQL tables using raw connections and autocommit mode
   - Temporary file cleanup with size calculation and detailed reporting
