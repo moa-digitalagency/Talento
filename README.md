@@ -99,7 +99,7 @@ Chaque profil génère automatiquement un QR code unique pour partage facile
 
 ### 🤖 Analyse IA de CV
 
-**Powered by OpenRouter AI** (Llama 3.1 8B Instruct)
+**Powered by OpenRouter AI** (Google Gemini 2.5 Flash)
 
 - **Upload de CV** : PDF, DOC, ou DOCX (max 10 MB)
 - **Extraction Automatique** : Analyse du texte du CV
@@ -112,6 +112,23 @@ Chaque profil génère automatiquement un QR code unique pour partage facile
     - Présence de portfolio/CV (20%)
     - Informations de contact (10%)
   - Recommandations personnalisées d'amélioration
+
+### 🔍 Recherche Intelligente par IA
+
+**Powered by OpenRouter AI** (Google Gemini 2.5 Flash)
+
+- **Analyse de Descriptions de Poste** :
+  - Upload de fichiers (PDF, DOCX, TXT) ou saisie de texte
+  - Extraction automatique des exigences du poste
+  - Matching intelligent avec les profils de talents
+  - Scoring de compatibilité pour chaque candidat
+  - Recommandations personnalisées avec raisons détaillées
+
+- **Recherche de Talents CINEMA** :
+  - Analyse de descriptions de rôles cinématographiques
+  - Matching basé sur les compétences, l'expérience et les caractéristiques physiques
+  - Identification des meilleurs talents pour chaque rôle
+  - Suggestions intelligentes pour les castings
 
 ### 🛠️ Administration Puissante
 
@@ -605,7 +622,7 @@ talentsmaroc/
 
 ### Services Externes
 - **SendGrid** - Envoi d'emails transactionnels
-- **OpenRouter AI** - Analyse de CV (Llama 3.1 8B)
+- **OpenRouter AI** - Analyse de CV et matching intelligent (Google Gemini 2.5 Flash)
 - **OMDB API** - Recherche de films (optionnel)
 
 ### Traitement de Données

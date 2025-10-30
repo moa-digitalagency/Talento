@@ -5,6 +5,35 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.1.0] - 2025-10-30
+
+### 🎯 Import Replit et Configuration Complète
+
+#### Migration et Configuration
+- **Import Replit** : Projet importé avec succès dans l'environnement Replit
+- **Python 3.11** : Installation et configuration complète du module Python
+- **Dépendances** : Installation de toutes les dépendances depuis requirements.txt (27 packages)
+- **Workflow** : Configuration du workflow "Talento Web App" sur port 5000
+- **Application** : Démarrée avec succès et accessible via webview
+
+#### Documentation Mise à Jour
+- **README.md** : Mise à jour de la section IA avec le modèle correct (Google Gemini 2.5 Flash)
+- **README.md** : Ajout de la section "Recherche Intelligente par IA" détaillant les fonctionnalités
+- **TECHNICAL_DOCUMENTATION.md** : Modèle OpenRouter déjà correctement documenté
+- **CHANGELOG.md** : Documentation de l'import et des mises à jour
+
+#### Configuration OpenRouter AI
+- **Modèle IA** : Google Gemini 2.5 Flash (via OpenRouter)
+- **Fonctionnalités IA** :
+  - Analyse de CV avec scoring de profil (0-100)
+  - Matching intelligent de talents avec descriptions de poste
+  - Recherche de talents CINEMA pour castings
+- **Configuration** : API key gérée via interface admin (paramètres système)
+
+#### Corrections
+- **Documentation** : Correction du modèle IA dans README (Llama 3.1 → Gemini 2.5 Flash)
+- **LSP** : Résolution des avertissements d'imports (non bloquants)
+
 ## [3.0.0] - 2025-10-26
 
 ### 🚀 Migration et Déploiement - Préparation Production VPS

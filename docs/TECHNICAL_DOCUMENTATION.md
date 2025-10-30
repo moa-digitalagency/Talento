@@ -29,6 +29,41 @@
 | Migration DB | Flask-Migrate (Alembic) | 4.0.5 |
 | Email Service | SendGrid | Latest |
 | AI Service | OpenRouter API | google/gemini-2.5-flash |
+
+### Services IA
+
+#### OpenRouter AI Integration
+
+**Configuration**:
+- **Provider**: OpenRouter AI (https://openrouter.ai)
+- **Modèle**: `google/gemini-2.5-flash`
+- **API Key**: Configurée via interface admin (Paramètres → Clés API)
+- **Alternative**: Variable d'environnement `OPENROUTER_API_KEY`
+
+**Utilisation**:
+
+1. **Analyse de CV** (`CVAnalyzerService`):
+   - Extraction de texte depuis PDF, DOC, DOCX
+   - Analyse sémantique du contenu
+   - Génération de score de profil (0-100)
+   - Extraction de compétences techniques
+   - Recommandations personnalisées
+
+2. **Matching de Talents** (`AIMatchingService`):
+   - Analyse de descriptions de poste
+   - Comparaison avec profils de talents
+   - Scoring de compatibilité
+   - Recommandations avec justifications détaillées
+
+3. **Recherche CINEMA** (`AIMatchingService.analyze_cinema_talents`):
+   - Analyse de descriptions de rôles
+   - Matching basé sur compétences et caractéristiques physiques
+   - Suggestions intelligentes pour castings
+
+**Endpoints utilisant l'IA**:
+- `POST /ai-search` - Recherche de talents par IA
+- `POST /admin/analyze-cv/<user_id>` - Analyse IA manuelle de CV
+- `POST /cinema/ai-search` - Recherche de talents CINEMA par IA
 | Cryptographie | Fernet (cryptography) | Latest |
 | Hachage Mots de Passe | bcrypt | 4.1.2 |
 
