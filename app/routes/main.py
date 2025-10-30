@@ -497,6 +497,28 @@ def ai_search():
             flash(results.get('message', 'Erreur lors de l\'analyse'), 'error')
             return redirect(url_for('main.index'))
         
+        # Envoyer des notifications email aux talents qui matchent
+        from app.services.email_service import email_service
+        emails_sent = 0
+        for candidate in results.get('candidates', []):
+            try:
+                user = User.query.filter_by(unique_code=candidate.get('code')).first()
+                if user and user.email:
+                    success = email_service.send_ai_match_notification(
+                        user=user,
+                        job_description=job_description,
+                        match_score=candidate.get('score', 0),
+                        match_reason=candidate.get('reason', ''),
+                        sent_by_user_id=current_user.id if current_user.is_authenticated else None
+                    )
+                    if success:
+                        emails_sent += 1
+            except Exception as e:
+                logger.warning(f"Erreur envoi email au talent {candidate.get('code')}: {e}")
+        
+        if emails_sent > 0:
+            flash(f'✅ {emails_sent} notification(s) email envoyée(s) aux talents matchés', 'success')
+        
         return render_template('ai_search_results.html',
                              job_description=job_description,
                              results=results)

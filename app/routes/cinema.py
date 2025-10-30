@@ -1960,6 +1960,57 @@ def generate_project_badge(project_talent_id):
         flash(f'❌ Erreur lors de la génération du badge: {str(e)}', 'error')
         return redirect(url_for('cinema.project_detail', project_id=project_talent.project_id))
 
+@bp.route('/projects/<int:project_id>/send-selection-emails', methods=['POST'])
+@login_required
+def send_project_selection_emails(project_id):
+    """Envoyer des emails de confirmation aux talents assignés à un projet"""
+    from app.models.project import Project, ProjectTalent
+    from app.services.email_service import email_service
+    from app.services.logging_service import LoggingService
+    
+    project = Project.query.get_or_404(project_id)
+    project_talents = ProjectTalent.query.filter_by(project_id=project_id).all()
+    
+    if not project_talents:
+        flash('❌ Aucun talent assigné à ce projet', 'error')
+        return redirect(url_for('cinema.project_detail', project_id=project_id))
+    
+    emails_sent = 0
+    emails_failed = 0
+    
+    for project_talent in project_talents:
+        try:
+            cinema_talent = project_talent.cinema_talent
+            if cinema_talent and cinema_talent.email:
+                success = email_service.send_project_selection_confirmation(
+                    project_talent=project_talent,
+                    sent_by_user_id=current_user.id if current_user.is_authenticated else None
+                )
+                if success:
+                    emails_sent += 1
+                else:
+                    emails_failed += 1
+        except Exception as e:
+            logger.warning(f"Erreur envoi email au talent {project_talent.cinema_talent.unique_code}: {e}")
+            emails_failed += 1
+    
+    LoggingService.log_activity(
+        user=current_user,
+        action_type='email',
+        action_category='project',
+        description=f'Envoi emails de confirmation aux talents du projet "{project.name}" ({emails_sent} envoyés, {emails_failed} échoués)',
+        resource_type='Project',
+        resource_id=project.id,
+        status='success' if emails_sent > 0 else 'error'
+    )
+    
+    if emails_sent > 0:
+        flash(f'✅ {emails_sent} email(s) de confirmation envoyé(s) avec succès !', 'success')
+    if emails_failed > 0:
+        flash(f'⚠️ {emails_failed} email(s) n\'ont pas pu être envoyés', 'warning')
+    
+    return redirect(url_for('cinema.project_detail', project_id=project_id))
+
 @bp.route('/ai-search-cinema-talents', methods=['POST'])
 @login_required
 def ai_search_cinema_talents():
@@ -2044,6 +2095,28 @@ def ai_search_cinema_talents():
         if not results.get('success'):
             flash(results.get('message', 'Erreur lors de l\'analyse'), 'error')
             return redirect(url_for('cinema.talents'))
+        
+        # Envoyer des notifications email aux talents cinéma qui matchent
+        from app.services.email_service import email_service
+        emails_sent = 0
+        for candidate in results.get('candidates', []):
+            try:
+                cinema_talent = CinemaTalent.query.filter_by(unique_code=candidate.get('code')).first()
+                if cinema_talent and cinema_talent.email:
+                    success = email_service.send_cinema_ai_match_notification(
+                        cinema_talent=cinema_talent,
+                        role_description=job_description,
+                        match_score=candidate.get('score', 0),
+                        match_reason=candidate.get('reason', ''),
+                        sent_by_user_id=current_user.id if current_user.is_authenticated else None
+                    )
+                    if success:
+                        emails_sent += 1
+            except Exception as e:
+                logger.warning(f"Erreur envoi email au talent cinéma {candidate.get('code')}: {e}")
+        
+        if emails_sent > 0:
+            flash(f'✅ {emails_sent} notification(s) email envoyée(s) aux talents cinéma matchés', 'success')
         
         return render_template('cinema/ai_search_results.html',
                              job_description=job_description,

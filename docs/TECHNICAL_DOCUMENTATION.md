@@ -353,6 +353,315 @@ Réponse:
 }
 ```
 
+---
+
+## Système de Notifications Email
+
+### Architecture EmailService
+
+**Classe** : `EmailService` (app/services/email_service.py)
+
+**Powered by** : SendGrid API
+
+#### Configuration
+
+```python
+class EmailService:
+    def __init__(self, api_key=None, from_email=None):
+        # Priorise AppSettings puis variables d'environnement
+        self.api_key = api_key or AppSettings.get('sendgrid_api_key') or os.environ.get('SENDGRID_API_KEY')
+        self.from_email = from_email or AppSettings.get('sender_email') or os.environ.get('SENDGRID_FROM_EMAIL')
+```
+
+**Variables d'Environnement** :
+- `SENDGRID_API_KEY` : Clé API SendGrid
+- `SENDGRID_FROM_EMAIL` : Email expéditeur (ex: noreply@talento.com)
+
+**Configuration Alternative** :
+- Table `app_settings` avec clés `sendgrid_api_key` et `sender_email`
+- Mise à jour en temps réel sans redémarrage
+
+#### Modèle EmailLog
+
+**Table** : `email_logs`
+
+```python
+class EmailLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    recipient_email = db.Column(db.String(255), nullable=False, index=True)
+    recipient_name = db.Column(db.String(255))
+    subject = db.Column(db.String(500), nullable=False)
+    template_type = db.Column(db.String(100), nullable=False, index=True)
+    html_content = db.Column(db.Text)
+    status = db.Column(db.String(50), default='sent', index=True)
+    error_message = db.Column(db.Text)
+    sent_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    sent_by_user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    
+    # Relations optionnelles
+    related_talent_code = db.Column(db.String(50))
+    related_project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
+    related_cinema_talent_id = db.Column(db.Integer, db.ForeignKey('cinema_talents.id'))
+```
+
+**Indexes** :
+- `recipient_email` : Recherche par destinataire
+- `template_type` : Filtrage par type
+- `status` : Filtrage par statut
+- `sent_at` : Tri chronologique
+
+#### Méthodes du Service
+
+**1. Envoi d'Email avec Logging**
+
+```python
+def send_email(self, to_email, subject, html_content, attachments=None, 
+               template_type='generic', recipient_name=None, sent_by_user_id=None,
+               related_talent_code=None, related_project_id=None, 
+               related_cinema_talent_id=None):
+    """
+    Envoie un email via SendGrid avec logging automatique
+    Vérifie si le template est activé avant envoi
+    """
+```
+
+**Fonctionnalités** :
+- Vérification de l'activation du template
+- Gestion des attachments (PDF, images)
+- Logging automatique en base
+- Gestion d'erreurs robuste
+- Retry en cas d'échec temporaire
+
+**2. Notification de Match IA - Talents**
+
+```python
+def send_ai_match_notification(self, user, job_description, match_score, 
+                                match_reason, sent_by_user_id=None):
+    """
+    Envoie une notification quand un profil match une recherche IA
+    
+    Args:
+        user: Objet User
+        job_description: Description du poste
+        match_score: Score (0-100)
+        match_reason: Raison du match
+        sent_by_user_id: ID de l'utilisateur ayant lancé la recherche
+    """
+```
+
+**Template** : `ai_talent_match`
+
+**Contenu** :
+- Score de correspondance avec badge coloré
+- Description de l'opportunité (max 500 chars)
+- Raisons détaillées du match
+- Lien direct vers profil public
+- Logo en base64 intégré
+
+**3. Notification de Match IA - Cinéma**
+
+```python
+def send_cinema_ai_match_notification(self, cinema_talent, role_description, 
+                                       match_score, match_reason, sent_by_user_id=None):
+    """
+    Notification pour profils cinéma matchés
+    """
+```
+
+**Template** : `ai_cinema_match`
+
+**Spécificités** :
+- Design rouge/cinéma
+- Lien vers profil cinéma complet
+- Mention du score de casting
+
+**4. Confirmation de Sélection Projet**
+
+```python
+def send_project_selection_confirmation(self, project_talent, sent_by_user_id=None):
+    """
+    Email de félicitations pour sélection dans un projet
+    
+    Args:
+        project_talent: Objet ProjectTalent avec relations
+        sent_by_user_id: ID de l'envoyeur
+    """
+```
+
+**Template** : `project_selection`
+
+**Contenu** :
+- Détails du projet (nom, production, statut)
+- Rôle assigné et description
+- Coordonnées de la production (téléphone, email, adresse)
+- Liens vers profil et badge téléchargeable
+- Message de félicitations
+
+#### Intégrations avec Routes
+
+**1. Recherche IA de Talents** (`/ai-search`)
+
+```python
+# Après AIMatchingService.analyze_job_description()
+for candidate in results.get('candidates', []):
+    user = User.query.filter_by(unique_code=candidate.get('code')).first()
+    if user and user.email:
+        email_service.send_ai_match_notification(
+            user=user,
+            job_description=job_description,
+            match_score=candidate.get('score', 0),
+            match_reason=candidate.get('reason', ''),
+            sent_by_user_id=current_user.id
+        )
+```
+
+**2. Recherche IA Cinéma** (`/cinema/ai-search`)
+
+```python
+# Après AIMatchingService.analyze_cinema_talents()
+for candidate in results.get('candidates', []):
+    cinema_talent = CinemaTalent.query.filter_by(unique_code=candidate.get('code')).first()
+    if cinema_talent and cinema_talent.email:
+        email_service.send_cinema_ai_match_notification(
+            cinema_talent=cinema_talent,
+            role_description=job_description,
+            match_score=candidate.get('score', 0),
+            match_reason=candidate.get('reason', ''),
+            sent_by_user_id=current_user.id
+        )
+```
+
+**3. Envoi Emails Projet** (`/cinema/projects/<id>/send-selection-emails`)
+
+```python
+@bp.route('/projects/<int:project_id>/send-selection-emails', methods=['POST'])
+@login_required
+def send_project_selection_emails(project_id):
+    """Envoie emails de confirmation à tous les talents du projet"""
+    project_talents = ProjectTalent.query.filter_by(project_id=project_id).all()
+    
+    for project_talent in project_talents:
+        email_service.send_project_selection_confirmation(
+            project_talent=project_talent,
+            sent_by_user_id=current_user.id
+        )
+```
+
+#### Configuration des Templates
+
+**Table** : `app_settings`
+**Clé** : `email_notifications_config`
+
+```json
+{
+  "ai_talent_match": {
+    "enabled": true,
+    "name": "Match IA - Talents",
+    "description": "Notification de correspondance recherche IA"
+  },
+  "ai_cinema_match": {
+    "enabled": true,
+    "name": "Match IA - Cinéma",
+    "description": "Notification de correspondance casting"
+  },
+  "project_selection": {
+    "enabled": true,
+    "name": "Sélection Projet",
+    "description": "Email de confirmation sélection projet"
+  }
+}
+```
+
+**Vérification avant Envoi** :
+
+```python
+def is_template_enabled(template_type):
+    """Vérifie si un type de template est activé"""
+    email_config = AppSettings.get('email_notifications_config', {})
+    return email_config.get(template_type, {}).get('enabled', True)
+```
+
+#### Interface Admin
+
+**Route** : `/admin/settings/email-notifications`
+
+**Fonctionnalités** :
+
+1. **Statistiques** :
+   - Total emails envoyés
+   - Emails en succès
+   - Emails en échec
+   - Taux de succès (%)
+
+2. **Configuration Templates** :
+   - Toggle activation/désactivation par template
+   - Application immédiate (sans redémarrage)
+
+3. **Historique Paginé** :
+   - 50 emails par page
+   - Filtrage par template_type
+   - Filtrage par status (sent/failed)
+
+4. **Visualisation Email** :
+   - Route : `/admin/settings/email-notifications/<log_id>/view`
+   - Affichage HTML complet
+   - Détails techniques (date, destinataire, erreurs)
+
+#### Optimisations Techniques
+
+**1. Templates HTML** :
+- Responsive design
+- Logo encodé en base64 (pas de lien externe)
+- Gradients CSS inline
+- Compatibilité multi-clients email
+
+**2. Détection Domaine** :
+
+```python
+def get_application_domain():
+    """Détecte le domaine selon l'environnement"""
+    domain = os.environ.get('APP_DOMAIN')
+    if domain:
+        return domain
+    domain = os.environ.get('REPLIT_DEV_DOMAIN')
+    if domain:
+        return domain
+    domains = os.environ.get('REPLIT_DOMAINS')
+    if domains:
+        return domains.split(',')[0].strip()
+    return 'localhost:5000'
+```
+
+**3. Gestion d'Erreurs** :
+- Logging détaillé de chaque échec
+- Messages utilisateur conviviaux
+- Stockage des erreurs SendGrid
+- Pas de crash en cas d'échec email
+
+**4. Performance** :
+- Envoi asynchrone possible (background jobs)
+- Batch processing pour projets avec beaucoup de talents
+- Indexes optimisés pour requêtes fréquentes
+
+#### Sécurité et Conformité
+
+**RGPD** :
+- Consentement implicite (notifications de service)
+- Opt-out possible via admin
+- Stockage sécurisé des logs
+- Pas de partage de données
+
+**Chiffrement** :
+- Communications HTTPS avec SendGrid
+- Clés API stockées en variables d'environnement
+- Logs accessibles uniquement aux admins
+
+**Validation** :
+- Vérification format email
+- Sanitization du contenu HTML
+- Protection contre injection
+- Rate limiting possible (SendGrid)
+
 **3. Analyse IA de CV (Admin)**
 
 ```

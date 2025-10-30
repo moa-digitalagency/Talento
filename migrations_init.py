@@ -37,7 +37,8 @@ def check_and_create_tables():
         required_tables = [
             'users', 'talents', 'user_talents', 'countries', 'cities',
             'productions', 'projects', 'project_talents', 'cinema_talents',
-            'security_logs', 'activity_logs', 'app_settings', 'attendances'
+            'security_logs', 'activity_logs', 'app_settings', 'attendances',
+            'email_logs'
         ]
         missing_tables = [table for table in required_tables if table not in existing_tables]
         

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email - {{ email_log.subject }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <!-- En-tête -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 mb-6">
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">📧 Détails de l'Email</h1>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm font-semibold text-gray-600">Destinataire</p>
+                    <p class="text-lg text-gray-800">{{ email_log.recipient_name or 'N/A' }}</p>
+                    <p class="text-sm text-gray-600">{{ email_log.recipient_email }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-sm font-semibold text-gray-600">Date d'envoi</p>
+                    <p class="text-lg text-gray-800">
+                        {{ email_log.sent_at.strftime('%d/%m/%Y à %H:%M:%S') if email_log.sent_at else 'N/A' }}
+                    </p>
+                </div>
+                
+                <div>
+                    <p class="text-sm font-semibold text-gray-600">Sujet</p>
+                    <p class="text-lg text-gray-800">{{ email_log.subject }}</p>
+                </div>
+                
+                <div>
+                    <p class="text-sm font-semibold text-gray-600">Type de Template</p>
+                    <p class="text-lg">
+                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded font-semibold">
+                            {{ email_log.template_type }}
+                        </span>
+                    </p>
+                </div>
+                
+                <div>
+                    <p class="text-sm font-semibold text-gray-600">Statut</p>
+                    <p class="text-lg">
+                        {% if email_log.status == 'sent' %}
+                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded font-bold">✅ Envoyé</span>
+                        {% else %}
+                        <span class="bg-red-100 text-red-700 px-3 py-1 rounded font-bold">❌ Échoué</span>
+                        {% endif %}
+                    </p>
+                </div>
+                
+                {% if email_log.error_message %}
+                <div class="md:col-span-2">
+                    <p class="text-sm font-semibold text-gray-600">Message d'erreur</p>
+                    <p class="text-sm text-red-600 bg-red-50 p-3 rounded border border-red-200">
+                        {{ email_log.error_message }}
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Contenu de l'email -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">📄 Aperçu du Contenu</h2>
+            
+            <div class="border-2 border-gray-300 rounded-lg p-4 bg-gray-50">
+                {% if email_log.html_content %}
+                    {{ email_log.html_content|safe }}
+                {% else %}
+                    <p class="text-gray-600">Aucun contenu disponible</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Bouton de retour -->
+        <div class="mt-6 text-center">
+            <button onclick="window.close()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-bold hover:bg-gray-300 transition-all">
+                Fermer
+            </button>
+        </div>
+    </div>
+</body>
+</html>

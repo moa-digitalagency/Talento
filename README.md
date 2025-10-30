@@ -254,6 +254,119 @@ Le système calcule aussi un score de complétude du profil basé sur:
 - **Chiffrement** : Communications HTTPS avec OpenRouter
 - **Conformité RGPD** : Données personnelles protégées
 
+### 📧 Système de Notifications Email Intelligent
+
+**Powered by SendGrid** - taalentio.com intègre un système complet de notifications email automatiques pour tenir les talents informés en temps réel.
+
+#### Notifications Automatiques
+
+**1. Match IA - Recherche de Talents**
+- **Déclenchement** : Dès qu'un profil correspond à une recherche IA
+- **Contenu** :
+  - Description de l'opportunité
+  - Score de correspondance (%)
+  - Raisons détaillées du match
+  - Lien direct vers le profil du talent
+- **Template** : `ai_talent_match`
+
+**2. Match IA - Casting Cinéma**
+- **Déclenchement** : Quand un profil cinéma correspond à un rôle
+- **Contenu** :
+  - Description du rôle recherché
+  - Score de compatibilité (%)
+  - Justification du casting
+  - Lien vers le profil cinéma complet
+- **Template** : `ai_cinema_match`
+
+**3. Sélection pour un Projet**
+- **Déclenchement** : Lorsqu'un talent est assigné à un projet
+- **Envoi** : Via bouton "✉️ Envoyer Emails" dans l'interface projet
+- **Contenu** :
+  - Détails du projet (nom, type, statut)
+  - Informations de la production
+  - Rôle assigné et description
+  - Coordonnées de contact de la production
+  - Liens directs vers profil et badge téléchargeable
+- **Template** : `project_selection`
+
+**4. Confirmation de Candidature**
+- **Déclenchement** : Lors de l'inscription d'un nouveau talent
+- **Contenu** :
+  - Code unique du talent
+  - Lien vers le profil public
+  - Informations de connexion
+- **Template** : `application_confirmation`
+
+**5. Identifiants de Connexion**
+- **Déclenchement** : Création de compte par un administrateur
+- **Contenu** :
+  - Code unique d'identification
+  - Mot de passe temporaire
+  - Lien de connexion direct
+  - Recommandations de sécurité
+- **Template** : `login_credentials`
+
+#### Gestion Centralisée des Emails
+
+**Interface Admin** : `/admin/settings/email-notifications`
+
+**Fonctionnalités** :
+- **📊 Statistiques en Temps Réel**
+  - Total d'emails envoyés
+  - Taux de succès (%)
+  - Emails en échec avec raisons
+  
+- **⚙️ Configuration par Template**
+  - Activation/désactivation individuelle de chaque type d'email
+  - Gestion en un clic sans code
+  - Application immédiate des changements
+
+- **📋 Historique Complet**
+  - Liste paginée de tous les emails envoyés
+  - Filtrage par type de template
+  - Filtrage par statut (envoyé/échoué)
+  - Recherche par destinataire
+  
+- **👁️ Visualisation des Emails**
+  - Aperçu du contenu HTML
+  - Détails complets (date, sujet, destinataire)
+  - Messages d'erreur en cas d'échec
+
+#### Logging et Traçabilité
+
+**Table** : `email_logs`
+
+**Informations Stockées** :
+- Destinataire (nom et email)
+- Sujet et contenu HTML
+- Type de template
+- Statut (sent/failed)
+- Message d'erreur (si échec)
+- Date d'envoi
+- Utilisateur ayant déclenché l'envoi
+- Relations (talent, projet, talent cinéma)
+
+**Avantages** :
+- Traçabilité complète des communications
+- Debugging facilité en cas de problème
+- Statistiques de performance
+- Conformité RGPD
+
+#### Configuration SendGrid
+
+**Clé API** :
+- Variable d'environnement : `SENDGRID_API_KEY`
+- Email expéditeur : `SENDGRID_FROM_EMAIL`
+- Configuration admin : `Paramètres → Clés API`
+
+**Optimisations** :
+- Templates HTML responsives
+- Logo intégré en base64
+- Design professionnel avec gradients
+- Support multilingue (français)
+- Gestion intelligente des erreurs
+- Retry automatique en cas d'échec temporaire
+
 ### 🛠️ Administration Puissante
 
 #### Dashboard Administrateur

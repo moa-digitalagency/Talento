@@ -543,6 +543,126 @@ def settings_api_keys():
 def settings_email_templates():
     return render_template('admin/settings/email_templates.html')
 
+@bp.route('/settings/email-notifications')
+@login_required
+@admin_required
+def settings_email_notifications():
+    """Page de gestion des notifications email et logs"""
+    from app.models.email_log import EmailLog
+    from sqlalchemy import desc
+    
+    # Récupérer les paramètres de pagination et filtrage
+    page = request.args.get('page', 1, type=int)
+    per_page = 50
+    template_filter = request.args.get('template', '')
+    status_filter = request.args.get('status', '')
+    
+    # Construire la requête
+    query = EmailLog.query
+    
+    if template_filter:
+        query = query.filter(EmailLog.template_type == template_filter)
+    
+    if status_filter:
+        query = query.filter(EmailLog.status == status_filter)
+    
+    # Pagination
+    email_logs = query.order_by(desc(EmailLog.sent_at)).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+    
+    # Statistiques
+    total_emails = EmailLog.query.count()
+    sent_emails = EmailLog.query.filter_by(status='sent').count()
+    failed_emails = EmailLog.query.filter_by(status='failed').count()
+    
+    # Types de templates disponibles
+    template_types = db.session.query(EmailLog.template_type).distinct().all()
+    template_types = [t[0] for t in template_types if t[0]]
+    
+    # Configuration des templates email (enabled/disabled)
+    email_config = AppSettings.get('email_notifications_config', {})
+    
+    # Templates disponibles avec leur configuration par défaut
+    available_templates = {
+        'ai_talent_match': {
+            'name': 'Match IA - Talents',
+            'description': 'Notification envoyée aux talents lorsque leur profil correspond à une recherche IA',
+            'enabled': email_config.get('ai_talent_match', {}).get('enabled', True)
+        },
+        'ai_cinema_match': {
+            'name': 'Match IA - Cinéma',
+            'description': 'Notification envoyée aux talents cinéma lorsque leur profil correspond à un rôle',
+            'enabled': email_config.get('ai_cinema_match', {}).get('enabled', True)
+        },
+        'project_selection': {
+            'name': 'Sélection Projet',
+            'description': 'Email de confirmation envoyé aux talents sélectionnés pour un projet',
+            'enabled': email_config.get('project_selection', {}).get('enabled', True)
+        },
+        'application_confirmation': {
+            'name': 'Confirmation Candidature',
+            'description': 'Email de confirmation envoyé après une candidature',
+            'enabled': email_config.get('application_confirmation', {}).get('enabled', True)
+        },
+        'login_credentials': {
+            'name': 'Identifiants de Connexion',
+            'description': 'Email contenant les identifiants de connexion',
+            'enabled': email_config.get('login_credentials', {}).get('enabled', True)
+        }
+    }
+    
+    stats = {
+        'total': total_emails,
+        'sent': sent_emails,
+        'failed': failed_emails,
+        'success_rate': round((sent_emails / total_emails * 100) if total_emails > 0 else 0, 1)
+    }
+    
+    return render_template('admin/settings/email_notifications.html',
+                         email_logs=email_logs,
+                         stats=stats,
+                         template_types=template_types,
+                         available_templates=available_templates,
+                         template_filter=template_filter,
+                         status_filter=status_filter)
+
+@bp.route('/settings/email-notifications/toggle/<template_type>', methods=['POST'])
+@login_required
+@admin_required
+def toggle_email_notification(template_type):
+    """Activer/désactiver un type de notification email"""
+    from app.models.email_log import EmailLog
+    
+    # Récupérer la config actuelle
+    email_config = AppSettings.get('email_notifications_config', {})
+    
+    # Initialiser le template s'il n'existe pas
+    if template_type not in email_config:
+        email_config[template_type] = {}
+    
+    # Inverser l'état enabled
+    current_state = email_config[template_type].get('enabled', True)
+    email_config[template_type]['enabled'] = not current_state
+    
+    # Sauvegarder
+    AppSettings.set('email_notifications_config', email_config)
+    
+    new_state = 'activé' if email_config[template_type]['enabled'] else 'désactivé'
+    flash(f'✅ Notification "{template_type}" {new_state}', 'success')
+    
+    return redirect(url_for('admin.settings_email_notifications'))
+
+@bp.route('/settings/email-notifications/<int:log_id>/view')
+@login_required
+@admin_required
+def view_email_log(log_id):
+    """Voir le contenu HTML d'un email"""
+    from app.models.email_log import EmailLog
+    
+    email_log = EmailLog.query.get_or_404(log_id)
+    return render_template('admin/settings/email_log_detail.html', email_log=email_log)
+
 @bp.route('/settings/backups')
 @login_required
 @admin_required

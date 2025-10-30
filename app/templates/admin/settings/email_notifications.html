@@ -1,0 +1,167 @@
+{% extends "admin/settings.html" %}
+
+{% block settings_content %}
+<div class="mb-6">
+    <h2 class="text-3xl font-bold text-gray-800 mb-2">📧 Gestion des Notifications Email</h2>
+    <p class="text-gray-600">Consultez les emails envoyés par le système et gérez les notifications</p>
+</div>
+
+<!-- Statistiques -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
+        <p class="text-sm font-semibold text-gray-600">Total Envoyés</p>
+        <p class="text-2xl font-bold text-gray-800">{{ stats.total }}</p>
+    </div>
+    <div class="bg-green-50 p-4 rounded-lg border-2 border-green-200">
+        <p class="text-sm font-semibold text-gray-600">Succès</p>
+        <p class="text-2xl font-bold text-green-700">{{ stats.sent }}</p>
+    </div>
+    <div class="bg-red-50 p-4 rounded-lg border-2 border-red-200">
+        <p class="text-sm font-semibold text-gray-600">Échecs</p>
+        <p class="text-2xl font-bold text-red-700">{{ stats.failed }}</p>
+    </div>
+    <div class="bg-purple-50 p-4 rounded-lg border-2 border-purple-200">
+        <p class="text-sm font-semibold text-gray-600">Taux de Succès</p>
+        <p class="text-2xl font-bold text-purple-700">{{ stats.success_rate }}%</p>
+    </div>
+</div>
+
+<!-- Configuration des Templates -->
+<div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 mb-6">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">⚙️ Configuration des Templates Email</h3>
+    <p class="text-gray-600 mb-4">Activez ou désactivez l'envoi automatique de chaque type d'email</p>
+    
+    <div class="space-y-3">
+        {% for template_id, template_info in available_templates.items() %}
+        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div class="flex-1">
+                <p class="font-semibold text-gray-800">{{ template_info.name }}</p>
+                <p class="text-sm text-gray-600">{{ template_info.description }}</p>
+            </div>
+            <form method="POST" action="{{ url_for('admin.toggle_email_notification', template_type=template_id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="px-4 py-2 rounded-lg font-bold border-2 transition-all {% if template_info.enabled %}bg-green-100 text-green-700 border-green-500 hover:bg-green-200{% else %}bg-red-100 text-red-700 border-red-500 hover:bg-red-200{% endif %}">
+                    {% if template_info.enabled %}
+                    ✅ Activé
+                    {% else %}
+                    ❌ Désactivé
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Filtres -->
+<div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 mb-6">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">🔍 Filtrer les Emails</h3>
+    <form method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Type de Template</label>
+            <select name="template" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none">
+                <option value="">Tous les types</option>
+                {% for template in template_types %}
+                <option value="{{ template }}" {% if template == template_filter %}selected{% endif %}>{{ template }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Statut</label>
+            <select name="status" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none">
+                <option value="">Tous les statuts</option>
+                <option value="sent" {% if status_filter == 'sent' %}selected{% endif %}>Envoyé</option>
+                <option value="failed" {% if status_filter == 'failed' %}selected{% endif %}>Échoué</option>
+            </select>
+        </div>
+        <div class="flex items-end">
+            <button type="submit" class="w-full bg-blue-100 text-blue-700 px-6 py-2 rounded-lg font-bold border-2 border-blue-500 hover:bg-blue-200 transition-all">
+                Filtrer
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Liste des Emails -->
+<div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200">
+    <h3 class="text-xl font-bold text-gray-800 mb-4">📋 Historique des Emails Envoyés</h3>
+    
+    {% if email_logs.items %}
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead>
+                <tr class="bg-gray-100 border-b-2 border-gray-300">
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Date</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Destinataire</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Sujet</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Type</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Statut</th>
+                    <th class="px-4 py-3 text-left text-sm font-bold text-gray-700">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in email_logs.items %}
+                <tr class="border-b border-gray-200 hover:bg-gray-50">
+                    <td class="px-4 py-3 text-sm text-gray-600">
+                        {{ log.sent_at.strftime('%d/%m/%Y %H:%M') if log.sent_at else 'N/A' }}
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        <p class="font-semibold text-gray-800">{{ log.recipient_name or 'N/A' }}</p>
+                        <p class="text-gray-600">{{ log.recipient_email }}</p>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-gray-700">
+                        {{ log.subject[:60] }}{% if log.subject|length > 60 %}...{% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-semibold">
+                            {{ log.template_type }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        {% if log.status == 'sent' %}
+                        <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">✅ Envoyé</span>
+                        {% else %}
+                        <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold">❌ Échoué</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        <a href="{{ url_for('admin.view_email_log', log_id=log.id) }}" 
+                           target="_blank"
+                           class="text-blue-600 hover:text-blue-800 font-semibold">
+                            👁️ Voir
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    {% if email_logs.pages > 1 %}
+    <div class="mt-4 flex justify-center gap-2">
+        {% if email_logs.has_prev %}
+        <a href="{{ url_for('admin.settings_email_notifications', page=email_logs.prev_num, template=template_filter, status=status_filter) }}" 
+           class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+            ← Précédent
+        </a>
+        {% endif %}
+        
+        <span class="px-4 py-2 bg-blue-100 text-blue-700 rounded font-bold">
+            Page {{ email_logs.page }} sur {{ email_logs.pages }}
+        </span>
+        
+        {% if email_logs.has_next %}
+        <a href="{{ url_for('admin.settings_email_notifications', page=email_logs.next_num, template=template_filter, status=status_filter) }}" 
+           class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+            Suivant →
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <p class="text-gray-600 text-center py-8">Aucun email envoyé pour le moment</p>
+    {% endif %}
+</div>
+{% endblock %}
