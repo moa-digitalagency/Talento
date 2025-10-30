@@ -7,6 +7,17 @@ taalentio.com is a professional web application designed to centralize and showc
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
+- **2025-10-30**: Implemented comprehensive maintenance service system:
+  - Database optimization with VACUUM ANALYZE for all PostgreSQL tables using raw connections and autocommit mode
+  - Temporary file cleanup with size calculation and detailed reporting
+  - Performance analysis tracking CPU, memory, disk usage using psutil library
+  - Data integrity verification for all database models with relationship checks
+  - Added psutil dependency to requirements.txt
+  - All maintenance actions fully operational and connected to admin UI
+- **2025-10-30**: Implemented cinema attendance history feature:
+  - Added attendance history display in talent assignment view
+  - Shows all check-in/check-out records with duration calculations
+  - Replaced "feature in development" placeholder with fully functional feature
 - **2025-10-30**: Enhanced SEO settings with secure OpenGraph image upload functionality:
   - Changed OpenGraph image field from text input to file upload in admin/settings/system
   - Implemented secure file handling with extension validation (png, jpg, jpeg, gif, webp)
