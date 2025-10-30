@@ -69,19 +69,62 @@ class EmailService:
         
         return None
         
-    def send_email(self, to_email, subject, html_content, attachments=None):
+    def _log_email(self, recipient_email, recipient_name, subject, html_content, template_type, 
+                   status='sent', error_message=None, sent_by_user_id=None, 
+                   related_talent_code=None, related_project_id=None, related_cinema_talent_id=None):
+        """Logger un email envoyé dans la base de données"""
+        try:
+            from app import db
+            from app.models.email_log import EmailLog
+            
+            email_log = EmailLog(
+                recipient_email=recipient_email,
+                recipient_name=recipient_name,
+                subject=subject,
+                html_content=html_content,
+                template_type=template_type,
+                status=status,
+                error_message=error_message,
+                sent_by_user_id=sent_by_user_id,
+                related_talent_code=related_talent_code,
+                related_project_id=related_project_id,
+                related_cinema_talent_id=related_cinema_talent_id
+            )
+            
+            db.session.add(email_log)
+            db.session.commit()
+            return True
+        except Exception as e:
+            current_app.logger.warning(f"Erreur lors du logging de l'email: {str(e)}")
+            return False
+    
+    def send_email(self, to_email, subject, html_content, attachments=None, template_type='generic', 
+                   recipient_name=None, sent_by_user_id=None, related_talent_code=None, 
+                   related_project_id=None, related_cinema_talent_id=None):
         """
-        Envoie un email via SendGrid
+        Envoie un email via SendGrid avec logging
         
         Args:
             to_email: Email du destinataire
             subject: Sujet de l'email
             html_content: Contenu HTML de l'email
             attachments: Liste de dictionnaires avec 'content', 'filename', 'type'
+            template_type: Type de template pour le logging
+            recipient_name: Nom du destinataire
+            sent_by_user_id: ID de l'utilisateur qui envoie
+            related_talent_code: Code du talent lié
+            related_project_id: ID du projet lié
+            related_cinema_talent_id: ID du talent cinéma lié
         
         Returns:
             True si envoyé avec succès, False sinon
         """
+        # Vérifier si ce type de template est activé
+        from app.models.email_log import EmailLog
+        if not EmailLog.is_template_enabled(template_type):
+            print(f"⚠️  Email {template_type} désactivé, envoi annulé pour {to_email}")
+            return False
+        
         # Récupérer la clé API à chaque envoi pour supporter la mise à jour à chaud
         api_key = self.api_key
         from_email = self.from_email
@@ -97,12 +140,20 @@ class EmailService:
             error_msg = "❌ SendGrid API key manquante. Configurez SENDGRID_API_KEY dans les variables d'environnement ou dans /admin/settings/api-keys"
             current_app.logger.error(error_msg)
             print(f"🔴 {error_msg}")
+            self._log_email(to_email, recipient_name, subject, html_content, template_type, 
+                          status='failed', error_message=error_msg,
+                          sent_by_user_id=sent_by_user_id, related_talent_code=related_talent_code,
+                          related_project_id=related_project_id, related_cinema_talent_id=related_cinema_talent_id)
             return False
         
         if not from_email:
             error_msg = "❌ Email expéditeur manquant. Configurez SENDGRID_FROM_EMAIL"
             current_app.logger.error(error_msg)
             print(f"🔴 {error_msg}")
+            self._log_email(to_email, recipient_name, subject, html_content, template_type, 
+                          status='failed', error_message=error_msg,
+                          sent_by_user_id=sent_by_user_id, related_talent_code=related_talent_code,
+                          related_project_id=related_project_id, related_cinema_talent_id=related_cinema_talent_id)
             return False
         
         print(f"📧 Tentative d'envoi email à: {to_email}")
@@ -135,11 +186,21 @@ class EmailService:
                 success_msg = f"✅ Email envoyé avec succès à {to_email}"
                 current_app.logger.info(success_msg)
                 print(success_msg)
+                
+                self._log_email(to_email, recipient_name, subject, html_content, template_type, 
+                              status='sent', sent_by_user_id=sent_by_user_id,
+                              related_talent_code=related_talent_code, related_project_id=related_project_id,
+                              related_cinema_talent_id=related_cinema_talent_id)
                 return True
             else:
                 error_msg = f"❌ Erreur SendGrid - Code: {response.status_code}, Body: {response.body}"
                 current_app.logger.error(error_msg)
                 print(f"🔴 {error_msg}")
+                
+                self._log_email(to_email, recipient_name, subject, html_content, template_type, 
+                              status='failed', error_message=error_msg,
+                              sent_by_user_id=sent_by_user_id, related_talent_code=related_talent_code,
+                              related_project_id=related_project_id, related_cinema_talent_id=related_cinema_talent_id)
                 return False
                 
         except Exception as e:
@@ -153,6 +214,11 @@ class EmailService:
             print(f"   API Key présente: {bool(self.api_key)}")
             print(f"   From Email: {self.from_email}")
             print(f"   Traceback:\n{error_details}")
+            
+            self._log_email(to_email, recipient_name, subject, html_content, template_type, 
+                          status='failed', error_message=str(e),
+                          sent_by_user_id=sent_by_user_id, related_talent_code=related_talent_code,
+                          related_project_id=related_project_id, related_cinema_talent_id=related_cinema_talent_id)
             return False
     
     def send_application_confirmation(self, user, profile_pdf_path=None):
@@ -349,6 +415,300 @@ class EmailService:
             
         except Exception as e:
             current_app.logger.error(f"Erreur envoi identifiants: {str(e)}")
+            return False
+    
+    def send_ai_match_notification(self, user, job_description, match_score, match_reason, sent_by_user_id=None):
+        """
+        Envoie une notification quand un profil match une recherche IA
+        
+        Args:
+            user: Objet User dont le profil a matché
+            job_description: Description du poste recherché
+            match_score: Score de match (0-100)
+            match_reason: Raison du match
+            sent_by_user_id: ID de l'utilisateur qui a lancé la recherche
+        
+        Returns:
+            True si envoyé, False sinon
+        """
+        try:
+            domain = get_application_domain()
+            profile_url = f"https://{domain}/profile/view/{user.unique_code}"
+            
+            logo_base64 = self._get_logo_base64()
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="taalentio.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+            
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                    .match-badge {{ background: #10b981; color: white; padding: 10px 20px; 
+                                    border-radius: 20px; display: inline-block; font-weight: bold; }}
+                    .job-box {{ background: #fff; border: 2px solid #667eea; padding: 20px; 
+                               border-radius: 5px; margin: 20px 0; }}
+                    .button {{ display: inline-block; background: #667eea; color: white; 
+                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
+                              margin: 20px 0; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>🎯 Votre profil a matché une opportunité !</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Bonjour {user.full_name},</h2>
+                        <p>Excellente nouvelle ! Notre système de matching intelligent a identifié votre profil comme 
+                           particulièrement adapté pour l'opportunité suivante :</p>
+                        
+                        <div class="job-box">
+                            <h3>Description de l'opportunité :</h3>
+                            <p>{job_description[:500]}...</p>
+                        </div>
+                        
+                        <p><strong>Score de correspondance :</strong> <span class="match-badge">{match_score}%</span></p>
+                        
+                        <p><strong>Pourquoi votre profil correspond :</strong></p>
+                        <p>{match_reason}</p>
+                        
+                        <p>Nous vous encourageons à consulter votre profil et à le tenir à jour pour maximiser vos chances :</p>
+                        <div style="text-align: center;">
+                            <a href="{profile_url}" class="button">Voir mon profil</a>
+                        </div>
+                        
+                        <p style="margin-top: 30px;">Bonne chance !<br>
+                        <strong>L'équipe taalentio.com</strong></p>
+                    </div>
+                    <div class="footer">
+                        <p>Cet email a été envoyé automatiquement suite à une recherche de talents par IA.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            return self.send_email(
+                to_email=user.email,
+                subject=f"🎯 Votre profil correspond à une opportunité ({match_score}% de match)",
+                html_content=html_content,
+                template_type='ai_talent_match',
+                recipient_name=user.full_name,
+                sent_by_user_id=sent_by_user_id,
+                related_talent_code=user.unique_code
+            )
+            
+        except Exception as e:
+            current_app.logger.error(f"Erreur envoi notification AI match: {str(e)}")
+            return False
+    
+    def send_cinema_ai_match_notification(self, cinema_talent, role_description, match_score, match_reason, sent_by_user_id=None):
+        """
+        Envoie une notification quand un profil cinéma match une recherche IA
+        
+        Args:
+            cinema_talent: Objet CinemaTalent dont le profil a matché
+            role_description: Description du rôle recherché
+            match_score: Score de match (0-100)
+            match_reason: Raison du match
+            sent_by_user_id: ID de l'utilisateur qui a lancé la recherche
+        
+        Returns:
+            True si envoyé, False sinon
+        """
+        try:
+            domain = get_application_domain()
+            profile_url = f"https://{domain}/cinema/view-talent/{cinema_talent.unique_code}"
+            
+            logo_base64 = self._get_logo_base64()
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="taalentio.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+            
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); 
+                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                    .match-badge {{ background: #10b981; color: white; padding: 10px 20px; 
+                                    border-radius: 20px; display: inline-block; font-weight: bold; }}
+                    .role-box {{ background: #fff; border: 2px solid #ef4444; padding: 20px; 
+                                border-radius: 5px; margin: 20px 0; }}
+                    .button {{ display: inline-block; background: #ef4444; color: white; 
+                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
+                              margin: 20px 0; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>🎬 Votre profil correspond à un rôle cinéma !</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Bonjour {cinema_talent.full_name},</h2>
+                        <p>Excellente nouvelle ! Notre système de casting intelligent a identifié votre profil comme 
+                           particulièrement adapté pour le rôle suivant :</p>
+                        
+                        <div class="role-box">
+                            <h3>Description du rôle :</h3>
+                            <p>{role_description[:500]}...</p>
+                        </div>
+                        
+                        <p><strong>Score de correspondance :</strong> <span class="match-badge">{match_score}%</span></p>
+                        
+                        <p><strong>Pourquoi votre profil correspond :</strong></p>
+                        <p>{match_reason}</p>
+                        
+                        <p>Consultez votre profil complet et assurez-vous qu'il est à jour :</p>
+                        <div style="text-align: center;">
+                            <a href="{profile_url}" class="button">Voir mon profil cinéma</a>
+                        </div>
+                        
+                        <p style="margin-top: 30px;">Bonne chance pour votre casting !<br>
+                        <strong>L'équipe taalentio.com</strong></p>
+                    </div>
+                    <div class="footer">
+                        <p>Cet email a été envoyé automatiquement suite à une recherche de casting par IA.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            return self.send_email(
+                to_email=cinema_talent.email,
+                subject=f"🎬 Votre profil correspond à un rôle cinéma ({match_score}% de match)",
+                html_content=html_content,
+                template_type='ai_cinema_match',
+                recipient_name=cinema_talent.full_name,
+                sent_by_user_id=sent_by_user_id,
+                related_cinema_talent_id=cinema_talent.id
+            )
+            
+        except Exception as e:
+            current_app.logger.error(f"Erreur envoi notification cinema AI match: {str(e)}")
+            return False
+    
+    def send_project_selection_confirmation(self, project_talent, sent_by_user_id=None):
+        """
+        Envoie un email de confirmation et félicitations pour la sélection dans un projet
+        
+        Args:
+            project_talent: Objet ProjectTalent contenant les infos du talent et du projet
+            sent_by_user_id: ID de l'utilisateur qui envoie l'email
+        
+        Returns:
+            True si envoyé, False sinon
+        """
+        try:
+            project = project_talent.project
+            cinema_talent = project_talent.cinema_talent
+            production = project.production
+            
+            domain = get_application_domain()
+            profile_url = f"https://{domain}/cinema/view-talent/{cinema_talent.unique_code}"
+            badge_url = f"https://{domain}/cinema/projects/talent/{project_talent.id}/generate-badge"
+            
+            logo_base64 = self._get_logo_base64()
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="taalentio.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+            
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
+                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                    .success-box {{ background: #d1fae5; border-left: 4px solid #10b981; 
+                                   padding: 20px; margin: 20px 0; border-radius: 5px; }}
+                    .project-info {{ background: #fff; border: 2px solid #10b981; padding: 20px; 
+                                    border-radius: 5px; margin: 20px 0; }}
+                    .button {{ display: inline-block; background: #10b981; color: white; 
+                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
+                              margin: 10px 5px; }}
+                    .production-contact {{ background: #fff3cd; border-left: 4px solid #ffc107; 
+                                         padding: 15px; margin: 20px 0; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>🎉 Félicitations ! Vous avez été sélectionné(e) !</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Bonjour {cinema_talent.full_name},</h2>
+                        
+                        <div class="success-box">
+                            <h3>✨ Excellente nouvelle !</h3>
+                            <p>Nous avons le plaisir de vous informer que vous avez été retenu(e) pour le projet suivant :</p>
+                        </div>
+                        
+                        <div class="project-info">
+                            <h3>📽️ {project.name}</h3>
+                            <p><strong>Boîte de production :</strong> {production.name if production else 'N/A'}</p>
+                            <p><strong>Type de talent :</strong> {project_talent.talent_type}</p>
+                            {f'<p><strong>Rôle :</strong> {project_talent.role_description}</p>' if project_talent.role_description else ''}
+                            <p><strong>Statut du projet :</strong> {project.get_status_display()}</p>
+                        </div>
+                        
+                        <div class="production-contact">
+                            <h4>📞 Prochaines étapes</h4>
+                            <p>Veuillez contacter la production pour plus de détails sur le projet et les prochaines étapes :</p>
+                            {f'<p><strong>Téléphone :</strong> {production.phone}</p>' if production and production.phone else ''}
+                            {f'<p><strong>Email :</strong> {production.email}</p>' if production and production.email else ''}
+                            {f'<p><strong>Adresse :</strong> {production.address}</p>' if production and production.address else ''}
+                        </div>
+                        
+                        <p><strong>Votre profil et badge :</strong></p>
+                        <div style="text-align: center;">
+                            <a href="{profile_url}" class="button">Voir mon profil</a>
+                            <a href="{badge_url}" class="button">Télécharger mon badge</a>
+                        </div>
+                        
+                        <p style="margin-top: 30px;">Toute l'équipe vous félicite et vous souhaite beaucoup de succès dans ce projet !<br>
+                        <strong>L'équipe taalentio.com</strong></p>
+                    </div>
+                    <div class="footer">
+                        <p>Cet email a été envoyé automatiquement suite à votre sélection pour le projet.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            return self.send_email(
+                to_email=cinema_talent.email,
+                subject=f"🎉 Félicitations ! Vous avez été sélectionné pour {project.name}",
+                html_content=html_content,
+                template_type='project_selection',
+                recipient_name=cinema_talent.full_name,
+                sent_by_user_id=sent_by_user_id,
+                related_project_id=project.id,
+                related_cinema_talent_id=cinema_talent.id
+            )
+            
+        except Exception as e:
+            current_app.logger.error(f"Erreur envoi confirmation sélection projet: {str(e)}")
             return False
     
     def send_test_email(self, to_email):

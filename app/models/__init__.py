@@ -16,5 +16,6 @@ from app.models.project import Project, ProjectTalent
 from app.models.attendance import Attendance
 from app.models.activity_log import ActivityLog
 from app.models.security_log import SecurityLog
+from app.models.email_log import EmailLog
 
-__all__ = ['User', 'Talent', 'UserTalent', 'Country', 'City', 'AppSettings', 'CinemaTalent', 'Production', 'Project', 'ProjectTalent', 'Attendance', 'ActivityLog', 'SecurityLog']
+__all__ = ['User', 'Talent', 'UserTalent', 'Country', 'City', 'AppSettings', 'CinemaTalent', 'Production', 'Project', 'ProjectTalent', 'Attendance', 'ActivityLog', 'SecurityLog', 'EmailLog']
