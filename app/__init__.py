@@ -411,14 +411,16 @@ def create_app(config_class=Config):
             safe_auto_migrate(db)
             
             # Garantir que les données essentielles (pays, villes, talents) sont chargées
-            _ensure_essential_data_loaded()
+            # Temporarily disabled for initial import to speed up startup
+            # _ensure_essential_data_loaded()
             
             # Auto-détecter si les données demo doivent être créées
             # Temporarily disabled to speed up startup
             # _ensure_demo_data_exists(db, logger)
             
             # Garantir que le compte admin existe toujours (après le chargement des données essentielles)
-            _ensure_admin_exists(db, logger)
+            # Temporarily disabled for initial import
+            # _ensure_admin_exists(db, logger)
             
             logger.info("✅ Application prête")
             
