@@ -563,6 +563,9 @@ def save_seo_settings():
     from app.services.logging_service import LoggingService
     from werkzeug.utils import secure_filename
     
+    # Charger les paramètres SEO existants pour préserver les valeurs non modifiées
+    existing_settings = SEOService.get_all_settings()
+    
     # Récupérer tous les champs SEO du formulaire
     seo_data = {
         'seo_site_name': request.form.get('seo_site_name', '').strip(),
@@ -570,7 +573,7 @@ def save_seo_settings():
         'seo_keywords': request.form.get('seo_keywords', '').strip(),
         'seo_author': request.form.get('seo_author', '').strip(),
         'seo_og_type': request.form.get('seo_og_type', 'website').strip(),
-        'seo_og_image': request.form.get('seo_og_image', '').strip(),
+        'seo_og_image': existing_settings.get('seo_og_image', ''),
         'seo_twitter_card': request.form.get('seo_twitter_card', 'summary_large_image').strip(),
         'seo_twitter_handle': request.form.get('seo_twitter_handle', '').strip(),
         'seo_robots': request.form.get('seo_robots', 'index, follow').strip(),
@@ -588,7 +591,6 @@ def save_seo_settings():
             file_ext = file.filename.rsplit('.', 1)[1].lower() if '.' in file.filename else ''
             
             if file_ext in allowed_extensions:
-                filename = secure_filename(file.filename)
                 # Créer un nom unique pour éviter les conflits
                 timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
                 unique_filename = f"og_image_{timestamp}.{file_ext}"
