@@ -6,7 +6,7 @@ Mail : moa@myoneart.com
 www.myoneart.com
 """
 
-from flask import Blueprint, redirect, url_for, render_template, request
+from flask import Blueprint, redirect, url_for, render_template, request, flash
 from flask_login import login_required, current_user
 from app.models.user import User
 from app.models.talent import Talent, UserTalent
@@ -14,6 +14,11 @@ from app.models.location import Country, City
 from app import db
 from sqlalchemy import func, desc, or_
 from datetime import datetime
+from werkzeug.utils import secure_filename
+import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 bp = Blueprint('main', __name__)
 
@@ -407,3 +412,90 @@ def talent_users(talent_id):
                          users=users,
                          cities=all_cities,
                          total_users=len(users))
+
+@bp.route('/ai-search', methods=['POST'])
+@login_required
+def ai_search():
+    """Recherche de candidats par IA basée sur une description de poste"""
+    try:
+        from app.services.ai_matching_service import AIMatchingService
+        from app.utils.cv_parser import extract_text_from_pdf, extract_text_from_docx
+        
+        job_description = request.form.get('job_description', '').strip()
+        job_file = request.files.get('job_file')
+        
+        if job_file and job_file.filename:
+            if job_file.filename == '':
+                flash('Aucun fichier sélectionné', 'error')
+                return redirect(url_for('main.index'))
+            
+            allowed_extensions = {'pdf', 'docx', 'doc', 'txt'}
+            filename = secure_filename(job_file.filename)
+            file_ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
+            
+            if file_ext not in allowed_extensions:
+                flash('Format de fichier non accepté. Utilisez PDF, DOCX, DOC ou TXT.', 'error')
+                return redirect(url_for('main.index'))
+            
+            max_size = 10 * 1024 * 1024
+            job_file.seek(0, os.SEEK_END)
+            file_length = job_file.tell()
+            job_file.seek(0)
+            
+            if file_length > max_size:
+                flash('Le fichier est trop volumineux (max 10MB)', 'error')
+                return redirect(url_for('main.index'))
+            
+            temp_dir = os.path.join('static', 'uploads', 'temp')
+            os.makedirs(temp_dir, exist_ok=True)
+            temp_path = os.path.join(temp_dir, filename)
+            job_file.save(temp_path)
+            
+            try:
+                if file_ext == 'pdf':
+                    job_description = extract_text_from_pdf(temp_path)
+                elif file_ext in ['docx', 'doc']:
+                    job_description = extract_text_from_docx(temp_path)
+                elif file_ext == 'txt':
+                    with open(temp_path, 'r', encoding='utf-8') as f:
+                        job_description = f.read()
+                
+                os.remove(temp_path)
+                
+            except Exception as e:
+                logger.error(f"Erreur lors de l'extraction du texte: {e}")
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
+                flash(f'Erreur lors de la lecture du fichier: {str(e)}', 'error')
+                return redirect(url_for('main.index'))
+        
+        if not job_description:
+            flash('Veuillez fournir une description de poste (texte ou fichier)', 'error')
+            return redirect(url_for('main.index'))
+        
+        all_users = User.query.filter(
+            User.is_admin == False,
+            User.account_active == True
+        ).all()
+        
+        if not all_users:
+            flash('Aucun profil disponible pour l\'analyse', 'warning')
+            return redirect(url_for('main.index'))
+        
+        results = AIMatchingService.analyze_job_description(
+            job_description=job_description,
+            user_profiles=all_users
+        )
+        
+        if not results.get('success'):
+            flash(results.get('message', 'Erreur lors de l\'analyse'), 'error')
+            return redirect(url_for('main.index'))
+        
+        return render_template('ai_search_results.html',
+                             job_description=job_description,
+                             results=results)
+    
+    except Exception as e:
+        logger.error(f"Erreur lors de la recherche IA: {e}")
+        flash(f'Erreur lors de la recherche IA: {str(e)}', 'error')
+        return redirect(url_for('main.index'))

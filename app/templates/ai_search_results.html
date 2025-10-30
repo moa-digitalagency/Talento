@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Résultats de Recherche IA - taalentio.com{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- En-tête -->
+        <div class="section-purple p-8 mb-8 print:border-4 print:border-purple-600">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-4">
+                    <img src="{{ url_for('static', filename='img/logo-full.png') }}" alt="taalentio.com" class="h-16">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-800">🤖 Résultats de Recherche IA</h1>
+                        <p class="text-gray-600 mt-1">{{ results.total_matched }} candidat(s) trouvé(s) sur {{ results.total_analyzed }} profil(s) analysé(s)</p>
+                    </div>
+                </div>
+                <div class="print:hidden">
+                    <button onclick="window.print()" class="btn-primary flex items-center gap-2">
+                        <span>🖨️</span>
+                        <span>Imprimer</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Description du poste -->
+        <div class="section-blue p-6 mb-8 print:break-inside-avoid">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span>📋</span>
+                <span>Description du Poste Recherché</span>
+            </h2>
+            <div class="bg-white rounded-lg p-4 border-2 border-blue-300">
+                <p class="text-gray-700 whitespace-pre-wrap">{{ job_description }}</p>
+            </div>
+        </div>
+
+        <!-- Candidats matchés -->
+        {% if results.candidates %}
+            {% for candidate in results.candidates %}
+            <div class="bg-white rounded-lg shadow-md border-2 border-gray-200 p-6 mb-6 print:break-inside-avoid print:border-4 print:border-gray-400">
+                <!-- En-tête candidat -->
+                <div class="flex items-start justify-between mb-6 pb-4 border-b-2 border-gray-200">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-2xl print:border-2 print:border-purple-700">
+                            {{ candidate.user.first_name[0] if candidate.user.first_name else '?' }}{{ candidate.user.last_name[0] if candidate.user.last_name else '?' }}
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900">{{ candidate.user.full_name }}</h3>
+                            <p class="text-gray-600 font-mono text-sm">{{ candidate.user.formatted_code }}</p>
+                            <p class="text-gray-600 text-sm">{{ candidate.user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="inline-block px-6 py-3 rounded-lg
+                            {% if candidate.score >= 80 %}bg-green-100 border-2 border-green-500 print:border-4 print:border-green-600
+                            {% elif candidate.score >= 60 %}bg-yellow-100 border-2 border-yellow-500 print:border-4 print:border-yellow-600
+                            {% else %}bg-orange-100 border-2 border-orange-500 print:border-4 print:border-orange-600{% endif %}">
+                            <p class="text-sm font-semibold text-gray-600">Score de correspondance</p>
+                            <p class="text-4xl font-bold 
+                                {% if candidate.score >= 80 %}text-green-700
+                                {% elif candidate.score >= 60 %}text-yellow-700
+                                {% else %}text-orange-700{% endif %}">
+                                {{ candidate.score }}%
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informations du profil -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 print:grid-cols-2">
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm font-semibold text-gray-600 mb-2">📍 Localisation</p>
+                        <p class="text-gray-900">{{ candidate.user.city.name if candidate.user.city else 'N/A' }}, {{ candidate.user.country.name if candidate.user.country else 'N/A' }}</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm font-semibold text-gray-600 mb-2">⏰ Disponibilité</p>
+                        <p class="text-gray-900">{{ candidate.user.availability }}</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm font-semibold text-gray-600 mb-2">💼 Mode de travail</p>
+                        <p class="text-gray-900">{{ candidate.user.work_mode }}</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <p class="text-sm font-semibold text-gray-600 mb-2">🎯 Compétences</p>
+                        <div class="flex flex-wrap gap-2">
+                            {% if candidate.user.user_talents %}
+                                {% for ut in candidate.user.user_talents[:5] %}
+                                <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs font-semibold rounded border border-purple-300">
+                                    {{ ut.talent.name }}
+                                </span>
+                                {% endfor %}
+                            {% else %}
+                                <span class="text-gray-500 text-sm">Aucune compétence déclarée</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Explication IA -->
+                <div class="mb-6">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                        <span>🤖</span>
+                        <span>Analyse IA</span>
+                    </h4>
+                    <div class="bg-blue-50 p-4 rounded-lg border-2 border-blue-200 print:border-4 print:border-blue-300">
+                        <p class="text-gray-700 leading-relaxed">{{ candidate.explication }}</p>
+                    </div>
+                </div>
+
+                <!-- Points forts -->
+                {% if candidate.points_forts %}
+                <div class="mb-4">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                        <span>✅</span>
+                        <span>Points Forts</span>
+                    </h4>
+                    <ul class="space-y-2">
+                        {% for point in candidate.points_forts %}
+                        <li class="flex items-start gap-3 bg-green-50 p-3 rounded-lg border border-green-200">
+                            <span class="text-green-600 font-bold">•</span>
+                            <span class="text-gray-700">{{ point }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Points faibles -->
+                {% if candidate.points_faibles %}
+                <div class="mb-4">
+                    <h4 class="text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                        <span>⚠️</span>
+                        <span>Points d'Amélioration / Manques</span>
+                    </h4>
+                    <ul class="space-y-2">
+                        {% for point in candidate.points_faibles %}
+                        <li class="flex items-start gap-3 bg-orange-50 p-3 rounded-lg border border-orange-200">
+                            <span class="text-orange-600 font-bold">•</span>
+                            <span class="text-gray-700">{{ point }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Actions -->
+                <div class="flex gap-3 mt-6 pt-4 border-t-2 border-gray-200 print:hidden">
+                    <a href="{{ url_for('profile.view_profile', user_id=candidate.user.id) }}" 
+                       class="btn-primary flex-1 text-center">
+                        👤 Voir le profil complet
+                    </a>
+                    <a href="mailto:{{ candidate.user.email }}" 
+                       class="btn-secondary flex-1 text-center">
+                        ✉️ Contacter
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="section-orange p-8 text-center">
+                <div class="text-6xl mb-4">😔</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Aucun candidat trouvé</h3>
+                <p class="text-gray-600">L'IA n'a pas trouvé de candidats correspondant suffisamment à cette description de poste.</p>
+            </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div class="mt-8 text-center print:hidden">
+            <a href="{{ url_for('main.index') }}" class="btn-secondary">
+                ← Retour au Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Styles d'impression -->
+<style>
+    @media print {
+        body {
+            background: white;
+        }
+        .min-h-screen {
+            min-height: auto;
+        }
+        .shadow-md {
+            box-shadow: none !important;
+        }
+        .print\:hidden {
+            display: none !important;
+        }
+        .print\:break-inside-avoid {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+        .print\:border-4 {
+            border-width: 4px !important;
+        }
+        .print\:border-purple-600 {
+            border-color: #9333ea !important;
+        }
+        .print\:border-gray-400 {
+            border-color: #9ca3af !important;
+        }
+        .print\:border-green-600 {
+            border-color: #16a34a !important;
+        }
+        .print\:border-yellow-600 {
+            border-color: #ca8a04 !important;
+        }
+        .print\:border-orange-600 {
+            border-color: #ea580c !important;
+        }
+        .print\:border-blue-300 {
+            border-color: #93c5fd !important;
+        }
+        .print\:border-purple-700 {
+            border-color: #7e22ce !important;
+        }
+        .print\:grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+        @page {
+            margin: 2cm;
+        }
+    }
+</style>
+{% endblock %}
