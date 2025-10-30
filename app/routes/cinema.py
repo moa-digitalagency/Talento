@@ -15,8 +15,10 @@ from app.utils.file_handler import save_file
 from app.data.world_countries import NATIONALITIES, NATIONALITIES_WITH_FLAGS
 from app.data.world_cities import get_cities_by_country
 from datetime import datetime
+from werkzeug.utils import secure_filename
 import json
 import io
+import os
 
 bp = Blueprint('cinema', __name__, url_prefix='/cinema')
 
@@ -1957,3 +1959,97 @@ def generate_project_badge(project_talent_id):
     except Exception as e:
         flash(f'❌ Erreur lors de la génération du badge: {str(e)}', 'error')
         return redirect(url_for('cinema.project_detail', project_id=project_talent.project_id))
+
+@bp.route('/ai-search-cinema-talents', methods=['POST'])
+@login_required
+def ai_search_cinema_talents():
+    """Recherche de talents cinéma par IA basée sur une description de rôle"""
+    try:
+        from app.services.ai_matching_service import AIMatchingService
+        from werkzeug.utils import secure_filename
+        import logging
+        
+        logger = logging.getLogger(__name__)
+        
+        job_description = request.form.get('job_description', '').strip()
+        job_file = request.files.get('job_file')
+        
+        if job_file and job_file.filename:
+            if job_file.filename == '':
+                flash('Aucun fichier sélectionné', 'error')
+                return redirect(url_for('cinema.talents'))
+            
+            allowed_extensions = {'pdf', 'docx', 'doc', 'txt'}
+            filename = secure_filename(job_file.filename)
+            file_ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
+            
+            if file_ext not in allowed_extensions:
+                flash('Format de fichier non accepté. Utilisez PDF, DOCX, DOC ou TXT.', 'error')
+                return redirect(url_for('cinema.talents'))
+            
+            max_size = 10 * 1024 * 1024
+            job_file.seek(0, os.SEEK_END)
+            file_length = job_file.tell()
+            job_file.seek(0)
+            
+            if file_length > max_size:
+                flash('Le fichier est trop volumineux (max 10MB)', 'error')
+                return redirect(url_for('cinema.talents'))
+            
+            temp_dir = os.path.join('static', 'uploads', 'temp')
+            os.makedirs(temp_dir, exist_ok=True)
+            temp_path = os.path.join(temp_dir, filename)
+            job_file.save(temp_path)
+            
+            try:
+                if file_ext == 'pdf':
+                    import PyPDF2
+                    with open(temp_path, 'rb') as file:
+                        pdf_reader = PyPDF2.PdfReader(file)
+                        job_description = ''
+                        for page in pdf_reader.pages:
+                            job_description += page.extract_text() + '\n'
+                elif file_ext in ['docx', 'doc']:
+                    import docx
+                    doc = docx.Document(temp_path)
+                    job_description = '\n'.join([paragraph.text for paragraph in doc.paragraphs])
+                elif file_ext == 'txt':
+                    with open(temp_path, 'r', encoding='utf-8') as f:
+                        job_description = f.read()
+                
+                os.remove(temp_path)
+                
+            except Exception as e:
+                logger.error(f"Erreur lors de l'extraction du texte: {e}")
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
+                flash(f'Erreur lors de la lecture du fichier: {str(e)}', 'error')
+                return redirect(url_for('cinema.talents'))
+        
+        if not job_description:
+            flash('Veuillez fournir une description de rôle (texte ou fichier)', 'error')
+            return redirect(url_for('cinema.talents'))
+        
+        all_cinema_talents = CinemaTalent.query.filter_by(is_active=True).all()
+        
+        if not all_cinema_talents:
+            flash('Aucun profil cinéma disponible pour l\'analyse', 'warning')
+            return redirect(url_for('cinema.talents'))
+        
+        results = AIMatchingService.analyze_cinema_talents(
+            job_description=job_description,
+            cinema_talent_profiles=all_cinema_talents
+        )
+        
+        if not results.get('success'):
+            flash(results.get('message', 'Erreur lors de l\'analyse'), 'error')
+            return redirect(url_for('cinema.talents'))
+        
+        return render_template('cinema/ai_search_results.html',
+                             job_description=job_description,
+                             results=results)
+    
+    except Exception as e:
+        logger.error(f"Erreur lors de la recherche IA cinéma: {e}")
+        flash(f'Erreur lors de la recherche IA: {str(e)}', 'error')
+        return redirect(url_for('cinema.talents'))

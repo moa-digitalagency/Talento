@@ -3,51 +3,204 @@
 {% block title %}Gestion des talents - taalentio.com{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4">
-    <h1 class="text-3xl font-bold mb-6">Gestion des talents</h1>
-    
-    <div class="card mb-6">
-        <h2 class="text-xl font-semibold mb-4">Recherche et filtres</h2>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <input type="text" placeholder="Rechercher..." class="input-field">
-            <select class="input-field">
-                <option value="">Toutes les villes</option>
-            </select>
-            <select class="input-field">
-                <option value="">Tous les talents</option>
-            </select>
-            <button class="btn-primary">Filtrer</button>
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800">📋 Gestion des talents</h1>
+        
+        <!-- Section Recherche & Filtres -->
+        <div class="section-indigo p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">🔍</span>
+                <h2 class="text-2xl font-bold text-gray-800">Recherche & Filtres</h2>
+            </div>
+            
+            <form method="GET" action="{{ url_for('admin.users') }}" class="space-y-6">
+                <!-- Recherche rapide -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+                            <span>📝</span>
+                            <span>Recherche par nom/email</span>
+                        </label>
+                        <input type="text" name="search" value="{{ request.args.get('search', '') }}" 
+                               placeholder="Nom, prénom ou email..."
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+                            <span>🔢</span>
+                            <span>Recherche par code unique</span>
+                        </label>
+                        <input type="text" name="search_code" value="{{ request.args.get('search_code', '') }}" 
+                               placeholder="Ex: MAM0001RAB"
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                    </div>
+                </div>
+
+                <!-- Filtres avancés -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Disponibilité</label>
+                        <select name="availability" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Toutes</option>
+                            <option value="Temps plein" {% if request.args.get('availability') == 'Temps plein' %}selected{% endif %}>⏰ Temps plein</option>
+                            <option value="Temps partiel" {% if request.args.get('availability') == 'Temps partiel' %}selected{% endif %}>🕐 Temps partiel</option>
+                            <option value="Mi-temps" {% if request.args.get('availability') == 'Mi-temps' %}selected{% endif %}>⏳ Mi-temps</option>
+                            <option value="Flexible" {% if request.args.get('availability') == 'Flexible' %}selected{% endif %}>🔄 Flexible</option>
+                            <option value="Occasionnel" {% if request.args.get('availability') == 'Occasionnel' %}selected{% endif %}>📅 Occasionnel</option>
+                            <option value="Indisponible" {% if request.args.get('availability') == 'Indisponible' %}selected{% endif %}>❌ Indisponible</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Mode de travail</label>
+                        <select name="work_mode" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Tous</option>
+                            <option value="Sur site" {% if request.args.get('work_mode') == 'Sur site' %}selected{% endif %}>🏢 Sur site</option>
+                            <option value="À distance" {% if request.args.get('work_mode') == 'À distance' %}selected{% endif %}>💻 À distance</option>
+                            <option value="Hybride" {% if request.args.get('work_mode') == 'Hybride' %}selected{% endif %}>🔄 Hybride</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Genre</label>
+                        <select name="gender" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Tous</option>
+                            <option value="M" {% if request.args.get('gender') == 'M' %}selected{% endif %}>Homme</option>
+                            <option value="F" {% if request.args.get('gender') == 'F' %}selected{% endif %}>Femme</option>
+                            <option value="N" {% if request.args.get('gender') == 'N' %}selected{% endif %}>Autre</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Ville</label>
+                        <select name="city" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Toutes</option>
+                            {% for city in cities %}
+                            <option value="{{ city.id }}" {% if request.args.get('city') == city.id|string %}selected{% endif %}>{{ city.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Talents</label>
+                        <select name="talent" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
+                            <option value="">Tous</option>
+                            {% for talent in talents %}
+                            <option value="{{ talent.id }}" {% if talent.id|string in request.args.getlist('talent') %}selected{% endif %}>{{ talent.emoji }} {{ talent.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button type="submit" class="btn-primary flex-1">
+                        🔍 Rechercher
+                    </button>
+                    <a href="{{ url_for('admin.users') }}" class="btn-secondary px-6">
+                        ❌ Réinitialiser
+                    </a>
+                </div>
+            </form>
         </div>
-    </div>
-    
-    <div class="card">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Code</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Téléphone</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ville</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    {% for user in users %}
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user.formatted_code }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.full_name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.email }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.phone }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.city.name if user.city else 'N/A' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <a href="{{ url_for('profile.view_public', unique_code=user.unique_code) }}" class="text-primary hover:underline">Voir</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+
+        <!-- Recherche par IA -->
+        <div class="section-purple p-8 mb-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">🤖</span>
+                <h2 class="text-2xl font-bold text-gray-800">Recherche par IA</h2>
+            </div>
+            
+            <p class="text-gray-600 mb-4">
+                Décrivez le poste recherché ou uploadez une description de poste (PDF, DOCX, TXT). Notre IA analysera tous les profils et CVs pour trouver les meilleurs candidats.
+            </p>
+            
+            <form method="POST" action="{{ url_for('main.ai_search') }}" enctype="multipart/form-data" class="space-y-4">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+                        <span>📝</span>
+                        <span>Description du poste</span>
+                    </label>
+                    <textarea name="job_description" id="job_description" rows="6" 
+                              placeholder="Collez ou saisissez la description du poste ici&#10;Ex: Nous recherchons un développeur full-stack avec 3 ans d'expérience en React et Node.js..."
+                              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-200"></textarea>
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <span class="text-gray-600 font-semibold">OU</span>
+                    <div class="flex-1 border-t-2 border-gray-300"></div>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+                        <span>📎</span>
+                        <span>Uploader un fichier de description</span>
+                    </label>
+                    <input type="file" name="job_file" id="job_file" accept=".pdf,.docx,.doc,.txt"
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200">
+                    <p class="text-sm text-gray-500 mt-2">Formats acceptés: PDF, DOCX, DOC, TXT (max 10MB)</p>
+                </div>
+                
+                <div>
+                    <button type="submit" class="btn-primary w-full flex items-center justify-center gap-2">
+                        <span>🔍</span>
+                        <span>Lancer la recherche IA</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Liste des talents -->
+        <div class="section-blue p-8">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-4xl">👥</span>
+                <h2 class="text-2xl font-bold text-gray-800">Liste des Talents ({{ users|length }})</h2>
+            </div>
+            
+            <div class="bg-white rounded-lg border-2 border-dotted border-blue-500 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Téléphone</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ville</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% if users and users|length > 0 %}
+                                {% for user in users %}
+                                <tr class="hover:bg-blue-50 transition-colors">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user.formatted_code }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-semibold">{{ user.full_name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ user.email }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ user.phone if user.phone else 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ user.city.name if user.city else 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <a href="{{ url_for('profile.view_public', unique_code=user.unique_code) }}" 
+                                           class="text-blue-600 hover:text-blue-800 font-semibold hover:underline">👁️ Voir</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                        <div class="flex flex-col items-center gap-3">
+                                            <span class="text-6xl">🔍</span>
+                                            <p class="text-lg font-semibold">Aucun talent trouvé</p>
+                                            <p class="text-sm">Essayez de modifier vos critères de recherche</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

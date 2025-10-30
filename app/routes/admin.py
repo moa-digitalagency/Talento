@@ -53,8 +53,52 @@ def dashboard():
 @login_required
 @admin_required
 def users():
-    all_users = User.query.filter(User.is_admin == False).order_by(User.created_at.desc()).all()
-    return render_template('admin/users.html', users=all_users)
+    search_query = request.args.get('search', '').strip()
+    search_code = request.args.get('search_code', '').strip()
+    availability_filter = request.args.get('availability')
+    work_mode_filter = request.args.get('work_mode')
+    gender_filter = request.args.get('gender')
+    city_filter = request.args.get('city')
+    talent_filter = request.args.getlist('talent')
+    
+    query = User.query.filter(User.is_admin == False)
+    
+    if search_query:
+        search_pattern = f'%{search_query}%'
+        query = query.filter(
+            or_(
+                User.first_name.ilike(search_pattern),
+                User.last_name.ilike(search_pattern),
+                User.email.ilike(search_pattern)
+            )
+        )
+    
+    if search_code:
+        code_clean = search_code.replace('-', '').upper()
+        query = query.filter(User.unique_code.ilike(f'%{code_clean}%'))
+    
+    if availability_filter:
+        query = query.filter(User.availability == availability_filter)
+    
+    if work_mode_filter:
+        query = query.filter(User.work_mode == work_mode_filter)
+    
+    if gender_filter:
+        query = query.filter(User.gender == gender_filter)
+    
+    if city_filter:
+        query = query.filter(User.city_id == int(city_filter))
+    
+    if talent_filter:
+        talent_ids = [int(tid) for tid in talent_filter]
+        query = query.join(User.talents).filter(UserTalent.talent_id.in_(talent_ids)).group_by(User.id).having(func.count(func.distinct(UserTalent.talent_id)) == len(talent_ids))
+    
+    all_users = query.order_by(User.created_at.desc()).all()
+    
+    all_talents = Talent.query.order_by(Talent.category, Talent.name).all()
+    all_cities = City.query.order_by(City.name).all()
+    
+    return render_template('admin/users.html', users=all_users, talents=all_talents, cities=all_cities)
 
 
 @bp.route('/user/<int:user_id>/toggle-active', methods=['POST'])
