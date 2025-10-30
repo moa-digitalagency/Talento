@@ -97,38 +97,162 @@ Sélection parmi des dizaines de catégories :
 #### QR Code Personnel
 Chaque profil génère automatiquement un QR code unique pour partage facile
 
-### 🤖 Analyse IA de CV
+### 🤖 Intelligence Artificielle - Fonctionnalités IA Complètes
 
-**Powered by OpenRouter AI** (Google Gemini 2.5 Flash)
+**Powered by OpenRouter AI** utilisant les modèles **Google Gemini Flash**
 
-- **Upload de CV** : PDF, DOC, ou DOCX (max 10 MB)
-- **Extraction Automatique** : Analyse du texte du CV
-- **Analyse Complète** :
-  - Extraction des compétences techniques
-  - Génération d'un résumé professionnel
-  - **Score de Profil** : Note de 0 à 100 basée sur :
-    - Complétude du profil (40%)
-    - Compétences et expérience (30%)
-    - Présence de portfolio/CV (20%)
-    - Informations de contact (10%)
-  - Recommandations personnalisées d'amélioration
+taalentio.com intègre des fonctionnalités d'intelligence artificielle avancées pour automatiser et optimiser le processus de recrutement et de casting.
 
-### 🔍 Recherche Intelligente par IA
+**Modèles IA Utilisés**:
+- **CV Analyzer**: `google/gemini-2.5-flash` (30s timeout)
+- **AI Matching (Standard & CINEMA)**: `google/gemini-2.0-flash-001:free` (60s timeout)
 
-**Powered by OpenRouter AI** (Google Gemini 2.5 Flash)
+#### 1. Analyse IA de CV (CVAnalyzerService)
 
-- **Analyse de Descriptions de Poste** :
-  - Upload de fichiers (PDF, DOCX, TXT) ou saisie de texte
-  - Extraction automatique des exigences du poste
-  - Matching intelligent avec les profils de talents
-  - Scoring de compatibilité pour chaque candidat
-  - Recommandations personnalisées avec raisons détaillées
+**Extraction et Analyse Automatique** :
+- **Formats Supportés** : PDF, DOC, DOCX (max 10 MB)
+- **Extraction Intelligente** :
+  - Texte depuis PDF (PyPDF2)
+  - Contenu depuis DOCX (python-docx)
+  - Traitement automatique de fichiers texte
+- **Analyse Sémantique** :
+  - Compréhension du contenu par IA
+  - Identification des compétences techniques et soft skills
+  - Détection de l'expérience professionnelle
+  - Extraction des formations et certifications
+  - Analyse des projets et réalisations
 
-- **Recherche de Talents CINEMA** :
-  - Analyse de descriptions de rôles cinématographiques
-  - Matching basé sur les compétences, l'expérience et les caractéristiques physiques
-  - Identification des meilleurs talents pour chaque rôle
-  - Suggestions intelligentes pour les castings
+**Score de Profil** (0-100) :
+
+L'IA évalue les CV selon ces critères:
+- **20 points** - Clarté et structure du CV
+- **25 points** - Expérience pertinente
+- **25 points** - Compétences techniques
+- **15 points** - Formation et certifications
+- **15 points** - Réalisations mesurables
+
+Le système calcule aussi un score de complétude du profil basé sur:
+- Informations personnelles (nom, email, téléphone, date de naissance, localisation)
+- Fichiers (photo, CV, portfolio)
+- Biographie et talents déclarés
+- Réseaux sociaux professionnels
+
+**Recommandations Personnalisées** :
+- Suggestions d'amélioration du profil
+- Identification des sections manquantes
+- Conseils pour maximiser la visibilité
+- Points forts à mettre en avant
+
+**Déclenchement** :
+- Manuel via l'interface administrateur
+- Endpoint: `POST /admin/analyze-cv/<user_id>`
+
+#### 2. Matching IA Intelligent (AIMatchingService)
+
+**Pour Talents Standards** :
+
+**Analyse de Descriptions de Poste** :
+- **Upload de Fichiers** : PDF, DOCX, TXT ou saisie directe
+- **Extraction Automatique** : Analyse des exigences, compétences requises, expérience
+- **Matching Multi-Critères** :
+  - Analyse des compétences techniques du CV
+  - Comparaison avec les talents déclarés
+  - Vérification de la disponibilité et mode de travail
+  - Analyse de la localisation géographique
+  - Évaluation de l'expérience professionnelle
+
+**Scoring Intelligent** (0-100) :
+- Score de compatibilité pour chaque candidat
+- **Explication Détaillée** : Justification IA du score
+- **Points Forts** : Liste des atouts du candidat pour le poste
+- **Points Faibles** : Identification des manques ou écarts
+- Classement automatique par pertinence
+
+**Résultats Structurés** :
+```json
+{
+  "success": true,
+  "candidates": [
+    {
+      "user": {...},
+      "score": 85,
+      "explication": "Candidat hautement qualifié...",
+      "points_forts": ["5 ans d'expérience", "Maîtrise React/Node"],
+      "points_faibles": ["Localisation distante"]
+    }
+  ],
+  "total_analyzed": 50,
+  "total_matched": 12
+}
+```
+
+**API Endpoint** : `POST /ai-search`
+
+#### 3. Casting IA pour Talents CINEMA
+
+**Analyse de Rôles Cinématographiques** :
+- **Description de Rôle** : Upload ou saisie directe
+- **Critères Physiques** : Âge, genre, taille, poids, teint, yeux, cheveux
+- **Critères Artistiques** : Types de talents, compétences, expérience
+- **Critères Linguistiques** : Langues parlées, accents
+- **Critères Géographiques** : Localisation, disponibilité
+
+**Matching Spécialisé CINEMA** :
+- Analyse des caractéristiques physiques détaillées
+- Évaluation de l'expérience cinématographique
+- Vérification des compétences spéciales (cascades, danse, équitation, etc.)
+- Analyse des productions précédentes
+- Compatibilité avec le type de production
+
+**Scoring Casting** (0-100) :
+- Compatibilité physique avec le rôle
+- Adéquation des compétences artistiques
+- Expérience pertinente
+- Disponibilité et localisation
+- Justifications détaillées par l'IA
+
+**Résultats Personnalisés** :
+- Top candidats classés par score
+- Profils détaillés avec photos
+- Liens directs vers profils publics et QR codes
+- Exportation PDF des résultats
+
+**API Endpoint** : `POST /cinema/ai-search`
+
+#### Configuration OpenRouter
+
+**Clé API** :
+- Variable d'environnement : `OPENROUTER_API_KEY` (prioritaire pour CV Analyzer)
+- Configuration admin : `Paramètres → Clés API` (pour AI Matching)
+- Support des clés gratuites OpenRouter
+
+**Modèles et Configuration** :
+
+**CV Analyzer Service**:
+- Modèle: `google/gemini-2.5-flash`
+- Timeout: 30 secondes
+- Température: 0.3
+- Max tokens: 1000
+
+**AI Matching Services** (Standard & CINEMA):
+- Modèle: `google/gemini-2.0-flash-001:free`
+- Timeout: 60 secondes
+- Température: 0.3
+- Headers additionnels pour référence
+
+**Optimisations** :
+- Température 0.3 pour des résultats cohérents
+- Gestion d'erreurs avec messages clairs
+- Extraction CV limitée à 3000 caractères
+- Support du français natif
+- Format JSON structuré
+
+#### Sécurité et Confidentialité IA
+
+- **Données Non Stockées** : Les prompts ne sont pas conservés par OpenRouter
+- **Anonymisation** : Seules les données nécessaires sont envoyées
+- **Chiffrement** : Communications HTTPS avec OpenRouter
+- **Conformité RGPD** : Données personnelles protégées
 
 ### 🛠️ Administration Puissante
 

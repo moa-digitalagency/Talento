@@ -32,38 +32,365 @@
 
 ### Services IA
 
+taalentio.com intègre trois services IA majeurs utilisant l'API OpenRouter pour automatiser le recrutement et le casting.
+
 #### OpenRouter AI Integration
 
-**Configuration**:
+**Configuration Technique**:
 - **Provider**: OpenRouter AI (https://openrouter.ai)
-- **Modèle**: `google/gemini-2.5-flash`
-- **API Key**: Configurée via interface admin (Paramètres → Clés API)
-- **Alternative**: Variable d'environnement `OPENROUTER_API_KEY`
+- **Endpoint**: `https://openrouter.ai/api/v1/chat/completions`
+- **Modèles**:
+  - CV Analyzer: `google/gemini-2.5-flash`
+  - AI Matching (Standard & CINEMA): `google/gemini-2.0-flash-001:free`
+- **API Key**: 
+  - CV Analyzer: Variable d'environnement `OPENROUTER_API_KEY`
+  - AI Matching: Table `app_settings` avec clé `openrouter_api_key` (via admin)
+- **Température**: 0.3 (cohérence des résultats)
+- **Timeout**: 
+  - CV Analyzer: 30 secondes
+  - AI Matching: 60 secondes
+- **Coût**: Gratuit (modèles free)
 
-**Utilisation**:
+**Headers (varient selon le service)**:
 
-1. **Analyse de CV** (`CVAnalyzerService`):
-   - Extraction de texte depuis PDF, DOC, DOCX
-   - Analyse sémantique du contenu
-   - Génération de score de profil (0-100)
-   - Extraction de compétences techniques
-   - Recommandations personnalisées
+CV Analyzer:
+```python
+{
+    'Authorization': f'Bearer {api_key}',
+    'Content-Type': 'application/json',
+    'HTTP-Referer': os.environ.get('REPLIT_DEV_DOMAIN', 'http://localhost:5004')
+}
+```
 
-2. **Matching de Talents** (`AIMatchingService`):
-   - Analyse de descriptions de poste
-   - Comparaison avec profils de talents
-   - Scoring de compatibilité
-   - Recommandations avec justifications détaillées
+AI Matching Services:
+```python
+{
+    'Authorization': f'Bearer {api_key}',
+    'Content-Type': 'application/json',
+    'HTTP-Referer': 'https://taalentio.com',
+    'X-Title': 'taalentio.com - AI Matching'
+}
+```
 
-3. **Recherche CINEMA** (`AIMatchingService.analyze_cinema_talents`):
-   - Analyse de descriptions de rôles
-   - Matching basé sur compétences et caractéristiques physiques
-   - Suggestions intelligentes pour castings
+**Gestion d'Erreurs**:
+- Vérification de la présence de la clé API
+- Timeout configuré par service
+- Logging détaillé des erreurs (via Flask logger)
+- Messages d'erreur utilisateur conviviaux
+- Retour gracieux en cas d'échec
 
-**Endpoints utilisant l'IA**:
-- `POST /ai-search` - Recherche de talents par IA
-- `POST /admin/analyze-cv/<user_id>` - Analyse IA manuelle de CV
-- `POST /cinema/ai-search` - Recherche de talents CINEMA par IA
+---
+
+#### 1. CVAnalyzerService (app/services/cv_analyzer.py)
+
+**Objectif**: Analyser automatiquement les CV uploadés et calculer un score de profil.
+
+**Extraction de Texte**:
+
+```python
+def _extract_cv_text(cv_filename: str) -> str
+```
+
+Supporte:
+- **PDF**: Extraction via PyPDF2.PdfReader
+- **DOCX**: Extraction via python-docx.Document
+- **TXT**: Lecture directe
+- **Limite**: 3000 caractères pour optimisation
+
+**Analyse IA**:
+
+```python
+def analyze_cv(cv_path: str, user_data: dict = None) -> dict
+```
+
+**Prompt de Scoring**:
+L'IA évalue selon ces critères (0-100):
+- Clarté et structure: 20 points
+- Expérience pertinente: 25 points
+- Compétences techniques: 25 points
+- Formation et certifications: 15 points
+- Réalisations mesurables: 15 points
+
+**Résultat JSON**:
+```json
+{
+    "success": true,
+    "score": 75,
+    "strengths": ["..."],
+    "weaknesses": ["..."],
+    "recommendations": ["..."],
+    "skills_detected": ["..."],
+    "experience_years": 5
+}
+```
+
+**Calcul du Score de Complétude**:
+
+```python
+def calculate_profile_score(user: User) -> int
+```
+
+Points attribués:
+- Nom/email/téléphone/date/pays/ville: 5 points chacun
+- Photo: 10 points
+- CV: 20 points
+- Portfolio: 10 points
+- Bio: 10 points
+- Talents: 15 points
+- Réseaux sociaux: jusqu'à 15 points (3 par réseau)
+
+**Déclenchement**:
+- Bouton admin "Analyser le CV"
+- Endpoint API: `POST /admin/analyze-cv/<user_id>`
+
+**Stockage**:
+Résultats stockés dans le modèle User après analyse
+
+---
+
+#### 2. AIMatchingService - Talents Standards
+
+**Fichier**: `app/services/ai_matching_service.py`
+
+**Méthode Principale**:
+
+```python
+@staticmethod
+def analyze_job_description(
+    job_description: str, 
+    user_profiles: List[User], 
+    api_key: str = None
+) -> dict
+```
+
+**Extraction de Profil**:
+
+```python
+def _extract_profile_data(user: User) -> dict
+```
+
+Extrait:
+- Informations de base (code, nom, email)
+- Localisation (ville, pays)
+- Disponibilité et mode de travail
+- Talents déclarés
+- Compétences CV (3000 premiers caractères)
+
+**Analyse Individuelle**:
+
+```python
+def _analyze_single_candidate(
+    job_description: str,
+    profile_data: dict,
+    user: User,
+    api_key: str
+) -> dict
+```
+
+**Prompt de Matching**:
+```
+Tu es un expert en recrutement.
+Analyse le profil du candidat par rapport à cette description de poste.
+
+DESCRIPTION DU POSTE:
+{job_description}
+
+PROFIL DU CANDIDAT:
+Nom: {nom}
+Code: {code}
+Localisation: {ville}, {pays}
+Disponibilité: {disponibilite}
+Talents: {talents}
+Compétences CV: {competences_cv}
+
+Fournis:
+1. Score de matching (0-100)
+2. Explication détaillée
+3. Points forts
+4. Points faibles
+
+Format JSON uniquement.
+```
+
+**Résultat par Candidat**:
+```json
+{
+    "user": {...},
+    "score": 85,
+    "explication": "Candidat hautement qualifié avec 5 ans d'expérience...",
+    "points_forts": [
+        "Maîtrise complète de React et Node.js",
+        "Portfolio impressionnant",
+        "Disponible immédiatement"
+    ],
+    "points_faibles": [
+        "Localisation éloignée du bureau",
+        "Pas d'expérience en TypeScript"
+    ]
+}
+```
+
+**Traitement JSON**:
+- Nettoyage des balises markdown (```json)
+- Parsing JSON robuste
+- Gestion des erreurs de format
+- Validation des champs requis
+
+**Endpoint**: `POST /ai-search`
+
+---
+
+#### 3. AIMatchingService - Talents CINEMA
+
+**Méthode Principale**:
+
+```python
+@staticmethod
+def analyze_cinema_talents(
+    job_description: str,
+    cinema_talent_profiles: List[CinemaTalent],
+    api_key: str = None
+) -> dict
+```
+
+**Extraction de Profil CINEMA**:
+
+```python
+def _extract_cinema_profile_data(talent: CinemaTalent) -> dict
+```
+
+Extrait:
+- Informations physiques (âge, taille, poids, teint, yeux, cheveux)
+- Ethnicités (JSON array)
+- Types de talents (Acteur, Figurant, Cascadeur, etc.)
+- Langues parlées (JSON array)
+- Compétences spéciales (JSON array)
+- Expérience (années)
+- Bio professionnelle
+
+**Prompt de Casting**:
+```
+Tu es un directeur de casting professionnel.
+Analyse le profil du talent par rapport à cette description de rôle.
+
+DESCRIPTION DU RÔLE:
+{job_description}
+
+PROFIL DU TALENT:
+Nom: {nom}
+Code: {code}
+Âge: {age} ans
+Genre: {genre}
+Taille: {taille} cm
+Poids: {poids} kg
+Teint: {teint}
+Yeux: {couleur_yeux}
+Cheveux: {couleur_cheveux} - {type_cheveux}
+Ethnicités: {ethnicites}
+Types de talents: {types_talents}
+Langues: {langues}
+Compétences: {competences}
+Expérience: {experience} ans
+Bio: {bio}
+
+Fournis:
+1. Score de matching (0-100)
+2. Explication détaillée
+3. Points forts (physiques, artistiques)
+4. Points faibles
+
+Format JSON uniquement.
+```
+
+**Spécificités CINEMA**:
+- Analyse des caractéristiques physiques détaillées
+- Évaluation de l'adéquation au rôle
+- Prise en compte de l'expérience cinématographique
+- Vérification des compétences spéciales requises
+- Analyse des productions précédentes
+
+**Endpoint**: `POST /cinema/ai-search`
+
+---
+
+#### Endpoints API IA
+
+**1. Recherche IA de Talents Standards**
+
+```
+POST /ai-search
+Content-Type: multipart/form-data
+
+Paramètres:
+- job_description (text) : Description du poste
+- job_file (file) : PDF/DOCX/TXT (optionnel)
+
+Réponse:
+{
+    "success": true,
+    "candidates": [...],
+    "total_analyzed": 50,
+    "total_matched": 12
+}
+```
+
+**2. Recherche IA CINEMA**
+
+```
+POST /cinema/ai-search
+Content-Type: multipart/form-data
+
+Paramètres:
+- role_description (text) : Description du rôle
+- role_file (file) : PDF/DOCX/TXT (optionnel)
+
+Réponse:
+{
+    "success": true,
+    "candidates": [...],
+    "total_analyzed": 30,
+    "total_matched": 8
+}
+```
+
+**3. Analyse IA de CV (Admin)**
+
+```
+POST /admin/analyze-cv/<user_id>
+Authorization: Admin requis
+
+Réponse:
+{
+    "success": true,
+    "message": "CV analysé avec succès",
+    "profile_score": 75,
+    "analysis": {...}
+}
+```
+
+---
+
+#### Sécurité et Optimisation IA
+
+**Sécurité**:
+- Clés API stockées chiffrées dans la base
+- Validation des inputs utilisateur
+- Sanitization des prompts
+- Rate limiting sur les endpoints IA
+- Logs de toutes les requêtes IA
+- Pas de stockage des prompts côté OpenRouter
+
+**Optimisation**:
+- Limitation CV à 3000 caractères
+- Timeout configuré par service (30s ou 60s)
+- Max tokens: 1000 (CV Analyzer)
+- Tri automatique par score (AI Matching)
+- Traitement séquentiel des candidats
+
+**Coûts**:
+- Modèle gratuit utilisé
+- Pas de limite de requêtes stricte
+- Monitoring de l'utilisation
 | Cryptographie | Fernet (cryptography) | Latest |
 | Hachage Mots de Passe | bcrypt | 4.1.2 |
 
