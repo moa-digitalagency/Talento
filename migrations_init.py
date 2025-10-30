@@ -27,53 +27,63 @@ from sqlalchemy import inspect, text
 from datetime import datetime, date
 
 def check_and_create_tables():
-    """Vérifie et crée les tables manquantes"""
+    """Vérifie et crée les tables manquantes avec gestion d'erreurs améliorée"""
     print("🔍 Vérification de la structure de la base de données...")
     
-    inspector = inspect(db.engine)
-    existing_tables = inspector.get_table_names()
-    
-    required_tables = [
-        'users', 'talents', 'user_talents', 'countries', 'cities',
-        'productions', 'projects', 'project_talents', 'cinema_talents',
-        'security_logs', 'activity_logs', 'app_settings', 'attendances'
-    ]
-    missing_tables = [table for table in required_tables if table not in existing_tables]
-    
-    if missing_tables:
-        print(f"⚠️  Tables manquantes détectées: {', '.join(missing_tables)}")
-        print("📝 Création des tables manquantes...")
-        db.create_all()
-        print("✅ Tables créées avec succès")
-    else:
-        print("✅ Toutes les tables existent")
-    
-    # Créer la table attendances si elle n'existe pas
-    if 'attendances' not in existing_tables:
-        print("📝 Création de la table attendances...")
-        try:
-            with db.engine.connect() as conn:
-                conn.execute(text("""
-                    CREATE TABLE IF NOT EXISTS attendances (
-                        id SERIAL PRIMARY KEY,
-                        project_id INTEGER NOT NULL REFERENCES projects(id),
-                        cinema_talent_code VARCHAR(11) NOT NULL,
-                        date DATE NOT NULL DEFAULT CURRENT_DATE,
-                        check_in_time TIMESTAMP,
-                        check_out_time TIMESTAMP,
-                        recorded_by INTEGER NOT NULL REFERENCES users(id),
-                        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-                    )
-                """))
-                conn.commit()
-            print("✅ Table attendances créée avec succès")
-        except Exception as e:
-            print(f"⚠️  Table attendances existe déjà ou erreur: {e}")
-    else:
-        print("✅ Table attendances existe déjà")
-    
-    return True
+    try:
+        inspector = inspect(db.engine)
+        existing_tables = inspector.get_table_names()
+        
+        required_tables = [
+            'users', 'talents', 'user_talents', 'countries', 'cities',
+            'productions', 'projects', 'project_talents', 'cinema_talents',
+            'security_logs', 'activity_logs', 'app_settings', 'attendances'
+        ]
+        missing_tables = [table for table in required_tables if table not in existing_tables]
+        
+        if missing_tables:
+            print(f"⚠️  Tables manquantes détectées: {', '.join(missing_tables)}")
+            print("📝 Création des tables manquantes...")
+            try:
+                db.create_all()
+                print("✅ Tables créées avec succès")
+            except Exception as e:
+                print(f"❌ Erreur lors de la création des tables: {e}")
+                raise
+        else:
+            print("✅ Toutes les tables existent")
+        
+        # Créer la table attendances si elle n'existe pas
+        if 'attendances' not in existing_tables:
+            print("📝 Création de la table attendances...")
+            try:
+                with db.engine.connect() as conn:
+                    conn.execute(text("""
+                        CREATE TABLE IF NOT EXISTS attendances (
+                            id SERIAL PRIMARY KEY,
+                            project_id INTEGER NOT NULL REFERENCES projects(id),
+                            cinema_talent_code VARCHAR(11) NOT NULL,
+                            date DATE NOT NULL DEFAULT CURRENT_DATE,
+                            check_in_time TIMESTAMP,
+                            check_out_time TIMESTAMP,
+                            recorded_by INTEGER NOT NULL REFERENCES users(id),
+                            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                        )
+                    """))
+                    conn.commit()
+                print("✅ Table attendances créée avec succès")
+            except Exception as e:
+                print(f"⚠️  Table attendances existe déjà ou erreur: {e}")
+        else:
+            print("✅ Table attendances existe déjà")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Erreur critique lors de la vérification des tables: {e}")
+        print("💡 Conseil: Vérifiez votre connexion à la base de données")
+        raise
 
 def check_and_add_columns():
     """Vérifie et ajoute les colonnes manquantes"""
@@ -197,19 +207,32 @@ def seed_countries():
     """Remplir la table avec tous les pays du monde (195 pays reconnus)"""
     print("\n🌍 Initialisation de tous les pays du monde...")
     
-    # Utiliser la liste complète des pays du monde
-    countries_data = [{'name': c['name'], 'code': c['code']} for c in WORLD_COUNTRIES]
-    
-    count = 0
-    for data in countries_data:
-        if not Country.query.filter_by(code=data['code']).first():
-            country = Country(**data)
-            db.session.add(country)
-            count += 1
-    
-    db.session.commit()
-    print(f"✅ {count} nouveaux pays ajoutés ({len(countries_data)} total)")
-    return True
+    try:
+        # Utiliser la liste complète des pays du monde
+        countries_data = [{'name': c['name'], 'code': c['code']} for c in WORLD_COUNTRIES]
+        
+        count = 0
+        for data in countries_data:
+            try:
+                if not Country.query.filter_by(code=data['code']).first():
+                    country = Country(**data)
+                    db.session.add(country)
+                    count += 1
+            except Exception as e:
+                print(f"⚠️  Erreur lors de l'ajout du pays {data['name']}: {e}")
+                continue
+        
+        if count > 0:
+            db.session.commit()
+            print(f"✅ {count} nouveaux pays ajoutés ({len(countries_data)} total)")
+        else:
+            print(f"✅ Tous les pays existent déjà ({len(countries_data)} total)")
+        return True
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"❌ Erreur lors du chargement des pays: {e}")
+        raise
 
 def seed_cities():
     """Remplir la table des villes du monde - Liste complète par pays"""
@@ -217,40 +240,60 @@ def seed_cities():
     
     print("\n🏙️  Initialisation des villes du monde...")
     
-    count = 0
-    total = 0
-    
-    # Pour chaque pays dans WORLD_CITIES
-    for country_code, cities_list in WORLD_CITIES.items():
-        # Trouver le pays correspondant dans la base de données
-        country = Country.query.filter_by(code=country_code).first()
+    try:
+        count = 0
+        total = 0
+        errors = 0
         
-        if not country:
-            print(f"  ⚠️  Pays {country_code} non trouvé, villes ignorées")
-            continue
+        # Pour chaque pays dans WORLD_CITIES
+        for country_code, cities_list in WORLD_CITIES.items():
+            # Trouver le pays correspondant dans la base de données
+            country = Country.query.filter_by(code=country_code).first()
+            
+            if not country:
+                print(f"  ⚠️  Pays {country_code} non trouvé, villes ignorées")
+                continue
+            
+            # Ajouter les villes pour ce pays
+            for city_name in cities_list:
+                try:
+                    total += 1
+                    # Générer un code unique pour la ville (code pays + compteur)
+                    # Ex: MA-001, FR-001, etc.
+                    city_code = f"{country_code}-{total:03d}"
+                    
+                    # Vérifier si la ville existe déjà (par nom ET pays)
+                    existing_city = City.query.filter_by(name=city_name, country_id=country.id).first()
+                    
+                    if not existing_city:
+                        city = City(
+                            name=city_name,
+                            code=city_code,
+                            country_id=country.id
+                        )
+                        db.session.add(city)
+                        count += 1
+                except Exception as e:
+                    errors += 1
+                    if errors < 5:  # Limiter les messages d'erreur
+                        print(f"  ⚠️  Erreur pour {city_name} ({country_code}): {e}")
+                    continue
         
-        # Ajouter les villes pour ce pays
-        for city_name in cities_list:
-            total += 1
-            # Générer un code unique pour la ville (code pays + compteur)
-            # Ex: MA-001, FR-001, etc.
-            city_code = f"{country_code}-{total:03d}"
-            
-            # Vérifier si la ville existe déjà (par nom ET pays)
-            existing_city = City.query.filter_by(name=city_name, country_id=country.id).first()
-            
-            if not existing_city:
-                city = City(
-                    name=city_name,
-                    code=city_code,
-                    country_id=country.id
-                )
-                db.session.add(city)
-                count += 1
-    
-    db.session.commit()
-    print(f"✅ {count} nouvelles villes ajoutées ({total} villes pour {len(WORLD_CITIES)} pays)")
-    return True
+        if count > 0:
+            db.session.commit()
+            print(f"✅ {count} nouvelles villes ajoutées ({total} villes pour {len(WORLD_CITIES)} pays)")
+        else:
+            print(f"✅ Toutes les villes existent déjà ({total} villes pour {len(WORLD_CITIES)} pays)")
+        
+        if errors > 0:
+            print(f"⚠️  {errors} erreurs rencontrées lors du chargement des villes")
+        
+        return True
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"❌ Erreur lors du chargement des villes: {e}")
+        raise
 
 def seed_talents():
     """Remplir la table des talents"""
