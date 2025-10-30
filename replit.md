@@ -6,6 +6,12 @@ taalentio.com is a professional web application designed to centralize and showc
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+- **2025-10-30**: Fixed CSRF and session cookie configuration for VPS deployment compatibility - SESSION_COOKIE_SAMESITE set to None, WTF_CSRF_SSL_STRICT disabled
+- **2025-10-30**: Removed all "En développement" (in development) placeholders from admin settings pages
+- **2025-10-30**: Implemented functional cache management system with real-time size calculation and timestamp tracking
+- **2025-10-30**: Fixed nationality dropdown in registration form to show actual nationalities with flag emojis instead of countries
+
 ## System Architecture
 
 ### Application Framework
