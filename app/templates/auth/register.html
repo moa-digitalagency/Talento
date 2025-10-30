@@ -162,6 +162,9 @@
                         <select id="nationality" name="nationality" required 
                                 class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 transition-all duration-200 outline-none">
                             <option value="">Sélectionner...</option>
+                            {% for nat in nationalities %}
+                            <option value="{{ nat.nationality }}">{{ nat.flag }} {{ nat.nationality }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="space-y-2">
@@ -768,12 +771,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 option2.value = country.id;
                 option2.textContent = `${flag} ${country.name}`;
                 countryResidenceSelect.appendChild(option2);
-                
-                // Ajouter aussi les pays au select nationalité
-                const option3 = document.createElement('option');
-                option3.value = country.name;  // On utilise le nom pour la nationalité
-                option3.textContent = `${flag} ${country.name}`;
-                nationalitySelect.appendChild(option3);
             });
         });
     
