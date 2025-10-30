@@ -7,6 +7,16 @@ taalentio.com is a professional web application designed to centralize and showc
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
+- **2025-10-30**: Enhanced SEO settings with secure OpenGraph image upload functionality:
+  - Changed OpenGraph image field from text input to file upload in admin/settings/system
+  - Implemented secure file handling with extension validation (png, jpg, jpeg, gif, webp)
+  - Timestamp-based unique filenames to prevent conflicts
+  - Automatic directory creation for /static/uploads/seo/
+  - Preserves existing image when no new file uploaded
+- **2025-10-30**: Updated migrations_init.py with comprehensive table list for deployment:
+  - Added all missing tables: productions, projects, project_talents, cinema_talents, security_logs, activity_logs, app_settings, attendances
+  - Prevents missing database tables during fresh deployments
+  - Ensures all models are properly created on initialization
 - **2025-10-30**: Implemented comprehensive activity and security logging across all critical user actions:
   - Authentication events: login (success/failure), logout, registration with detailed metadata
   - Profile updates: tracked with metadata on CV uploads and talent modifications
@@ -36,9 +46,10 @@ Preferred communication style: Simple, everyday language.
 - **Access Control**: Role-based (admin, presence, regular users).
 
 ### File Management
-- **Uploads**: Photos (PNG, JPG, JPEG up to 5MB) and CVs (PDF, DOC, DOCX up to 10MB).
-- **Storage**: Files organized into `photos/`, `cvs/`, `qrcodes/` with UUID-based filenames.
+- **Uploads**: Photos (PNG, JPG, JPEG up to 5MB), CVs (PDF, DOC, DOCX up to 10MB), and SEO images (PNG, JPG, JPEG, GIF, WEBP).
+- **Storage**: Files organized into `photos/`, `cvs/`, `qrcodes/`, `seo/` with timestamp-based and UUID-based filenames.
 - **QR Code Generation**: Portable system using `Config.get_base_url()` for multi-environment compatibility (Replit, VPS, local).
+- **Secure File Handling**: Extension validation, unique filenames, controlled storage paths for all uploads.
 
 ### AI Integration
 - **CV Analysis**: OpenRouter AI integration analyzes CVs for skills, summaries, and profile scores.
@@ -64,7 +75,9 @@ Preferred communication style: Simple, everyday language.
 - **Security Logs**: Comprehensive security event tracking including successful logins, failed login attempts, new registrations, backup operations - all with severity levels and action tracking.
 - **API Keys Management**: Centralized management for external service API keys (SendGrid, OpenRouter, OMDB) with masked display.
 - **System Settings**: Custom HTML head code injection for analytics, SEO, or custom CSS/JS.
+- **SEO Settings**: Comprehensive SEO configuration including meta tags, OpenGraph settings with secure image upload, Twitter cards, robots directives, and language/region settings.
 - **Backup & Restore**: Fully functional backup creation (ZIP download) and restoration via file upload - all operations are logged for audit trail.
+- **Maintenance Actions**: Reserved for future database optimization, temporary file cleanup, performance analysis, and data integrity verification features (currently in development).
 
 ### Contract Management
 - **Main Contracts Page**: `/contrats` - Planned features include creation, electronic signature, tracking, notifications, archiving, and PDF export.
