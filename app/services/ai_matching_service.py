@@ -7,7 +7,7 @@ import logging
 import os
 import requests
 from app.models import User
-from app.utils.cv_parser import extract_text_from_pdf, extract_text_from_docx
+from flask import current_app
 
 logger = logging.getLogger(__name__)
 
@@ -115,20 +115,40 @@ class AIMatchingService:
     
     @staticmethod
     def _extract_cv_text(cv_filename):
-        """Extrait le texte d'un fichier CV"""
+        """Extrait le texte d'un fichier CV en réutilisant la logique de cv_analyzer"""
         try:
-            cv_path = os.path.join('static', 'uploads', 'cvs', cv_filename)
+            import PyPDF2
+            import docx
             
-            if not os.path.exists(cv_path):
-                logger.warning(f"Fichier CV non trouvé: {cv_path}")
+            file_path = os.path.join(
+                current_app.root_path,
+                current_app.config.get('UPLOAD_FOLDER', 'static/uploads'),
+                'cvs',
+                cv_filename
+            )
+            
+            if not os.path.exists(file_path):
+                logger.warning(f"Fichier CV non trouvé: {file_path}")
                 return None
             
-            if cv_filename.lower().endswith('.pdf'):
-                return extract_text_from_pdf(cv_path)
-            elif cv_filename.lower().endswith(('.docx', '.doc')):
-                return extract_text_from_docx(cv_path)
+            ext = os.path.splitext(cv_filename)[1].lower()
+            
+            if ext == '.pdf':
+                with open(file_path, 'rb') as file:
+                    pdf_reader = PyPDF2.PdfReader(file)
+                    text = ''
+                    for page in pdf_reader.pages:
+                        text += page.extract_text() + '\n'
+                    return text
+            
+            elif ext in ['.doc', '.docx']:
+                doc = docx.Document(file_path)
+                text = '\n'.join([paragraph.text for paragraph in doc.paragraphs])
+                return text
+            
             else:
-                return None
+                with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
+                    return file.read()
                 
         except Exception as e:
             logger.error(f"Erreur lors de l'extraction du CV {cv_filename}: {e}")

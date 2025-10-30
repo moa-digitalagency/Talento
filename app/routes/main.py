@@ -419,7 +419,6 @@ def ai_search():
     """Recherche de candidats par IA basée sur une description de poste"""
     try:
         from app.services.ai_matching_service import AIMatchingService
-        from app.utils.cv_parser import extract_text_from_pdf, extract_text_from_docx
         
         job_description = request.form.get('job_description', '').strip()
         job_file = request.files.get('job_file')
@@ -453,9 +452,16 @@ def ai_search():
             
             try:
                 if file_ext == 'pdf':
-                    job_description = extract_text_from_pdf(temp_path)
+                    import PyPDF2
+                    with open(temp_path, 'rb') as file:
+                        pdf_reader = PyPDF2.PdfReader(file)
+                        job_description = ''
+                        for page in pdf_reader.pages:
+                            job_description += page.extract_text() + '\n'
                 elif file_ext in ['docx', 'doc']:
-                    job_description = extract_text_from_docx(temp_path)
+                    import docx
+                    doc = docx.Document(temp_path)
+                    job_description = '\n'.join([paragraph.text for paragraph in doc.paragraphs])
                 elif file_ext == 'txt':
                     with open(temp_path, 'r', encoding='utf-8') as f:
                         job_description = f.read()
