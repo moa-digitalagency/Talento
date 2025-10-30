@@ -561,6 +561,7 @@ def save_custom_head_code():
 @admin_required
 def save_seo_settings():
     from app.services.logging_service import LoggingService
+    from werkzeug.utils import secure_filename
     
     # Récupérer tous les champs SEO du formulaire
     seo_data = {
@@ -577,6 +578,34 @@ def save_seo_settings():
         'seo_language': request.form.get('seo_language', 'fr').strip(),
         'seo_region': request.form.get('seo_region', 'MA').strip()
     }
+    
+    # Gérer l'upload de l'image OpenGraph
+    if 'seo_og_image_file' in request.files:
+        file = request.files['seo_og_image_file']
+        if file and file.filename and file.filename != '':
+            # Vérifier que c'est bien une image
+            allowed_extensions = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+            file_ext = file.filename.rsplit('.', 1)[1].lower() if '.' in file.filename else ''
+            
+            if file_ext in allowed_extensions:
+                filename = secure_filename(file.filename)
+                # Créer un nom unique pour éviter les conflits
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                unique_filename = f"og_image_{timestamp}.{file_ext}"
+                
+                # Créer le dossier de destination s'il n'existe pas
+                upload_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], 'seo')
+                os.makedirs(upload_folder, exist_ok=True)
+                
+                # Sauvegarder le fichier
+                file_path = os.path.join(upload_folder, unique_filename)
+                file.save(file_path)
+                
+                # Mettre à jour le chemin dans seo_data
+                seo_data['seo_og_image'] = f"/static/uploads/seo/{unique_filename}"
+                flash('Image OpenGraph téléchargée avec succès.', 'success')
+            else:
+                flash('Format d\'image non supporté. Utilisez PNG, JPG, JPEG, GIF ou WEBP.', 'error')
     
     # Enregistrer les paramètres SEO
     SEOService.update_settings(seo_data)
