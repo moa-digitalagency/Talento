@@ -7,6 +7,14 @@ taalentio.com is a professional web application designed to centralize and showc
 Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
+- **2025-10-30**: Implemented advanced search filters and AI-powered talent matching for admin and cinema modules:
+  - Added multi-criteria search filters to /admin/users page (name/email, code, availability, work mode, gender, city, talents with AND logic)
+  - Integrated AI-powered search in /admin/users with text input and file upload support (PDF, DOCX, TXT up to 10MB)
+  - Added dedicated AI search feature in cinema/talents page with identical upload capabilities for casting directors
+  - Extended AIMatchingService with analyze_cinema_talents method for physical characteristics analysis
+  - Created cinema/ai_search_results.html template for professional casting results display
+  - All filters support encrypted fields through Python-side processing
+  - Secure file handling with extension validation and temporary file cleanup
 - **2025-10-30**: Implemented AI-powered job matching feature:
   - New "Recherche par IA" section in main dashboard between filters and talents list
   - Allows paste/upload of job descriptions (PDF, DOCX, TXT files up to 10MB)
