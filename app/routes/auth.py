@@ -274,6 +274,13 @@ def register():
             except Exception as e:
                 current_app.logger.error(f"Erreur envoi emails: {str(e)}")
             
+            # Vérifier si la personne est dans la liste de surveillance
+            try:
+                from app.services.watchlist_service import check_watchlist_and_notify
+                check_watchlist_and_notify(user, talent_type='talent')
+            except Exception as e:
+                current_app.logger.error(f"Erreur watchlist: {str(e)}")
+            
             flash('Votre profil a été créé avec succès ! Vérifiez votre email pour vos identifiants de connexion.', 'success')
             return redirect(url_for('auth.login'))
             

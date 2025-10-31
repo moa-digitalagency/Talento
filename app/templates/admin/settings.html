@@ -46,7 +46,17 @@
                 <span class="text-xs text-teal-600 font-bold">→ Configurer les emails</span>
             </a>
 
-            <!-- 3. Sauvegardes -->
+            <!-- 3. Suivi des Inscriptions (Watchlist) -->
+            <a href="{{ url_for('admin.settings_watchlist') }}" class="bg-purple-50 border-2 border-dashed border-purple-400 rounded-xl p-6 hover:shadow-lg transition-all hover:border-purple-600">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="text-3xl">👁️</span>
+                    <h3 class="text-lg font-bold text-gray-800">Suivi des Inscriptions</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">Liste de surveillance - Notification quand certaines personnes s'inscrivent</p>
+                <span class="text-xs text-purple-600 font-bold">→ Gérer la liste de noms</span>
+            </a>
+
+            <!-- 4. Sauvegardes -->
             <a href="{{ url_for('admin.settings_backups') }}" class="bg-orange-50 border-2 border-dashed border-orange-400 rounded-xl p-6 hover:shadow-lg transition-all hover:border-orange-600">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">💾</span>

@@ -735,6 +735,13 @@ def register_talent():
             except Exception as e:
                 current_app.logger.error(f"Erreur envoi emails CINEMA: {str(e)}")
             
+            # Vérifier si la personne est dans la liste de surveillance
+            try:
+                from app.services.watchlist_service import check_watchlist_and_notify
+                check_watchlist_and_notify(talent, talent_type='cinema')
+            except Exception as e:
+                current_app.logger.error(f"Erreur watchlist CINEMA: {str(e)}")
+            
             flash(f'Talent {talent.first_name} {talent.last_name} enregistré avec succès dans CINEMA! Un email avec les identifiants a été envoyé.', 'success')
             return redirect(url_for('cinema.talents'))
             

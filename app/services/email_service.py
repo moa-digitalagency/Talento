@@ -392,6 +392,60 @@ class EmailService:
             </html>
             """
         
+        elif template_type == 'application_confirmation':
+            profile_url = f"https://{domain}/profile/view/{data.get('unique_code', 'CODE123')}"
+            return f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #5b7ef5; border-radius: 10px; margin-top: 20px; }}
+                    .button {{ display: inline-block; background: white; color: #5b7ef5; 
+                              padding: 12px 30px; text-decoration: none; border: 2px solid #5b7ef5; 
+                              border-radius: 5px; margin: 20px 0; font-weight: bold; }}
+                    .button:hover {{ background: #5b7ef5; color: white; }}
+                    .code {{ background: #f5f5f5; border: 2px dashed #5b7ef5; padding: 15px; 
+                            font-size: 24px; font-weight: bold; text-align: center; 
+                            color: #5b7ef5; margin: 20px 0; border-radius: 5px; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>⭐ Bienvenue sur taalentio.com !</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Bonjour {data.get('full_name', 'Utilisateur')},</h2>
+                        <p>Nous avons bien reçu votre candidature sur la plateforme taalentio.com !</p>
+                        
+                        <p>Votre profil de talent a été créé avec succès. Voici votre code unique :</p>
+                        <div class="code">{data.get('unique_code', 'CODE123')}</div>
+                        
+                        <p>Vous pouvez consulter votre profil public à tout moment via ce lien :</p>
+                        <div style="text-align: center;">
+                            <a href="{profile_url}" class="button">Voir mon profil</a>
+                        </div>
+                        
+                        <p>Vous recevrez sous peu vos identifiants de connexion pour accéder à votre 
+                           espace personnel et modifier votre profil.</p>
+                        
+                        <p style="margin-top: 30px;">Cordialement,<br>
+                        <strong>L'équipe taalentio.com</strong></p>
+                    </div>
+                    <div class="footer">
+                        <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+        
         else:
             return None
         
@@ -632,7 +686,10 @@ class EmailService:
                 to_email=user.email,
                 subject=f"✅ Candidature reçue - Votre code taalentio.com : {user.unique_code}",
                 html_content=html_content,
-                attachments=attachments if attachments else None
+                attachments=attachments if attachments else None,
+                template_type='application_confirmation',
+                recipient_name=user.full_name,
+                related_talent_code=user.unique_code
             )
             
         except Exception as e:
@@ -1339,6 +1396,109 @@ class EmailService:
             </tbody>
         </table>
         """
+    
+    def send_watchlist_notification(self, admin_email, talent_data, talent_type='talent'):
+        """
+        Envoie une notification à l'admin quand une personne de la watchlist s'inscrit
+        
+        Args:
+            admin_email: Email de l'admin
+            talent_data: Dictionnaire avec full_name, unique_code, city, country
+            talent_type: 'talent' ou 'cinema'
+        
+        Returns:
+            True si envoyé, False sinon
+        """
+        try:
+            domain = get_application_domain()
+            
+            # Déterminer l'URL du profil
+            if talent_type == 'talent':
+                profile_url = f"https://{domain}/profile/view/{talent_data['unique_code']}"
+                icon = "👤"
+                type_label = "Talent"
+                color = "#4facfe"
+            else:
+                profile_url = f"https://{domain}/cinema/view-talent/{talent_data['unique_code']}"
+                icon = "🎬"
+                type_label = "Talent Cinéma"
+                color = "#fa709a"
+            
+            logo_base64 = self._get_logo_base64()
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="taalentio.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+            
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed {color}; border-radius: 10px; margin-top: 20px; }}
+                    .alert-box {{ background: #fff3cd; border: 2px dashed #ffc107; padding: 20px; 
+                                 border-radius: 10px; margin: 20px 0; text-align: center; }}
+                    .info-box {{ background: #f5f5f5; padding: 15px; border: 2px dashed {color}; 
+                                border-radius: 5px; margin: 20px 0; }}
+                    .button {{ display: inline-block; background: white; color: {color}; 
+                              padding: 12px 30px; text-decoration: none; border: 2px solid {color}; 
+                              border-radius: 5px; margin: 20px 0; font-weight: bold; }}
+                    .button:hover {{ background: {color}; color: white; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>🔔 Alerte - Liste de Surveillance</h1>
+                    </div>
+                    <div class="content">
+                        <div class="alert-box">
+                            <h2 style="margin: 0; color: #856404;">⚠️ Nouvelle inscription détectée !</h2>
+                            <p style="margin: 10px 0 0 0;">Une personne de votre liste de surveillance s'est inscrite</p>
+                        </div>
+                        
+                        <h3>{icon} Informations sur l'inscription :</h3>
+                        <div class="info-box">
+                            <p><strong>Type :</strong> {type_label}</p>
+                            <p><strong>Nom Complet :</strong> {talent_data['full_name']}</p>
+                            <p><strong>Code Unique :</strong> {talent_data['unique_code']}</p>
+                            <p><strong>Ville :</strong> {talent_data.get('city', 'N/A')}</p>
+                            <p><strong>Pays :</strong> {talent_data.get('country', 'N/A')}</p>
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <a href="{profile_url}" class="button">👁️ Voir le profil complet</a>
+                        </div>
+                        
+                        <p style="margin-top: 30px; font-size: 12px; color: #666;">
+                            Cette notification a été envoyée automatiquement parce que ce nom figure dans votre liste de surveillance.
+                            Vous pouvez gérer votre liste dans les paramètres administrateur.
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <p>© 2024 taalentio.com - Système de surveillance des inscriptions</p>
+                        <p>Ceci est un email automatique, merci de ne pas y répondre.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            return self.send_email(
+                to_email=admin_email,
+                subject=f"🔔 Alerte Watchlist - {talent_data['full_name']} s'est inscrit comme {type_label}",
+                html_content=html_content,
+                template_type='watchlist_notification',
+                recipient_name='Admin',
+                related_talent_code=talent_data['unique_code']
+            )
+            
+        except Exception as e:
+            current_app.logger.error(f"Erreur envoi notification watchlist: {str(e)}")
+            return False
 
 # Instance globale
 email_service = EmailService()

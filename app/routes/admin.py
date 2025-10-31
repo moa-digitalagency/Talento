@@ -1676,3 +1676,129 @@ def restore_backup():
         flash(f'Erreur lors de la restauration: {str(e)}', 'error')
         return redirect(url_for('admin.settings'))
 
+# ==================== Watchlist Routes ====================
+
+@bp.route('/settings/watchlist')
+@login_required
+@admin_required
+def settings_watchlist():
+    """
+    Page de gestion de la liste de surveillance des inscriptions
+    """
+    from app.models.settings import AppSettings
+    from app.models.user import User
+    from app.models.cinema_talent import CinemaTalent
+    import unicodedata
+    import re
+    
+    # Récupérer la configuration
+    watchlist_names_raw = AppSettings.get('watchlist_names', '')
+    watchlist_notification_email = AppSettings.get('watchlist_notification_email', '')
+    watchlist_enabled = AppSettings.get('watchlist_enabled', False)
+    
+    # Récupérer les personnes détectées
+    detected_registrations = []
+    
+    if watchlist_names_raw:
+        # Normaliser les noms de la watchlist
+        watchlist_names = [name.strip().lower() for name in watchlist_names_raw.split('\n') if name.strip()]
+        
+        def normalize_name(text):
+            """Normalise un nom en retirant les accents et les caractères spéciaux"""
+            if not text:
+                return ""
+            # Supprimer les accents
+            nfkd_form = unicodedata.normalize('NFKD', text.lower())
+            return ''.join([c for c in nfkd_form if not unicodedata.combining(c)])
+        
+        # Chercher dans les talents
+        all_talents = User.query.filter_by(role='user').all()
+        for talent in all_talents:
+            full_name_normalized = normalize_name(talent.full_name)
+            first_name_normalized = normalize_name(talent.first_name)
+            last_name_normalized = normalize_name(talent.last_name)
+            
+            for watch_name in watchlist_names:
+                watch_name_normalized = normalize_name(watch_name)
+                if (watch_name_normalized in full_name_normalized or 
+                    watch_name_normalized == first_name_normalized or 
+                    watch_name_normalized == last_name_normalized):
+                    detected_registrations.append({
+                        'full_name': talent.full_name,
+                        'unique_code': talent.unique_code,
+                        'type': 'talent',
+                        'city': talent.city.name if talent.city else None,
+                        'country': talent.country.name if talent.country else None,
+                        'created_at': talent.created_at
+                    })
+                    break
+        
+        # Chercher dans les talents cinéma
+        all_cinema_talents = CinemaTalent.query.all()
+        for cinema_talent in all_cinema_talents:
+            full_name_normalized = normalize_name(cinema_talent.full_name)
+            first_name_normalized = normalize_name(cinema_talent.first_name)
+            last_name_normalized = normalize_name(cinema_talent.last_name)
+            
+            for watch_name in watchlist_names:
+                watch_name_normalized = normalize_name(watch_name)
+                if (watch_name_normalized in full_name_normalized or 
+                    watch_name_normalized == first_name_normalized or 
+                    watch_name_normalized == last_name_normalized):
+                    detected_registrations.append({
+                        'full_name': cinema_talent.full_name,
+                        'unique_code': cinema_talent.unique_code,
+                        'type': 'cinema',
+                        'city': cinema_talent.city,
+                        'country': cinema_talent.country,
+                        'created_at': cinema_talent.created_at
+                    })
+                    break
+        
+        # Trier par date (plus récent en premier)
+        detected_registrations.sort(key=lambda x: x['created_at'] if x['created_at'] else '', reverse=True)
+    
+    return render_template(
+        'admin/settings/watchlist.html',
+        watchlist_names=watchlist_names_raw,
+        watchlist_notification_email=watchlist_notification_email,
+        watchlist_enabled=watchlist_enabled,
+        detected_registrations=detected_registrations
+    )
+
+@bp.route('/settings/watchlist/save', methods=['POST'])
+@login_required
+@admin_required
+def save_watchlist():
+    """
+    Sauvegarde la configuration de la liste de surveillance
+    """
+    from app.models.settings import AppSettings
+    from app.services.logging_service import LoggingService
+    
+    try:
+        watchlist_names = request.form.get('watchlist_names', '')
+        watchlist_notification_email = request.form.get('watchlist_notification_email', '')
+        watchlist_enabled = 'watchlist_enabled' in request.form
+        
+        # Sauvegarder la configuration
+        AppSettings.set('watchlist_names', watchlist_names)
+        AppSettings.set('watchlist_notification_email', watchlist_notification_email)
+        AppSettings.set('watchlist_enabled', watchlist_enabled)
+        
+        # Logger l'activité
+        LoggingService.log_activity(
+            user=current_user,
+            action_type='update',
+            action_category='settings',
+            description=f'Configuration de la liste de surveillance mise à jour',
+            status='success'
+        )
+        
+        flash('✅ Configuration de la liste de surveillance enregistrée avec succès!', 'success')
+        
+    except Exception as e:
+        current_app.logger.error(f'Erreur lors de la sauvegarde de la watchlist: {e}')
+        flash(f'❌ Erreur lors de la sauvegarde: {str(e)}', 'error')
+    
+    return redirect(url_for('admin.settings_watchlist'))
