@@ -547,27 +547,258 @@ def send_project_selection_emails(project_id):
         )
 ```
 
+**5. Inscription Talent Standard**
+
+```python
+def send_application_confirmation(self, user, profile_pdf_path=None):
+    """
+    Envoie un email de confirmation d'inscription talent standard
+    
+    Args:
+        user: Objet User
+        profile_pdf_path: Chemin du PDF de profil (optionnel)
+    """
+```
+
+**Template** : `talent_registration`
+
+**Contenu** :
+- Message de bienvenue personnalisé
+- Code unique attribué
+- Lien vers le profil public
+- Instructions de prochaines étapes
+
+**6. Inscription Talent Cinéma**
+
+**Template** : `cinema_talent_registration`
+
+**Contenu** :
+- Confirmation d'enregistrement CINEMA
+- Code unique CINEMA (format: PPVVVNNNNNG)
+- Lien vers profil cinéma public
+- Accès aux fonctionnalités CINEMA
+
+**7. Identifiants de Connexion**
+
+```python
+def send_login_credentials(self, user, password):
+    """
+    Envoie les identifiants de connexion pour un nouveau compte
+    
+    Args:
+        user: Objet User
+        password: Mot de passe temporaire en clair
+    """
+```
+
+**Template** : `login_credentials`
+
+**Contenu** :
+- Code unique d'identification
+- Mot de passe temporaire
+- Lien de connexion direct
+- Recommandations de sécurité
+- Alerte pour changer le mot de passe
+
+**8. Récapitulatif Hebdomadaire - Talents**
+
+```python
+def send_weekly_admin_recap(self, admin_email, sent_by_user_id=None):
+    """
+    Envoie le récapitulatif hebdomadaire des nouvelles inscriptions
+    Envoie 2 emails séparés : un pour les talents, un pour les talents cinéma
+    
+    Args:
+        admin_email: Email de l'admin
+        sent_by_user_id: ID de l'utilisateur (optionnel)
+    
+    Returns:
+        dict avec les résultats des envois
+    """
+```
+
+**Template** : `weekly_recap_talents`
+
+**Déclenchement** : Automatique chaque dimanche à 12:59 PM via APScheduler
+
+**Contenu** :
+- Nombre de nouveaux talents inscrits (7 derniers jours)
+- Tableau détaillé avec nom, code, ville, pays, date
+- Liens directs vers chaque profil
+- Design bleu avec bordures pointillées
+
+**9. Récapitulatif Hebdomadaire - Talents Cinéma**
+
+**Template** : `weekly_recap_cinema`
+
+**Déclenchement** : Automatique chaque dimanche à 12:59 PM via APScheduler
+
+**Contenu** :
+- Nombre de nouveaux talents cinéma inscrits (7 derniers jours)
+- Tableau détaillé avec nom, code, ville, pays, date
+- Liens directs vers chaque profil CINEMA
+- Design rouge/rose avec bordures pointillées
+
+**10. Détection de Nom Surveillé**
+
+```python
+def send_name_detection_notification(self, notification_email, tracked_name, 
+                                      match_data, sent_by_user_id=None):
+    """
+    Envoie une notification lors de la détection d'un nom surveillé
+    
+    Args:
+        notification_email: Email où envoyer la notification
+        tracked_name: Nom qui était surveillé
+        match_data: Dictionnaire avec informations de la correspondance
+            - registered_name: Nom tel qu'enregistré
+            - unique_code: Code unique du talent
+            - talent_type: 'talent' ou 'cinema'
+            - email: Email du talent
+            - city: Ville
+            - country: Pays
+            - tracking_description: Note de surveillance
+        sent_by_user_id: ID de l'utilisateur (optionnel)
+    """
+```
+
+**Template** : `name_detection`
+
+**Contenu** :
+- Alerte de correspondance avec nom surveillé
+- Nom surveillé vs nom enregistré
+- Informations complètes (code, type, email, localisation)
+- Note de surveillance associée
+- Lien direct vers le profil
+- Design rouge avec alerte visuelle
+
+#### Planificateur de Tâches (APScheduler)
+
+**Fichier** : `app/scheduler.py`
+
+**Configuration** :
+
+```python
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
+
+scheduler = BackgroundScheduler({
+    'apscheduler.timezone': 'Africa/Casablanca'
+})
+```
+
+**Tâches Planifiées** :
+
+```python
+# Récapitulatif hebdomadaire - Tous les dimanches à 12:59 PM
+scheduler.add_job(
+    func=send_weekly_recap,
+    trigger=CronTrigger(day_of_week='sun', hour=12, minute=59),
+    id='weekly_recap',
+    name='Récapitulatif Hebdomadaire Admin',
+    replace_existing=True
+)
+```
+
+**Fonction send_weekly_recap** :
+
+```python
+def send_weekly_recap():
+    """
+    Envoie le récapitulatif hebdomadaire à l'admin
+    Appelé tous les dimanches à 12:59 PM
+    """
+    from app.models.settings import AppSettings
+    from app.services.email_service import email_service
+    
+    # Récupère l'email admin depuis app_settings.admin_notification_email
+    admin_email = AppSettings.get('admin_notification_email')
+    
+    # Envoie 2 emails séparés (talents + cinema)
+    results = email_service.send_weekly_admin_recap(admin_email)
+```
+
+**Statut du Scheduler** :
+
+```python
+def get_scheduler_status():
+    """Retourne le statut du scheduler et ses tâches"""
+    return {
+        'running': scheduler.running,
+        'jobs': [
+            {
+                'id': job.id,
+                'name': job.name,
+                'next_run': job.next_run_time,
+                'trigger': str(job.trigger)
+            }
+            for job in scheduler.get_jobs()
+        ]
+    }
+```
+
+**Déclenchement Manuel** :
+
+```python
+def trigger_weekly_recap_now():
+    """Déclenche manuellement le récapitulatif (pour test)"""
+    send_weekly_recap()
+    return {'success': True, 'message': 'Récapitulatif déclenché'}
+```
+
 #### Configuration des Templates
 
 **Table** : `app_settings`
 **Clé** : `email_notifications_config`
 
+**Liste Complète des Templates** :
+
 ```json
 {
+  "talent_registration": {
+    "enabled": true,
+    "name": "Inscription Talent",
+    "description": "Email envoyé après l'inscription d'un nouveau talent"
+  },
+  "cinema_talent_registration": {
+    "enabled": true,
+    "name": "Inscription Talent Cinéma",
+    "description": "Email envoyé après l'inscription d'un nouveau talent cinéma"
+  },
   "ai_talent_match": {
     "enabled": true,
     "name": "Match IA - Talents",
-    "description": "Notification de correspondance recherche IA"
+    "description": "Notification envoyée aux talents lorsque leur profil correspond à une recherche IA"
   },
   "ai_cinema_match": {
     "enabled": true,
     "name": "Match IA - Cinéma",
-    "description": "Notification de correspondance casting"
+    "description": "Notification envoyée aux talents cinéma lorsque leur profil correspond à un rôle"
   },
   "project_selection": {
     "enabled": true,
     "name": "Sélection Projet",
-    "description": "Email de confirmation sélection projet"
+    "description": "Email de confirmation envoyé aux talents sélectionnés pour un projet"
+  },
+  "login_credentials": {
+    "enabled": true,
+    "name": "Identifiants de Connexion",
+    "description": "Email contenant les identifiants de connexion"
+  },
+  "weekly_recap_talents": {
+    "enabled": true,
+    "name": "Récapitulatif Hebdomadaire - Talents",
+    "description": "Email récapitulatif des nouvelles inscriptions de talents envoyé chaque dimanche"
+  },
+  "weekly_recap_cinema": {
+    "enabled": true,
+    "name": "Récapitulatif Hebdomadaire - Talents Cinéma",
+    "description": "Email récapitulatif des nouvelles inscriptions de talents cinéma envoyé chaque dimanche"
+  },
+  "name_detection": {
+    "enabled": true,
+    "name": "Détection de Nom",
+    "description": "Email de notification lors de la détection d'un nom existant dans le système"
   }
 }
 ```
@@ -580,6 +811,15 @@ def is_template_enabled(template_type):
     email_config = AppSettings.get('email_notifications_config', {})
     return email_config.get(template_type, {}).get('enabled', True)
 ```
+
+**Interface Admin** : `/admin/settings/email-notifications`
+
+**Fonctionnalités** :
+- Statistiques en temps réel (total, succès, échecs)
+- Activation/désactivation par template (toggle)
+- Historique complet avec pagination
+- Filtrage par type et statut
+- Visualisation du contenu HTML de chaque email
 
 #### Interface Admin
 
