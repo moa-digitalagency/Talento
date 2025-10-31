@@ -678,6 +678,20 @@ def register_talent():
             if talent_types:
                 talent.talent_types = json.dumps(talent_types)
             
+            # Generate unique code for CINEMA talent (format: PPVVVNNNNNG)
+            from app.utils.cinema_code_generator import generate_cinema_unique_code
+            talent.unique_code = generate_cinema_unique_code(
+                talent.country_of_residence,
+                talent.city_of_residence,
+                talent.gender
+            )
+            
+            # Generate QR code for CINEMA talent
+            from app.utils.qr_generator import generate_qr_code
+            qr_path = os.path.join('app', 'static', 'uploads', 'qrcodes')
+            qr_filename = generate_qr_code(talent.unique_code, qr_path)
+            talent.qr_code_filename = qr_filename
+            
             db.session.add(talent)
             db.session.flush()
             
