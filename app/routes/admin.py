@@ -687,11 +687,6 @@ def settings_email_notifications():
             'description': 'Email de confirmation envoyé aux talents sélectionnés pour un projet',
             'enabled': email_config.get('project_selection', {}).get('enabled', True) if isinstance(email_config.get('project_selection'), dict) else True
         },
-        'application_confirmation': {
-            'name': 'Confirmation Candidature',
-            'description': 'Email de confirmation envoyé après une candidature',
-            'enabled': email_config.get('application_confirmation', {}).get('enabled', True) if isinstance(email_config.get('application_confirmation'), dict) else True
-        },
         'login_credentials': {
             'name': 'Identifiants de Connexion',
             'description': 'Email contenant les identifiants de connexion',
