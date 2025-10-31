@@ -6,6 +6,23 @@ taalentio.com is a professional web application designed to centralize and showc
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (October 31, 2025)
+
+### Automated Email Recaps
+- **Weekly Admin Recap**: Automated weekly email system that sends a summary every Sunday at 12:59 PM to the admin with new registrations from the past week, separated into regular talents and cinema talents. Includes registration count, names, locations, unique codes, and direct profile view buttons.
+- **Scheduler**: APScheduler integrated for automated task scheduling (`app/scheduler.py`).
+
+### Enhanced AI Configuration
+- **Per-Provider Model Selection**: Added model selection dropdowns in admin settings for all AI providers (Perplexity, OpenAI, Gemini) to complement the existing OpenRouter model selection. Administrators can now choose specific models for each provider:
+  - **Perplexity**: llama-3.1-sonar-small/large/huge-128k-online
+  - **OpenAI**: gpt-4o-mini, gpt-4o, gpt-4-turbo, gpt-3.5-turbo
+  - **Gemini**: gemini-2.0-flash-exp, gemini-1.5-flash, gemini-1.5-pro
+- **Dynamic Configuration**: AIProviderService now reads model selections from AppSettings, allowing runtime configuration changes without code modifications.
+
+### Name Tracking System
+- **NameTracking Model**: Created database models (`NameTracking`, `NameTrackingMatch`) to enable administrators to monitor specific names during registration and receive notifications when tracked individuals register.
+- **Infrastructure Ready**: Models are in place and ready for implementation of admin UI and notification system.
+
 ## System Architecture
 
 ### Application Framework
@@ -13,10 +30,11 @@ The backend is built with Flask 3.0.0 (Python 3.11), using Blueprints for modula
 
 ### Database Architecture
 - **ORM**: SQLAlchemy with Flask-SQLAlchemy, supporting PostgreSQL (production) and SQLite (development).
-- **Data Models**: Includes User, Talent, UserTalent, Country, City, AppSettings, CinemaTalent, Production, Project, and ProjectTalent. Sensitive data is encrypted using Fernet, and passwords are hashed with Werkzeug.
+- **Data Models**: Includes User, Talent, UserTalent, Country, City, AppSettings, CinemaTalent, Production, Project, ProjectTalent, NameTracking, and NameTrackingMatch. Sensitive data is encrypted using Fernet, and passwords are hashed with Werkzeug.
 - **Unique Identification**: Distinct codes for main talent profiles (PPGNNNNVVV), CINEMA profiles (PPVVVNNNNNG), and project codes (CCIIISSSNNN).
 - **Automatic Data Verification**: Ensures essential data (countries, cities, talents) is loaded and verified at startup, automatically reloading if thresholds are not met.
 - **Data Sources**: Utilizes `WORLD_COUNTRIES`, `WORLD_CITIES`, `TALENT_CATEGORIES`, and `NATIONALITIES_WITH_FLAGS`.
+- **Name Tracking**: NameTracking and NameTrackingMatch models enable monitoring of specific names during registration.
 
 ### Authentication & Authorization
 - **Authentication**: Flask-Login, supporting dual login via email or unique code.
@@ -26,13 +44,13 @@ The backend is built with Flask 3.0.0 (Python 3.11), using Blueprints for modula
 Supports uploads of photos, CVs, and SEO images. Files are organized into specific directories (`photos/`, `cvs/`, `qrcodes/`, `seo/`) with secure handling, including extension validation and unique filenames. QR codes are generated dynamically for multi-environment compatibility.
 
 ### AI Integration
-Features multi-provider AI support (OpenRouter, Perplexity, OpenAI, Google Gemini) for talent matching, CV analysis, and job description analysis. Includes AI-powered search for both general talents and cinema-specific characteristics.
+Features multi-provider AI support (OpenRouter, Perplexity, OpenAI, Google Gemini) for talent matching, CV analysis, and job description analysis. Includes AI-powered search for both general talents and cinema-specific characteristics. Each provider now supports customizable model selection through admin settings, with sensible defaults configured per provider.
 
 ### Data Export & Backup
 Provides talent data export in Excel, CSV, and PDF formats. Includes a comprehensive system for full application backup and restoration.
 
 ### Email System
-Utilizes SendGrid API for transactional emails, including application confirmations and login credentials.
+Utilizes SendGrid API for transactional emails, including application confirmations, login credentials, and automated weekly admin recaps. APScheduler manages scheduled email tasks.
 
 ### Frontend Architecture
 Employs Jinja2 for templating and Tailwind CSS (CDN) for styling. The UI/UX is designed for a modern, professional aesthetic with multi-step forms, role-based dynamic navigation, and consistent branding.
@@ -73,4 +91,5 @@ Offers a session-based API (`/api/v1`) with endpoints for authentication, user m
 - **File Processing**: Pillow, PyPDF2, `python-docx`.
 - **Data Export**: `pandas`, `openpyxl`, ReportLab.
 - **Email**: `sendgrid`.
+- **Scheduling**: APScheduler (for automated tasks).
 - **Utilities**: `qrcode`, `requests`, `email-validator`, `python-dotenv`, `phonenumbers`, `psutil`.
