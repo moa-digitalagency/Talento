@@ -260,7 +260,25 @@ Le système calcule aussi un score de complétude du profil basé sur:
 
 #### Notifications Automatiques
 
-**1. Match IA - Recherche de Talents**
+**1. Inscription Talent Standard**
+- **Déclenchement** : Après l'inscription d'un nouveau talent sur la plateforme
+- **Contenu** :
+  - Message de bienvenue personnalisé
+  - Code unique attribué
+  - Lien vers le profil public avec QR code
+  - Prochaines étapes
+- **Template** : `talent_registration`
+
+**2. Inscription Talent Cinéma**
+- **Déclenchement** : Après l'inscription d'un nouveau talent au module CINEMA
+- **Contenu** :
+  - Confirmation d'enregistrement CINEMA
+  - Code unique CINEMA
+  - Lien vers le profil cinéma public
+  - Accès aux fonctionnalités CINEMA
+- **Template** : `cinema_talent_registration`
+
+**3. Match IA - Recherche de Talents**
 - **Déclenchement** : Dès qu'un profil correspond à une recherche IA
 - **Contenu** :
   - Description de l'opportunité
@@ -269,7 +287,7 @@ Le système calcule aussi un score de complétude du profil basé sur:
   - Lien direct vers le profil du talent
 - **Template** : `ai_talent_match`
 
-**2. Match IA - Casting Cinéma**
+**4. Match IA - Casting Cinéma**
 - **Déclenchement** : Quand un profil cinéma correspond à un rôle
 - **Contenu** :
   - Description du rôle recherché
@@ -278,7 +296,7 @@ Le système calcule aussi un score de complétude du profil basé sur:
   - Lien vers le profil cinéma complet
 - **Template** : `ai_cinema_match`
 
-**3. Sélection pour un Projet**
+**5. Sélection pour un Projet**
 - **Déclenchement** : Lorsqu'un talent est assigné à un projet
 - **Envoi** : Via bouton "✉️ Envoyer Emails" dans l'interface projet
 - **Contenu** :
@@ -289,15 +307,7 @@ Le système calcule aussi un score de complétude du profil basé sur:
   - Liens directs vers profil et badge téléchargeable
 - **Template** : `project_selection`
 
-**4. Confirmation de Candidature**
-- **Déclenchement** : Lors de l'inscription d'un nouveau talent
-- **Contenu** :
-  - Code unique du talent
-  - Lien vers le profil public
-  - Informations de connexion
-- **Template** : `application_confirmation`
-
-**5. Identifiants de Connexion**
+**6. Identifiants de Connexion**
 - **Déclenchement** : Création de compte par un administrateur
 - **Contenu** :
   - Code unique d'identification
@@ -305,6 +315,49 @@ Le système calcule aussi un score de complétude du profil basé sur:
   - Lien de connexion direct
   - Recommandations de sécurité
 - **Template** : `login_credentials`
+
+**7. Récapitulatif Hebdomadaire - Talents**
+- **Déclenchement** : Automatique chaque dimanche à 12:59 PM (Timezone Maroc)
+- **Destinataire** : Administrateur (configurable via `admin_notification_email`)
+- **Contenu** :
+  - Nombre de nouveaux talents inscrits dans les 7 derniers jours
+  - Tableau détaillé avec nom, code, ville, pays, date d'inscription
+  - Liens directs vers chaque profil
+- **Template** : `weekly_recap_talents`
+
+**8. Récapitulatif Hebdomadaire - Talents Cinéma**
+- **Déclenchement** : Automatique chaque dimanche à 12:59 PM (Timezone Maroc)
+- **Destinataire** : Administrateur (configurable via `admin_notification_email`)
+- **Contenu** :
+  - Nombre de nouveaux talents cinéma inscrits dans les 7 derniers jours
+  - Tableau détaillé avec nom, code, ville, pays, date d'inscription
+  - Liens directs vers chaque profil CINEMA
+- **Template** : `weekly_recap_cinema`
+
+**9. Détection de Nom Surveillé**
+- **Déclenchement** : Lorsqu'un nom de la liste de surveillance s'inscrit
+- **Destinataire** : Email configuré dans la surveillance (par défaut admin)
+- **Contenu** :
+  - Alerte de correspondance avec nom surveillé
+  - Informations complètes de l'inscription (nom, code, type, email, localisation)
+  - Note de surveillance associée
+  - Lien direct vers le profil pour vérification
+- **Template** : `name_detection`
+
+#### Planificateur de Tâches (Scheduler)
+
+Le système utilise **APScheduler** pour automatiser l'envoi de notifications récurrentes :
+
+**Configuration** :
+- Timezone : `Africa/Casablanca` (Maroc)
+- État : Toujours actif en arrière-plan
+- Arrêt automatique : Lors de la fermeture de l'application
+
+**Tâches Planifiées** :
+- **Récapitulatif Hebdomadaire** : Tous les dimanches à 12:59 PM
+  - Envoie 2 emails séparés (talents standards + talents cinéma)
+  - Déclenchement manuel possible via `/admin/settings/email-notifications`
+  - Logs complets dans l'historique des emails
 
 #### Gestion Centralisée des Emails
 
