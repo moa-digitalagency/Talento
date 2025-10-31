@@ -92,17 +92,17 @@ class EmailService:
             <head>
                 <meta charset="utf-8">
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
                     .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
-                    .button {{ display: inline-block; background: #667eea; color: white; 
-                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
-                              margin: 20px 0; }}
-                    .code {{ background: #fff; border: 2px dashed #667eea; padding: 15px; 
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #5b7ef5; border-radius: 10px; margin-top: 20px; }}
+                    .button {{ display: inline-block; background: white; color: #5b7ef5; 
+                              padding: 12px 30px; text-decoration: none; border: 2px solid #5b7ef5; 
+                              border-radius: 5px; margin: 20px 0; font-weight: bold; }}
+                    .button:hover {{ background: #5b7ef5; color: white; }}
+                    .code {{ background: #f5f5f5; border: 2px dashed #5b7ef5; padding: 15px; 
                             font-size: 24px; font-weight: bold; text-align: center; 
-                            color: #667eea; margin: 20px 0; border-radius: 5px; }}
+                            color: #5b7ef5; margin: 20px 0; border-radius: 5px; }}
                     .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
                 </style>
             </head>
@@ -144,15 +144,15 @@ class EmailService:
             <head>
                 <meta charset="utf-8">
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
                     .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
-                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                    .content {{ background: #fff5f7; padding: 30px; border-radius: 0 0 10px 10px; }}
-                    .button {{ display: inline-block; background: #f5576c; color: white; 
-                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
-                              margin: 20px 0; }}
-                    .code {{ background: #fff; border: 2px dashed #f5576c; padding: 15px; 
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #f5576c; border-radius: 10px; margin-top: 20px; }}
+                    .button {{ display: inline-block; background: white; color: #f5576c; 
+                              padding: 12px 30px; text-decoration: none; border: 2px solid #f5576c; 
+                              border-radius: 5px; margin: 20px 0; font-weight: bold; }}
+                    .button:hover {{ background: #f5576c; color: white; }}
+                    .code {{ background: #f5f5f5; border: 2px dashed #f5576c; padding: 15px; 
                             font-size: 24px; font-weight: bold; text-align: center; 
                             color: #f5576c; margin: 20px 0; border-radius: 5px; }}
                     .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
@@ -193,13 +193,14 @@ class EmailService:
             <head>
                 <meta charset="utf-8">
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
                     .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
-                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                    .content {{ background: #f0f9ff; padding: 30px; border-radius: 0 0 10px 10px; }}
-                    .score {{ background: #4facfe; color: white; padding: 20px; 
-                             text-align: center; border-radius: 10px; margin: 20px 0; }}
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #4facfe; border-radius: 10px; margin-top: 20px; }}
+                    .score {{ background: #f5f5f5; border: 2px dashed #4facfe; color: #4facfe; padding: 20px; 
+                             text-align: center; border-radius: 10px; margin: 20px 0; font-weight: bold; }}
+                    .opportunity-box {{ background: #f5f5f5; padding: 15px; border: 2px dashed #4facfe; 
+                                       border-radius: 5px; margin: 20px 0; }}
                     .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
                 </style>
             </head>
@@ -213,7 +214,7 @@ class EmailService:
                         <h2>Bonjour {data.get('full_name', 'Utilisateur')},</h2>
                         <p>Notre intelligence artificielle a identifié que votre profil correspond à une recherche active :</p>
                         
-                        <div style="background: white; padding: 15px; border-left: 4px solid #4facfe; margin: 20px 0;">
+                        <div class="opportunity-box">
                             <strong>Description de l'opportunité :</strong>
                             <p>{data.get('job_description', "Description de l'opportunité...")}</p>
                         </div>
@@ -241,13 +242,14 @@ class EmailService:
             <head>
                 <meta charset="utf-8">
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
                     .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); 
-                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                    .content {{ background: #fffbf0; padding: 30px; border-radius: 0 0 10px 10px; }}
-                    .score {{ background: #fa709a; color: white; padding: 20px; 
-                             text-align: center; border-radius: 10px; margin: 20px 0; }}
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #fa709a; border-radius: 10px; margin-top: 20px; }}
+                    .score {{ background: #f5f5f5; border: 2px dashed #fa709a; color: #fa709a; padding: 20px; 
+                             text-align: center; border-radius: 10px; margin: 20px 0; font-weight: bold; }}
+                    .role-box {{ background: #f5f5f5; padding: 15px; border: 2px dashed #fa709a; 
+                                border-radius: 5px; margin: 20px 0; }}
                     .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
                 </style>
             </head>
@@ -261,7 +263,7 @@ class EmailService:
                         <h2>Bonjour {data.get('full_name', 'Utilisateur')},</h2>
                         <p>Excellente nouvelle ! Notre IA a détecté que votre profil CINEMA correspond à un casting en cours :</p>
                         
-                        <div style="background: white; padding: 15px; border-left: 4px solid #fa709a; margin: 20px 0;">
+                        <div class="role-box">
                             <strong>Description du rôle :</strong>
                             <p>{data.get('role_description', "Description du rôle...")}</p>
                         </div>
@@ -289,12 +291,11 @@ class EmailService:
             <head>
                 <meta charset="utf-8">
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
                     .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); 
-                              color: #333; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                    .content {{ background: #f5f5f5; padding: 30px; border-radius: 0 0 10px 10px; }}
-                    .project-box {{ background: white; padding: 20px; border: 2px solid #a8edea; 
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #a8edea; border-radius: 10px; margin-top: 20px; }}
+                    .project-box {{ background: #f5f5f5; padding: 20px; border: 2px dashed #a8edea; 
                                    border-radius: 10px; margin: 20px 0; }}
                     .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
                 </style>
@@ -333,22 +334,22 @@ class EmailService:
             <head>
                 <meta charset="utf-8">
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
                     .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
-                    .button {{ display: inline-block; background: #667eea; color: white; 
-                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
-                              margin: 20px 0; }}
-                    .credentials {{ background: #fff; border: 2px solid #667eea; padding: 20px; 
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #5b7ef5; border-radius: 10px; margin-top: 20px; }}
+                    .button {{ display: inline-block; background: white; color: #5b7ef5; 
+                              padding: 12px 30px; text-decoration: none; border: 2px solid #5b7ef5; 
+                              border-radius: 5px; margin: 20px 0; font-weight: bold; }}
+                    .button:hover {{ background: #5b7ef5; color: white; }}
+                    .credentials {{ background: #f5f5f5; border: 2px dashed #5b7ef5; padding: 20px; 
                                    border-radius: 5px; margin: 20px 0; }}
                     .credential-item {{ margin: 15px 0; }}
-                    .credential-label {{ color: #666; font-size: 14px; }}
-                    .credential-value {{ background: #f0f0f0; padding: 10px; border-radius: 3px; 
+                    .credential-label {{ color: #666; font-size: 14px; font-weight: bold; }}
+                    .credential-value {{ background: #fff; padding: 10px; border-radius: 3px; 
                                         font-family: monospace; font-size: 16px; margin-top: 5px; }}
-                    .warning {{ background: #fff3cd; border-left: 4px solid #ffc107; 
-                               padding: 15px; margin: 20px 0; }}
+                    .warning {{ background: #fff3cd; border: 2px dashed #ffc107; 
+                               padding: 15px; margin: 20px 0; border-radius: 5px; }}
                     .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
                 </style>
             </head>
@@ -571,17 +572,17 @@ class EmailService:
             <head>
                 <meta charset="utf-8">
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
                     .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
-                    .button {{ display: inline-block; background: #667eea; color: white; 
-                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
-                              margin: 20px 0; }}
-                    .code {{ background: #fff; border: 2px dashed #667eea; padding: 15px; 
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #5b7ef5; border-radius: 10px; margin-top: 20px; }}
+                    .button {{ display: inline-block; background: white; color: #5b7ef5; 
+                              padding: 12px 30px; text-decoration: none; border: 2px solid #5b7ef5; 
+                              border-radius: 5px; margin: 20px 0; font-weight: bold; }}
+                    .button:hover {{ background: #5b7ef5; color: white; }}
+                    .code {{ background: #f5f5f5; border: 2px dashed #5b7ef5; padding: 15px; 
                             font-size: 24px; font-weight: bold; text-align: center; 
-                            color: #667eea; margin: 20px 0; border-radius: 5px; }}
+                            color: #5b7ef5; margin: 20px 0; border-radius: 5px; }}
                     .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
                 </style>
             </head>
@@ -663,22 +664,22 @@ class EmailService:
             <head>
                 <meta charset="utf-8">
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
                     .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
-                    .button {{ display: inline-block; background: #667eea; color: white; 
-                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
-                              margin: 20px 0; }}
-                    .credentials {{ background: #fff; border: 2px solid #667eea; padding: 20px; 
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #5b7ef5; border-radius: 10px; margin-top: 20px; }}
+                    .button {{ display: inline-block; background: white; color: #5b7ef5; 
+                              padding: 12px 30px; text-decoration: none; border: 2px solid #5b7ef5; 
+                              border-radius: 5px; margin: 20px 0; font-weight: bold; }}
+                    .button:hover {{ background: #5b7ef5; color: white; }}
+                    .credentials {{ background: #f5f5f5; border: 2px dashed #5b7ef5; padding: 20px; 
                                    border-radius: 5px; margin: 20px 0; }}
                     .credential-item {{ margin: 15px 0; }}
-                    .credential-label {{ color: #666; font-size: 14px; }}
-                    .credential-value {{ background: #f0f0f0; padding: 10px; border-radius: 3px; 
+                    .credential-label {{ color: #666; font-size: 14px; font-weight: bold; }}
+                    .credential-value {{ background: #fff; padding: 10px; border-radius: 3px; 
                                         font-family: monospace; font-size: 16px; margin-top: 5px; }}
-                    .warning {{ background: #fff3cd; border-left: 4px solid #ffc107; 
-                               padding: 15px; margin: 20px 0; }}
+                    .warning {{ background: #fff3cd; border: 2px dashed #ffc107; 
+                               padding: 15px; margin: 20px 0; border-radius: 5px; }}
                     .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
                 </style>
             </head>
@@ -694,11 +695,11 @@ class EmailService:
                         
                         <div class="credentials">
                             <div class="credential-item">
-                                <div class="credential-label">Identifiant (Code unique)</div>
+                                <div class="credential-label">📧 Identifiant (Code unique)</div>
                                 <div class="credential-value">{user.unique_code}</div>
                             </div>
                             <div class="credential-item">
-                                <div class="credential-label">Mot de passe</div>
+                                <div class="credential-label">🔒 Mot de passe</div>
                                 <div class="credential-value">{password}</div>
                             </div>
                         </div>
@@ -710,7 +711,7 @@ class EmailService:
                         </div>
                         
                         <div style="text-align: center;">
-                            <a href="{login_url}" class="button">Se connecter</a>
+                            <a href="{login_url}" class="button">🔓 Se connecter</a>
                         </div>
                         
                         <p style="margin-top: 30px;"><strong>Que pouvez-vous faire dans votre espace ?</strong></p>
@@ -862,18 +863,18 @@ class EmailService:
             <head>
                 <meta charset="utf-8">
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
                     .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); 
-                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
-                    .match-badge {{ background: #10b981; color: white; padding: 10px 20px; 
-                                    border-radius: 20px; display: inline-block; font-weight: bold; }}
-                    .role-box {{ background: #fff; border: 2px solid #ef4444; padding: 20px; 
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #fa709a; border-radius: 10px; margin-top: 20px; }}
+                    .match-badge {{ background: #f5f5f5; color: #10b981; padding: 10px 20px; 
+                                    border: 2px dashed #10b981; border-radius: 20px; display: inline-block; font-weight: bold; }}
+                    .role-box {{ background: #f5f5f5; border: 2px dashed #fa709a; padding: 20px; 
                                 border-radius: 5px; margin: 20px 0; }}
-                    .button {{ display: inline-block; background: #ef4444; color: white; 
-                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
-                              margin: 20px 0; }}
+                    .button {{ display: inline-block; background: white; color: #fa709a; 
+                              padding: 12px 30px; text-decoration: none; border: 2px solid #fa709a; 
+                              border-radius: 5px; margin: 20px 0; font-weight: bold; }}
+                    .button:hover {{ background: #fa709a; color: white; }}
                     .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
                 </style>
             </head>
@@ -957,20 +958,20 @@ class EmailService:
             <head>
                 <meta charset="utf-8">
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
                     .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
-                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
-                    .success-box {{ background: #d1fae5; border-left: 4px solid #10b981; 
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #10b981; border-radius: 10px; margin-top: 20px; }}
+                    .success-box {{ background: #d1fae5; border: 2px dashed #10b981; 
                                    padding: 20px; margin: 20px 0; border-radius: 5px; }}
-                    .project-info {{ background: #fff; border: 2px solid #10b981; padding: 20px; 
+                    .project-info {{ background: #f5f5f5; border: 2px dashed #10b981; padding: 20px; 
                                     border-radius: 5px; margin: 20px 0; }}
-                    .button {{ display: inline-block; background: #10b981; color: white; 
-                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
-                              margin: 10px 5px; }}
-                    .production-contact {{ background: #fff3cd; border-left: 4px solid #ffc107; 
-                                         padding: 15px; margin: 20px 0; }}
+                    .button {{ display: inline-block; background: white; color: #10b981; 
+                              padding: 12px 30px; text-decoration: none; border: 2px solid #10b981; 
+                              border-radius: 5px; margin: 10px 5px; font-weight: bold; }}
+                    .button:hover {{ background: #10b981; color: white; }}
+                    .production-contact {{ background: #fff3cd; border: 2px dashed #ffc107; 
+                                         padding: 15px; margin: 20px 0; border-radius: 5px; }}
                     .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
                 </style>
             </head>
@@ -1057,12 +1058,11 @@ class EmailService:
             <head>
                 <meta charset="utf-8">
                 <style>
-                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
                     .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-                    .header {{ background: linear-gradient(135deg, #10b981 0%, #059669 100%); 
-                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
-                    .success {{ background: #d1fae5; border-left: 4px solid #10b981; 
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #10b981; border-radius: 10px; margin-top: 20px; }}
+                    .success {{ background: #d1fae5; border: 2px dashed #10b981; 
                                padding: 15px; margin: 20px 0; border-radius: 5px; }}
                     .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
                 </style>
