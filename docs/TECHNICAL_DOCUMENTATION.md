@@ -547,6 +547,8 @@ def send_project_selection_emails(project_id):
         )
 ```
 
+#### Templates Email Additionnels
+
 **5. Inscription Talent Standard**
 
 ```python
@@ -639,7 +641,7 @@ def send_weekly_admin_recap(self, admin_email, sent_by_user_id=None):
 - Liens directs vers chaque profil CINEMA
 - Design rouge/rose avec bordures pointillées
 
-**10. Détection de Nom Surveillé**
+**9. Détection de Nom Surveillé**
 
 ```python
 def send_name_detection_notification(self, notification_email, tracked_name, 
@@ -671,6 +673,8 @@ def send_name_detection_notification(self, notification_email, tracked_name,
 - Note de surveillance associée
 - Lien direct vers le profil
 - Design rouge avec alerte visuelle
+
+---
 
 #### Planificateur de Tâches (APScheduler)
 
