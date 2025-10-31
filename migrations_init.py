@@ -20,6 +20,14 @@ from app.models.user import User
 from app.models.talent import Talent, UserTalent
 from app.models.location import Country, City
 from app.models.cinema_talent import CinemaTalent
+from app.models.production import Production
+from app.models.project import Project, ProjectTalent
+from app.models.attendance import Attendance
+from app.models.activity_log import ActivityLog
+from app.models.security_log import SecurityLog
+from app.models.email_log import EmailLog
+from app.models.name_tracking import NameTracking, NameTrackingMatch
+from app.models.settings import AppSettings
 from app.utils.qr_generator import generate_qr_code
 from app.utils.encryption import encrypt_sensitive_data
 from app.data.world_countries import WORLD_COUNTRIES
@@ -38,7 +46,7 @@ def check_and_create_tables():
             'users', 'talents', 'user_talents', 'countries', 'cities',
             'productions', 'projects', 'project_talents', 'cinema_talents',
             'security_logs', 'activity_logs', 'app_settings', 'attendances',
-            'email_logs'
+            'email_logs', 'name_tracking', 'name_tracking_matches'
         ]
         missing_tables = [table for table in required_tables if table not in existing_tables]
         
