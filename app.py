@@ -210,4 +210,5 @@ if __name__ == '__main__':
     
     # Port 5000 pour Replit (requis), 5004 pour VPS (voir deploy_vps.sh)
     port = int(os.environ.get('PORT', 5004))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    debug = os.environ.get('DEBUG', 'False').lower() == 'true'
+    app.run(host='0.0.0.0', port=port, debug=debug)

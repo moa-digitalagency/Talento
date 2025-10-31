@@ -619,13 +619,17 @@ def settings_email_notifications():
         'success_rate': round((sent_emails / total_emails * 100) if total_emails > 0 else 0, 1)
     }
     
+    from app.services.database_service import DatabaseService
+    db_diagnostics = DatabaseService.get_full_diagnostics()
+    
     return render_template('admin/settings/email_notifications.html',
                          email_logs=email_logs,
                          stats=stats,
                          template_types=template_types,
                          available_templates=available_templates,
                          template_filter=template_filter,
-                         status_filter=status_filter)
+                         status_filter=status_filter,
+                         db_diagnostics=db_diagnostics)
 
 @bp.route('/settings/email-notifications/toggle/<template_type>', methods=['POST'])
 @login_required
