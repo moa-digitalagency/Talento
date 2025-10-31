@@ -446,6 +446,68 @@ class EmailService:
             </html>
             """
         
+        elif template_type == 'name_detection':
+            profile_url = f"https://{domain}/profile/view/{data.get('unique_code', 'CODE123')}" if data.get('talent_type') == 'talent' else f"https://{domain}/cinema/view-talent/{data.get('unique_code', 'CODE123')}"
+            return f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #ff6b6b; border-radius: 10px; margin-top: 20px; }}
+                    .alert {{ background: #fff3cd; border: 2px solid #ff6b6b; padding: 15px; border-radius: 5px; margin: 20px 0; }}
+                    .info-box {{ background: #f5f5f5; border-left: 4px solid #ff6b6b; padding: 15px; margin: 15px 0; }}
+                    .button {{ display: inline-block; background: white; color: #ff6b6b; 
+                              padding: 12px 30px; text-decoration: none; border: 2px solid #ff6b6b; 
+                              border-radius: 5px; margin: 20px 0; font-weight: bold; }}
+                    .button:hover {{ background: #ff6b6b; color: white; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>🚨 Alerte : Nom Surveillé Détecté</h1>
+                    </div>
+                    <div class="content">
+                        <div class="alert">
+                            <h2 style="margin: 0; color: #ff6b6b;">⚠️ Nouvelle Inscription Détectée</h2>
+                        </div>
+                        
+                        <p>Une personne dont le nom correspond à votre liste de surveillance vient de s'inscrire sur la plateforme.</p>
+                        
+                        <div class="info-box">
+                            <strong>👤 Nom surveillé :</strong> {data.get('tracked_name', 'N/A')}<br>
+                            <strong>📝 Nom enregistré :</strong> {data.get('registered_name', 'N/A')}<br>
+                            <strong>🆔 Code unique :</strong> {data.get('unique_code', 'N/A')}<br>
+                            <strong>🎭 Type :</strong> {data.get('talent_type_label', 'N/A')}<br>
+                            <strong>📧 Email :</strong> {data.get('email', 'N/A')}<br>
+                            <strong>🌍 Localisation :</strong> {data.get('city', 'N/A')}, {data.get('country', 'N/A')}
+                        </div>
+                        
+                        <p><strong>Note de surveillance :</strong> {data.get('tracking_description', 'Aucune note')}</p>
+                        
+                        <div style="text-align: center;">
+                            <a href="{profile_url}" class="button">👁️ Voir le profil complet</a>
+                        </div>
+                        
+                        <p style="margin-top: 30px; font-size: 12px; color: #666;">
+                            Cette notification a été envoyée automatiquement suite à la correspondance d'un nom dans votre liste de surveillance.
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <p>© 2024 taalentio.com - Système de Surveillance</p>
+                        <p>Ceci est un email automatique, merci de ne pas y répondre.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+        
         else:
             return None
         
@@ -1498,6 +1560,115 @@ class EmailService:
             
         except Exception as e:
             current_app.logger.error(f"Erreur envoi notification watchlist: {str(e)}")
+            return False
+    
+    def send_name_detection_notification(self, notification_email, tracked_name, match_data, sent_by_user_id=None):
+        """
+        Envoie une notification lors de la détection d'un nom surveillé
+        
+        Args:
+            notification_email: Email où envoyer la notification
+            tracked_name: Nom qui était surveillé
+            match_data: Dictionnaire avec les informations de la correspondance
+                - registered_name: Nom tel qu'enregistré
+                - unique_code: Code unique du talent
+                - talent_type: 'talent' ou 'cinema'
+                - email: Email du talent
+                - city: Ville
+                - country: Pays
+                - tracking_description: Note de surveillance
+            sent_by_user_id: ID de l'utilisateur (optionnel)
+        
+        Returns:
+            True si envoyé, False sinon
+        """
+        try:
+            domain = get_application_domain()
+            
+            # Déterminer l'URL du profil et le label
+            if match_data.get('talent_type') == 'talent':
+                profile_url = f"https://{domain}/profile/view/{match_data['unique_code']}"
+                talent_type_label = "Talent Standard"
+            else:
+                profile_url = f"https://{domain}/cinema/view-talent/{match_data['unique_code']}"
+                talent_type_label = "Talent Cinéma"
+            
+            logo_base64 = self._get_logo_base64()
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="taalentio.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+            
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #ff6b6b; border-radius: 10px; margin-top: 20px; }}
+                    .alert {{ background: #fff3cd; border: 2px solid #ff6b6b; padding: 15px; border-radius: 5px; margin: 20px 0; text-align: center; }}
+                    .info-box {{ background: #f5f5f5; border-left: 4px solid #ff6b6b; padding: 15px; margin: 15px 0; }}
+                    .button {{ display: inline-block; background: white; color: #ff6b6b; 
+                              padding: 12px 30px; text-decoration: none; border: 2px solid #ff6b6b; 
+                              border-radius: 5px; margin: 20px 0; font-weight: bold; }}
+                    .button:hover {{ background: #ff6b6b; color: white; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>🚨 Alerte : Nom Surveillé Détecté</h1>
+                    </div>
+                    <div class="content">
+                        <div class="alert">
+                            <h2 style="margin: 0; color: #ff6b6b;">⚠️ Nouvelle Inscription Détectée</h2>
+                        </div>
+                        
+                        <p>Une personne dont le nom correspond à votre liste de surveillance vient de s'inscrire sur la plateforme.</p>
+                        
+                        <div class="info-box">
+                            <strong>👤 Nom surveillé :</strong> {tracked_name}<br>
+                            <strong>📝 Nom enregistré :</strong> {match_data.get('registered_name', 'N/A')}<br>
+                            <strong>🆔 Code unique :</strong> {match_data.get('unique_code', 'N/A')}<br>
+                            <strong>🎭 Type :</strong> {talent_type_label}<br>
+                            <strong>📧 Email :</strong> {match_data.get('email', 'N/A')}<br>
+                            <strong>🌍 Localisation :</strong> {match_data.get('city', 'N/A')}, {match_data.get('country', 'N/A')}
+                        </div>
+                        
+                        <p><strong>Note de surveillance :</strong> {match_data.get('tracking_description', 'Aucune note')}</p>
+                        
+                        <div style="text-align: center;">
+                            <a href="{profile_url}" class="button">👁️ Voir le profil complet</a>
+                        </div>
+                        
+                        <p style="margin-top: 30px; font-size: 12px; color: #666;">
+                            Cette notification a été envoyée automatiquement suite à la correspondance d'un nom dans votre liste de surveillance.
+                            Vous pouvez gérer votre liste dans les paramètres administrateur.
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <p>© 2024 taalentio.com - Système de Surveillance</p>
+                        <p>Ceci est un email automatique, merci de ne pas y répondre.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            return self.send_email(
+                to_email=notification_email,
+                subject=f"🚨 Alerte Nom Surveillé - {match_data.get('registered_name', 'N/A')} vient de s'inscrire",
+                html_content=html_content,
+                template_type='name_detection',
+                recipient_name='Admin',
+                sent_by_user_id=sent_by_user_id,
+                related_talent_code=match_data.get('unique_code')
+            )
+            
+        except Exception as e:
+            current_app.logger.error(f"Erreur envoi notification détection de nom: {str(e)}")
             return False
 
 # Instance globale
