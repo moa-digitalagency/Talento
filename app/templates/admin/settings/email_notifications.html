@@ -45,6 +45,30 @@
     </div>
 </div>
 
+<!-- Configuration du Pied de Page -->
+<div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 mb-6">
+    <div class="mb-4">
+        <h3 class="text-xl font-bold text-gray-800">📝 Signature Uniforme des Emails</h3>
+        <p class="text-gray-600 mt-1">Configurez le pied de page qui apparaîtra dans tous les emails</p>
+    </div>
+    
+    <form method="POST" action="{{ url_for('admin.save_email_footer') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        
+        <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Texte du pied de page</label>
+            <textarea name="email_footer" rows="4" 
+                      class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                      placeholder="Ex: © 2024 taalentio.com - Plateforme de valorisation des talents&#10;Ceci est un email automatique, merci de ne pas y répondre.">{{ email_footer }}</textarea>
+            <p class="text-xs text-gray-500 mt-1">Ce texte apparaîtra en bas de tous les emails envoyés par le système</p>
+        </div>
+        
+        <button type="submit" class="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-2 rounded-lg font-bold hover:from-blue-600 hover:to-blue-700 transition-all shadow-md">
+            💾 Enregistrer le pied de page
+        </button>
+    </form>
+</div>
+
 <!-- Configuration des Templates -->
 <div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 mb-6">
     <div class="flex items-center justify-between mb-4">

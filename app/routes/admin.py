@@ -725,6 +725,9 @@ def settings_email_notifications():
     from app.services.database_service import DatabaseService
     db_diagnostics = DatabaseService.get_full_diagnostics()
     
+    # Charger le pied de page configuré
+    email_footer = AppSettings.get('email_footer', '© 2024 taalentio.com - Plateforme de valorisation des talents\nCeci est un email automatique, merci de ne pas y répondre.')
+    
     return render_template('admin/settings/email_notifications.html',
                          email_logs=email_logs,
                          stats=stats,
@@ -732,7 +735,21 @@ def settings_email_notifications():
                          available_templates=available_templates,
                          template_filter=template_filter,
                          status_filter=status_filter,
-                         db_diagnostics=db_diagnostics)
+                         db_diagnostics=db_diagnostics,
+                         email_footer=email_footer)
+
+@bp.route('/settings/email-notifications/save-footer', methods=['POST'])
+@login_required
+@admin_required
+def save_email_footer():
+    """Sauvegarder le pied de page uniforme des emails"""
+    email_footer = request.form.get('email_footer', '')
+    
+    # Sauvegarder dans les paramètres
+    AppSettings.set('email_footer', email_footer)
+    
+    flash('✅ Pied de page des emails mis à jour avec succès', 'success')
+    return redirect(url_for('admin.settings_email_notifications'))
 
 @bp.route('/settings/email-notifications/toggle/<template_type>', methods=['POST'])
 @login_required

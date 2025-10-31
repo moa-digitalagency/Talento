@@ -66,8 +66,34 @@ class EmailService:
                 except Exception as e:
                     current_app.logger.warning(f"Erreur lecture logo {logo_path}: {str(e)}")
                     continue
+    
+    def _get_email_footer(self):
+        """
+        Récupère le pied de page configuré pour tous les emails
         
-        return None
+        Returns:
+            str: HTML du pied de page
+        """
+        try:
+            from app.models.settings import AppSettings
+            footer_text = AppSettings.get('email_footer', '© 2024 taalentio.com - Plateforme de valorisation des talents\nCeci est un email automatique, merci de ne pas y répondre.')
+            
+            # Convertir les retours à la ligne en <br> et wrap dans une div
+            footer_html = footer_text.replace('\n', '<br>')
+            
+            return f"""
+            <div class="footer">
+                <p>{footer_html}</p>
+            </div>
+            """
+        except Exception as e:
+            # Fallback en cas d'erreur
+            return """
+            <div class="footer">
+                <p>© 2024 taalentio.com<br>
+                Ceci est un email automatique, merci de ne pas y répondre.</p>
+            </div>
+            """
     
     def get_template_preview(self, template_type, data):
         """
@@ -83,6 +109,7 @@ class EmailService:
         logo_base64 = self._get_logo_base64()
         logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="taalentio.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
         domain = get_application_domain()
+        footer_html = self._get_email_footer()
         
         if template_type == 'talent_registration':
             profile_url = f"https://{domain}/profile/view/{data.get('unique_code', 'CODE123')}"
@@ -126,10 +153,7 @@ class EmailService:
                         
                         <p><strong>Note importante :</strong> Conservez bien ce code, il vous sera demandé pour vous connecter à votre espace personnel.</p>
                         
-                        <div class="footer">
-                            <p>© 2024 taalentio.com - Plateforme de valorisation des talents</p>
-                            <p>Ceci est un email automatique, merci de ne pas y répondre.</p>
-                        </div>
+                        {footer_html}
                     </div>
                 </div>
             </body>
