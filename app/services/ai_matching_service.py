@@ -23,21 +23,21 @@ class AIMatchingService:
         Args:
             job_description: Texte de la description du poste
             user_profiles: Liste des utilisateurs à analyser
-            api_key: Clé API OpenRouter (optionnelle, utilise les settings si non fournie)
+            api_key: (Déprécié) Clé API - utilise maintenant le fournisseur IA configuré
             
         Returns:
             Liste de dictionnaires contenant les candidats matchés avec leurs scores et raisons
         """
         try:
-            if not api_key:
-                from app.models import AppSettings
-                api_key = AppSettings.get('openrouter_api_key')
+            from app.services.ai_provider_service import AIProviderService
             
-            if not api_key:
-                logger.error("Clé API OpenRouter non configurée")
+            # Vérifier qu'un fournisseur IA est configuré
+            config = AIProviderService.get_ai_config()
+            if not config['api_key']:
+                logger.error(f"Clé API {config['provider']} non configurée")
                 return {
                     'success': False,
-                    'message': 'Clé API OpenRouter non configurée. Veuillez configurer la clé dans les paramètres système.'
+                    'message': f"Clé API {config['provider']} non configurée. Veuillez configurer la clé dans les paramètres système."
                 }
             
             if not job_description or not job_description.strip():
@@ -62,7 +62,7 @@ class AIMatchingService:
                         job_description,
                         profile_data,
                         user,
-                        api_key
+                        None  # api_key is now handled by AIProviderService
                     )
                     
                     if match_result and match_result.get('score', 0) > 0:
@@ -233,21 +233,21 @@ Réponds UNIQUEMENT avec ce format JSON (pas de texte avant ou après):
         Args:
             job_description: Texte de la description du rôle
             cinema_talent_profiles: Liste des talents cinéma à analyser
-            api_key: Clé API OpenRouter (optionnelle, utilise les settings si non fournie)
+            api_key: (Déprécié) Clé API - utilise maintenant le fournisseur IA configuré
             
         Returns:
             Liste de dictionnaires contenant les candidats matchés avec leurs scores et raisons
         """
         try:
-            if not api_key:
-                from app.models import AppSettings
-                api_key = AppSettings.get('openrouter_api_key')
+            from app.services.ai_provider_service import AIProviderService
             
-            if not api_key:
-                logger.error("Clé API OpenRouter non configurée")
+            # Vérifier qu'un fournisseur IA est configuré
+            config = AIProviderService.get_ai_config()
+            if not config['api_key']:
+                logger.error(f"Clé API {config['provider']} non configurée")
                 return {
                     'success': False,
-                    'message': 'Clé API OpenRouter non configurée. Veuillez configurer la clé dans les paramètres système.'
+                    'message': f"Clé API {config['provider']} non configurée. Veuillez configurer la clé dans les paramètres système."
                 }
             
             if not job_description or not job_description.strip():
@@ -272,7 +272,7 @@ Réponds UNIQUEMENT avec ce format JSON (pas de texte avant ou après):
                         job_description,
                         profile_data,
                         talent,
-                        api_key
+                        None  # api_key is now handled by AIProviderService
                     )
                     
                     if match_result and match_result.get('score', 0) > 0:

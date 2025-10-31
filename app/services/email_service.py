@@ -215,7 +215,7 @@ class EmailService:
                         
                         <div style="background: white; padding: 15px; border-left: 4px solid #4facfe; margin: 20px 0;">
                             <strong>Description de l'opportunité :</strong>
-                            <p>{data.get('job_description', 'Description de l\'opportunité...')}</p>
+                            <p>{data.get('job_description', "Description de l'opportunité...")}</p>
                         </div>
                         
                         <div class="score">
@@ -263,7 +263,7 @@ class EmailService:
                         
                         <div style="background: white; padding: 15px; border-left: 4px solid #fa709a; margin: 20px 0;">
                             <strong>Description du rôle :</strong>
-                            <p>{data.get('role_description', 'Description du rôle...')}</p>
+                            <p>{data.get('role_description', "Description du rôle...")}</p>
                         </div>
                         
                         <div class="score">
