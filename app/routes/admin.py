@@ -513,11 +513,21 @@ def settings():
 def settings_api_keys():
     sendgrid_key = AppSettings.get('sendgrid_api_key', '') or os.environ.get('SENDGRID_API_KEY', '')
     openrouter_key = AppSettings.get('openrouter_api_key', '') or os.environ.get('OPENROUTER_API_KEY', '')
+    perplexity_key = AppSettings.get('perplexity_api_key', '')
+    openai_key = AppSettings.get('openai_api_key', '')
+    gemini_key = AppSettings.get('gemini_api_key', '')
     omdb_key = AppSettings.get('omdb_api_key', '') or os.environ.get('OMDB_API_KEY', '')
     sender_email = AppSettings.get('sender_email', 'noreply@myoneart.com')
     
+    # Configuration IA
+    ai_provider = AppSettings.get('ai_provider', 'openrouter')
+    openrouter_model = AppSettings.get('openrouter_model', 'google/gemini-2.0-flash-001:free')
+    
     sendgrid_configured = bool(sendgrid_key)
     openrouter_configured = bool(openrouter_key)
+    perplexity_configured = bool(perplexity_key)
+    openai_configured = bool(openai_key)
+    gemini_configured = bool(gemini_key)
     omdb_configured = bool(omdb_key)
     
     def mask_key(key):
@@ -528,11 +538,19 @@ def settings_api_keys():
     config_info = {
         'sendgrid': sendgrid_configured,
         'openrouter': openrouter_configured,
+        'perplexity': perplexity_configured,
+        'openai': openai_configured,
+        'gemini': gemini_configured,
         'omdb': omdb_configured,
         'sendgrid_key_masked': mask_key(sendgrid_key) if sendgrid_configured else '',
         'openrouter_key_masked': mask_key(openrouter_key) if openrouter_configured else '',
+        'perplexity_key_masked': mask_key(perplexity_key) if perplexity_configured else '',
+        'openai_key_masked': mask_key(openai_key) if openai_configured else '',
+        'gemini_key_masked': mask_key(gemini_key) if gemini_configured else '',
         'omdb_key_masked': mask_key(omdb_key) if omdb_configured else '',
-        'sendgrid_from': sender_email
+        'sendgrid_from': sender_email,
+        'ai_provider': ai_provider,
+        'openrouter_model': openrouter_model
     }
     
     return render_template('admin/settings/api_keys.html', config=config_info)
@@ -1186,18 +1204,38 @@ def demote_recruiter(user_id):
 def save_settings():
     sendgrid_key = request.form.get('sendgrid_api_key', '').strip()
     openrouter_key = request.form.get('openrouter_api_key', '').strip()
+    perplexity_key = request.form.get('perplexity_api_key', '').strip()
+    openai_key = request.form.get('openai_api_key', '').strip()
+    gemini_key = request.form.get('gemini_api_key', '').strip()
     omdb_key = request.form.get('omdb_api_key', '').strip()
     sender_email = request.form.get('sender_email', '').strip() or 'noreply@myoneart.com'
     
+    # Configuration IA
+    ai_provider = request.form.get('ai_provider', '').strip() or 'openrouter'
+    openrouter_model = request.form.get('openrouter_model', '').strip() or 'google/gemini-2.0-flash-001:free'
+    
+    # Enregistrer les clés API si elles ne commencent pas par '*' (masquées)
     if sendgrid_key and not sendgrid_key.startswith('*'):
         AppSettings.set('sendgrid_api_key', sendgrid_key)
     
     if openrouter_key and not openrouter_key.startswith('*'):
         AppSettings.set('openrouter_api_key', openrouter_key)
     
+    if perplexity_key and not perplexity_key.startswith('*'):
+        AppSettings.set('perplexity_api_key', perplexity_key)
+    
+    if openai_key and not openai_key.startswith('*'):
+        AppSettings.set('openai_api_key', openai_key)
+    
+    if gemini_key and not gemini_key.startswith('*'):
+        AppSettings.set('gemini_api_key', gemini_key)
+    
     if omdb_key and not omdb_key.startswith('*'):
         AppSettings.set('omdb_api_key', omdb_key)
     
+    # Enregistrer les paramètres IA
+    AppSettings.set('ai_provider', ai_provider)
+    AppSettings.set('openrouter_model', openrouter_model)
     AppSettings.set('sender_email', sender_email)
     
     flash('Paramètres sauvegardés avec succès.', 'success')

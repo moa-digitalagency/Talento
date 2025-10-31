@@ -158,6 +158,9 @@ class AIMatchingService:
     def _analyze_single_candidate(job_description, profile_data, user, api_key):
         """Analyse un candidat individuel par rapport à la description de poste"""
         try:
+            from app.services.ai_provider_service import AIProviderService
+            import json
+            
             prompt = f"""Tu es un expert en recrutement. Analyse le profil du candidat suivant par rapport à cette description de poste et détermine s'il est un bon candidat.
 
 DESCRIPTION DU POSTE:
@@ -188,57 +191,35 @@ Réponds UNIQUEMENT avec ce format JSON (pas de texte avant ou après):
     "points_faibles": ["<point 1>", "<point 2>", ...]
 }}"""
 
-            headers = {
-                'Authorization': f'Bearer {api_key}',
-                'Content-Type': 'application/json',
-                'HTTP-Referer': 'https://taalentio.com',
-                'X-Title': 'taalentio.com - AI Matching'
-            }
+            system_message = 'Tu es un expert RH qui analyse des profils et des CV. Réponds toujours en JSON valide.'
             
-            data = {
-                'model': 'google/gemini-2.0-flash-001:free',
-                'messages': [
-                    {
-                        'role': 'user',
-                        'content': prompt
-                    }
-                ],
-                'temperature': 0.3
-            }
+            ai_result = AIProviderService.call_ai(prompt, system_message=system_message, temperature=0.3, timeout=60)
             
-            response = requests.post(
-                'https://openrouter.ai/api/v1/chat/completions',
-                headers=headers,
-                json=data,
-                timeout=60
-            )
-            
-            if response.status_code == 200:
-                result = response.json()
-                ai_response = result['choices'][0]['message']['content'].strip()
-                
-                import json
-                if ai_response.startswith('```json'):
-                    ai_response = ai_response[7:]
-                if ai_response.startswith('```'):
-                    ai_response = ai_response[3:]
-                if ai_response.endswith('```'):
-                    ai_response = ai_response[:-3]
-                ai_response = ai_response.strip()
-                
-                match_data = json.loads(ai_response)
-                
-                return {
-                    'user': user,
-                    'profile_data': profile_data,
-                    'score': match_data.get('score', 0),
-                    'explication': match_data.get('explication', ''),
-                    'points_forts': match_data.get('points_forts', []),
-                    'points_faibles': match_data.get('points_faibles', [])
-                }
-            else:
-                logger.error(f"Erreur API OpenRouter: {response.status_code} - {response.text}")
+            if not ai_result['success']:
+                logger.error(f"Erreur IA: {ai_result['error']}")
                 return None
+            
+            ai_response = ai_result['content'].strip()
+            
+            # Nettoyer la réponse
+            if ai_response.startswith('```json'):
+                ai_response = ai_response[7:]
+            if ai_response.startswith('```'):
+                ai_response = ai_response[3:]
+            if ai_response.endswith('```'):
+                ai_response = ai_response[:-3]
+            ai_response = ai_response.strip()
+            
+            match_data = json.loads(ai_response)
+            
+            return {
+                'user': user,
+                'profile_data': profile_data,
+                'score': match_data.get('score', 0),
+                'explication': match_data.get('explication', ''),
+                'points_forts': match_data.get('points_forts', []),
+                'points_faibles': match_data.get('points_faibles', [])
+            }
                 
         except Exception as e:
             logger.error(f"Erreur lors de l'analyse du candidat: {e}")
@@ -351,6 +332,9 @@ Réponds UNIQUEMENT avec ce format JSON (pas de texte avant ou après):
     def _analyze_single_cinema_talent(job_description, profile_data, talent, api_key):
         """Analyse un talent cinéma individuel par rapport à la description de rôle"""
         try:
+            from app.services.ai_provider_service import AIProviderService
+            import json
+            
             prompt = f"""Tu es un directeur de casting professionnel. Analyse le profil du talent suivant par rapport à cette description de rôle et détermine s'il correspond au casting.
 
 DESCRIPTION DU RÔLE:
@@ -390,57 +374,35 @@ Réponds UNIQUEMENT avec ce format JSON (pas de texte avant ou après):
     "points_faibles": ["<point 1>", "<point 2>", ...]
 }}"""
 
-            headers = {
-                'Authorization': f'Bearer {api_key}',
-                'Content-Type': 'application/json',
-                'HTTP-Referer': 'https://taalentio.com',
-                'X-Title': 'taalentio.com - Cinema AI Matching'
-            }
+            system_message = 'Tu es un directeur de casting professionnel qui évalue des talents pour le cinéma. Réponds toujours en JSON valide.'
             
-            data = {
-                'model': 'google/gemini-2.0-flash-001:free',
-                'messages': [
-                    {
-                        'role': 'user',
-                        'content': prompt
-                    }
-                ],
-                'temperature': 0.3
-            }
+            ai_result = AIProviderService.call_ai(prompt, system_message=system_message, temperature=0.3, timeout=60)
             
-            response = requests.post(
-                'https://openrouter.ai/api/v1/chat/completions',
-                headers=headers,
-                json=data,
-                timeout=60
-            )
-            
-            if response.status_code == 200:
-                result = response.json()
-                ai_response = result['choices'][0]['message']['content'].strip()
-                
-                import json
-                if ai_response.startswith('```json'):
-                    ai_response = ai_response[7:]
-                if ai_response.startswith('```'):
-                    ai_response = ai_response[3:]
-                if ai_response.endswith('```'):
-                    ai_response = ai_response[:-3]
-                ai_response = ai_response.strip()
-                
-                match_data = json.loads(ai_response)
-                
-                return {
-                    'talent': talent,
-                    'profile_data': profile_data,
-                    'score': match_data.get('score', 0),
-                    'explication': match_data.get('explication', ''),
-                    'points_forts': match_data.get('points_forts', []),
-                    'points_faibles': match_data.get('points_faibles', [])
-                }
-            else:
-                logger.error(f"Erreur API OpenRouter: {response.status_code} - {response.text}")
+            if not ai_result['success']:
+                logger.error(f"Erreur IA: {ai_result['error']}")
                 return None
+            
+            ai_response = ai_result['content'].strip()
+            
+            # Nettoyer la réponse
+            if ai_response.startswith('```json'):
+                ai_response = ai_response[7:]
+            if ai_response.startswith('```'):
+                ai_response = ai_response[3:]
+            if ai_response.endswith('```'):
+                ai_response = ai_response[:-3]
+            ai_response = ai_response.strip()
+            
+            match_data = json.loads(ai_response)
+            
+            return {
+                'talent': talent,
+                'profile_data': profile_data,
+                'score': match_data.get('score', 0),
+                'explication': match_data.get('explication', ''),
+                'points_forts': match_data.get('points_forts', []),
+                'points_faibles': match_data.get('points_faibles', [])
+            }
                 
         except Exception as e:
             logger.error(f"Erreur lors de l'analyse du talent cinéma: {e}")
