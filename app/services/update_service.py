@@ -436,3 +436,150 @@ class UpdateService:
             'has_changes': UpdateService.has_local_changes(),
             'recent_commits': UpdateService.get_commit_logs(5)
         }
+    
+    @staticmethod
+    def configure_git_remote(repo_url, branch='main'):
+        """Configure le remote Git avec l'URL fournie"""
+        try:
+            # Vérifier si un remote origin existe déjà
+            check_remote = subprocess.run(
+                ['git', 'remote', 'get-url', 'origin'],
+                capture_output=True,
+                text=True,
+                cwd=os.getcwd()
+            )
+            
+            if check_remote.returncode == 0:
+                # Remote existe, le mettre à jour
+                result = subprocess.run(
+                    ['git', 'remote', 'set-url', 'origin', repo_url],
+                    capture_output=True,
+                    text=True,
+                    cwd=os.getcwd()
+                )
+            else:
+                # Aucun remote, en ajouter un
+                result = subprocess.run(
+                    ['git', 'remote', 'add', 'origin', repo_url],
+                    capture_output=True,
+                    text=True,
+                    cwd=os.getcwd()
+                )
+            
+            if result.returncode != 0:
+                return False, result.stderr
+            
+            # Vérifier la connexion
+            fetch_result = subprocess.run(
+                ['git', 'fetch', 'origin'],
+                capture_output=True,
+                text=True,
+                cwd=os.getcwd(),
+                timeout=30
+            )
+            
+            if fetch_result.returncode == 0:
+                current_app.logger.info(f"Remote Git configuré avec succès: {repo_url}")
+                return True, "Remote configuré et connexion vérifiée avec succès"
+            else:
+                current_app.logger.warning(f"Remote configuré mais impossible de fetch: {fetch_result.stderr}")
+                return True, f"Remote configuré mais connexion non vérifiée: {fetch_result.stderr}"
+                
+        except subprocess.TimeoutExpired:
+            return False, "Timeout lors de la vérification de la connexion au repository"
+        except Exception as e:
+            current_app.logger.error(f"Erreur lors de la configuration du remote Git: {e}")
+            return False, str(e)
+    
+    @staticmethod
+    def git_pull_with_migration(auto_migrate=True):
+        """
+        Pull les mises à jour GitHub avec gestion intelligente des migrations
+        Cette méthode ajoute automatiquement les nouvelles tables sans toucher aux données existantes
+        """
+        try:
+            # Créer un point de restauration
+            rollback_point = UpdateService.create_rollback_point()
+            if not rollback_point:
+                return {
+                    'success': False,
+                    'message': 'Impossible de créer un point de restauration'
+                }
+            
+            current_app.logger.info(f"Point de restauration créé: {rollback_point}")
+            
+            # Étape 1: Pull des mises à jour
+            success_pull, output_pull = UpdateService.pull_updates()
+            if not success_pull:
+                return {
+                    'success': False,
+                    'message': f'Erreur lors du pull Git: {output_pull}'
+                }
+            
+            current_app.logger.info("Pull Git réussi")
+            message_parts = ["Code mis à jour depuis GitHub"]
+            
+            # Étape 2: Installer les nouvelles dépendances si requirements.txt a changé
+            if 'requirements.txt' in output_pull:
+                current_app.logger.info("requirements.txt modifié, installation des dépendances...")
+                success_deps, output_deps = UpdateService.install_dependencies()
+                if success_deps:
+                    message_parts.append("Dépendances installées")
+                else:
+                    current_app.logger.warning(f"Échec de l'installation des dépendances: {output_deps}")
+                    message_parts.append(f"Avertissement: Échec installation dépendances")
+            
+            # Étape 3: Migration de base de données intelligente si activée
+            if auto_migrate:
+                current_app.logger.info("Exécution des migrations de base de données...")
+                
+                # Utiliser le script d'init pour gérer intelligemment les nouvelles tables
+                try:
+                    import sys
+                    result = subprocess.run(
+                        [sys.executable, 'migrations_init.py'],
+                        capture_output=True,
+                        text=True,
+                        cwd=os.getcwd(),
+                        timeout=120
+                    )
+                    
+                    if result.returncode == 0:
+                        current_app.logger.info("Migrations exécutées avec succès")
+                        message_parts.append("Base de données mise à jour (nouvelles tables ajoutées)")
+                    else:
+                        # Essayer avec flask db upgrade en fallback
+                        success_migrate, output_migrate = UpdateService.run_migrations()
+                        if success_migrate:
+                            message_parts.append("Migrations Flask appliquées")
+                        else:
+                            current_app.logger.warning(f"Avertissement migrations: {output_migrate}")
+                            message_parts.append("Avertissement: Migrations non appliquées")
+                
+                except subprocess.TimeoutExpired:
+                    current_app.logger.warning("Timeout lors des migrations (>2min)")
+                    message_parts.append("Avertissement: Timeout migrations")
+                except Exception as e:
+                    current_app.logger.error(f"Erreur lors des migrations: {e}")
+                    message_parts.append(f"Avertissement migrations: {str(e)}")
+            
+            # Sauvegarder dans l'historique
+            UpdateService._save_update_log({
+                'timestamp': datetime.utcnow().isoformat(),
+                'type': 'git_pull',
+                'success': True,
+                'message': ' | '.join(message_parts),
+                'details': output_pull[:200] if len(output_pull) > 200 else output_pull
+            })
+            
+            return {
+                'success': True,
+                'message': ' | '.join(message_parts)
+            }
+            
+        except Exception as e:
+            current_app.logger.error(f"Erreur lors de la mise à jour: {e}")
+            return {
+                'success': False,
+                'message': f'Erreur: {str(e)}'
+            }

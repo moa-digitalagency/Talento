@@ -792,22 +792,151 @@ def view_email_log(log_id):
 @admin_required
 def settings_customization():
     """Page de personnalisation du site"""
+    from datetime import datetime
+    
+    # Footer settings
     footer_text = AppSettings.get('footer_text', '')
+    footer_contact_email = AppSettings.get('footer_contact_email', '')
+    footer_contact_phone = AppSettings.get('footer_contact_phone', '')
+    
+    # Logo and images
+    logo_url = AppSettings.get('logo_url', '')
+    favicon_url = AppSettings.get('favicon_url', '')
+    hero_image_url = AppSettings.get('hero_image_url', '')
+    
+    # Social links
+    social_links = AppSettings.get('social_links', {})
+    
+    # Legal pages
+    legal_pages = AppSettings.get('legal_pages', {})
     
     return render_template('admin/settings/customization.html',
-                         footer_text=footer_text)
+                         footer_text=footer_text,
+                         footer_contact_email=footer_contact_email,
+                         footer_contact_phone=footer_contact_phone,
+                         logo_url=logo_url,
+                         favicon_url=favicon_url,
+                         hero_image_url=hero_image_url,
+                         social_links=social_links,
+                         legal_pages=legal_pages,
+                         current_year=datetime.now().year)
 
 @bp.route('/settings/customization/save-footer', methods=['POST'])
 @login_required
 @admin_required
 def save_site_footer():
     """Sauvegarder le pied de page du site"""
-    footer_text = request.form.get('footer_text', '')
+    footer_text = request.form.get('footer_text', '').strip()
+    footer_contact_email = request.form.get('footer_contact_email', '').strip()
+    footer_contact_phone = request.form.get('footer_contact_phone', '').strip()
     
     # Sauvegarder dans les paramètres
     AppSettings.set('footer_text', footer_text)
+    AppSettings.set('footer_contact_email', footer_contact_email)
+    AppSettings.set('footer_contact_phone', footer_contact_phone)
     
     flash('✅ Pied de page du site mis à jour avec succès', 'success')
+    return redirect(url_for('admin.settings_customization'))
+
+@bp.route('/settings/customization/save-logo-images', methods=['POST'])
+@login_required
+@admin_required
+def save_logo_images():
+    """Sauvegarder le logo et les images"""
+    from app.utils.file_handler import FileHandler
+    
+    # URLs (priorité aux URLs si fournies)
+    logo_url = request.form.get('logo_url', '').strip()
+    favicon_url = request.form.get('favicon_url', '').strip()
+    hero_image_url = request.form.get('hero_image_url', '').strip()
+    
+    # Gestion des fichiers uploadés
+    logo_file = request.files.get('logo_file')
+    favicon_file = request.files.get('favicon_file')
+    hero_image_file = request.files.get('hero_image_file')
+    
+    try:
+        # Upload logo si fourni
+        if logo_file and logo_file.filename:
+            result = FileHandler.save_uploaded_file(logo_file, 'logos', allowed_extensions=['png', 'jpg', 'jpeg', 'svg', 'gif'])
+            if result['success']:
+                logo_url = f"/static/uploads/logos/{result['filename']}"
+        
+        # Upload favicon si fourni
+        if favicon_file and favicon_file.filename:
+            result = FileHandler.save_uploaded_file(favicon_file, 'favicons', allowed_extensions=['ico', 'png'])
+            if result['success']:
+                favicon_url = f"/static/uploads/favicons/{result['filename']}"
+        
+        # Upload hero image si fourni
+        if hero_image_file and hero_image_file.filename:
+            result = FileHandler.save_uploaded_file(hero_image_file, 'hero_images', allowed_extensions=['png', 'jpg', 'jpeg', 'webp'])
+            if result['success']:
+                hero_image_url = f"/static/uploads/hero_images/{result['filename']}"
+        
+        # Sauvegarder les URLs
+        AppSettings.set('logo_url', logo_url)
+        AppSettings.set('favicon_url', favicon_url)
+        AppSettings.set('hero_image_url', hero_image_url)
+        
+        flash('✅ Logo et images mis à jour avec succès', 'success')
+    except Exception as e:
+        flash(f'❌ Erreur lors de la sauvegarde des images: {str(e)}', 'error')
+    
+    return redirect(url_for('admin.settings_customization'))
+
+@bp.route('/settings/customization/save-social-links', methods=['POST'])
+@login_required
+@admin_required
+def save_social_links():
+    """Sauvegarder les liens réseaux sociaux"""
+    social_links = {
+        'facebook': request.form.get('facebook_url', '').strip(),
+        'instagram': request.form.get('instagram_url', '').strip(),
+        'twitter': request.form.get('twitter_url', '').strip(),
+        'linkedin': request.form.get('linkedin_url', '').strip(),
+        'tiktok': request.form.get('tiktok_url', '').strip(),
+        'youtube': request.form.get('youtube_url', '').strip(),
+        'whatsapp': request.form.get('whatsapp_number', '').strip(),
+        'telegram': request.form.get('telegram_url', '').strip()
+    }
+    
+    # Supprimer les entrées vides
+    social_links = {k: v for k, v in social_links.items() if v}
+    
+    # Sauvegarder
+    AppSettings.set('social_links', social_links)
+    
+    flash('✅ Liens réseaux sociaux mis à jour avec succès', 'success')
+    return redirect(url_for('admin.settings_customization'))
+
+@bp.route('/settings/customization/save-legal-pages', methods=['POST'])
+@login_required
+@admin_required
+def save_legal_pages():
+    """Sauvegarder les pages légales"""
+    legal_pages = {
+        # Contenu des pages
+        'terms_of_service': request.form.get('terms_of_service', '').strip(),
+        'privacy_policy': request.form.get('privacy_policy', '').strip(),
+        'about_page': request.form.get('about_page', '').strip(),
+        'cookie_policy': request.form.get('cookie_policy', '').strip(),
+        
+        # Informations de l'entreprise
+        'company_name': request.form.get('company_name', '').strip(),
+        'company_type': request.form.get('company_type', '').strip(),
+        'registration_number': request.form.get('registration_number', '').strip(),
+        'capital': request.form.get('capital', '').strip(),
+        'company_address': request.form.get('company_address', '').strip(),
+        'director_name': request.form.get('director_name', '').strip(),
+        'hosting_provider': request.form.get('hosting_provider', '').strip(),
+        'hosting_phone': request.form.get('hosting_phone', '').strip()
+    }
+    
+    # Sauvegarder
+    AppSettings.set('legal_pages', legal_pages)
+    
+    flash('✅ Pages légales mises à jour avec succès', 'success')
     return redirect(url_for('admin.settings_customization'))
 
 @bp.route('/settings/recap-config', methods=['GET', 'POST'])
@@ -1140,20 +1269,67 @@ def cache_clear_all():
 def settings_github():
     git_info = UpdateService.get_git_info()
     update_history = UpdateService.get_update_history(10)
-    return render_template('admin/settings/github_updates.html', git_info=git_info, update_history=update_history)
+    
+    # Charger la configuration Git
+    git_config = AppSettings.get('git_config', {
+        'repo_url': '',
+        'branch': 'main',
+        'auto_migrate': True
+    })
+    
+    return render_template('admin/settings/github_updates.html', 
+                         git_info=git_info, 
+                         update_history=update_history,
+                         git_config=git_config)
+
+@bp.route('/settings/github/save-config', methods=['POST'])
+@login_required
+@admin_required
+def save_git_config():
+    """Sauvegarder la configuration Git"""
+    git_repo_url = request.form.get('git_repo_url', '').strip()
+    git_branch = request.form.get('git_branch', 'main').strip()
+    auto_migrate = request.form.get('auto_migrate') == 'on'
+    
+    git_config = {
+        'repo_url': git_repo_url,
+        'branch': git_branch,
+        'auto_migrate': auto_migrate
+    }
+    
+    # Sauvegarder
+    AppSettings.set('git_config', git_config)
+    
+    # Si une URL est fournie, configurer le remote Git
+    if git_repo_url:
+        try:
+            success, message = UpdateService.configure_git_remote(git_repo_url, git_branch)
+            if success:
+                flash('✅ Configuration Git enregistrée et remote configuré avec succès', 'success')
+            else:
+                flash(f'⚠️ Configuration enregistrée mais erreur lors de la configuration du remote: {message}', 'warning')
+        except Exception as e:
+            flash(f'⚠️ Configuration enregistrée mais erreur: {str(e)}', 'warning')
+    else:
+        flash('✅ Configuration Git enregistrée', 'success')
+    
+    return redirect(url_for('admin.settings_github'))
 
 @bp.route('/git/pull', methods=['POST'])
 @login_required
 @admin_required
 def git_pull():
     try:
-        result = UpdateService.git_pull()
+        # Charger la configuration
+        git_config = AppSettings.get('git_config', {'auto_migrate': True})
+        
+        result = UpdateService.git_pull_with_migration(auto_migrate=git_config.get('auto_migrate', True))
         if result.get('success'):
-            flash(f'Mise à jour réussie! {result.get("message", "")}', 'success')
+            flash(f'✅ Mise à jour réussie! {result.get("message", "")}', 'success')
         else:
-            flash(f'Erreur lors de la mise à jour: {result.get("message", "")}', 'error')
+            flash(f'❌ Erreur lors de la mise à jour: {result.get("message", "")}', 'error')
     except Exception as e:
-        flash(f'Erreur: {str(e)}', 'error')
+        flash(f'❌ Erreur: {str(e)}', 'error')
     return redirect(url_for('admin.settings_github'))
 
 @bp.route('/git/status', methods=['POST'])

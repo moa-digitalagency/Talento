@@ -25,10 +25,13 @@
             {% endif %}
         {% endwith %}
 
-        <!-- Configuration du Pied de Page du Site -->
+        <!-- 1. Configuration du Pied de Page du Site -->
         <div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 mb-6">
             <div class="mb-4">
-                <h3 class="text-xl font-bold text-gray-800">📄 Pied de Page du Site Web</h3>
+                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <span>📄</span>
+                    <span>Pied de Page du Site Web</span>
+                </h3>
                 <p class="text-gray-600 mt-1">Configurez le texte qui apparaîtra en bas de toutes les pages de votre site</p>
             </div>
             
@@ -39,8 +42,24 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Texte personnalisé du pied de page</label>
                     <textarea name="footer_text" rows="4" 
                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
-                              placeholder="Ex: Plateforme de valorisation des talents&#10;Pour toute question, contactez-nous à contact@taalentio.com">{{ footer_text }}</textarea>
+                              placeholder="Ex: Plateforme de valorisation des talents&#10;Pour toute question, contactez-nous à contact@taalentio.com">{{ footer_text or '' }}</textarea>
                     <p class="text-xs text-gray-500 mt-1">Ce texte apparaîtra au-dessus du copyright standard. Laissez vide pour afficher uniquement le copyright.</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Email de contact principal</label>
+                    <input type="email" name="footer_contact_email" value="{{ footer_contact_email or '' }}"
+                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                           placeholder="contact@taalentio.com">
+                    <p class="text-xs text-gray-500 mt-1">Adresse email principale pour le contact</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Téléphone de contact</label>
+                    <input type="text" name="footer_contact_phone" value="{{ footer_contact_phone or '' }}"
+                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-2 focus:ring-blue-200 outline-none"
+                           placeholder="+212 XXX XXX XXX">
+                    <p class="text-xs text-gray-500 mt-1">Numéro de téléphone principal</p>
                 </div>
                 
                 <div class="mb-4">
@@ -49,6 +68,13 @@
                         <div class="bg-white border border-blue-200 rounded p-3 text-center">
                             {% if footer_text %}
                             <p class="text-gray-600 text-sm mb-2 whitespace-pre-line">{{ footer_text }}</p>
+                            {% endif %}
+                            {% if footer_contact_email or footer_contact_phone %}
+                            <p class="text-gray-500 text-sm mb-2">
+                                {% if footer_contact_email %}📧 {{ footer_contact_email }}{% endif %}
+                                {% if footer_contact_email and footer_contact_phone %} | {% endif %}
+                                {% if footer_contact_phone %}📞 {{ footer_contact_phone }}{% endif %}
+                            </p>
                             {% endif %}
                             <p class="text-gray-500 text-sm">&copy; {{ current_year or 2024 }} taalentio.com. Tous droits réservés.</p>
                         </div>
@@ -61,38 +87,333 @@
             </form>
         </div>
 
-        <!-- Autres Options de Personnalisation (À venir) -->
-        <div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200">
+        <!-- 2. Logo et Images -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 mb-6">
             <div class="mb-4">
-                <h3 class="text-xl font-bold text-gray-800">🎨 Autres Options</h3>
-                <p class="text-gray-600 mt-1">Fonctionnalités de personnalisation supplémentaires</p>
+                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <span>📸</span>
+                    <span>Logo et Images</span>
+                </h3>
+                <p class="text-gray-600 mt-1">Gérez le logo et les images de votre plateforme</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-gray-50 border-2 border-gray-300 rounded-lg p-4">
-                    <p class="font-semibold text-gray-800 mb-2">🎨 Thème et Couleurs</p>
-                    <p class="text-sm text-gray-600">Personnalisez les couleurs de votre plateforme</p>
-                    <p class="text-xs text-gray-500 mt-2">À venir prochainement</p>
+            <form method="POST" action="{{ url_for('admin.save_logo_images') }}" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Logo Principal -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Logo Principal (Header)</label>
+                        {% if logo_url %}
+                        <div class="mb-3 p-3 bg-gray-50 rounded border border-gray-200">
+                            <img src="{{ logo_url }}" alt="Logo actuel" class="max-h-20 mb-2">
+                            <p class="text-xs text-gray-600">Logo actuel</p>
+                        </div>
+                        {% endif %}
+                        <input type="file" name="logo_file" accept="image/*"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none">
+                        <p class="text-xs text-gray-500 mt-1">Format recommandé: PNG ou SVG transparent (500x150px max)</p>
+                        
+                        <div class="mt-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Ou URL du logo</label>
+                            <input type="url" name="logo_url" value="{{ logo_url or '' }}"
+                                   class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                                   placeholder="https://example.com/logo.png">
+                        </div>
+                    </div>
+
+                    <!-- Favicon -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Favicon</label>
+                        {% if favicon_url %}
+                        <div class="mb-3 p-3 bg-gray-50 rounded border border-gray-200">
+                            <img src="{{ favicon_url }}" alt="Favicon actuel" class="w-8 h-8 mb-2">
+                            <p class="text-xs text-gray-600">Favicon actuel</p>
+                        </div>
+                        {% endif %}
+                        <input type="file" name="favicon_file" accept="image/*"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none">
+                        <p class="text-xs text-gray-500 mt-1">Format recommandé: ICO, PNG (32x32px ou 64x64px)</p>
+                        
+                        <div class="mt-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Ou URL du favicon</label>
+                            <input type="url" name="favicon_url" value="{{ favicon_url or '' }}"
+                                   class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                                   placeholder="https://example.com/favicon.ico">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Image de fond (Hero Banner)</label>
+                    {% if hero_image_url %}
+                    <div class="mb-3 p-3 bg-gray-50 rounded border border-gray-200">
+                        <img src="{{ hero_image_url }}" alt="Image Hero" class="max-h-32 mb-2">
+                        <p class="text-xs text-gray-600">Image Hero actuelle</p>
+                    </div>
+                    {% endif %}
+                    <input type="file" name="hero_image_file" accept="image/*"
+                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none">
+                    <p class="text-xs text-gray-500 mt-1">Image d'arrière-plan pour la page d'accueil (1920x600px recommandé)</p>
+                    
+                    <div class="mt-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Ou URL de l'image Hero</label>
+                        <input type="url" name="hero_image_url" value="{{ hero_image_url or '' }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                               placeholder="https://example.com/hero-banner.jpg">
+                    </div>
                 </div>
                 
-                <div class="bg-gray-50 border-2 border-gray-300 rounded-lg p-4">
-                    <p class="font-semibold text-gray-800 mb-2">📸 Logo et Images</p>
-                    <p class="text-sm text-gray-600">Téléchargez votre logo personnalisé</p>
-                    <p class="text-xs text-gray-500 mt-2">À venir prochainement</p>
-                </div>
-                
-                <div class="bg-gray-50 border-2 border-gray-300 rounded-lg p-4">
-                    <p class="font-semibold text-gray-800 mb-2">📝 Mentions Légales</p>
-                    <p class="text-sm text-gray-600">Configurez vos pages légales</p>
-                    <p class="text-xs text-gray-500 mt-2">À venir prochainement</p>
-                </div>
-                
-                <div class="bg-gray-50 border-2 border-gray-300 rounded-lg p-4">
-                    <p class="font-semibold text-gray-800 mb-2">🔗 Réseaux Sociaux</p>
-                    <p class="text-sm text-gray-600">Ajoutez vos liens sociaux au footer</p>
-                    <p class="text-xs text-gray-500 mt-2">À venir prochainement</p>
-                </div>
+                <button type="submit" class="btn-primary mt-4">
+                    💾 Enregistrer les images
+                </button>
+            </form>
+        </div>
+
+        <!-- 3. Réseaux Sociaux -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 mb-6">
+            <div class="mb-4">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <span>🔗</span>
+                    <span>Réseaux Sociaux</span>
+                </h3>
+                <p class="text-gray-600 mt-1">Configurez les liens vers vos réseaux sociaux (affichés dans le footer)</p>
             </div>
+            
+            <form method="POST" action="{{ url_for('admin.save_social_links') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                            <span>📘</span> Facebook
+                        </label>
+                        <input type="url" name="facebook_url" value="{{ social_links.facebook or '' }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                               placeholder="https://facebook.com/votreprofil">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                            <span>📷</span> Instagram
+                        </label>
+                        <input type="url" name="instagram_url" value="{{ social_links.instagram or '' }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                               placeholder="https://instagram.com/votreprofil">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                            <span>🐦</span> Twitter / X
+                        </label>
+                        <input type="url" name="twitter_url" value="{{ social_links.twitter or '' }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                               placeholder="https://twitter.com/votreprofil">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                            <span>💼</span> LinkedIn
+                        </label>
+                        <input type="url" name="linkedin_url" value="{{ social_links.linkedin or '' }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                               placeholder="https://linkedin.com/company/votreentreprise">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                            <span>🎵</span> TikTok
+                        </label>
+                        <input type="url" name="tiktok_url" value="{{ social_links.tiktok or '' }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                               placeholder="https://tiktok.com/@votreprofil">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                            <span>📺</span> YouTube
+                        </label>
+                        <input type="url" name="youtube_url" value="{{ social_links.youtube or '' }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                               placeholder="https://youtube.com/@votrechaine">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                            <span>📌</span> WhatsApp Business
+                        </label>
+                        <input type="text" name="whatsapp_number" value="{{ social_links.whatsapp or '' }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                               placeholder="+212XXXXXXXXX">
+                        <p class="text-xs text-gray-500 mt-1">Format: +212XXXXXXXXX (sans espaces)</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                            <span>💬</span> Telegram
+                        </label>
+                        <input type="text" name="telegram_url" value="{{ social_links.telegram or '' }}"
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                               placeholder="https://t.me/votregroupe">
+                    </div>
+                </div>
+
+                <div class="mt-4 bg-blue-50 border-2 border-blue-300 rounded-lg p-4">
+                    <p class="text-sm font-semibold text-blue-800 mb-2">📋 Aperçu des réseaux sociaux :</p>
+                    <div class="flex flex-wrap gap-3">
+                        {% if social_links.facebook %}<a href="{{ social_links.facebook }}" class="text-blue-600 hover:text-blue-800">📘 Facebook</a>{% endif %}
+                        {% if social_links.instagram %}<a href="{{ social_links.instagram }}" class="text-pink-600 hover:text-pink-800">📷 Instagram</a>{% endif %}
+                        {% if social_links.twitter %}<a href="{{ social_links.twitter }}" class="text-sky-600 hover:text-sky-800">🐦 Twitter</a>{% endif %}
+                        {% if social_links.linkedin %}<a href="{{ social_links.linkedin }}" class="text-blue-700 hover:text-blue-900">💼 LinkedIn</a>{% endif %}
+                        {% if social_links.tiktok %}<a href="{{ social_links.tiktok }}" class="text-gray-800 hover:text-black">🎵 TikTok</a>{% endif %}
+                        {% if social_links.youtube %}<a href="{{ social_links.youtube }}" class="text-red-600 hover:text-red-800">📺 YouTube</a>{% endif %}
+                        {% if not social_links or not (social_links.facebook or social_links.instagram or social_links.twitter or social_links.linkedin or social_links.tiktok or social_links.youtube) %}
+                            <p class="text-gray-500 text-sm">Aucun réseau social configuré</p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary mt-4">
+                    💾 Enregistrer les réseaux sociaux
+                </button>
+            </form>
+        </div>
+
+        <!-- 4. Mentions Légales -->
+        <div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 mb-6">
+            <div class="mb-4">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <span>📝</span>
+                    <span>Mentions Légales et Pages Légales</span>
+                </h3>
+                <p class="text-gray-600 mt-1">Configurez les pages légales (CGU, À propos, Politique de confidentialité, etc.)</p>
+            </div>
+            
+            <form method="POST" action="{{ url_for('admin.save_legal_pages') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <!-- CGU -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <span>📜</span>
+                        <span>Conditions Générales d'Utilisation (CGU)</span>
+                    </label>
+                    <textarea name="terms_of_service" rows="8" 
+                              class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none font-mono text-sm"
+                              placeholder="Entrez vos conditions générales d'utilisation...">{{ legal_pages.terms_of_service or '' }}</textarea>
+                    <p class="text-xs text-gray-500 mt-1">Support Markdown et HTML. Ces conditions seront affichées sur /legal/terms</p>
+                </div>
+
+                <!-- Politique de confidentialité -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <span>🔒</span>
+                        <span>Politique de Confidentialité</span>
+                    </label>
+                    <textarea name="privacy_policy" rows="8" 
+                              class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none font-mono text-sm"
+                              placeholder="Entrez votre politique de confidentialité...">{{ legal_pages.privacy_policy or '' }}</textarea>
+                    <p class="text-xs text-gray-500 mt-1">Décrivez comment vous collectez et utilisez les données personnelles. Affichée sur /legal/privacy</p>
+                </div>
+
+                <!-- À propos -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <span>ℹ️</span>
+                        <span>À Propos</span>
+                    </label>
+                    <textarea name="about_page" rows="6" 
+                              class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none font-mono text-sm"
+                              placeholder="Présentez votre entreprise, votre mission, vos valeurs...">{{ legal_pages.about_page or '' }}</textarea>
+                    <p class="text-xs text-gray-500 mt-1">Présentation de votre plateforme. Affichée sur /about</p>
+                </div>
+
+                <!-- Politique de cookies -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <span>🍪</span>
+                        <span>Politique de Cookies</span>
+                    </label>
+                    <textarea name="cookie_policy" rows="6" 
+                              class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none font-mono text-sm"
+                              placeholder="Expliquez l'utilisation des cookies sur votre site...">{{ legal_pages.cookie_policy or '' }}</textarea>
+                    <p class="text-xs text-gray-500 mt-1">Informations sur l'utilisation des cookies. Affichée sur /legal/cookies</p>
+                </div>
+
+                <!-- Mentions légales -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                        <span>⚖️</span>
+                        <span>Mentions Légales</span>
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Raison sociale</label>
+                            <input type="text" name="company_name" value="{{ legal_pages.company_name or '' }}"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 outline-none"
+                                   placeholder="MOA Digital Agency LLC">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Forme juridique</label>
+                            <input type="text" name="company_type" value="{{ legal_pages.company_type or '' }}"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 outline-none"
+                                   placeholder="SARL, SAS, LLC...">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Numéro d'immatriculation</label>
+                            <input type="text" name="registration_number" value="{{ legal_pages.registration_number or '' }}"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 outline-none"
+                                   placeholder="XXXXX">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Capital social</label>
+                            <input type="text" name="capital" value="{{ legal_pages.capital or '' }}"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 outline-none"
+                                   placeholder="10 000 EUR">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Adresse du siège social</label>
+                            <input type="text" name="company_address" value="{{ legal_pages.company_address or '' }}"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 outline-none"
+                                   placeholder="123 Rue Example, Ville, Pays">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Directeur de publication</label>
+                            <input type="text" name="director_name" value="{{ legal_pages.director_name or '' }}"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 outline-none"
+                                   placeholder="Prénom NOM">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Hébergeur du site</label>
+                            <input type="text" name="hosting_provider" value="{{ legal_pages.hosting_provider or '' }}"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 outline-none"
+                                   placeholder="Replit, AWS, etc.">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Téléphone hébergeur</label>
+                            <input type="text" name="hosting_phone" value="{{ legal_pages.hosting_phone or '' }}"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 outline-none"
+                                   placeholder="+1 XXX XXX XXXX">
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500">Ces informations seront affichées sur /legal/mentions</p>
+                </div>
+
+                <div class="bg-green-50 border-2 border-green-300 rounded-lg p-4 mb-4">
+                    <p class="text-sm font-semibold text-green-800 mb-2">✅ Pages légales disponibles :</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                        <a href="/legal/terms" target="_blank" class="text-blue-600 hover:underline">→ CGU</a>
+                        <a href="/legal/privacy" target="_blank" class="text-blue-600 hover:underline">→ Confidentialité</a>
+                        <a href="/about" target="_blank" class="text-blue-600 hover:underline">→ À propos</a>
+                        <a href="/legal/cookies" target="_blank" class="text-blue-600 hover:underline">→ Cookies</a>
+                        <a href="/legal/mentions" target="_blank" class="text-blue-600 hover:underline">→ Mentions légales</a>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary">
+                    💾 Enregistrer les pages légales
+                </button>
+            </form>
         </div>
 
     </div>
