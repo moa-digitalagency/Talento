@@ -584,31 +584,44 @@ def settings_email_notifications():
     email_config = AppSettings.get('email_notifications_config', {})
     
     # Templates disponibles avec leur configuration par défaut
+    if not isinstance(email_config, dict):
+        email_config = {}
+    
     available_templates = {
+        'talent_registration': {
+            'name': 'Inscription Talent',
+            'description': 'Email envoyé après l\'inscription d\'un nouveau talent',
+            'enabled': email_config.get('talent_registration', {}).get('enabled', True) if isinstance(email_config.get('talent_registration'), dict) else True
+        },
+        'cinema_talent_registration': {
+            'name': 'Inscription Talent Cinéma',
+            'description': 'Email envoyé après l\'inscription d\'un nouveau talent cinéma',
+            'enabled': email_config.get('cinema_talent_registration', {}).get('enabled', True) if isinstance(email_config.get('cinema_talent_registration'), dict) else True
+        },
         'ai_talent_match': {
             'name': 'Match IA - Talents',
             'description': 'Notification envoyée aux talents lorsque leur profil correspond à une recherche IA',
-            'enabled': email_config.get('ai_talent_match', {}).get('enabled', True)
+            'enabled': email_config.get('ai_talent_match', {}).get('enabled', True) if isinstance(email_config.get('ai_talent_match'), dict) else True
         },
         'ai_cinema_match': {
             'name': 'Match IA - Cinéma',
             'description': 'Notification envoyée aux talents cinéma lorsque leur profil correspond à un rôle',
-            'enabled': email_config.get('ai_cinema_match', {}).get('enabled', True)
+            'enabled': email_config.get('ai_cinema_match', {}).get('enabled', True) if isinstance(email_config.get('ai_cinema_match'), dict) else True
         },
         'project_selection': {
             'name': 'Sélection Projet',
             'description': 'Email de confirmation envoyé aux talents sélectionnés pour un projet',
-            'enabled': email_config.get('project_selection', {}).get('enabled', True)
+            'enabled': email_config.get('project_selection', {}).get('enabled', True) if isinstance(email_config.get('project_selection'), dict) else True
         },
         'application_confirmation': {
             'name': 'Confirmation Candidature',
             'description': 'Email de confirmation envoyé après une candidature',
-            'enabled': email_config.get('application_confirmation', {}).get('enabled', True)
+            'enabled': email_config.get('application_confirmation', {}).get('enabled', True) if isinstance(email_config.get('application_confirmation'), dict) else True
         },
         'login_credentials': {
             'name': 'Identifiants de Connexion',
             'description': 'Email contenant les identifiants de connexion',
-            'enabled': email_config.get('login_credentials', {}).get('enabled', True)
+            'enabled': email_config.get('login_credentials', {}).get('enabled', True) if isinstance(email_config.get('login_credentials'), dict) else True
         }
     }
     

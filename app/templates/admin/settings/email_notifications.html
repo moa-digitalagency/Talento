@@ -47,8 +47,16 @@
 
 <!-- Configuration des Templates -->
 <div class="bg-white rounded-lg shadow-md p-6 border-2 border-gray-200 mb-6">
-    <h3 class="text-xl font-bold text-gray-800 mb-4">⚙️ Configuration des Templates Email</h3>
-    <p class="text-gray-600 mb-4">Activez ou désactivez l'envoi automatique de chaque type d'email</p>
+    <div class="flex items-center justify-between mb-4">
+        <div>
+            <h3 class="text-xl font-bold text-gray-800">⚙️ Configuration des Templates Email</h3>
+            <p class="text-gray-600 mt-1">Activez ou désactivez l'envoi automatique de chaque type d'email</p>
+        </div>
+        <a href="{{ url_for('admin.settings_email_templates') }}" 
+           class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-bold border-2 border-blue-500 hover:bg-blue-200 transition-all">
+            📝 Voir les Templates
+        </a>
+    </div>
     
     <div class="space-y-3">
         {% for template_id, template_info in available_templates.items() %}
