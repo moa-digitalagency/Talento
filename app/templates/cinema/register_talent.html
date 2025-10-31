@@ -360,17 +360,31 @@
                     <span class="text-purple-700 font-bold">Section 6/9</span>
                 </div>
             </div>
-            <div class="space-y-2">
-                <label class="block text-gray-700 font-semibold text-sm mb-3">
-                    Sélectionnez votre(vos) type(s) de talent <small class="text-gray-500">(Choix multiple possible)</small>
-                </label>
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
-                    {% for talent_type in cinema_talent_types %}
-                    <label class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-purple-50 cursor-pointer transition-colors">
-                        <input type="checkbox" name="talent_types" value="{{ talent_type }}" class="w-4 h-4 text-purple-600 rounded">
-                        <span class="text-sm text-gray-700">{{ talent_type }}</span>
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-gray-700 font-semibold text-sm mb-3">
+                        Sélectionnez votre(vos) type(s) de talent <small class="text-gray-500">(Choix multiple possible)</small>
                     </label>
-                    {% endfor %}
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+                        {% for talent_type in cinema_talent_types %}
+                        <label class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-purple-50 cursor-pointer transition-colors">
+                            <input type="checkbox" name="talent_types" value="{{ talent_type }}" class="w-4 h-4 text-purple-600 rounded">
+                            <span class="text-sm text-gray-700">{{ talent_type }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label for="years_of_experience" class="block text-gray-700 font-semibold text-sm">🎯 Années d'expérience dans le cinéma</label>
+                    <select id="years_of_experience" name="years_of_experience" 
+                            class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition-all duration-200 outline-none">
+                        <option value="">Sélectionner...</option>
+                        <option value="0">🌱 Débutant (0-1 an)</option>
+                        <option value="2">📈 Junior (2-3 ans)</option>
+                        <option value="4">⚡ Intermédiaire (4-5 ans)</option>
+                        <option value="6">🔥 Senior (6-10 ans)</option>
+                        <option value="11">👑 Expert (10+ ans)</option>
+                    </select>
                 </div>
             </div>
         </div>

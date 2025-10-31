@@ -177,8 +177,29 @@ def register():
             user.threads = request.form.get('threads_url')
             
             user.bio = request.form.get('bio')
+            user.education = request.form.get('education')
             years_exp = request.form.get('years_experience')
             user.years_experience = int(years_exp) if years_exp else None
+            
+            # Languages (checkboxes - multiple selection)
+            languages = request.form.getlist('languages')
+            if languages:
+                user.languages = ', '.join(languages)
+            
+            # Availability and work mode
+            user.availability = request.form.get('availability')
+            user.work_mode = request.form.get('work_mode')
+            
+            # Rate range (combine hourly_rate and monthly_rate)
+            hourly_rate = request.form.get('hourly_rate')
+            monthly_rate = request.form.get('monthly_rate')
+            if hourly_rate or monthly_rate:
+                rate_parts = []
+                if hourly_rate:
+                    rate_parts.append(f"{hourly_rate} MAD/h")
+                if monthly_rate:
+                    rate_parts.append(f"{monthly_rate} MAD/mois")
+                user.rate_range = ' | '.join(rate_parts)
             
             date_of_birth = request.form.get('date_of_birth')
             if date_of_birth:
