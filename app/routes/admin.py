@@ -697,6 +697,21 @@ def settings_email_notifications():
             'name': 'Identifiants de Connexion',
             'description': 'Email contenant les identifiants de connexion',
             'enabled': email_config.get('login_credentials', {}).get('enabled', True) if isinstance(email_config.get('login_credentials'), dict) else True
+        },
+        'weekly_recap_talents': {
+            'name': 'Récapitulatif Hebdomadaire - Talents',
+            'description': 'Email récapitulatif des nouvelles inscriptions de talents envoyé chaque dimanche',
+            'enabled': email_config.get('weekly_recap_talents', {}).get('enabled', True) if isinstance(email_config.get('weekly_recap_talents'), dict) else True
+        },
+        'weekly_recap_cinema': {
+            'name': 'Récapitulatif Hebdomadaire - Talents Cinéma',
+            'description': 'Email récapitulatif des nouvelles inscriptions de talents cinéma envoyé chaque dimanche',
+            'enabled': email_config.get('weekly_recap_cinema', {}).get('enabled', True) if isinstance(email_config.get('weekly_recap_cinema'), dict) else True
+        },
+        'name_detection': {
+            'name': 'Détection de Nom',
+            'description': 'Email de notification lors de la détection d\'un nom existant dans le système',
+            'enabled': email_config.get('name_detection', {}).get('enabled', True) if isinstance(email_config.get('name_detection'), dict) else True
         }
     }
     
