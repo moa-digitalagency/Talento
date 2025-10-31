@@ -381,13 +381,25 @@ def create_app(config_class=Config):
     
     @app.context_processor
     def inject_custom_head_code():
-        """Injecter le code personnalisé du <head> dans tous les templates"""
+        """Injecter le code personnalisé du <head> et le footer dans tous les templates"""
         try:
             from app.models.settings import AppSettings
+            from datetime import datetime
             custom_head_code = AppSettings.get('custom_head_code', '')
-            return {'CUSTOM_HEAD_CODE': custom_head_code}
+            footer_text = AppSettings.get('footer_text', '')
+            current_year = datetime.now().year
+            return {
+                'CUSTOM_HEAD_CODE': custom_head_code,
+                'FOOTER_TEXT': footer_text,
+                'current_year': current_year
+            }
         except Exception:
-            return {'CUSTOM_HEAD_CODE': ''}
+            from datetime import datetime
+            return {
+                'CUSTOM_HEAD_CODE': '',
+                'FOOTER_TEXT': '',
+                'current_year': datetime.now().year
+            }
     
     from app.routes import auth, profile, admin, main, api, cinema, presence
     from app.routes import api_v1

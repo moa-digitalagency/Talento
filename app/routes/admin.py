@@ -787,6 +787,29 @@ def view_email_log(log_id):
     email_log = EmailLog.query.get_or_404(log_id)
     return render_template('admin/settings/email_log_detail.html', email_log=email_log)
 
+@bp.route('/settings/customization')
+@login_required
+@admin_required
+def settings_customization():
+    """Page de personnalisation du site"""
+    footer_text = AppSettings.get('footer_text', '')
+    
+    return render_template('admin/settings/customization.html',
+                         footer_text=footer_text)
+
+@bp.route('/settings/customization/save-footer', methods=['POST'])
+@login_required
+@admin_required
+def save_site_footer():
+    """Sauvegarder le pied de page du site"""
+    footer_text = request.form.get('footer_text', '')
+    
+    # Sauvegarder dans les paramètres
+    AppSettings.set('footer_text', footer_text)
+    
+    flash('✅ Pied de page du site mis à jour avec succès', 'success')
+    return redirect(url_for('admin.settings_customization'))
+
 @bp.route('/settings/recap-config', methods=['GET', 'POST'])
 @login_required
 @admin_required
