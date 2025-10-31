@@ -36,7 +36,17 @@
                 </div>
             </a>
 
-            <!-- 2. Sauvegardes -->
+            <!-- 2. Notifications Email -->
+            <a href="{{ url_for('admin.settings_email_notifications') }}" class="bg-teal-50 border-2 border-dashed border-teal-400 rounded-xl p-6 hover:shadow-lg transition-all hover:border-teal-600">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="text-3xl">📧</span>
+                    <h3 class="text-lg font-bold text-gray-800">Notifications Email</h3>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">Gérer les emails automatiques et consulter les logs d'envoi</p>
+                <span class="text-xs text-teal-600 font-bold">→ Configurer les emails</span>
+            </a>
+
+            <!-- 3. Sauvegardes -->
             <a href="{{ url_for('admin.settings_backups') }}" class="bg-orange-50 border-2 border-dashed border-orange-400 rounded-xl p-6 hover:shadow-lg transition-all hover:border-orange-600">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">💾</span>
@@ -46,7 +56,7 @@
                 <span class="text-xs text-orange-600 font-bold">→ Gérer les sauvegardes</span>
             </a>
 
-            <!-- 3. Gestion des Rôles -->
+            <!-- 4. Gestion des Rôles -->
             <a href="{{ url_for('admin.settings_roles') }}" class="bg-pink-50 border-2 border-dashed border-pink-400 rounded-xl p-6 hover:shadow-lg transition-all hover:border-pink-600">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">👥</span>
@@ -56,7 +66,7 @@
                 <span class="text-xs text-gray-700">{{ admin_users|length }} administrateur(s)</span>
             </a>
 
-            <!-- 4. Configuration Système -->
+            <!-- 5. Configuration Système -->
             <a href="{{ url_for('admin.settings_system') }}" class="bg-cyan-50 border-2 border-dashed border-cyan-400 rounded-xl p-6 hover:shadow-lg transition-all hover:border-cyan-600">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🗄️</span>
@@ -71,7 +81,7 @@
                 </div>
             </a>
 
-            <!-- 5. Logs d'Activités -->
+            <!-- 6. Logs d'Activités -->
             <a href="{{ url_for('admin.settings_activity_logs') }}" class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 hover:shadow-lg transition-all hover:border-blue-600">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">📊</span>
@@ -81,7 +91,7 @@
                 <span class="text-xs text-blue-600 font-bold">→ Voir l'historique</span>
             </a>
 
-            <!-- 6. Logs de Sécurité -->
+            <!-- 7. Logs de Sécurité -->
             <a href="{{ url_for('admin.settings_security_logs') }}" class="bg-red-50 border-2 border-dashed border-red-400 rounded-xl p-6 hover:shadow-lg transition-all hover:border-red-600">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🔒</span>
@@ -91,7 +101,7 @@
                 <span class="text-xs text-gray-700">0 tentative échouée cette semaine</span>
             </a>
 
-            <!-- 7. Gestion des Utilisateurs -->
+            <!-- 8. Gestion des Utilisateurs -->
             <a href="{{ url_for('admin.settings_users') }}" class="bg-violet-50 border-2 border-dashed border-violet-400 rounded-xl p-6 hover:shadow-lg transition-all hover:border-violet-600">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">👤</span>
@@ -101,7 +111,7 @@
                 <span class="text-xs text-violet-600 font-bold">→ Voir tous les utilisateurs</span>
             </a>
 
-            <!-- 8. Vider les Caches -->
+            <!-- 9. Vider les Caches -->
             <a href="{{ url_for('admin.settings_cache') }}" class="bg-yellow-50 border-2 border-dashed border-yellow-400 rounded-xl p-6 hover:shadow-lg transition-all hover:border-yellow-600">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🧹</span>
@@ -111,7 +121,7 @@
                 <span class="text-xs text-yellow-600 font-bold">→ Gérer le cache</span>
             </a>
 
-            <!-- 9. Mises à jour GitHub -->
+            <!-- 10. Mises à jour GitHub -->
             <a href="{{ url_for('admin.settings_github') }}" class="bg-emerald-50 border-2 border-dashed border-emerald-400 rounded-xl p-6 hover:shadow-lg transition-all hover:border-emerald-600">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="text-3xl">🔄</span>

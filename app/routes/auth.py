@@ -151,6 +151,8 @@ def register():
             user.residence_card = request.form.get('residence_card')
             
             user.country_id = int(country_id) if country_id else None
+            city_id = request.form.get('city_id')
+            user.city_id = int(city_id) if city_id else None
             user.nationality = request.form.get('nationality')
             residence_country_id = request.form.get('residence_country_id')
             residence_city_id = request.form.get('residence_city_id')
