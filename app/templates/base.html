@@ -206,13 +206,7 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-white mt-12">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            <p class="text-center text-gray-500 text-sm">
-                &copy; 2024 taalentio.com. Tous droits réservés.
-            </p>
-        </div>
-    </footer>
+    {% include 'includes/footer.html' %}
     
     {% if current_user.is_authenticated and current_user.is_admin %}
     <script src="{{ url_for('static', filename='js/bulk_actions.js') }}"></script>
