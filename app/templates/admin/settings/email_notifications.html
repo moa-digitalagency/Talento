@@ -1,10 +1,29 @@
-{% extends "admin/settings.html" %}
+{% extends "base.html" %}
 
-{% block settings_content %}
-<div class="mb-6">
-    <h2 class="text-3xl font-bold text-gray-800 mb-2">📧 Gestion des Notifications Email</h2>
-    <p class="text-gray-600">Consultez les emails envoyés par le système et gérez les notifications</p>
-</div>
+{% block title %}Notifications Email - Paramètres{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">📧 Gestion des Notifications Email</h1>
+                <p class="text-gray-600 mt-2">Consultez les emails envoyés par le système et gérez les notifications</p>
+            </div>
+            <a href="{{ url_for('admin.settings') }}" class="bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 font-semibold">
+                ← Retour aux paramètres
+            </a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="mb-4 p-4 rounded-lg border-2 {% if category == 'success' %}bg-green-50 border-green-300 text-green-800{% elif category == 'error' %}bg-red-50 border-red-300 text-red-800{% else %}bg-blue-50 border-blue-300 text-blue-800{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
 <!-- Statistiques -->
 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -163,5 +182,8 @@
     {% else %}
     <p class="text-gray-600 text-center py-8">Aucun email envoyé pour le moment</p>
     {% endif %}
+</div>
+
+    </div>
 </div>
 {% endblock %}
