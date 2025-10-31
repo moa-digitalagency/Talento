@@ -770,6 +770,91 @@ def view_email_log(log_id):
     email_log = EmailLog.query.get_or_404(log_id)
     return render_template('admin/settings/email_log_detail.html', email_log=email_log)
 
+@bp.route('/settings/recap-config', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def settings_recap_config():
+    """Configuration du récapitulatif hebdomadaire d'inscriptions"""
+    
+    # Champs disponibles pour les talents
+    available_talent_fields = {
+        'full_name': 'Nom complet',
+        'email': 'Email',
+        'phone': 'Téléphone',
+        'unique_code': 'Code unique',
+        'created_at': 'Date d\'inscription',
+        'city': 'Ville',
+        'country': 'Pays',
+        'gender': 'Genre',
+        'age': 'Âge'
+    }
+    
+    # Champs disponibles pour les talents cinéma
+    available_cinema_fields = {
+        'full_name': 'Nom complet',
+        'email': 'Email',
+        'phone': 'Téléphone',
+        'unique_code': 'Code unique',
+        'created_at': 'Date d\'inscription',
+        'city': 'Ville',
+        'country': 'Pays',
+        'gender': 'Genre',
+        'age': 'Âge',
+        'role': 'Rôle'
+    }
+    
+    if request.method == 'POST':
+        # Récupérer les données du formulaire
+        talent_enabled = request.form.get('talent_enabled') == 'on'
+        cinema_enabled = request.form.get('cinema_enabled') == 'on'
+        
+        talent_fields = request.form.getlist('talent_fields[]')
+        cinema_fields = request.form.getlist('cinema_fields[]')
+        
+        # Valider les champs sélectionnés
+        talent_fields = [f for f in talent_fields if f in available_talent_fields]
+        cinema_fields = [f for f in cinema_fields if f in available_cinema_fields]
+        
+        # Si aucun champ sélectionné, utiliser tous les champs par défaut
+        if not talent_fields:
+            talent_fields = list(available_talent_fields.keys())
+        if not cinema_fields:
+            cinema_fields = list(available_cinema_fields.keys())
+        
+        # Créer la configuration
+        recap_config = {
+            'talents': {
+                'enabled': talent_enabled,
+                'fields': talent_fields
+            },
+            'cinema_talents': {
+                'enabled': cinema_enabled,
+                'fields': cinema_fields
+            }
+        }
+        
+        # Sauvegarder
+        AppSettings.set('weekly_recap_config', recap_config)
+        flash('✅ Configuration du récapitulatif hebdomadaire mise à jour', 'success')
+        return redirect(url_for('admin.settings_recap_config'))
+    
+    # GET: Charger la configuration existante
+    recap_config = AppSettings.get('weekly_recap_config', {
+        'talents': {
+            'enabled': True,
+            'fields': list(available_talent_fields.keys())
+        },
+        'cinema_talents': {
+            'enabled': True,
+            'fields': list(available_cinema_fields.keys())
+        }
+    })
+    
+    return render_template('admin/settings/recap_config.html',
+                         recap_config=recap_config,
+                         available_talent_fields=available_talent_fields,
+                         available_cinema_fields=available_cinema_fields)
+
 @bp.route('/settings/backups')
 @login_required
 @admin_required

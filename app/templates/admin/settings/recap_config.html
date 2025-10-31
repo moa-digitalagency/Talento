@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Configuration Récapitulatif - Paramètres{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">📊 Configuration du Récapitulatif Hebdomadaire</h1>
+                <p class="text-gray-600 mt-2">Gérez l'envoi automatique des récapitulatifs d'inscription (dimanche 12:59)</p>
+            </div>
+            <a href="{{ url_for('admin.settings') }}" class="bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 font-semibold">
+                ← Retour aux paramètres
+            </a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="mb-4 p-4 rounded-lg border-2 {% if category == 'success' %}bg-green-50 border-green-300 text-green-800{% elif category == 'error' %}bg-red-50 border-red-300 text-red-800{% else %}bg-blue-50 border-blue-300 text-blue-800{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" class="space-y-6">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <!-- Configuration pour les Talents Réguliers -->
+            <div class="bg-white rounded-lg shadow-md border-2 border-blue-200">
+                <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-6 border-b-2 border-blue-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">⭐ Talents Réguliers</h2>
+                            <p class="text-gray-600 mt-1">Récapitulatif des nouvelles inscriptions de talents</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="talent_enabled" class="sr-only peer" 
+                                   {% if recap_config.talents.enabled %}checked{% endif %}>
+                            <div class="w-14 h-7 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-600"></div>
+                            <span class="ml-3 text-sm font-bold text-gray-700">{% if recap_config.talents.enabled %}Activé{% else %}Désactivé{% endif %}</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">📋 Informations à inclure dans le récapitulatif</h3>
+                    <p class="text-sm text-gray-600 mb-4">Sélectionnez les champs que vous souhaitez voir dans l'email récapitulatif</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {% for field_id, field_name in available_talent_fields.items() %}
+                        <label class="flex items-center p-3 bg-gray-50 rounded-lg border-2 border-gray-200 hover:bg-blue-50 hover:border-blue-300 cursor-pointer transition-all">
+                            <input type="checkbox" name="talent_fields[]" value="{{ field_id }}" 
+                                   class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                                   {% if field_id in recap_config.talents.fields %}checked{% endif %}>
+                            <span class="ml-3 text-sm font-semibold text-gray-700">{{ field_name }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Configuration pour les Talents Cinéma -->
+            <div class="bg-white rounded-lg shadow-md border-2 border-pink-200">
+                <div class="bg-gradient-to-r from-pink-50 to-pink-100 p-6 border-b-2 border-pink-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">🎬 Talents Cinéma</h2>
+                            <p class="text-gray-600 mt-1">Récapitulatif des nouvelles inscriptions de talents cinéma</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="cinema_enabled" class="sr-only peer"
+                                   {% if recap_config.cinema_talents.enabled %}checked{% endif %}>
+                            <div class="w-14 h-7 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-pink-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-pink-600"></div>
+                            <span class="ml-3 text-sm font-bold text-gray-700">{% if recap_config.cinema_talents.enabled %}Activé{% else %}Désactivé{% endif %}</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">📋 Informations à inclure dans le récapitulatif</h3>
+                    <p class="text-sm text-gray-600 mb-4">Sélectionnez les champs que vous souhaitez voir dans l'email récapitulatif</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        {% for field_id, field_name in available_cinema_fields.items() %}
+                        <label class="flex items-center p-3 bg-gray-50 rounded-lg border-2 border-gray-200 hover:bg-pink-50 hover:border-pink-300 cursor-pointer transition-all">
+                            <input type="checkbox" name="cinema_fields[]" value="{{ field_id }}"
+                                   class="w-5 h-5 text-pink-600 bg-gray-100 border-gray-300 rounded focus:ring-pink-500 focus:ring-2"
+                                   {% if field_id in recap_config.cinema_talents.fields %}checked{% endif %}>
+                            <span class="ml-3 text-sm font-semibold text-gray-700">{{ field_name }}</span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="flex items-center gap-4">
+                <button type="submit" class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:from-blue-600 hover:to-blue-700 transition-all shadow-md">
+                    ✅ Enregistrer la Configuration
+                </button>
+                <a href="{{ url_for('admin.settings') }}" class="px-8 py-3 bg-gray-200 text-gray-700 rounded-lg font-bold hover:bg-gray-300 transition-all">
+                    Annuler
+                </a>
+            </div>
+
+            <!-- Informations supplémentaires -->
+            <div class="bg-blue-50 border-2 border-blue-300 rounded-lg p-6">
+                <h3 class="font-bold text-gray-800 mb-2">ℹ️ À propos du récapitulatif hebdomadaire</h3>
+                <ul class="list-disc list-inside space-y-1 text-sm text-gray-700">
+                    <li>Le récapitulatif est envoyé <strong>automatiquement chaque dimanche à 12:59</strong></li>
+                    <li>Il contient toutes les inscriptions des <strong>7 derniers jours</strong></li>
+                    <li>L'email est envoyé à l'adresse admin configurée dans les paramètres</li>
+                    <li>Vous pouvez activer/désactiver chaque type de récapitulatif indépendamment</li>
+                    <li>Les champs sélectionnés seront affichés sous forme de <strong>tableau dans l'email</strong></li>
+                </ul>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const talentToggle = document.querySelector('input[name="talent_enabled"]');
+    const talentLabel = talentToggle.nextElementSibling.nextElementSibling;
+    
+    const cinemaToggle = document.querySelector('input[name="cinema_enabled"]');
+    const cinemaLabel = cinemaToggle.nextElementSibling.nextElementSibling;
+    
+    talentToggle.addEventListener('change', function() {
+        talentLabel.textContent = this.checked ? 'Activé' : 'Désactivé';
+    });
+    
+    cinemaToggle.addEventListener('change', function() {
+        cinemaLabel.textContent = this.checked ? 'Activé' : 'Désactivé';
+    });
+});
+</script>
+{% endblock %}

@@ -1246,8 +1246,15 @@ class EmailService:
         try:
             from app.models.user import User
             from app.models.cinema_talent import CinemaTalent
+            from app.models.settings import AppSettings
             from datetime import datetime, timedelta
             from sqlalchemy import and_
+            
+            # Charger la configuration du récapitulatif
+            recap_config = AppSettings.get('weekly_recap_config', {
+                'talents': {'enabled': True, 'fields': ['full_name', 'unique_code', 'city', 'country']},
+                'cinema_talents': {'enabled': True, 'fields': ['full_name', 'unique_code', 'city', 'country']}
+            })
             
             # Calculer la période (derniers 7 jours)
             end_date = datetime.utcnow()
@@ -1282,8 +1289,9 @@ class EmailService:
             logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="taalentio.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
             
             # Email pour les talents réguliers
-            if new_talents:
-                talents_html = self._build_recap_table(new_talents, domain, 'talent')
+            if new_talents and recap_config.get('talents', {}).get('enabled', True):
+                talent_fields = recap_config.get('talents', {}).get('fields', ['full_name', 'unique_code', 'city', 'country'])
+                talents_html = self._build_recap_table(new_talents, domain, 'talent', talent_fields)
                 
                 html_content = f"""
                 <!DOCTYPE html>
@@ -1342,8 +1350,9 @@ class EmailService:
                 )
             
             # Email pour les talents cinéma
-            if new_cinema_talents:
-                cinema_html = self._build_recap_table(new_cinema_talents, domain, 'cinema')
+            if new_cinema_talents and recap_config.get('cinema_talents', {}).get('enabled', True):
+                cinema_fields = recap_config.get('cinema_talents', {}).get('fields', ['full_name', 'unique_code', 'city', 'country'])
+                cinema_html = self._build_recap_table(new_cinema_talents, domain, 'cinema', cinema_fields)
                 
                 html_content = f"""
                 <!DOCTYPE html>
@@ -1409,7 +1418,7 @@ class EmailService:
             current_app.logger.error(traceback.format_exc())
             return {'error': str(e)}
     
-    def _build_recap_table(self, talents, domain, talent_type='talent'):
+    def _build_recap_table(self, talents, domain, talent_type='talent', selected_fields=None):
         """
         Construit le tableau HTML pour le récapitulatif
         
@@ -1417,40 +1426,89 @@ class EmailService:
             talents: Liste des talents (User ou CinemaTalent)
             domain: Domaine de l'application
             talent_type: 'talent' ou 'cinema'
+            selected_fields: Liste des champs à afficher (optionnel)
         
         Returns:
             HTML du tableau
         """
+        # Définir les champs disponibles et leurs labels
+        field_labels = {
+            'full_name': 'Nom complet',
+            'email': 'Email',
+            'phone': 'Téléphone',
+            'unique_code': 'Code unique',
+            'created_at': 'Date d\'inscription',
+            'city': 'Ville',
+            'country': 'Pays',
+            'gender': 'Genre',
+            'age': 'Âge',
+            'role': 'Rôle'
+        }
+        
+        # Si aucun champ n'est spécifié, utiliser la configuration par défaut
+        if not selected_fields:
+            selected_fields = ['full_name', 'unique_code', 'city', 'country']
+        
+        # Construire les en-têtes
+        headers = [field_labels.get(field, field) for field in selected_fields]
+        headers.append('Action')
+        
+        # Construire les lignes
         rows = []
         for talent in talents:
             if talent_type == 'talent':
                 profile_url = f"https://{domain}/profile/view/{talent.unique_code}"
-                city = talent.city or 'N/A'
-                country = talent.country or 'N/A'
             else:
                 profile_url = f"https://{domain}/cinema/view-talent/{talent.unique_code}"
-                city = talent.city or 'N/A'
-                country = talent.country or 'N/A'
+            
+            cells = []
+            for field in selected_fields:
+                value = 'N/A'
+                
+                if field == 'full_name':
+                    value = f"<strong>{talent.full_name}</strong>"
+                elif field == 'email':
+                    value = talent.email or 'N/A'
+                elif field == 'phone':
+                    value = talent.phone or 'N/A'
+                elif field == 'unique_code':
+                    value = talent.unique_code
+                elif field == 'created_at':
+                    if hasattr(talent, 'created_at') and talent.created_at:
+                        value = talent.created_at.strftime('%d/%m/%Y %H:%M')
+                    else:
+                        value = 'N/A'
+                elif field == 'city':
+                    value = talent.city or 'N/A'
+                elif field == 'country':
+                    value = talent.country or 'N/A'
+                elif field == 'gender':
+                    gender_map = {'M': 'Homme', 'F': 'Femme', 'N': 'Non spécifié'}
+                    value = gender_map.get(getattr(talent, 'gender', 'N'), 'N/A')
+                elif field == 'age':
+                    value = str(getattr(talent, 'age', 'N/A'))
+                elif field == 'role':
+                    value = getattr(talent, 'role', 'N/A')
+                
+                cells.append(f"<td>{value}</td>")
+            
+            # Ajouter le bouton Action
+            cells.append(f'<td><a href="{profile_url}" class="button">Voir</a></td>')
             
             rows.append(f"""
                 <tr>
-                    <td><strong>{talent.full_name}</strong></td>
-                    <td>{talent.unique_code}</td>
-                    <td>{city}</td>
-                    <td>{country}</td>
-                    <td><a href="{profile_url}" class="button">Voir</a></td>
+                    {''.join(cells)}
                 </tr>
             """)
+        
+        # Construire les en-têtes HTML
+        header_html = ''.join([f'<th>{header}</th>' for header in headers])
         
         return f"""
         <table class="talent-table">
             <thead>
                 <tr>
-                    <th>Nom Complet</th>
-                    <th>Code Unique</th>
-                    <th>Ville</th>
-                    <th>Pays</th>
-                    <th>Action</th>
+                    {header_html}
                 </tr>
             </thead>
             <tbody>
