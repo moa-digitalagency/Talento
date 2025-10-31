@@ -68,6 +68,331 @@ class EmailService:
                     continue
         
         return None
+    
+    def get_template_preview(self, template_type, data):
+        """
+        Génère un aperçu HTML d'un template email
+        
+        Args:
+            template_type: Type de template à afficher
+            data: Données d'exemple pour le template
+            
+        Returns:
+            str: HTML du template ou None si template inconnu
+        """
+        logo_base64 = self._get_logo_base64()
+        logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="taalentio.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+        domain = get_application_domain()
+        
+        if template_type == 'talent_registration':
+            profile_url = f"https://{domain}/profile/view/{data.get('unique_code', 'CODE123')}"
+            return f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                    .button {{ display: inline-block; background: #667eea; color: white; 
+                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
+                              margin: 20px 0; }}
+                    .code {{ background: #fff; border: 2px dashed #667eea; padding: 15px; 
+                            font-size: 24px; font-weight: bold; text-align: center; 
+                            color: #667eea; margin: 20px 0; border-radius: 5px; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>⭐ Bienvenue sur taalentio.com !</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Bonjour {data.get('full_name', 'Utilisateur')},</h2>
+                        <p>Nous avons bien reçu votre candidature sur la plateforme taalentio.com !</p>
+                        
+                        <p>Voici votre <strong>code unique</strong> qui vous permettra d'accéder à votre profil :</p>
+                        <div class="code">{data.get('unique_code', 'CODE123')}</div>
+                        
+                        <p>Vous pouvez consulter votre profil public à cette adresse :</p>
+                        <div style="text-align: center;">
+                            <a href="{profile_url}" class="button">🔍 Voir mon profil</a>
+                        </div>
+                        
+                        <p><strong>Note importante :</strong> Conservez bien ce code, il vous sera demandé pour vous connecter à votre espace personnel.</p>
+                        
+                        <div class="footer">
+                            <p>© 2024 taalentio.com - Plateforme de valorisation des talents</p>
+                            <p>Ceci est un email automatique, merci de ne pas y répondre.</p>
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+        
+        elif template_type == 'cinema_talent_registration':
+            profile_url = f"https://{domain}/cinema/profile/{data.get('unique_code', 'CODE123')}"
+            return f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
+                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #fff5f7; padding: 30px; border-radius: 0 0 10px 10px; }}
+                    .button {{ display: inline-block; background: #f5576c; color: white; 
+                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
+                              margin: 20px 0; }}
+                    .code {{ background: #fff; border: 2px dashed #f5576c; padding: 15px; 
+                            font-size: 24px; font-weight: bold; text-align: center; 
+                            color: #f5576c; margin: 20px 0; border-radius: 5px; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>🎬 Bienvenue au CINEMA de taalentio.com !</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Bonjour {data.get('full_name', 'Utilisateur')},</h2>
+                        <p>Félicitations ! Votre inscription au module CINEMA a été validée avec succès.</p>
+                        
+                        <p>Votre <strong>code unique CINEMA</strong> :</p>
+                        <div class="code">{data.get('unique_code', 'CODE123')}</div>
+                        
+                        <p>Consultez votre profil cinéma public :</p>
+                        <div style="text-align: center;">
+                            <a href="{profile_url}" class="button">🎭 Voir mon profil CINEMA</a>
+                        </div>
+                        
+                        <div class="footer">
+                            <p>© 2024 taalentio.com - CINEMA</p>
+                            <p>Ceci est un email automatique, merci de ne pas y répondre.</p>
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+        
+        elif template_type == 'ai_talent_match':
+            return f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); 
+                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f0f9ff; padding: 30px; border-radius: 0 0 10px 10px; }}
+                    .score {{ background: #4facfe; color: white; padding: 20px; 
+                             text-align: center; border-radius: 10px; margin: 20px 0; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>🤖 Votre profil correspond à une opportunité !</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Bonjour {data.get('full_name', 'Utilisateur')},</h2>
+                        <p>Notre intelligence artificielle a identifié que votre profil correspond à une recherche active :</p>
+                        
+                        <div style="background: white; padding: 15px; border-left: 4px solid #4facfe; margin: 20px 0;">
+                            <strong>Description de l'opportunité :</strong>
+                            <p>{data.get('job_description', 'Description de l\'opportunité...')}</p>
+                        </div>
+                        
+                        <div class="score">
+                            <h2 style="margin: 0;">Score de correspondance : {data.get('match_score', 0)}%</h2>
+                        </div>
+                        
+                        <p><strong>Raison du match :</strong></p>
+                        <p>{data.get('match_reason', 'Votre profil correspond aux critères recherchés.')}</p>
+                        
+                        <div class="footer">
+                            <p>© 2024 taalentio.com - AI Matching</p>
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+        
+        elif template_type == 'ai_cinema_match':
+            return f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); 
+                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #fffbf0; padding: 30px; border-radius: 0 0 10px 10px; }}
+                    .score {{ background: #fa709a; color: white; padding: 20px; 
+                             text-align: center; border-radius: 10px; margin: 20px 0; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>🎬 Votre profil correspond à un rôle cinéma !</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Bonjour {data.get('full_name', 'Utilisateur')},</h2>
+                        <p>Excellente nouvelle ! Notre IA a détecté que votre profil CINEMA correspond à un casting en cours :</p>
+                        
+                        <div style="background: white; padding: 15px; border-left: 4px solid #fa709a; margin: 20px 0;">
+                            <strong>Description du rôle :</strong>
+                            <p>{data.get('role_description', 'Description du rôle...')}</p>
+                        </div>
+                        
+                        <div class="score">
+                            <h2 style="margin: 0;">Score de correspondance : {data.get('match_score', 0)}%</h2>
+                        </div>
+                        
+                        <p><strong>Pourquoi vous correspondez :</strong></p>
+                        <p>{data.get('match_reason', 'Votre profil physique et vos compétences correspondent au rôle.')}</p>
+                        
+                        <div class="footer">
+                            <p>© 2024 taalentio.com - CINEMA AI Matching</p>
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+        
+        elif template_type == 'project_selection':
+            return f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); 
+                              color: #333; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f5f5f5; padding: 30px; border-radius: 0 0 10px 10px; }}
+                    .project-box {{ background: white; padding: 20px; border: 2px solid #a8edea; 
+                                   border-radius: 10px; margin: 20px 0; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>🎉 Vous avez été sélectionné pour un projet !</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Bonjour {data.get('full_name', 'Utilisateur')},</h2>
+                        <p>Félicitations ! Vous avez été sélectionné pour participer au projet suivant :</p>
+                        
+                        <div class="project-box">
+                            <h3 style="margin-top: 0; color: #a8edea;">📽️ {data.get('project_name', 'Nom du projet')}</h3>
+                            <p><strong>Votre rôle :</strong> {data.get('role', 'Rôle à définir')}</p>
+                        </div>
+                        
+                        <p>Un membre de l'équipe vous contactera prochainement pour les détails.</p>
+                        
+                        <div class="footer">
+                            <p>© 2024 taalentio.com - Gestion de Projets</p>
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+        
+        elif template_type == 'login_credentials':
+            login_url = f"https://{domain}/auth/login"
+            return f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                              color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                    .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                    .button {{ display: inline-block; background: #667eea; color: white; 
+                              padding: 12px 30px; text-decoration: none; border-radius: 5px; 
+                              margin: 20px 0; }}
+                    .credentials {{ background: #fff; border: 2px solid #667eea; padding: 20px; 
+                                   border-radius: 5px; margin: 20px 0; }}
+                    .credential-item {{ margin: 15px 0; }}
+                    .credential-label {{ color: #666; font-size: 14px; }}
+                    .credential-value {{ background: #f0f0f0; padding: 10px; border-radius: 3px; 
+                                        font-family: monospace; font-size: 16px; margin-top: 5px; }}
+                    .warning {{ background: #fff3cd; border-left: 4px solid #ffc107; 
+                               padding: 15px; margin: 20px 0; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>🔐 Vos identifiants taalentio.com</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Bonjour {data.get('full_name', 'Utilisateur')},</h2>
+                        <p>Voici vos identifiants de connexion pour accéder à votre espace personnel sur taalentio.com :</p>
+                        
+                        <div class="credentials">
+                            <div class="credential-item">
+                                <div class="credential-label">📧 Email OU Code unique</div>
+                                <div class="credential-value">{data.get('email', 'email@example.com')} ou {data.get('unique_code', 'CODE123')}</div>
+                            </div>
+                            <div class="credential-item">
+                                <div class="credential-label">🔒 Mot de passe temporaire</div>
+                                <div class="credential-value">{data.get('password', 'MotDePasse123!')}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="warning">
+                            <strong>⚠️ Important :</strong> Changez votre mot de passe dès votre première connexion pour sécuriser votre compte.
+                        </div>
+                        
+                        <div style="text-align: center;">
+                            <a href="{login_url}" class="button">🔓 Se connecter</a>
+                        </div>
+                        
+                        <div class="footer">
+                            <p>© 2024 taalentio.com</p>
+                            <p>Ceci est un email automatique, merci de ne pas y répondre.</p>
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+        
+        else:
+            return None
         
     def _log_email(self, recipient_email, recipient_name, subject, html_content, template_type, 
                    status='sent', error_message=None, sent_by_user_id=None, 

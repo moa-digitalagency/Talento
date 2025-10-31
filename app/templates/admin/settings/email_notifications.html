@@ -52,10 +52,6 @@
             <h3 class="text-xl font-bold text-gray-800">⚙️ Configuration des Templates Email</h3>
             <p class="text-gray-600 mt-1">Activez ou désactivez l'envoi automatique de chaque type d'email</p>
         </div>
-        <a href="{{ url_for('admin.settings_email_templates') }}" 
-           class="bg-blue-100 text-blue-700 px-4 py-2 rounded-lg font-bold border-2 border-blue-500 hover:bg-blue-200 transition-all">
-            📝 Voir les Templates
-        </a>
     </div>
     
     <div class="space-y-3">
@@ -65,16 +61,23 @@
                 <p class="font-semibold text-gray-800">{{ template_info.name }}</p>
                 <p class="text-sm text-gray-600">{{ template_info.description }}</p>
             </div>
-            <form method="POST" action="{{ url_for('admin.toggle_email_notification', template_type=template_id) }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button type="submit" class="px-4 py-2 rounded-lg font-bold border-2 transition-all {% if template_info.enabled %}bg-green-100 text-green-700 border-green-500 hover:bg-green-200{% else %}bg-red-100 text-red-700 border-red-500 hover:bg-red-200{% endif %}">
-                    {% if template_info.enabled %}
-                    ✅ Activé
-                    {% else %}
-                    ❌ Désactivé
-                    {% endif %}
-                </button>
-            </form>
+            <div class="flex gap-2">
+                <a href="{{ url_for('admin.view_email_template', template_type=template_id) }}" 
+                   target="_blank"
+                   class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg font-bold border-2 border-blue-500 hover:bg-blue-200 transition-all">
+                    👁️ Voir le Template
+                </a>
+                <form method="POST" action="{{ url_for('admin.toggle_email_notification', template_type=template_id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="px-4 py-2 rounded-lg font-bold border-2 transition-all {% if template_info.enabled %}bg-green-100 text-green-700 border-green-500 hover:bg-green-200{% else %}bg-red-100 text-red-700 border-red-500 hover:bg-red-200{% endif %}">
+                        {% if template_info.enabled %}
+                        ✅ Activé
+                        {% else %}
+                        ❌ Désactivé
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
         </div>
         {% endfor %}
     </div>

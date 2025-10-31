@@ -543,6 +543,62 @@ def settings_api_keys():
 def settings_email_templates():
     return render_template('admin/settings/email_templates.html')
 
+@bp.route('/settings/email-templates/view/<template_type>')
+@login_required
+@admin_required
+def view_email_template(template_type):
+    """Affiche un template email individuel"""
+    from app.services.email_service import EmailService
+    
+    email_service = EmailService()
+    
+    # Données d'exemple pour l'aperçu
+    sample_data = {
+        'talent_registration': {
+            'full_name': 'Jean Dupont',
+            'unique_code': 'MAN0001RAB',
+            'email': 'jean.dupont@example.com'
+        },
+        'cinema_talent_registration': {
+            'full_name': 'Marie Martin',
+            'unique_code': 'MAV0001CAS',
+            'email': 'marie.martin@example.com'
+        },
+        'ai_talent_match': {
+            'full_name': 'Pierre Bernard',
+            'job_description': 'Recherche développeur Python avec 3 ans d\'expérience',
+            'match_score': 85,
+            'match_reason': 'Compétences en Python et expérience correspondante'
+        },
+        'ai_cinema_match': {
+            'full_name': 'Sophie Dubois',
+            'role_description': 'Recherche actrice pour rôle principal, 25-35 ans',
+            'match_score': 92,
+            'match_reason': 'Profil parfait pour le rôle: âge, expérience et compétences'
+        },
+        'project_selection': {
+            'full_name': 'Lucas Martin',
+            'project_name': 'Projet Cinéma - La Grande Aventure',
+            'role': 'Acteur principal'
+        },
+        'login_credentials': {
+            'full_name': 'Emma Petit',
+            'email': 'emma.petit@example.com',
+            'unique_code': 'FEM0002PAR',
+            'password': 'MotDePasse123!'
+        }
+    }
+    
+    # Générer l'aperçu HTML du template
+    template_html = email_service.get_template_preview(template_type, sample_data.get(template_type, {}))
+    
+    if not template_html:
+        flash('Template non trouvé', 'error')
+        return redirect(url_for('admin.settings_email_notifications'))
+    
+    # Afficher le template brut dans le navigateur
+    return template_html
+
 @bp.route('/settings/email-notifications')
 @login_required
 @admin_required
