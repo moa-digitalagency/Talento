@@ -508,6 +508,170 @@ class EmailService:
             </html>
             """
         
+        elif template_type == 'weekly_recap_talents':
+            # Récupérer la configuration des champs
+            from app.models.settings import AppSettings
+            recap_config = AppSettings.get('weekly_recap_config', {
+                'talents': {'enabled': True, 'fields': ['full_name', 'unique_code', 'city', 'country']}
+            })
+            talent_fields = recap_config.get('talents', {}).get('fields', ['full_name', 'unique_code', 'city', 'country'])
+            
+            # Créer des talents d'exemple
+            from datetime import datetime, timedelta
+            class SampleTalent:
+                def __init__(self, name, code, email, phone, city, country, gender, age):
+                    self.full_name = name
+                    self.unique_code = code
+                    self.email = email
+                    self.phone = phone
+                    self.city = city
+                    self.country = country
+                    self.gender = gender
+                    self.age = age
+                    self.created_at = datetime.utcnow() - timedelta(days=3)
+            
+            sample_talents = [
+                SampleTalent('Jean Dupont', 'MAN0001RAB', 'jean@example.com', '+212600111222', 'Rabat', 'Maroc', 'M', 28),
+                SampleTalent('Marie Martin', 'FEM0002CAS', 'marie@example.com', '+212600333444', 'Casablanca', 'Maroc', 'F', 32),
+                SampleTalent('Ahmed Khalil', 'MAN0003MAR', 'ahmed@example.com', '+212600555666', 'Marrakech', 'Maroc', 'M', 25)
+            ]
+            
+            # Générer le tableau avec la configuration actuelle
+            talents_html = self._build_recap_table(sample_talents, domain, 'talent', talent_fields)
+            
+            start_date = datetime.utcnow() - timedelta(days=7)
+            end_date = datetime.utcnow()
+            
+            return f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
+                    .container {{ max-width: 800px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #4facfe; border-radius: 10px; margin-top: 20px; }}
+                    .summary {{ background: #e3f2fd; border: 2px dashed #4facfe; padding: 20px; border-radius: 5px; margin: 20px 0; text-align: center; }}
+                    .talent-table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
+                    .talent-table th {{ background: #f5f5f5; padding: 12px; border: 2px dashed #4facfe; text-align: left; font-weight: bold; }}
+                    .talent-table td {{ padding: 12px; border: 1px solid #ddd; }}
+                    .talent-table tr:hover {{ background: #f9f9f9; }}
+                    .button {{ display: inline-block; background: white; color: #4facfe; padding: 8px 16px; 
+                              text-decoration: none; border: 2px solid #4facfe; border-radius: 5px; font-weight: bold; font-size: 12px; }}
+                    .button:hover {{ background: #4facfe; color: white; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>📊 Récapitulatif Hebdomadaire - Talents</h1>
+                    </div>
+                    <div class="content">
+                        <div class="summary">
+                            <h2 style="margin: 0; color: #4facfe;">✨ {len(sample_talents)} Nouveaux Talents</h2>
+                            <p style="margin: 10px 0 0 0;">Période : {start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}</p>
+                        </div>
+                        
+                        <h3>Liste des nouvelles inscriptions :</h3>
+                        {talents_html}
+                        
+                        <p style="margin-top: 30px;">Cordialement,<br>
+                        <strong>Système taalentio.com</strong></p>
+                    </div>
+                    <div class="footer">
+                        <p>Email automatique envoyé tous les dimanches</p>
+                        <p>Ceci est un aperçu du template. Les données affichées sont des exemples.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+        
+        elif template_type == 'weekly_recap_cinema':
+            # Récupérer la configuration des champs
+            from app.models.settings import AppSettings
+            recap_config = AppSettings.get('weekly_recap_config', {
+                'cinema_talents': {'enabled': True, 'fields': ['full_name', 'unique_code', 'city', 'country', 'role']}
+            })
+            cinema_fields = recap_config.get('cinema_talents', {}).get('fields', ['full_name', 'unique_code', 'city', 'country'])
+            
+            # Créer des talents cinéma d'exemple
+            from datetime import datetime, timedelta
+            class SampleCinemaTalent:
+                def __init__(self, name, code, email, phone, city, country, gender, age, role):
+                    self.full_name = name
+                    self.unique_code = code
+                    self.email = email
+                    self.phone = phone
+                    self.city = city
+                    self.country = country
+                    self.gender = gender
+                    self.age = age
+                    self.role = role
+                    self.created_at = datetime.utcnow() - timedelta(days=2)
+            
+            sample_cinema_talents = [
+                SampleCinemaTalent('Sophie Dubois', 'MAV0001CAS', 'sophie@example.com', '+212600777888', 'Casablanca', 'Maroc', 'F', 29, 'Actrice'),
+                SampleCinemaTalent('Lucas Bernard', 'MAV0002RAB', 'lucas@example.com', '+212600999000', 'Rabat', 'Maroc', 'M', 35, 'Réalisateur')
+            ]
+            
+            # Générer le tableau avec la configuration actuelle
+            cinema_html = self._build_recap_table(sample_cinema_talents, domain, 'cinema', cinema_fields)
+            
+            start_date = datetime.utcnow() - timedelta(days=7)
+            end_date = datetime.utcnow()
+            
+            return f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
+                    .container {{ max-width: 800px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: white; padding: 30px; text-align: center; }}
+                    .content {{ background: white; padding: 30px; border: 2px dashed #fa709a; border-radius: 10px; margin-top: 20px; }}
+                    .summary {{ background: #ffe4e1; border: 2px dashed #fa709a; padding: 20px; border-radius: 5px; margin: 20px 0; text-align: center; }}
+                    .talent-table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
+                    .talent-table th {{ background: #f5f5f5; padding: 12px; border: 2px dashed #fa709a; text-align: left; font-weight: bold; }}
+                    .talent-table td {{ padding: 12px; border: 1px solid #ddd; }}
+                    .talent-table tr:hover {{ background: #f9f9f9; }}
+                    .button {{ display: inline-block; background: white; color: #fa709a; padding: 8px 16px; 
+                              text-decoration: none; border: 2px solid #fa709a; border-radius: 5px; font-weight: bold; font-size: 12px; }}
+                    .button:hover {{ background: #fa709a; color: white; }}
+                    .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        {logo_img}
+                        <h1>🎬 Récapitulatif Hebdomadaire - Talents Cinéma</h1>
+                    </div>
+                    <div class="content">
+                        <div class="summary">
+                            <h2 style="margin: 0; color: #fa709a;">✨ {len(sample_cinema_talents)} Nouveaux Talents Cinéma</h2>
+                            <p style="margin: 10px 0 0 0;">Période : {start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}</p>
+                        </div>
+                        
+                        <h3>Liste des nouvelles inscriptions :</h3>
+                        {cinema_html}
+                        
+                        <p style="margin-top: 30px;">Cordialement,<br>
+                        <strong>Système taalentio.com</strong></p>
+                    </div>
+                    <div class="footer">
+                        <p>Email automatique envoyé tous les dimanches</p>
+                        <p>Ceci est un aperçu du template. Les données affichées sont des exemples.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+        
         else:
             return None
         
