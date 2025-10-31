@@ -1111,6 +1111,234 @@ class EmailService:
         except Exception as e:
             current_app.logger.error(f"Erreur envoi test email: {str(e)}")
             return False
+    
+    def send_weekly_admin_recap(self, admin_email, sent_by_user_id=None):
+        """
+        Envoie un récapitulatif hebdomadaire à l'admin avec toutes les nouvelles inscriptions
+        Envoie 2 emails séparés : un pour les talents, un pour les talents cinéma
+        
+        Args:
+            admin_email: Email de l'admin
+            sent_by_user_id: ID de l'utilisateur qui envoie (optionnel)
+        
+        Returns:
+            dict avec les résultats des envois
+        """
+        try:
+            from app.models.user import User
+            from app.models.cinema_talent import CinemaTalent
+            from datetime import datetime, timedelta
+            from sqlalchemy import and_
+            
+            # Calculer la période (derniers 7 jours)
+            end_date = datetime.utcnow()
+            start_date = end_date - timedelta(days=7)
+            
+            # Récupérer les nouveaux talents
+            new_talents = User.query.filter(
+                and_(
+                    User.created_at >= start_date,
+                    User.created_at <= end_date,
+                    User.role == 'user'
+                )
+            ).order_by(User.created_at.desc()).all()
+            
+            # Récupérer les nouveaux talents cinéma
+            new_cinema_talents = CinemaTalent.query.filter(
+                and_(
+                    CinemaTalent.created_at >= start_date,
+                    CinemaTalent.created_at <= end_date
+                )
+            ).order_by(CinemaTalent.created_at.desc()).all()
+            
+            results = {
+                'talents_sent': False,
+                'cinema_talents_sent': False,
+                'talents_count': len(new_talents),
+                'cinema_talents_count': len(new_cinema_talents)
+            }
+            
+            domain = get_application_domain()
+            logo_base64 = self._get_logo_base64()
+            logo_img = f'<img src="data:image/png;base64,{logo_base64}" alt="taalentio.com" style="max-width: 250px; height: auto; margin-bottom: 15px;">' if logo_base64 else ''
+            
+            # Email pour les talents réguliers
+            if new_talents:
+                talents_html = self._build_recap_table(new_talents, domain, 'talent')
+                
+                html_content = f"""
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <style>
+                        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
+                        .container {{ max-width: 800px; margin: 0 auto; padding: 20px; }}
+                        .header {{ background: white; padding: 30px; text-align: center; }}
+                        .content {{ background: white; padding: 30px; border: 2px dashed #4facfe; border-radius: 10px; margin-top: 20px; }}
+                        .summary {{ background: #e3f2fd; border: 2px dashed #4facfe; padding: 20px; border-radius: 5px; margin: 20px 0; text-align: center; }}
+                        .talent-table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
+                        .talent-table th {{ background: #f5f5f5; padding: 12px; border: 2px dashed #4facfe; text-align: left; font-weight: bold; }}
+                        .talent-table td {{ padding: 12px; border: 1px solid #ddd; }}
+                        .talent-table tr:hover {{ background: #f9f9f9; }}
+                        .button {{ display: inline-block; background: white; color: #4facfe; padding: 8px 16px; 
+                                  text-decoration: none; border: 2px solid #4facfe; border-radius: 5px; font-weight: bold; font-size: 12px; }}
+                        .button:hover {{ background: #4facfe; color: white; }}
+                        .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            {logo_img}
+                            <h1>📊 Récapitulatif Hebdomadaire - Talents</h1>
+                        </div>
+                        <div class="content">
+                            <div class="summary">
+                                <h2 style="margin: 0; color: #4facfe;">✨ {len(new_talents)} Nouveau{'x' if len(new_talents) > 1 else ''} Talent{'s' if len(new_talents) > 1 else ''}</h2>
+                                <p style="margin: 10px 0 0 0;">Période : {start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}</p>
+                            </div>
+                            
+                            <h3>Liste des nouvelles inscriptions :</h3>
+                            {talents_html}
+                            
+                            <p style="margin-top: 30px;">Cordialement,<br>
+                            <strong>Système taalentio.com</strong></p>
+                        </div>
+                        <div class="footer">
+                            <p>Email automatique envoyé tous les dimanches</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                """
+                
+                results['talents_sent'] = self.send_email(
+                    to_email=admin_email,
+                    subject=f"📊 Récapitulatif Hebdomadaire - {len(new_talents)} Nouveau{'x' if len(new_talents) > 1 else ''} Talent{'s' if len(new_talents) > 1 else ''}",
+                    html_content=html_content,
+                    template_type='weekly_recap_talents',
+                    recipient_name='Admin',
+                    sent_by_user_id=sent_by_user_id
+                )
+            
+            # Email pour les talents cinéma
+            if new_cinema_talents:
+                cinema_html = self._build_recap_table(new_cinema_talents, domain, 'cinema')
+                
+                html_content = f"""
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <style>
+                        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }}
+                        .container {{ max-width: 800px; margin: 0 auto; padding: 20px; }}
+                        .header {{ background: white; padding: 30px; text-align: center; }}
+                        .content {{ background: white; padding: 30px; border: 2px dashed #fa709a; border-radius: 10px; margin-top: 20px; }}
+                        .summary {{ background: #ffe4e1; border: 2px dashed #fa709a; padding: 20px; border-radius: 5px; margin: 20px 0; text-align: center; }}
+                        .talent-table {{ width: 100%; border-collapse: collapse; margin: 20px 0; }}
+                        .talent-table th {{ background: #f5f5f5; padding: 12px; border: 2px dashed #fa709a; text-align: left; font-weight: bold; }}
+                        .talent-table td {{ padding: 12px; border: 1px solid #ddd; }}
+                        .talent-table tr:hover {{ background: #f9f9f9; }}
+                        .button {{ display: inline-block; background: white; color: #fa709a; padding: 8px 16px; 
+                                  text-decoration: none; border: 2px solid #fa709a; border-radius: 5px; font-weight: bold; font-size: 12px; }}
+                        .button:hover {{ background: #fa709a; color: white; }}
+                        .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            {logo_img}
+                            <h1>🎬 Récapitulatif Hebdomadaire - Talents Cinéma</h1>
+                        </div>
+                        <div class="content">
+                            <div class="summary">
+                                <h2 style="margin: 0; color: #fa709a;">✨ {len(new_cinema_talents)} Nouveau{'x' if len(new_cinema_talents) > 1 else ''} Talent{'s' if len(new_cinema_talents) > 1 else ''} Cinéma</h2>
+                                <p style="margin: 10px 0 0 0;">Période : {start_date.strftime('%d/%m/%Y')} - {end_date.strftime('%d/%m/%Y')}</p>
+                            </div>
+                            
+                            <h3>Liste des nouvelles inscriptions :</h3>
+                            {cinema_html}
+                            
+                            <p style="margin-top: 30px;">Cordialement,<br>
+                            <strong>Système taalentio.com</strong></p>
+                        </div>
+                        <div class="footer">
+                            <p>Email automatique envoyé tous les dimanches</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+                """
+                
+                results['cinema_talents_sent'] = self.send_email(
+                    to_email=admin_email,
+                    subject=f"🎬 Récapitulatif Hebdomadaire - {len(new_cinema_talents)} Nouveau{'x' if len(new_cinema_talents) > 1 else ''} Talent{'s' if len(new_cinema_talents) > 1 else ''} Cinéma",
+                    html_content=html_content,
+                    template_type='weekly_recap_cinema',
+                    recipient_name='Admin',
+                    sent_by_user_id=sent_by_user_id
+                )
+            
+            return results
+            
+        except Exception as e:
+            current_app.logger.error(f"Erreur envoi récapitulatif hebdomadaire: {str(e)}")
+            import traceback
+            current_app.logger.error(traceback.format_exc())
+            return {'error': str(e)}
+    
+    def _build_recap_table(self, talents, domain, talent_type='talent'):
+        """
+        Construit le tableau HTML pour le récapitulatif
+        
+        Args:
+            talents: Liste des talents (User ou CinemaTalent)
+            domain: Domaine de l'application
+            talent_type: 'talent' ou 'cinema'
+        
+        Returns:
+            HTML du tableau
+        """
+        rows = []
+        for talent in talents:
+            if talent_type == 'talent':
+                profile_url = f"https://{domain}/profile/view/{talent.unique_code}"
+                city = talent.city or 'N/A'
+                country = talent.country or 'N/A'
+            else:
+                profile_url = f"https://{domain}/cinema/view-talent/{talent.unique_code}"
+                city = talent.city or 'N/A'
+                country = talent.country or 'N/A'
+            
+            rows.append(f"""
+                <tr>
+                    <td><strong>{talent.full_name}</strong></td>
+                    <td>{talent.unique_code}</td>
+                    <td>{city}</td>
+                    <td>{country}</td>
+                    <td><a href="{profile_url}" class="button">Voir</a></td>
+                </tr>
+            """)
+        
+        return f"""
+        <table class="talent-table">
+            <thead>
+                <tr>
+                    <th>Nom Complet</th>
+                    <th>Code Unique</th>
+                    <th>Ville</th>
+                    <th>Pays</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {''.join(rows)}
+            </tbody>
+        </table>
+        """
 
 # Instance globale
 email_service = EmailService()

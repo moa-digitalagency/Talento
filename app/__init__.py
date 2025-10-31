@@ -564,6 +564,10 @@ def create_app(config_class=Config):
             # Garantir que le compte admin existe toujours (après le chargement des données essentielles)
             _ensure_admin_exists(db, logger)
             
+            # Initialiser le scheduler pour les tâches automatisées
+            from app.scheduler import init_scheduler
+            init_scheduler(app)
+            
             logger.info("✅ Application prête")
             
         except Exception as e:
