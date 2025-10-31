@@ -522,6 +522,9 @@ def settings_api_keys():
     # Configuration IA
     ai_provider = AppSettings.get('ai_provider', 'openrouter')
     openrouter_model = AppSettings.get('openrouter_model', 'google/gemini-2.0-flash-001:free')
+    perplexity_model = AppSettings.get('perplexity_model', 'llama-3.1-sonar-small-128k-online')
+    openai_model = AppSettings.get('openai_model', 'gpt-4o-mini')
+    gemini_model = AppSettings.get('gemini_model', 'gemini-2.0-flash-exp')
     
     sendgrid_configured = bool(sendgrid_key)
     openrouter_configured = bool(openrouter_key)
@@ -550,7 +553,10 @@ def settings_api_keys():
         'omdb_key_masked': mask_key(omdb_key) if omdb_configured else '',
         'sendgrid_from': sender_email,
         'ai_provider': ai_provider,
-        'openrouter_model': openrouter_model
+        'openrouter_model': openrouter_model,
+        'perplexity_model': perplexity_model,
+        'openai_model': openai_model,
+        'gemini_model': gemini_model
     }
     
     return render_template('admin/settings/api_keys.html', config=config_info)
@@ -1208,6 +1214,9 @@ def save_settings():
     # Configuration IA
     ai_provider = request.form.get('ai_provider', '').strip() or 'openrouter'
     openrouter_model = request.form.get('openrouter_model', '').strip() or 'google/gemini-2.0-flash-001:free'
+    perplexity_model = request.form.get('perplexity_model', '').strip() or 'llama-3.1-sonar-small-128k-online'
+    openai_model = request.form.get('openai_model', '').strip() or 'gpt-4o-mini'
+    gemini_model = request.form.get('gemini_model', '').strip() or 'gemini-2.0-flash-exp'
     
     # Enregistrer les clés API si elles ne commencent pas par '*' (masquées)
     if sendgrid_key and not sendgrid_key.startswith('*'):
@@ -1231,6 +1240,9 @@ def save_settings():
     # Enregistrer les paramètres IA
     AppSettings.set('ai_provider', ai_provider)
     AppSettings.set('openrouter_model', openrouter_model)
+    AppSettings.set('perplexity_model', perplexity_model)
+    AppSettings.set('openai_model', openai_model)
+    AppSettings.set('gemini_model', gemini_model)
     AppSettings.set('sender_email', sender_email)
     
     flash('Paramètres sauvegardés avec succès.', 'success')

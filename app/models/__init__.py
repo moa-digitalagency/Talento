@@ -17,5 +17,6 @@ from app.models.attendance import Attendance
 from app.models.activity_log import ActivityLog
 from app.models.security_log import SecurityLog
 from app.models.email_log import EmailLog
+from app.models.name_tracking import NameTracking, NameTrackingMatch
 
-__all__ = ['User', 'Talent', 'UserTalent', 'Country', 'City', 'AppSettings', 'CinemaTalent', 'Production', 'Project', 'ProjectTalent', 'Attendance', 'ActivityLog', 'SecurityLog', 'EmailLog']
+__all__ = ['User', 'Talent', 'UserTalent', 'Country', 'City', 'AppSettings', 'CinemaTalent', 'Production', 'Project', 'ProjectTalent', 'Attendance', 'ActivityLog', 'SecurityLog', 'EmailLog', 'NameTracking', 'NameTrackingMatch']
