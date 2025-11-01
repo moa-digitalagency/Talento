@@ -75,8 +75,22 @@ SECRET_KEY=<votre_secret_key> ENCRYPTION_KEY=<votre_encryption_key> python init_
 ```
 
 Ce script charge:
-- **194 pays** du monde entier
-- **1711 villes** réparties dans différents pays
-- **45 catégories de talents** (arts de la scène, arts visuels, musique, sports, etc.)
+- **194 pays** du monde entier avec mapping automatique vers leur monnaie
+- **1837 villes** réparties dans différents pays
+- **45 catégories de talents** (32 talents généraux, 13 talents cinéma)
+  - Talents généraux: visibles dans les listings principaux (/, /talents, /admin/users)
+  - Talents cinéma: exclusifs à la plateforme cinéma (/cinema/talents)
 
 Le script est **idempotent** - il peut être exécuté plusieurs fois sans créer de doublons.
+
+## 🎯 Fonctionnalités Clés
+
+### Système de Catégorisation des Talents
+- **Talents Généraux (tag='general')**: 32 catégories incluant développeurs, designers, marketeurs, etc.
+- **Talents Cinéma (tag='cinema')**: 13 catégories spécialisées (acteurs, réalisateurs, producteurs, etc.)
+- Filtrage automatique basé sur les tags pour séparer les talents cinéma des talents généraux
+
+### Support Multi-Devises
+- Mapping automatique de **60+ pays** vers leur monnaie locale
+- Support pour MAD (Maroc), CDF (RDC), EUR (France), USD (USA), etc.
+- Base pour l'affichage dynamique des tarifs selon le pays de résidence

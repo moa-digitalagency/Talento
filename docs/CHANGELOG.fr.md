@@ -9,6 +9,37 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### 📚 Documentation Complète et Nouvelles Fonctionnalités
 
+#### 🎭 Système de Catégorisation des Talents
+
+**Nouveau champ** : `tag` dans la table `talents`
+
+- ✅ **Ségrégation talents cinéma/général** : Filtrage automatique basé sur le tag
+- ✅ **32 talents généraux** : Développeurs, designers, marketeurs, etc.
+- ✅ **13 talents cinéma** : Acteurs, réalisateurs, producteurs, etc.
+- ✅ **Tags automatiques** : Assignés selon la catégorie (Arts de la scène, Techniques & Créatives = cinema)
+- ✅ **Filtrage intelligent** : Talents cinéma exclus des listings généraux (/, /talents, /admin/users)
+- ✅ **Migration automatique** : Colonne `tag` ajoutée aux bases existantes via auto_migrate.py
+
+**Implémentation** :
+- Modèle Talent mis à jour avec champ `tag` (default='general')
+- Routes filtrées pour afficher uniquement tag='general'
+- Script init_essential_data.py mis à jour pour appliquer les tags
+
+#### 💱 Support Multi-Devises
+
+**Nouveau fichier** : `app/constants.py` avec mapping pays → monnaie
+
+- ✅ **60+ pays** mappés vers leur monnaie locale
+- ✅ **Monnaies supportées** : MAD (Maroc), CDF (RDC), EUR (France), USD (USA), etc.
+- ✅ **Helper function** : `get_currency_for_country(country_code)` pour récupération facile
+- ✅ **Base pour dynamisme** : Prêt pour l'affichage dynamique des tarifs selon le pays
+
+**Mapping inclus** :
+- Afrique : MAD, CDF, XOF, XAF, ZAR, NGN, KES, etc.
+- Europe : EUR, GBP, CHF, etc.
+- Amériques : USD, CAD, BRL, etc.
+- Asie-Pacifique : JPY, CNY, AUD, etc.
+
 #### ⚖️ Amélioration des Mentions Légales
 
 **Nouveaux champs** ajoutés (12 au total) :
