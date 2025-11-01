@@ -17,6 +17,23 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
   - Icônes dans l'aperçu des réseaux sociaux configurés
 
 ### Modifié
+- **Génération de codes uniques - Utilisation du pays d'origine** : Modification majeure du système de codification
+  - **Talents standards** : Le code unique utilise maintenant le pays d'origine (au lieu du pays de résidence) et la ville de résidence
+    - Format: PPGNNNNVVV où PP = pays d'origine, VVV = ville de résidence
+    - Exemple: MAM0001RAB (Origine Maroc, résidant à Rabat)
+  - **Talents CINEMA** : Le code unique utilise maintenant le pays d'origine (au lieu du pays de résidence) et la ville de résidence
+    - Format: PPVVVNNNNNG où PP = pays d'origine, VVV = ville de résidence
+    - Exemple: MACAS0001F (Origine Maroc, résidant à Casablanca)
+  - Le numéro séquentiel est incrémenté par pays d'origine (et non plus par pays de résidence)
+  - Documentation mise à jour dans `id_generator.py` et `cinema_code_generator.py`
+
+- **Filtrage des talents CINEMA** : Séparation claire entre les talents standards et les talents CINEMA
+  - Les talents CINEMA n'apparaissent plus dans la route `/` (dashboard principal)
+  - Les talents CINEMA n'apparaissent plus dans la route `/admin/users`
+  - Les talents CINEMA ne sont affichés que dans le module dédié `/cinema/talents`
+  - Filtrage basé sur la longueur du code unique (11 caractères pour CINEMA vs 10 pour standard)
+  - Les exports (Excel, CSV, PDF) excluent également les talents CINEMA
+
 - **Formulaire d'inscription standard - Localisation simplifiée** : Restructuration de la section "Localisation"
   - Suppression du champ "Ville d'origine" pour simplifier le formulaire
   - Quatre champs uniquement : Pays d'origine, Nationalité, Pays de résidence, Ville de résidence

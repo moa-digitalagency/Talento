@@ -210,15 +210,17 @@ def register():
                 flash('Cet email est déjà utilisé.', 'error')
                 return render_template('auth/register.html', countries=countries, talents=talents, nationalities=nationalities)
             
-            residence_country = Country.query.get(user.residence_country_id) if user.residence_country_id else None
+            # Utiliser le pays d'origine (country_id) pour le code unique
+            origin_country = Country.query.get(user.country_id) if user.country_id else None
             residence_city = City.query.get(user.residence_city_id) if user.residence_city_id else None
             
-            if not residence_country or not residence_city:
-                flash('Veuillez sélectionner un pays de résidence et une ville de résidence.', 'error')
+            if not origin_country or not residence_city:
+                flash('Veuillez sélectionner un pays d\'origine et une ville de résidence.', 'error')
                 return render_template('auth/register.html', countries=countries, talents=talents, nationalities=nationalities)
             
+            # Générer le code unique avec le pays d'origine et la ville de résidence
             user.unique_code = generate_unique_user_code(
-                residence_country.code,
+                origin_country.code,
                 residence_city.code,
                 user.gender or 'N'
             )

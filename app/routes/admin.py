@@ -76,7 +76,11 @@ def users():
     city_filter = request.args.get('city')
     talent_filter = request.args.getlist('talent')
     
-    query = User.query.filter(User.is_admin == False)
+    # Exclure les admins ET les talents cinéma (codes de 11 ou 13 caractères)
+    query = User.query.filter(
+        User.is_admin == False,
+        func.length(User.unique_code) == 10
+    )
     
     if search_query:
         search_pattern = f'%{search_query}%'
@@ -146,7 +150,11 @@ def delete_user(user_id):
 @login_required
 @recruiter_or_admin_required
 def export_excel():
-    users = User.query.filter(User.is_admin == False).all()
+    # Exclure les admins et talents cinéma (uniquement codes de 10 caractères)
+    users = User.query.filter(
+        User.is_admin == False,
+        func.length(User.unique_code) == 10
+    ).all()
     excel_bytes = ExportService.export_to_excel(users)
     
     buffer = io.BytesIO(excel_bytes)
@@ -163,7 +171,11 @@ def export_excel():
 @login_required
 @recruiter_or_admin_required
 def export_csv():
-    users = User.query.filter(User.is_admin == False).all()
+    # Exclure les admins et talents cinéma (uniquement codes de 10 caractères)
+    users = User.query.filter(
+        User.is_admin == False,
+        func.length(User.unique_code) == 10
+    ).all()
     csv_data = ExportService.export_to_csv(users)
     
     buffer = io.BytesIO()
@@ -182,7 +194,11 @@ def export_csv():
 @recruiter_or_admin_required
 def export_pdf():
     try:
-        users = User.query.filter(User.is_admin == False).all()
+        # Exclure les admins et talents cinéma (uniquement codes de 10 caractères)
+        users = User.query.filter(
+            User.is_admin == False,
+            func.length(User.unique_code) == 10
+        ).all()
         pdf_bytes = ExportService.export_list_to_pdf(users, current_user=current_user)
         
         from app.services.logging_service import LoggingService

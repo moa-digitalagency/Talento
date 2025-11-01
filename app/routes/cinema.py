@@ -679,9 +679,10 @@ def register_talent():
                 talent.talent_types = json.dumps(talent_types)
             
             # Generate unique code for CINEMA talent (format: PPVVVNNNNNG)
+            # Utilise le pays d'origine (country_of_origin) et la ville de résidence
             from app.utils.cinema_code_generator import generate_cinema_unique_code
             talent.unique_code = generate_cinema_unique_code(
-                talent.country_of_residence,
+                talent.country_of_origin if talent.country_of_origin else talent.country_of_residence,
                 talent.city_of_residence,
                 talent.gender
             )

@@ -9,14 +9,15 @@ www.myoneart.com
 def generate_unique_code(country_code, city_code, gender):
     """
     Generate unique alphanumeric code: PPGNNNNVVV
-    PP: 2 letters from country (ISO-2 code)
+    PP: 2 letters from country of origin (ISO-2 code)
     G: Gender (M/F/N)
-    NNNN: 4 sequential digits (incremented per country)
-    VVV: 3 letters from city
+    NNNN: 4 sequential digits (incremented per country of origin)
+    VVV: 3 letters from city of residence
     
-    Example: MAM0001RAB (Morocco, Male, 1st person in Morocco, Rabat)
+    Example: MAM0001RAB (Morocco origin, Male, 1st person from Morocco, residing in Rabat)
     
-    Note: The sequential number is incremented per COUNTRY, not per city.
+    Note: The sequential number is incremented per COUNTRY OF ORIGIN, not per city.
+    The city code represents the city of residence.
     This ensures unique identification while maintaining country-level tracking.
     """
     from app.models.user import User
@@ -62,16 +63,17 @@ def is_code_unique(code):
 
 def generate_unique_user_code(country_code, city_code, gender):
     """
-    Generate unique code with sequential numbering per country.
+    Generate unique code with sequential numbering per country of origin.
     
     Format: PPGNNNNVVV
-    - PP: Country code (2 letters)
+    - PP: Country of origin code (2 letters)
     - G: Gender (M/F/N)
-    - NNNN: Sequential number per country (4 digits)
-    - VVV: City code (3 letters)
+    - NNNN: Sequential number per country of origin (4 digits)
+    - VVV: City of residence code (3 letters)
     
     The function ensures the code is unique by checking the database.
-    Sequential numbering is incremented per country, not per city.
+    Sequential numbering is incremented per country of origin, not per city.
+    The city code represents the city of residence.
     """
     # Generate the code
     code = generate_unique_code(country_code, city_code, gender)

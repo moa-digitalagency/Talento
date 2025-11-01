@@ -1476,17 +1476,19 @@ gunicorn --bind 0.0.0.0:5004 --reuse-port --workers 4 app:app
 
 | Composant | Description | Exemple |
 |-----------|-------------|---------|
-| **PP** | Code pays ISO-2 | `MA` (Maroc) |
+| **PP** | Code pays d'origine ISO-2 | `MA` (Maroc) |
 | **G** | Genre | `M`, `F`, ou `N` |
-| **NNNN** | 4 chiffres **séquentiels par pays** | `0001` |
-| **VVV** | 3 premières lettres de la ville | `RAB` (Rabat) |
+| **NNNN** | 4 chiffres **séquentiels par pays d'origine** | `0001` |
+| **VVV** | 3 premières lettres de la ville de résidence | `RAB` (Rabat) |
 
-**Exemple**: `MAM0001RAB` (Maroc, Masculin, 1ère personne au Maroc, Rabat)
+**Exemple**: `MAM0001RAB` (Origine Maroc, Masculin, 1ère personne originaire du Maroc, résidant à Rabat)
 
-**Important**: Le numéro est **séquentiel et incrémenté par pays**, pas par ville:
-- `MAM0001RAB` = 1ère personne au Maroc (de Rabat), genre masculin
-- `MAF0002CAS` = 2ème personne au Maroc (de Casablanca), genre féminin
-- `SNM0001DAK` = 1ère personne au Sénégal (de Dakar), genre masculin
+**Important**: Le numéro est **séquentiel et incrémenté par pays d'origine**, pas par ville de résidence:
+- `MAM0001RAB` = 1ère personne originaire du Maroc (résidant à Rabat), genre masculin
+- `MAF0002CAS` = 2ème personne originaire du Maroc (résidant à Casablanca), genre féminin
+- `SNM0001DAK` = 1ère personne originaire du Sénégal (résidant à Dakar), genre masculin
+
+**Note**: Le code utilise le pays d'origine (nationality/country_id) et la ville de résidence (residence_city_id) pour permettre une traçabilité géographique tout en respectant la mobilité des talents.
 
 ### Format CINEMA (Talents Cinématographiques)
 
@@ -1494,21 +1496,25 @@ gunicorn --bind 0.0.0.0:5004 --reuse-port --workers 4 app:app
 
 | Composant | Description | Exemple |
 |-----------|-------------|---------|
-| **PP** | Code pays ISO-2 | `MA` (Maroc) |
-| **VVV** | 3 premières lettres de la ville | `CAS` (Casablanca) |
-| **NNNN** | 4 chiffres **séquentiels par pays** | `0001` |
+| **PP** | Code pays d'origine ISO-2 | `MA` (Maroc) |
+| **VVV** | 3 premières lettres de la ville de résidence | `CAS` (Casablanca) |
+| **NNNN** | 4 chiffres **séquentiels par pays d'origine** | `0001` |
 | **G** | Genre | `M`, `F` |
 
-**Exemple**: `MACAS0001F` (Maroc, Casablanca, 1ère personne CINEMA au Maroc, Femme)
+**Exemple**: `MACAS0001F` (Origine Maroc, résidant à Casablanca, 1ère personne CINEMA originaire du Maroc, Femme)
 
-**Important**: Le numéro est **séquentiel par pays**, identique au système standard:
-- `MACAS0001F` = 1ère personne CINEMA au Maroc (de Casablanca)
-- `MARAB0002M` = 2ème personne CINEMA au Maroc (de Rabat)
-- `SNDAG0001F` = 1ère personne CINEMA au Sénégal (de Dakar)
+**Important**: Le numéro est **séquentiel par pays d'origine**, identique au système standard:
+- `MACAS0001F` = 1ère personne CINEMA originaire du Maroc (résidant à Casablanca)
+- `MARAB0002M` = 2ème personne CINEMA originaire du Maroc (résidant à Rabat)
+- `SNDAG0001F` = 1ère personne CINEMA originaire du Sénégal (résidant à Dakar)
 
-**Distinction**: Les codes CINEMA se distinguent des codes standards par l'ordre des composants:
-- **Standard**: Pays-Genre-Numéro-Ville (PPGNNNNVVV)
-- **CINEMA**: Pays-Ville-Numéro-Genre (PPVVVNNNNNG)
+**Note**: Comme pour les talents standards, le code CINEMA utilise le pays d'origine (country_of_origin) et la ville de résidence (city_of_residence).
+
+**Distinction**: Les codes CINEMA se distinguent des codes standards par l'ordre des composants et la longueur:
+- **Standard** (10 caractères): Pays d'origine-Genre-Numéro-Ville de résidence (PPGNNNNVVV)
+- **CINEMA** (11 caractères): Pays d'origine-Ville de résidence-Numéro-Genre (PPVVVNNNNNG)
+
+**Filtrage**: Les talents CINEMA (codes de 11 caractères) sont automatiquement filtrés et n'apparaissent que dans le module `/cinema/talents`. Ils sont exclus de `/` et `/admin/users`.
 
 **Rétrocompatibilité**: Le système supporte encore les anciens codes CINEMA à 6 chiffres (13 caractères total).
 
