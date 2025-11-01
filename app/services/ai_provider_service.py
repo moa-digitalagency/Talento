@@ -40,7 +40,7 @@ class AIProviderService:
         
         elif provider == 'perplexity':
             config['api_key'] = AppSettings.get('perplexity_api_key')
-            config['model'] = AppSettings.get('perplexity_model', 'llama-3.1-sonar-small-128k-online')
+            config['model'] = AppSettings.get('perplexity_model', 'sonar')
             config['endpoint'] = 'https://api.perplexity.ai/chat/completions'
         
         elif provider == 'openai':
