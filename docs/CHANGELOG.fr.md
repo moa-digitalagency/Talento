@@ -9,6 +9,29 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### 📚 Documentation Complète et Nouvelles Fonctionnalités
 
+#### ⚖️ Amélioration des Mentions Légales
+
+**Nouveaux champs** ajoutés (12 au total) :
+- ✅ **Téléphone entreprise** (`company_phone`)
+- ✅ **Email entreprise** (`company_email`)
+- ✅ **Site web entreprise** (`company_website`)
+- ✅ **Adresse hébergeur** (`hosting_address`)
+
+**Organisation en 4 blocs groupés** :
+1. 🏢 **Informations sur l'entreprise** : Raison sociale, forme juridique, n° immatriculation, capital
+2. 📞 **Coordonnées** : Adresse, téléphone, email, site web
+3. 👤 **Direction** : Directeur de publication
+4. 🖥️ **Hébergement** : Nom, adresse et téléphone de l'hébergeur
+
+**Design amélioré** :
+- Blocs avec bordures pointillées colorées
+- Titres avec icônes emoji
+- Disposition en grille responsive
+- Messages "Non renseigné" pour les champs vides
+- Support du contenu HTML personnalisé
+
+**Configuration** : `/admin/settings/customization` → Mentions Légales
+
 #### 🎯 Système de Logs d'Activité Amélioré
 
 **Nouvelle Table** : `activity_logs`

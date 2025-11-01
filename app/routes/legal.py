@@ -123,8 +123,12 @@ def mentions():
             'registration_number': legal_pages.get('registration_number', ''),
             'capital': legal_pages.get('capital', ''),
             'company_address': legal_pages.get('company_address', ''),
+            'company_phone': legal_pages.get('company_phone', ''),
+            'company_email': legal_pages.get('company_email', ''),
+            'company_website': legal_pages.get('company_website', ''),
             'director_name': legal_pages.get('director_name', ''),
             'hosting_provider': legal_pages.get('hosting_provider', ''),
+            'hosting_address': legal_pages.get('hosting_address', ''),
             'hosting_phone': legal_pages.get('hosting_phone', '')
         }
         

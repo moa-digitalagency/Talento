@@ -972,8 +972,12 @@ def save_legal_pages():
         'registration_number': request.form.get('registration_number', '').strip(),
         'capital': request.form.get('capital', '').strip(),
         'company_address': request.form.get('company_address', '').strip(),
+        'company_phone': request.form.get('company_phone', '').strip(),
+        'company_email': request.form.get('company_email', '').strip(),
+        'company_website': request.form.get('company_website', '').strip(),
         'director_name': request.form.get('director_name', '').strip(),
         'hosting_provider': request.form.get('hosting_provider', '').strip(),
+        'hosting_address': request.form.get('hosting_address', '').strip(),
         'hosting_phone': request.form.get('hosting_phone', '').strip()
     }
     
