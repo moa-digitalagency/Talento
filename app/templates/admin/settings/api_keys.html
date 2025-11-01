@@ -236,6 +236,45 @@
                             config.style.display = 'none';
                         });
                         document.getElementById(selected + '_config').style.display = 'block';
+                        
+                        // Mettre à jour le texte du bouton de test AI
+                        updateTestButton(selected);
+                    }
+                    
+                    function updateTestButton(provider) {
+                        const providerNames = {
+                            'openrouter': 'OpenRouter',
+                            'perplexity': 'Perplexity',
+                            'openai': 'OpenAI',
+                            'gemini': 'Google Gemini'
+                        };
+                        
+                        const configured = {
+                            'openrouter': {{ 'true' if config.openrouter else 'false' }},
+                            'perplexity': {{ 'true' if config.perplexity else 'false' }},
+                            'openai': {{ 'true' if config.openai else 'false' }},
+                            'gemini': {{ 'true' if config.gemini else 'false' }}
+                        };
+                        
+                        const button = document.getElementById('test_ai_button');
+                        const title = document.getElementById('test_ai_title');
+                        const description = document.getElementById('test_ai_description');
+                        const buttonText = document.getElementById('test_ai_button_text');
+                        
+                        const providerName = providerNames[provider] || 'API IA';
+                        
+                        title.textContent = `Test ${providerName}`;
+                        description.textContent = `Vérifiez que l'API ${providerName} fonctionne correctement`;
+                        buttonText.textContent = `Tester ${providerName}`;
+                        
+                        // Activer/désactiver le bouton selon la configuration
+                        if (configured[provider]) {
+                            button.disabled = false;
+                            button.classList.remove('opacity-50', 'cursor-not-allowed');
+                        } else {
+                            button.disabled = true;
+                            button.classList.add('opacity-50', 'cursor-not-allowed');
+                        }
                     }
                     
                     // Au chargement de la page
@@ -300,19 +339,20 @@
                 </form>
             </div>
 
-            <!-- Test OpenRouter -->
+            <!-- Test AI API -->
             <div class="bg-indigo-50 border-2 border-dashed border-indigo-400 rounded-xl p-6">
                 <h3 class="text-xl font-bold mb-3 flex items-center gap-2">
                     <span class="text-2xl">🤖</span>
-                    Test OpenRouter
+                    <span id="test_ai_title">Test API IA</span>
                 </h3>
-                <p class="text-sm text-gray-600 mb-4">Vérifiez que l'API OpenRouter fonctionne correctement</p>
+                <p class="text-sm text-gray-600 mb-4" id="test_ai_description">Vérifiez que l'API du fournisseur sélectionné fonctionne correctement</p>
                 
                 <form method="POST" action="{{ url_for('admin.test_openrouter') }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <button type="submit" {% if not config.openrouter %}disabled{% endif %}
-                            class="w-full bg-white border-2 border-indigo-600 text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 font-semibold transition-all {% if not config.openrouter %}opacity-50 cursor-not-allowed{% endif %}">
-                        🧪 Tester OpenRouter API
+                    <button type="submit" id="test_ai_button"
+                            {% if not (config.openrouter or config.perplexity or config.openai or config.gemini) %}disabled{% endif %}
+                            class="w-full bg-white border-2 border-indigo-600 text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 font-semibold transition-all">
+                        🧪 <span id="test_ai_button_text">Tester l'API IA</span>
                     </button>
                 </form>
             </div>
