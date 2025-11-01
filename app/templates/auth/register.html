@@ -484,12 +484,12 @@
                         </select>
                     </div>
                     <div class="space-y-2">
-                        <label for="hourly_rate" class="block text-gray-700 font-semibold text-sm">💰 Tarif horaire souhaité (MAD)</label>
+                        <label for="hourly_rate" class="block text-gray-700 font-semibold text-sm">💰 Tarif horaire souhaité (<span id="hourly_rate_currency">MAD</span>)</label>
                         <input type="number" id="hourly_rate" name="hourly_rate" placeholder="Ex: 150" min="0" 
                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 outline-none">
                     </div>
                     <div class="space-y-2">
-                        <label for="monthly_rate" class="block text-gray-700 font-semibold text-sm">💵 Tarif mensuel souhaité (MAD)</label>
+                        <label for="monthly_rate" class="block text-gray-700 font-semibold text-sm">💵 Tarif mensuel souhaité (<span id="monthly_rate_currency">MAD</span>)</label>
                         <input type="number" id="monthly_rate" name="monthly_rate" placeholder="Ex: 8000" min="0" 
                                class="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition-all duration-200 outline-none">
                     </div>
@@ -751,6 +751,25 @@
 const MAX_TALENTS = 5;
 let selectedTalents = new Set();
 
+// Mapping pays -> devise (code ISO-2 -> devise)
+const countryCurrencies = {
+    'MA': 'MAD', 'DZ': 'DZD', 'TN': 'TND', 'LY': 'LYD', 'EG': 'EGP', 'MR': 'MRU',
+    'ML': 'FCFA', 'SN': 'FCFA', 'GM': 'GMD', 'GW': 'FCFA', 'GN': 'GNF', 'SL': 'SLL',
+    'LR': 'LRD', 'CI': 'FCFA', 'GH': 'GHS', 'TG': 'FCFA', 'BJ': 'FCFA', 'NG': 'NGN',
+    'NE': 'FCFA', 'BF': 'FCFA', 'CM': 'FCFA', 'TD': 'FCFA', 'CF': 'FCFA', 'GQ': 'FCFA',
+    'GA': 'FCFA', 'CG': 'FCFA', 'CD': 'CDF', 'AO': 'AOA', 'SD': 'SDG', 'SS': 'SSP',
+    'ET': 'ETB', 'ER': 'ERN', 'DJ': 'DJF', 'SO': 'SOS', 'KE': 'KES', 'UG': 'UGX',
+    'RW': 'RWF', 'BI': 'BIF', 'TZ': 'TZS', 'MW': 'MWK', 'MZ': 'MZN', 'ZW': 'ZWL',
+    'ZM': 'ZMW', 'BW': 'BWP', 'NA': 'NAD', 'ZA': 'ZAR', 'LS': 'LSL', 'SZ': 'SZL',
+    'MG': 'MGA', 'MU': 'MUR', 'KM': 'KMF', 'SC': 'SCR', 'CV': 'CVE', 'ST': 'STN',
+    'FR': '€', 'BE': '€', 'IT': '€', 'ES': '€', 'PT': '€', 'DE': '€', 'NL': '€',
+    'AT': '€', 'GR': '€', 'IE': '€', 'GB': '£', 'US': '$', 'CA': 'CAD', 'CH': 'CHF',
+    'CN': '¥', 'JP': '¥', 'IN': '₹', 'BR': 'R$', 'MX': 'MXN', 'RU': '₽', 'TR': '₺',
+    'SA': 'SAR', 'AE': 'AED'
+};
+
+let countriesData = {};
+
 document.addEventListener('DOMContentLoaded', function() {
     fetch('/api/countries')
         .then(res => res.json())
@@ -760,6 +779,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const nationalitySelect = document.getElementById('nationality');
             
             countries.forEach(country => {
+                countriesData[country.id] = country;
                 const flag = getCountryFlag(country.code);
                 
                 const option1 = document.createElement('option');
@@ -784,6 +804,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!countryId) {
             residenceCitySelect.innerHTML = '<option value="">Sélectionner d\'abord un pays de résidence...</option>';
             return;
+        }
+        
+        // Mettre à jour la devise en fonction du pays de résidence
+        const country = countriesData[countryId];
+        if (country && country.code) {
+            const currency = countryCurrencies[country.code] || 'MAD';
+            document.getElementById('hourly_rate_currency').textContent = currency;
+            document.getElementById('monthly_rate_currency').textContent = currency;
         }
         
         fetch(`/api/cities?country_id=${countryId}`)
