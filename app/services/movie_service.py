@@ -23,7 +23,9 @@ def search_movies(query, page=1):
     Returns:
         dict: Résultats de recherche ou erreur
     """
-    OMDB_API_KEY = os.environ.get('OMDB_API_KEY', '')
+    from app.models.app_settings import AppSettings
+    
+    OMDB_API_KEY = AppSettings.get('omdb_api_key', '') or os.environ.get('OMDB_API_KEY', '')
     
     if not OMDB_API_KEY:
         return {'error': 'OMDB API key not configured'}

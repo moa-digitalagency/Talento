@@ -921,6 +921,141 @@ WORLD_CITIES = {
         'Apia', 'Vaitele', 'Faleula', 'Siusega', 'Vaiusu',
         'Malie', 'Safotu', 'Leulumoega', 'Faleasiu', 'Satapuala'
     ],
+    
+    # Andorre (AD)
+    'AD': ['Andorre-la-Vieille', 'Escaldes-Engordany', 'Encamp'],
+    
+    # Antigua-et-Barbuda (AG)
+    'AG': ['Saint John\'s', 'All Saints', 'Liberta'],
+    
+    # Bahamas (BS)
+    'BS': ['Nassau', 'Freeport', 'West End'],
+    
+    # Barbade (BB)
+    'BB': ['Bridgetown', 'Speightstown', 'Oistins'],
+    
+    # Biélorussie (BY)
+    'BY': ['Minsk', 'Gomel', 'Moguilev', 'Vitebsk', 'Grodno', 'Brest'],
+    
+    # Belize (BZ)
+    'BZ': ['Belize City', 'San Ignacio', 'Orange Walk'],
+    
+    # Bhoutan (BT)
+    'BT': ['Thimphou', 'Phuentsholing', 'Punakha'],
+    
+    # Burundi (BI)
+    'BI': ['Bujumbura', 'Gitega', 'Muyinga', 'Ngozi', 'Ruyigi'],
+    
+    # Cap-Vert (CV)
+    'CV': ['Praia', 'Mindelo', 'Santa Maria'],
+    
+    # Comores (KM)
+    'KM': ['Moroni', 'Mutsamudu', 'Fomboni'],
+    
+    # Corée du Nord (KP)
+    'KP': ['Pyongyang', 'Hamhung', 'Chongjin'],
+    
+    # Djibouti (DJ)
+    'DJ': ['Djibouti', 'Ali Sabieh', 'Tadjourah'],
+    
+    # Dominique (DM)
+    'DM': ['Roseau', 'Portsmouth', 'Marigot'],
+    
+    # Érythrée (ER)
+    'ER': ['Asmara', 'Keren', 'Massaoua'],
+    
+    # Eswatini (SZ)
+    'SZ': ['Mbabane', 'Manzini', 'Lobamba'],
+    
+    # Gabon (GA)
+    'GA': ['Libreville', 'Port-Gentil', 'Franceville', 'Oyem', 'Moanda'],
+    
+    # Gambie (GM)
+    'GM': ['Banjul', 'Serekunda', 'Brikama'],
+    
+    # Grenade (GD)
+    'GD': ['Saint-Georges', 'Gouyave', 'Grenville'],
+    
+    # Guinée-Bissau (GW)
+    'GW': ['Bissau', 'Bafatá', 'Gabú'],
+    
+    # Guinée équatoriale (GQ)
+    'GQ': ['Malabo', 'Bata', 'Ebebiyin'],
+    
+    # Guyana (GY)
+    'GY': ['Georgetown', 'Linden', 'New Amsterdam'],
+    
+    # Kirghizistan (KG)
+    'KG': ['Bichkek', 'Osh', 'Jalal-Abad', 'Karakol', 'Tokmok'],
+    
+    # Kiribati (KI)
+    'KI': ['Tarawa-Sud', 'Betio', 'Bikenibeu'],
+    
+    # Lesotho (LS)
+    'LS': ['Maseru', 'Teyateyaneng', 'Mafeteng'],
+    
+    # Libéria (LR)
+    'LR': ['Monrovia', 'Gbarnga', 'Kakata'],
+    
+    # Liechtenstein (LI)
+    'LI': ['Vaduz', 'Schaan', 'Balzers'],
+    
+    # Malawi (MW)
+    'MW': ['Lilongwe', 'Blantyre', 'Mzuzu', 'Zomba', 'Mangochi'],
+    
+    # Maldives (MV)
+    'MV': ['Malé', 'Addu City', 'Fuvahmulah'],
+    
+    # Maurice (MU)
+    'MU': ['Port-Louis', 'Beau-Bassin', 'Vacoas-Phoenix', 'Curepipe', 'Quatre Bornes'],
+    
+    # Micronésie (FM)
+    'FM': ['Palikir', 'Weno', 'Kolonia'],
+    
+    # Monaco (MC)
+    'MC': ['Monaco', 'Monte-Carlo', 'La Condamine'],
+    
+    # Nauru (NR)
+    'NR': ['Yaren', 'Denigomodu', 'Aiwo'],
+    
+    # Palaos (PW)
+    'PW': ['Ngerulmud', 'Koror', 'Melekeok'],
+    
+    # Saint-Christophe-et-Niévès (KN)
+    'KN': ['Basseterre', 'Charlestown', 'Dieppe Bay Town'],
+    
+    # Saint-Marin (SM)
+    'SM': ['Saint-Marin', 'Serravalle', 'Borgo Maggiore'],
+    
+    # Saint-Vincent-et-les-Grenadines (VC)
+    'VC': ['Kingstown', 'Georgetown', 'Barrouallie'],
+    
+    # Sainte-Lucie (LC)
+    'LC': ['Castries', 'Vieux Fort', 'Micoud'],
+    
+    # Seychelles (SC)
+    'SC': ['Victoria', 'Anse Boileau', 'Beau Vallon'],
+    
+    # Singapour (SG)
+    'SG': ['Singapour'],
+    
+    # Îles Salomon (SB)
+    'SB': ['Honiara', 'Gizo', 'Auki'],
+    
+    # Suriname (SR)
+    'SR': ['Paramaribo', 'Lelydorp', 'Nieuw Nickerie'],
+    
+    # Tonga (TO)
+    'TO': ['Nuku\'alofa', 'Neiafu', 'Haveluloto'],
+    
+    # Trinité-et-Tobago (TT)
+    'TT': ['Port-d\'Espagne', 'San Fernando', 'Chaguanas', 'Arima', 'Point Fortin'],
+    
+    # Tuvalu (TV)
+    'TV': ['Funafuti', 'Vaiaku', 'Asau'],
+    
+    # Vatican (VA)
+    'VA': ['Vatican'],
 }
 
 def get_cities_by_country(country_code):

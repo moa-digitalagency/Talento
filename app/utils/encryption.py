@@ -103,3 +103,8 @@ def encrypt_sensitive_data(data):
 def decrypt_sensitive_data(encrypted_data):
     """Helper function pour déchiffrer des données sensibles"""
     return EncryptionService.decrypt(encrypted_data)
+
+
+# Backward compatibility aliases
+encrypt_data = encrypt_sensitive_data
+decrypt_data = decrypt_sensitive_data

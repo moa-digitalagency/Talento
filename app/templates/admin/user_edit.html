@@ -109,7 +109,14 @@ www.myoneart.com
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Pays d'origine</label>
+                        <label class="block text-gray-700 font-semibold mb-2">Nationalité</label>
+                        <input type="text" name="nationality" value="{{ user.nationality or '' }}"
+                               placeholder="Ex: Marocaine, Française..."
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div></div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Pays de résidence</label>
                         <select name="country_id" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
                             <option value="">Sélectionner...</option>
                             {% for country in countries %}
@@ -120,39 +127,11 @@ www.myoneart.com
                         </select>
                     </div>
                     <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Ville d'origine</label>
+                        <label class="block text-gray-700 font-semibold mb-2">Ville de résidence</label>
                         <select name="city_id" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
                             <option value="">Sélectionner...</option>
                             {% for city in cities %}
                             <option value="{{ city.id }}" {% if user.city_id == city.id %}selected{% endif %}>
-                                {{ city.name }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Nationalité</label>
-                        <input type="text" name="nationality" value="{{ user.nationality or '' }}"
-                               placeholder="Ex: Marocaine, Française..."
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Pays de résidence</label>
-                        <select name="residence_country_id" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
-                            <option value="">Sélectionner...</option>
-                            {% for country in countries %}
-                            <option value="{{ country.id }}" {% if user.residence_country_id == country.id %}selected{% endif %}>
-                                {{ country.name }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 font-semibold mb-2">Ville de résidence</label>
-                        <select name="residence_city_id" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-purple-500">
-                            <option value="">Sélectionner...</option>
-                            {% for city in cities %}
-                            <option value="{{ city.id }}" {% if user.residence_city_id == city.id %}selected{% endif %}>
                                 {{ city.name }}
                             </option>
                             {% endfor %}
@@ -185,9 +164,9 @@ www.myoneart.com
                         <label class="block text-gray-700 font-semibold mb-2">Mode de travail</label>
                         <select name="work_mode" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-orange-500">
                             <option value="">Sélectionner...</option>
-                            <option value="Sur site" {% if user.work_mode == 'Sur site' %}selected{% endif %}>🏢 Sur site</option>
-                            <option value="À distance" {% if user.work_mode == 'À distance' %}selected{% endif %}>💻 À distance</option>
-                            <option value="Hybride" {% if user.work_mode == 'Hybride' %}selected{% endif %}>🔄 Hybride</option>
+                            <option value="on_site" {% if user.work_mode == 'on_site' or user.work_mode == 'Sur site' %}selected{% endif %}>🏢 Sur site</option>
+                            <option value="remote" {% if user.work_mode == 'remote' or user.work_mode == 'À distance' %}selected{% endif %}>💻 À distance</option>
+                            <option value="hybrid" {% if user.work_mode == 'hybrid' or user.work_mode == 'Hybride' %}selected{% endif %}>🔄 Hybride</option>
                         </select>
                     </div>
                     <div>

@@ -230,9 +230,9 @@
                         <select name="work_mode" 
                                 class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none">
                             <option value="">-- Sélectionner --</option>
-                            <option value="remote" {% if user.work_mode == 'remote' %}selected{% endif %}>Télétravail</option>
-                            <option value="on_site" {% if user.work_mode == 'on_site' %}selected{% endif %}>Sur site</option>
-                            <option value="hybrid" {% if user.work_mode == 'hybrid' %}selected{% endif %}>Hybride</option>
+                            <option value="on_site" {% if user.work_mode == 'on_site' or user.work_mode == 'Sur site' %}selected{% endif %}>🏢 Sur site</option>
+                            <option value="remote" {% if user.work_mode == 'remote' or user.work_mode == 'À distance' %}selected{% endif %}>💻 À distance</option>
+                            <option value="hybrid" {% if user.work_mode == 'hybrid' or user.work_mode == 'Hybride' %}selected{% endif %}>🔄 Hybride</option>
                         </select>
                     </div>
                     

@@ -52,6 +52,7 @@ def load_cities():
     """Charge toutes les villes par pays"""
     print("\n🏙️  Chargement des villes...")
     added = 0
+    updated = 0
     skipped = 0
     
     for country_code, cities_list in WORLD_CITIES.items():
@@ -70,10 +71,17 @@ def load_cities():
                 City.country_id == country.id
             ).first()
             
-            if not city:
+            expected_code = city_code[:3]
+            
+            if city:
+                if city.code != expected_code:
+                    print(f"   🔧 Correction code: {city.name} {city.code} → {expected_code}")
+                    city.code = expected_code
+                    updated += 1
+            else:
                 city = City(
                     name=city_name,
-                    code=f"{country_code}{city_code}",
+                    code=expected_code,
                     country_id=country.id
                 )
                 db.session.add(city)
@@ -81,7 +89,7 @@ def load_cities():
     
     try:
         db.session.commit()
-        print(f"✅ Villes: {added} ajoutées, {skipped} ignorées")
+        print(f"✅ Villes: {added} ajoutées, {updated} codes corrigés, {skipped} ignorées")
         total = City.query.count()
         print(f"   Total: {total} villes dans la base de données")
         return True
