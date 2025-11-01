@@ -17,6 +17,11 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
   - Icônes dans l'aperçu des réseaux sociaux configurés
 
 ### Modifié
+- **Formulaire d'inscription standard - Localisation simplifiée** : Restructuration de la section "Localisation"
+  - Suppression du champ "Ville d'origine" pour simplifier le formulaire
+  - Quatre champs uniquement : Pays d'origine, Nationalité, Pays de résidence, Ville de résidence
+  - Mise à jour du JavaScript pour ne charger les villes que pour la résidence
+  - Le champ `city_id` (ville d'origine) devient optionnel en base de données
 - **Mentions légales enrichies** : Ajout de deux nouveaux champs
   - `company_whatsapp` : Contact WhatsApp de l'entreprise (section Coordonnées) avec lien cliquable
   - `director_role` : Rôle/poste du directeur de publication (section Direction)

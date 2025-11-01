@@ -8,6 +8,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### November 1, 2025 - Localisation Form Simplification, SEO, UI Improvements & Platform Audit
+- **Localisation Fields Restructuring**: Simplified registration form location sections for better user experience
+  - **Standard Talent Form** (`/auth/register`): Section "Localisation" now has 4 fields only - Pays d'origine, Nationalité, Pays de résidence, Ville de résidence (removed "Ville d'origine")
+  - **CINEMA Talent Form** (`/cinema/register`): Already correctly structured with "Origines" (Pays d'origine, Nationalité) and "Résidence" (Pays de résidence, Ville de résidence) sections
+  - Backend updated to make `city_id` (ville d'origine) optional for standard talents
+  - JavaScript optimized to only load cities for residence country selection
+- **SEO Optimization**: Added sitemap.xml and robots.txt for improved search engine indexing
+  - Dynamic sitemap generation at `/sitemap.xml`
+  - Robots.txt directives at `/robots.txt`
+  - Automatic inclusion of static and dynamic pages
+
 ### November 1, 2025 - UI Improvements, Legal Pages & Complete Platform Audit
 - **Font Awesome Icons**: Replaced all social media emojis with professional Font Awesome 6.5.1 icons throughout the platform (footer, admin settings, previews) for a more polished appearance.
 - **Legal Mentions New Fields**: Added two new fields to legal mentions - `company_whatsapp` (WhatsApp contact in Coordonnées section with clickable link) and `director_role` (Director's role/position in Direction section). Total of 14 fields now available organized in 4 blocks.
