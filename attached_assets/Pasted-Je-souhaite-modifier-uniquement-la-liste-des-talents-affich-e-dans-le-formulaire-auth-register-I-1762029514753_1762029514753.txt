@@ -1,0 +1,166 @@
+Je souhaite modifier uniquement la liste des talents affichée dans le formulaire "/auth/register". Il est important de ne pas toucher à la liste ni au formulaire spécifique au talent cinéma.
+
+Merci de remplacer la liste actuelle par celle ci-dessous, organisée par catégories. Cette nouvelle liste doit être ajoutée, mise à jour et synchronisée dans les fichiers suivants :  
+- constants.py  
+- init_essential_data.py  
+- database_manager.py  
+- ainsi que tout autre script ou emplacement où la liste des talents est utilisée.
+
+---
+
+Liste complète des talents par catégorie :  
+
+Services à la personne  
+- Entretien à domicile  
+- Baby-sitting  
+- Assistance aux familles  
+- Garde d’enfants  
+- Soutien scolaire  
+- Aide aux personnes âgées  
+- Auxiliaire de vie  
+- Cuisinier à domicile  
+- Coach personnel  
+- Jardinier privé  
+- Pet sitter  
+- Nettoyage de maison  
+- Aide ménagère  
+
+Bâtiment, chantier et maintenance  
+- Maçon  
+- Électricien  
+- Plombier  
+- Peintre en bâtiment  
+- Menuisier  
+- Carreleur  
+- Jardinier/élagueur  
+- Technicien maintenance bureaux  
+- Chauffagiste  
+- Agent nettoyage industriel  
+- Serrurier  
+- Ramoneur  
+- Plâtrier  
+- Vitrier  
+- Charpentier  
+- Couvreur  
+- Peintre décorateur  
+- Moniteur bâtiment  
+
+Logistique et transport  
+- Chauffeur VTC  
+- Livreur  
+- Déménageur  
+- Agent d’entrepôt  
+- Logisticien  
+- Préparateur de commandes  
+- Conducteur de poids lourds  
+- Magasinier  
+- Cariste  
+
+Commerce et vente  
+- Vendeur  
+- Caissier  
+- Merchandiser  
+- Télévendeur  
+- Agent d’accueil  
+- Responsable de boutique  
+- Commercial terrain  
+- Représentant  
+- Téléconseiller  
+
+Multimédia et création digitale  
+- Photographe  
+- Vidéaste  
+- Monteur vidéo  
+- Graphiste  
+- Designer UI/UX  
+- Développeur web (Front-end, Back-end, Full-stack)  
+- Développeur applications mobiles  
+- Community manager  
+- Rédacteur web  
+- Social Media Manager  
+- Créateur de contenu  
+- Illustrateur  
+- Animateur 2D/3D  
+- Motion designer  
+- Expert SEO  
+- Data analyst  
+
+Communication et marketing  
+- Chargé de communication  
+- Responsable marketing  
+- Animateur radio/TV  
+- Publicitaire  
+- Copywriter  
+- Planneur stratégique  
+- Consultant en image  
+- Responsable événementiel  
+- Attaché de presse  
+
+Santé et bien-être  
+- Infirmier  
+- Kinésithérapeute  
+- Esthéticien(ne)  
+- Masseur(se)  
+- Coach sportif  
+- Diététicien(ne)  
+- Accompagnant psychologique  
+- Sage-femme  
+- Psychologue  
+- Dentiste  
+- Pharmacien  
+- Orthophoniste  
+
+Éducation et pédagogie  
+- Professeur particulier  
+- Formateur  
+- Traducteur/interprète  
+- Animateur périscolaire  
+- Éducateur spécialisé  
+- Conseiller d’éducation  
+- Médiateur culturel  
+
+Art, culture et spectacle  
+- Acteur  
+- Chanteur  
+- Musicien  
+- Danseur  
+- Comédien  
+- Scénariste  
+- Réalisateur  
+- Régisseur  
+- Costumier  
+- Maquilleur professionnel  
+- Technicien son/lumière  
+- Conteur  
+
+Services administratifs  
+- Secrétaire  
+- Comptable  
+- Assistant administratif  
+- Juriste  
+- Consultant en gestion  
+- Gestionnaire de projet  
+- Archiviste  
+- Assistant ressources humaines  
+
+Informatique et technique  
+- Technicien IT  
+- Développeur logiciel  
+- Analyste data  
+- Ingénieur système  
+- Responsable réseau  
+- Expert cybersécurité  
+- Data scientist  
+- Administrateur base de données  
+- Support technique  
+
+Services spécialisés  
+- Conseiller financier  
+- Coach en orientation  
+- Wedding planner  
+- Gestionnaire immobilier  
+- Ingénieur sécurité  
+- Consultant environnemental  
+- Conseiller en développement durable  
+- Expert en blockchain  
+- Ingénieur biotechnologie  

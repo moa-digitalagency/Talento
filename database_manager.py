@@ -442,116 +442,55 @@ class DatabaseInitializer:
         return added
     
     def seed_talents(self) -> int:
-        """Charger la liste complète des talents"""
+        """Charger la liste complète des talents depuis constants.py"""
         if self.dry_run:
             logger.info("💡 [DRY-RUN] Les talents seraient ajoutés")
             return 0
         
-        logger.info("⭐ Chargement des talents...")
+        logger.info("⭐ Chargement des talents depuis TALENT_CATEGORIES...")
         
-        talents_data = [
-            {'name': 'Acteur/Actrice', 'emoji': '🎭', 'category': 'Cinéma'},
-            {'name': 'Cascadeur/Cascadeuse', 'emoji': '🤸', 'category': 'Cinéma'},
-            {'name': 'Chorégraphe', 'emoji': '💃', 'category': 'Cinéma'},
-            {'name': 'Chanteur/Chanteuse', 'emoji': '🎤', 'category': 'Cinéma'},
-            {'name': 'Danseur/Danseuse', 'emoji': '🕺', 'category': 'Cinéma'},
-            {'name': 'Musicien/Musicienne', 'emoji': '🎸', 'category': 'Cinéma'},
-            {'name': 'Mannequin', 'emoji': '👗', 'category': 'Cinéma'},
-            {'name': 'Figurant/Figurante', 'emoji': '👥', 'category': 'Cinéma'},
-            {'name': 'Doublure', 'emoji': '🎬', 'category': 'Cinéma'},
-            {'name': 'Comédien de voix', 'emoji': '🗣️', 'category': 'Cinéma'},
-            
-            {'name': 'Réalisateur/Réalisatrice', 'emoji': '🎬', 'category': 'Production'},
-            {'name': 'Assistant réalisateur', 'emoji': '📋', 'category': 'Production'},
-            {'name': 'Scénariste', 'emoji': '✍️', 'category': 'Production'},
-            {'name': 'Producteur/Productrice', 'emoji': '💼', 'category': 'Production'},
-            {'name': 'Directeur de production', 'emoji': '📊', 'category': 'Production'},
-            {'name': 'Régisseur général', 'emoji': '🏗️', 'category': 'Production'},
-            {'name': 'Scripte', 'emoji': '📝', 'category': 'Production'},
-            {'name': 'Directeur de casting', 'emoji': '🎯', 'category': 'Production'},
-            
-            {'name': 'Directeur de la photographie', 'emoji': '📸', 'category': 'Image'},
-            {'name': 'Cadreur/Cadreuse', 'emoji': '📹', 'category': 'Image'},
-            {'name': 'Chef opérateur', 'emoji': '🎥', 'category': 'Image'},
-            {'name': 'Assistant caméra', 'emoji': '🎬', 'category': 'Image'},
-            {'name': 'Steadicam', 'emoji': '🎦', 'category': 'Image'},
-            {'name': 'Opérateur drone', 'emoji': '🚁', 'category': 'Image'},
-            {'name': 'Photographe de plateau', 'emoji': '📷', 'category': 'Image'},
-            {'name': 'Étalonnage coloriste', 'emoji': '🎨', 'category': 'Image'},
-            
-            {'name': 'Chef électricien', 'emoji': '💡', 'category': 'Lumière'},
-            {'name': 'Électricien', 'emoji': '⚡', 'category': 'Lumière'},
-            {'name': 'Machiniste', 'emoji': '🔧', 'category': 'Lumière'},
-            {'name': 'Grutier', 'emoji': '🏗️', 'category': 'Lumière'},
-            
-            {'name': 'Ingénieur du son', 'emoji': '🎙️', 'category': 'Son'},
-            {'name': 'Perchman', 'emoji': '🎤', 'category': 'Son'},
-            {'name': 'Mixeur son', 'emoji': '🎛️', 'category': 'Son'},
-            {'name': 'Bruiteur', 'emoji': '🔊', 'category': 'Son'},
-            {'name': 'Compositeur musique', 'emoji': '🎵', 'category': 'Son'},
-            
-            {'name': 'Monteur/Monteuse', 'emoji': '✂️', 'category': 'Post-production'},
-            {'name': 'Assistant monteur', 'emoji': '🎞️', 'category': 'Post-production'},
-            {'name': 'Monteur son', 'emoji': '🔉', 'category': 'Post-production'},
-            {'name': 'Superviseur VFX', 'emoji': '🌟', 'category': 'Post-production'},
-            {'name': 'Infographiste 3D', 'emoji': '🖥️', 'category': 'Post-production'},
-            {'name': 'Animateur 2D/3D', 'emoji': '🎨', 'category': 'Post-production'},
-            
-            {'name': 'Chef décorateur', 'emoji': '🎨', 'category': 'Décors'},
-            {'name': 'Accessoiriste', 'emoji': '🛠️', 'category': 'Décors'},
-            {'name': 'Ensemblier', 'emoji': '🪑', 'category': 'Décors'},
-            {'name': 'Constructeur décors', 'emoji': '🔨', 'category': 'Décors'},
-            {'name': 'Peintre décorateur', 'emoji': '🖌️', 'category': 'Décors'},
-            
-            {'name': 'Chef costumier', 'emoji': '👔', 'category': 'Costumes'},
-            {'name': 'Costumier/Costumière', 'emoji': '👗', 'category': 'Costumes'},
-            {'name': 'Couturier/Couturière', 'emoji': '🧵', 'category': 'Costumes'},
-            {'name': 'Habilleur/Habilleuse', 'emoji': '👕', 'category': 'Costumes'},
-            
-            {'name': 'Chef maquilleur', 'emoji': '💄', 'category': 'Maquillage/Coiffure'},
-            {'name': 'Maquilleur/Maquilleuse', 'emoji': '💅', 'category': 'Maquillage/Coiffure'},
-            {'name': 'Maquilleur effets spéciaux', 'emoji': '🎭', 'category': 'Maquillage/Coiffure'},
-            {'name': 'Coiffeur/Coiffeuse', 'emoji': '💇', 'category': 'Maquillage/Coiffure'},
-            
-            {'name': 'Régisseur extérieur', 'emoji': '🌍', 'category': 'Régie'},
-            {'name': 'Responsable des repérages', 'emoji': '🗺️', 'category': 'Régie'},
-            {'name': 'Chef de plateau', 'emoji': '🎬', 'category': 'Régie'},
-            
-            {'name': 'Chauffeur', 'emoji': '🚗', 'category': 'Transport/Logistique'},
-            {'name': 'Coordinateur transport', 'emoji': '🚚', 'category': 'Transport/Logistique'},
-            {'name': 'Responsable logistique', 'emoji': '📦', 'category': 'Transport/Logistique'},
-            
-            {'name': 'Traiteur', 'emoji': '🍽️', 'category': 'Restauration'},
-            {'name': 'Chef cuisinier', 'emoji': '👨‍🍳', 'category': 'Restauration'},
-            
-            {'name': 'Agent de sécurité', 'emoji': '🛡️', 'category': 'Sécurité'},
-            {'name': 'Coordinateur sécurité', 'emoji': '👮', 'category': 'Sécurité'},
-            {'name': 'Coordinateur cascades', 'emoji': '🎯', 'category': 'Sécurité'},
-            
-            {'name': 'Dresseur animalier', 'emoji': '🐕', 'category': 'Spécialités'},
-            {'name': 'Coordinateur animalier', 'emoji': '🦁', 'category': 'Spécialités'},
-            {'name': 'Coach dialogue', 'emoji': '💬', 'category': 'Spécialités'},
-            {'name': 'Consultant technique', 'emoji': '🎓', 'category': 'Spécialités'},
-            {'name': 'Traducteur/Interprète', 'emoji': '🌐', 'category': 'Spécialités'},
-        ]
+        from app.constants import TALENT_CATEGORIES
         
         added = 0
-        for data in talents_data:
-            try:
-                if not Talent.query.filter_by(name=data['name']).first():
-                    talent = Talent(**data)
-                    db.session.add(talent)
-                    added += 1
-            except Exception as e:
-                logger.debug(f"Talent {data['name']} existe déjà ou erreur: {e}")
+        updated = 0
         
-        if added > 0:
+        for category in TALENT_CATEGORIES:
+            category_name = category['name']
+            category_emoji = category['emoji']
+            category_tag = category.get('tag', 'general')
+            
+            for talent_name in category['talents']:
+                try:
+                    talent = Talent.query.filter_by(name=talent_name).first()
+                    
+                    if talent:
+                        if talent.category != category_name or talent.emoji != category_emoji or talent.tag != category_tag:
+                            talent.category = category_name
+                            talent.emoji = category_emoji
+                            talent.tag = category_tag
+                            updated += 1
+                    else:
+                        talent = Talent(
+                            name=talent_name,
+                            category=category_name,
+                            emoji=category_emoji,
+                            tag=category_tag
+                        )
+                        db.session.add(talent)
+                        added += 1
+                except Exception as e:
+                    logger.debug(f"Erreur avec le talent {talent_name}: {e}")
+        
+        if added > 0 or updated > 0:
             db.session.commit()
-            self.log_operation("TALENTS_SEEDED", f"{added} talents ajoutés")
+            self.log_operation("TALENTS_SEEDED", f"{added} ajoutés, {updated} mis à jour")
             self.changes_made = True
         
         total = Talent.query.count()
-        logger.info(f"✅ {added} nouveaux talents ajoutés (Total: {total} talents)")
+        cinema_count = Talent.query.filter_by(tag='cinema').count()
+        general_count = Talent.query.filter_by(tag='general').count()
+        logger.info(f"✅ {added} nouveaux talents ajoutés, {updated} mis à jour")
+        logger.info(f"   Total: {total} talents ({general_count} général, {cinema_count} cinéma)")
         return added
     
     def create_admin_user(self) -> bool:

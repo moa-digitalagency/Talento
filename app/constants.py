@@ -175,34 +175,6 @@ TALENT_CATEGORIES = [
         ]
     },
     {
-        'name': 'Arts visuels',
-        'emoji': '🎨',
-        'tag': 'general',
-        'talents': [
-            'Photographe', 'Peintre', 'Sculpteur', 'Illustrateur',
-            'Designer graphique', 'Maquilleur', 'Tatoueur'
-        ]
-    },
-    {
-        'name': 'Musique',
-        'emoji': '🎵',
-        'tag': 'general',
-        'talents': [
-            'Musicien', 'Compositeur', 'DJ', 'Producteur musical',
-            'Ingénieur du son', 'Beatmaker'
-        ]
-    },
-    {
-        'name': 'Sports & Arts martiaux',
-        'emoji': '⚽',
-        'tag': 'general',
-        'talents': [
-            'Cascadeur', 'Arts martiaux', 'Acrobate', 'Équitation',
-            'Sports de combat', 'Natation', 'Plongée', 'Parkour',
-            'Gymnastique', 'Danse sportive', 'Autres sports'
-        ]
-    },
-    {
         'name': 'Techniques & Créatives',
         'emoji': '🎬',
         'tag': 'cinema',
@@ -212,12 +184,128 @@ TALENT_CATEGORIES = [
         ]
     },
     {
-        'name': 'Autres',
-        'emoji': '✨',
+        'name': 'Services à la personne',
+        'emoji': '🏠',
         'tag': 'general',
         'talents': [
-            'Mannequin', 'Magicien', 'Ventriloque', 'Mime',
-            'Jongleur', 'Clown', 'Marionnettiste', 'Autre'
+            'Entretien à domicile', 'Baby-sitting', 'Assistance aux familles',
+            'Garde d\'enfants', 'Soutien scolaire', 'Aide aux personnes âgées',
+            'Auxiliaire de vie', 'Cuisinier à domicile', 'Coach personnel',
+            'Jardinier privé', 'Pet sitter', 'Nettoyage de maison', 'Aide ménagère'
+        ]
+    },
+    {
+        'name': 'Bâtiment, chantier et maintenance',
+        'emoji': '🔨',
+        'tag': 'general',
+        'talents': [
+            'Maçon', 'Électricien', 'Plombier', 'Peintre en bâtiment',
+            'Menuisier', 'Carreleur', 'Jardinier/élagueur', 'Technicien maintenance bureaux',
+            'Chauffagiste', 'Agent nettoyage industriel', 'Serrurier', 'Ramoneur',
+            'Plâtrier', 'Vitrier', 'Charpentier', 'Couvreur',
+            'Peintre décorateur', 'Moniteur bâtiment'
+        ]
+    },
+    {
+        'name': 'Logistique et transport',
+        'emoji': '🚚',
+        'tag': 'general',
+        'talents': [
+            'Chauffeur VTC', 'Livreur', 'Déménageur', 'Agent d\'entrepôt',
+            'Logisticien', 'Préparateur de commandes', 'Conducteur de poids lourds',
+            'Magasinier', 'Cariste'
+        ]
+    },
+    {
+        'name': 'Commerce et vente',
+        'emoji': '🛍️',
+        'tag': 'general',
+        'talents': [
+            'Vendeur', 'Caissier', 'Merchandiser', 'Télévendeur',
+            'Agent d\'accueil', 'Responsable de boutique', 'Commercial terrain',
+            'Représentant', 'Téléconseiller'
+        ]
+    },
+    {
+        'name': 'Multimédia et création digitale',
+        'emoji': '💻',
+        'tag': 'general',
+        'talents': [
+            'Photographe', 'Vidéaste', 'Monteur vidéo', 'Graphiste',
+            'Designer UI/UX', 'Développeur web (Front-end, Back-end, Full-stack)',
+            'Développeur applications mobiles', 'Community manager', 'Rédacteur web',
+            'Social Media Manager', 'Créateur de contenu', 'Illustrateur',
+            'Animateur 2D/3D', 'Motion designer', 'Expert SEO', 'Data analyst'
+        ]
+    },
+    {
+        'name': 'Communication et marketing',
+        'emoji': '📢',
+        'tag': 'general',
+        'talents': [
+            'Chargé de communication', 'Responsable marketing', 'Animateur radio/TV',
+            'Publicitaire', 'Copywriter', 'Planneur stratégique', 'Consultant en image',
+            'Responsable événementiel', 'Attaché de presse'
+        ]
+    },
+    {
+        'name': 'Santé et bien-être',
+        'emoji': '🏥',
+        'tag': 'general',
+        'talents': [
+            'Infirmier', 'Kinésithérapeute', 'Esthéticien(ne)', 'Masseur(se)',
+            'Coach sportif', 'Diététicien(ne)', 'Accompagnant psychologique', 'Sage-femme',
+            'Psychologue', 'Dentiste', 'Pharmacien', 'Orthophoniste'
+        ]
+    },
+    {
+        'name': 'Éducation et pédagogie',
+        'emoji': '📚',
+        'tag': 'general',
+        'talents': [
+            'Professeur particulier', 'Formateur', 'Traducteur/interprète',
+            'Animateur périscolaire', 'Éducateur spécialisé', 'Conseiller d\'éducation',
+            'Médiateur culturel'
+        ]
+    },
+    {
+        'name': 'Art, culture et spectacle',
+        'emoji': '🎨',
+        'tag': 'general',
+        'talents': [
+            'Acteur', 'Chanteur', 'Musicien', 'Danseur',
+            'Comédien', 'Scénariste', 'Réalisateur', 'Régisseur',
+            'Costumier', 'Maquilleur professionnel', 'Technicien son/lumière', 'Conteur'
+        ]
+    },
+    {
+        'name': 'Services administratifs',
+        'emoji': '📋',
+        'tag': 'general',
+        'talents': [
+            'Secrétaire', 'Comptable', 'Assistant administratif', 'Juriste',
+            'Consultant en gestion', 'Gestionnaire de projet', 'Archiviste',
+            'Assistant ressources humaines'
+        ]
+    },
+    {
+        'name': 'Informatique et technique',
+        'emoji': '⚙️',
+        'tag': 'general',
+        'talents': [
+            'Technicien IT', 'Développeur logiciel', 'Analyste data',
+            'Ingénieur système', 'Responsable réseau', 'Expert cybersécurité',
+            'Data scientist', 'Administrateur base de données', 'Support technique'
+        ]
+    },
+    {
+        'name': 'Services spécialisés',
+        'emoji': '💼',
+        'tag': 'general',
+        'talents': [
+            'Conseiller financier', 'Coach en orientation', 'Wedding planner',
+            'Gestionnaire immobilier', 'Ingénieur sécurité', 'Consultant environnemental',
+            'Conseiller en développement durable', 'Expert en blockchain', 'Ingénieur biotechnologie'
         ]
     }
 ]

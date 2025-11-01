@@ -39,7 +39,7 @@ def get_cities():
 
 @bp.route('/talents')
 def get_talents():
-    talents = Talent.query.filter_by(is_active=True).all()
+    talents = Talent.query.filter_by(is_active=True, tag='general').all()
     return jsonify([{
         'id': t.id,
         'name': t.name,
