@@ -117,7 +117,18 @@ def mentions():
         legal_pages = AppSettings.get('legal_pages', {})
         content = legal_pages.get('mentions_page', '')
         
-        return render_template('legal/mentions.html', content=content)
+        company_info = {
+            'company_name': legal_pages.get('company_name', ''),
+            'company_type': legal_pages.get('company_type', ''),
+            'registration_number': legal_pages.get('registration_number', ''),
+            'capital': legal_pages.get('capital', ''),
+            'company_address': legal_pages.get('company_address', ''),
+            'director_name': legal_pages.get('director_name', ''),
+            'hosting_provider': legal_pages.get('hosting_provider', ''),
+            'hosting_phone': legal_pages.get('hosting_phone', '')
+        }
+        
+        return render_template('legal/mentions.html', content=content, company_info=company_info)
     except HTTPException:
         # Laisser les erreurs HTTP (404, 500, etc.) se propager normalement
         raise

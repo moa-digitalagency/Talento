@@ -81,3 +81,14 @@ class ActivityLog(db.Model):
             'upload': '⬆️ Upload',
         }
         return action_map.get(self.action_type, self.action_type)
+    
+    @property
+    def extra_data_parsed(self):
+        """Parse le JSON extra_data"""
+        import json
+        if self.extra_data:
+            try:
+                return json.loads(self.extra_data)
+            except:
+                return {}
+        return {}
