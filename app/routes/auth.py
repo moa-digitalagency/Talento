@@ -289,11 +289,21 @@ def register():
                 user=user
             )
             
+            # Envoyer les emails de confirmation et identifiants
+            email_sent = False
             try:
-                email_service.send_application_confirmation(user)
-                email_service.send_login_credentials(user, password)
+                confirmation_sent = email_service.send_application_confirmation(user)
+                credentials_sent = email_service.send_login_credentials(user, password)
+                
+                if not confirmation_sent or not credentials_sent:
+                    flash('⚠️ Votre inscription a réussi, mais les emails n\'ont pas pu être envoyés. '
+                          'Veuillez contacter l\'administrateur avec votre code: ' + user.unique_code, 'warning')
+                else:
+                    email_sent = True
             except Exception as e:
                 current_app.logger.error(f"Erreur envoi emails: {str(e)}")
+                flash('⚠️ Votre inscription a réussi, mais les emails n\'ont pas pu être envoyés. '
+                      'Veuillez contacter l\'administrateur avec votre code: ' + user.unique_code, 'warning')
             
             # Vérifier si la personne est dans la liste de surveillance
             try:
@@ -302,7 +312,10 @@ def register():
             except Exception as e:
                 current_app.logger.error(f"Erreur watchlist: {str(e)}")
             
-            flash('Votre profil a été créé avec succès ! Vérifiez votre email pour vos identifiants de connexion.', 'success')
+            if email_sent:
+                flash('Votre profil a été créé avec succès ! Vérifiez votre email pour vos identifiants de connexion.', 'success')
+            else:
+                flash(f'Votre profil a été créé avec le code {user.unique_code}. Contactez l\'administrateur pour obtenir vos identifiants.', 'success')
             return redirect(url_for('auth.login'))
             
         except Exception as e:

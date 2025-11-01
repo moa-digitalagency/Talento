@@ -741,13 +741,21 @@ def register_talent():
             db.session.commit()
             
             # Envoyer les emails de confirmation et identifiants
+            email_sent = False
             try:
                 from app.services.email_service import email_service
-                email_service.send_application_confirmation(cinema_user)
-                email_service.send_login_credentials(cinema_user, password)
-                current_app.logger.info(f"Emails envoyés pour talent CINEMA: {talent.unique_code}")
+                confirmation_sent = email_service.send_application_confirmation(cinema_user)
+                credentials_sent = email_service.send_login_credentials(cinema_user, password)
+                
+                if confirmation_sent and credentials_sent:
+                    email_sent = True
+                    current_app.logger.info(f"Emails envoyés pour talent CINEMA: {talent.unique_code}")
+                else:
+                    current_app.logger.warning(f"Échec envoi emails CINEMA pour: {talent.unique_code}")
+                    flash('⚠️ Inscription réussie, mais emails non envoyés. Code: ' + talent.unique_code, 'warning')
             except Exception as e:
                 current_app.logger.error(f"Erreur envoi emails CINEMA: {str(e)}")
+                flash('⚠️ Inscription réussie, mais emails non envoyés. Code: ' + talent.unique_code, 'warning')
             
             # Vérifier si la personne est dans la liste de surveillance
             try:
@@ -756,7 +764,10 @@ def register_talent():
             except Exception as e:
                 current_app.logger.error(f"Erreur watchlist CINEMA: {str(e)}")
             
-            flash(f'Talent {talent.first_name} {talent.last_name} enregistré avec succès dans CINEMA! Un email avec les identifiants a été envoyé.', 'success')
+            if email_sent:
+                flash(f'Talent {talent.first_name} {talent.last_name} enregistré avec succès dans CINEMA! Un email avec les identifiants a été envoyé.', 'success')
+            else:
+                flash(f'Talent {talent.first_name} {talent.last_name} enregistré avec le code {talent.unique_code}. Contactez l\'administrateur pour les identifiants.', 'success')
             return redirect(url_for('cinema.talents'))
             
         except Exception as e:

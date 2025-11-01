@@ -23,7 +23,7 @@
     </div>
     
     <form method="POST" action="{{ url_for('cinema.register_talent') }}" enctype="multipart/form-data" id="cinemaRegisterForm" class="space-y-8">
-        {{ form.hidden_tag() if form }}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         
         <!-- Section 1: Identité + Contact + Document d'identité (Bleu) -->
         <div class="section-blue p-8">
