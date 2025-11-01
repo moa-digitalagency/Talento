@@ -242,8 +242,8 @@ def admin_dashboard():
         Country.code == 'MA'
     ).group_by(City.id, City.name).order_by(desc('user_count')).limit(10).all()
     
-    # Données pour les filtres
-    all_talents = Talent.query.order_by(Talent.category, Talent.name).all()
+    # Données pour les filtres - exclure les talents cinéma
+    all_talents = Talent.query.filter_by(tag='general').order_by(Talent.category, Talent.name).all()
     all_countries = Country.query.order_by(Country.name).all()
     all_cities = City.query.order_by(City.name).all()
     
@@ -364,9 +364,9 @@ def talents():
     else:
         users = user_query.distinct().order_by(User.created_at.desc()).all()
     
-    # Données pour les filtres
+    # Données pour les filtres - exclure les talents cinéma
     all_cities = City.query.order_by(City.name).all()
-    all_talents = Talent.query.order_by(Talent.category, Talent.name).all()
+    all_talents = Talent.query.filter_by(tag='general').order_by(Talent.category, Talent.name).all()
     
     return render_template('talents.html', 
                          users=users,

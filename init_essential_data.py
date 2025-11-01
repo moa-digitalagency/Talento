@@ -107,20 +107,23 @@ def load_talents():
     for category in TALENT_CATEGORIES:
         category_name = category['name']
         category_emoji = category['emoji']
+        category_tag = category.get('tag', 'general')
         
         for talent_name in category['talents']:
             talent = Talent.query.filter_by(name=talent_name).first()
             
             if talent:
-                if talent.category != category_name or talent.emoji != category_emoji:
+                if talent.category != category_name or talent.emoji != category_emoji or talent.tag != category_tag:
                     talent.category = category_name
                     talent.emoji = category_emoji
+                    talent.tag = category_tag
                     updated += 1
             else:
                 talent = Talent(
                     name=talent_name,
                     category=category_name,
-                    emoji=category_emoji
+                    emoji=category_emoji,
+                    tag=category_tag
                 )
                 db.session.add(talent)
                 added += 1
@@ -129,7 +132,9 @@ def load_talents():
         db.session.commit()
         print(f"✅ Talents: {added} ajoutés, {updated} mis à jour")
         total = Talent.query.count()
-        print(f"   Total: {total} talents dans la base de données")
+        cinema_count = Talent.query.filter_by(tag='cinema').count()
+        general_count = Talent.query.filter_by(tag='general').count()
+        print(f"   Total: {total} talents ({general_count} général, {cinema_count} cinéma)")
         return True
     except Exception as e:
         db.session.rollback()

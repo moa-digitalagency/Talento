@@ -95,8 +95,13 @@ def _ensure_columns_exist(db, inspector):
             'threads_encrypted': 'TEXT'
         }
         
+        talents_columns = {
+            'tag': "VARCHAR(20) DEFAULT 'general'"
+        }
+        
         columns_added += _add_columns_to_table(db, inspector, 'users', users_columns)
         columns_added += _add_columns_to_table(db, inspector, 'cinema_talents', cinema_columns)
+        columns_added += _add_columns_to_table(db, inspector, 'talents', talents_columns)
         
         if columns_added > 0:
             logger.info(f"✅ {columns_added} colonnes ajoutées au total")

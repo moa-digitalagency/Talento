@@ -168,6 +168,7 @@ TALENT_CATEGORIES = [
     {
         'name': 'Arts de la scène',
         'emoji': '🎭',
+        'tag': 'cinema',
         'talents': [
             'Acteur/Actrice', 'Chanteur', 'Danseur', 'Comédien de doublage',
             'Humoriste', 'Présentateur/Animateur', 'Conteur'
@@ -176,6 +177,7 @@ TALENT_CATEGORIES = [
     {
         'name': 'Arts visuels',
         'emoji': '🎨',
+        'tag': 'general',
         'talents': [
             'Photographe', 'Peintre', 'Sculpteur', 'Illustrateur',
             'Designer graphique', 'Maquilleur', 'Tatoueur'
@@ -184,6 +186,7 @@ TALENT_CATEGORIES = [
     {
         'name': 'Musique',
         'emoji': '🎵',
+        'tag': 'general',
         'talents': [
             'Musicien', 'Compositeur', 'DJ', 'Producteur musical',
             'Ingénieur du son', 'Beatmaker'
@@ -192,6 +195,7 @@ TALENT_CATEGORIES = [
     {
         'name': 'Sports & Arts martiaux',
         'emoji': '⚽',
+        'tag': 'general',
         'talents': [
             'Cascadeur', 'Arts martiaux', 'Acrobate', 'Équitation',
             'Sports de combat', 'Natation', 'Plongée', 'Parkour',
@@ -201,6 +205,7 @@ TALENT_CATEGORIES = [
     {
         'name': 'Techniques & Créatives',
         'emoji': '🎬',
+        'tag': 'cinema',
         'talents': [
             'Chorégraphe', 'Metteur en scène', 'Réalisateur',
             'Scénariste', 'Monteur vidéo', 'Cadreur/Opérateur'
@@ -209,6 +214,7 @@ TALENT_CATEGORIES = [
     {
         'name': 'Autres',
         'emoji': '✨',
+        'tag': 'general',
         'talents': [
             'Mannequin', 'Magicien', 'Ventriloque', 'Mime',
             'Jongleur', 'Clown', 'Marionnettiste', 'Autre'
@@ -310,3 +316,96 @@ BUILD_TYPES = [
     'Corpulent',
     'Imposant'
 ]
+
+# Mapping pays (code ISO) → monnaie (code ISO 4217)
+COUNTRY_CURRENCIES = {
+    'MA': {'code': 'MAD', 'symbol': 'MAD', 'name': 'Dirham marocain'},
+    'DZ': {'code': 'DZD', 'symbol': 'DZD', 'name': 'Dinar algérien'},
+    'TN': {'code': 'TND', 'symbol': 'TND', 'name': 'Dinar tunisien'},
+    'LY': {'code': 'LYD', 'symbol': 'LYD', 'name': 'Dinar libyen'},
+    'EG': {'code': 'EGP', 'symbol': 'EGP', 'name': 'Livre égyptienne'},
+    'MR': {'code': 'MRU', 'symbol': 'MRU', 'name': 'Ouguiya mauritanien'},
+    'ML': {'code': 'XOF', 'symbol': 'FCFA', 'name': 'Franc CFA (BCEAO)'},
+    'SN': {'code': 'XOF', 'symbol': 'FCFA', 'name': 'Franc CFA (BCEAO)'},
+    'GM': {'code': 'GMD', 'symbol': 'GMD', 'name': 'Dalasi gambien'},
+    'GW': {'code': 'XOF', 'symbol': 'FCFA', 'name': 'Franc CFA (BCEAO)'},
+    'GN': {'code': 'GNF', 'symbol': 'GNF', 'name': 'Franc guinéen'},
+    'SL': {'code': 'SLL', 'symbol': 'SLL', 'name': 'Leone sierra-léonais'},
+    'LR': {'code': 'LRD', 'symbol': 'LRD', 'name': 'Dollar libérien'},
+    'CI': {'code': 'XOF', 'symbol': 'FCFA', 'name': 'Franc CFA (BCEAO)'},
+    'GH': {'code': 'GHS', 'symbol': 'GHS', 'name': 'Cedi ghanéen'},
+    'TG': {'code': 'XOF', 'symbol': 'FCFA', 'name': 'Franc CFA (BCEAO)'},
+    'BJ': {'code': 'XOF', 'symbol': 'FCFA', 'name': 'Franc CFA (BCEAO)'},
+    'NG': {'code': 'NGN', 'symbol': 'NGN', 'name': 'Naira nigérian'},
+    'NE': {'code': 'XOF', 'symbol': 'FCFA', 'name': 'Franc CFA (BCEAO)'},
+    'BF': {'code': 'XOF', 'symbol': 'FCFA', 'name': 'Franc CFA (BCEAO)'},
+    'CM': {'code': 'XAF', 'symbol': 'FCFA', 'name': 'Franc CFA (BEAC)'},
+    'TD': {'code': 'XAF', 'symbol': 'FCFA', 'name': 'Franc CFA (BEAC)'},
+    'CF': {'code': 'XAF', 'symbol': 'FCFA', 'name': 'Franc CFA (BEAC)'},
+    'GQ': {'code': 'XAF', 'symbol': 'FCFA', 'name': 'Franc CFA (BEAC)'},
+    'GA': {'code': 'XAF', 'symbol': 'FCFA', 'name': 'Franc CFA (BEAC)'},
+    'CG': {'code': 'XAF', 'symbol': 'FCFA', 'name': 'Franc CFA (BEAC)'},
+    'CD': {'code': 'CDF', 'symbol': 'CDF', 'name': 'Franc congolais'},
+    'AO': {'code': 'AOA', 'symbol': 'AOA', 'name': 'Kwanza angolais'},
+    'SD': {'code': 'SDG', 'symbol': 'SDG', 'name': 'Livre soudanaise'},
+    'SS': {'code': 'SSP', 'symbol': 'SSP', 'name': 'Livre sud-soudanaise'},
+    'ET': {'code': 'ETB', 'symbol': 'ETB', 'name': 'Birr éthiopien'},
+    'ER': {'code': 'ERN', 'symbol': 'ERN', 'name': 'Nakfa érythréen'},
+    'DJ': {'code': 'DJF', 'symbol': 'DJF', 'name': 'Franc djiboutien'},
+    'SO': {'code': 'SOS', 'symbol': 'SOS', 'name': 'Shilling somalien'},
+    'KE': {'code': 'KES', 'symbol': 'KES', 'name': 'Shilling kényan'},
+    'UG': {'code': 'UGX', 'symbol': 'UGX', 'name': 'Shilling ougandais'},
+    'RW': {'code': 'RWF', 'symbol': 'RWF', 'name': 'Franc rwandais'},
+    'BI': {'code': 'BIF', 'symbol': 'BIF', 'name': 'Franc burundais'},
+    'TZ': {'code': 'TZS', 'symbol': 'TZS', 'name': 'Shilling tanzanien'},
+    'MW': {'code': 'MWK', 'symbol': 'MWK', 'name': 'Kwacha malawite'},
+    'MZ': {'code': 'MZN', 'symbol': 'MZN', 'name': 'Metical mozambicain'},
+    'ZW': {'code': 'ZWL', 'symbol': 'ZWL', 'name': 'Dollar zimbabwéen'},
+    'ZM': {'code': 'ZMW', 'symbol': 'ZMW', 'name': 'Kwacha zambien'},
+    'BW': {'code': 'BWP', 'symbol': 'BWP', 'name': 'Pula botswanais'},
+    'NA': {'code': 'NAD', 'symbol': 'NAD', 'name': 'Dollar namibien'},
+    'ZA': {'code': 'ZAR', 'symbol': 'ZAR', 'name': 'Rand sud-africain'},
+    'LS': {'code': 'LSL', 'symbol': 'LSL', 'name': 'Loti lesothan'},
+    'SZ': {'code': 'SZL', 'symbol': 'SZL', 'name': 'Lilangeni'},
+    'MG': {'code': 'MGA', 'symbol': 'MGA', 'name': 'Ariary malgache'},
+    'MU': {'code': 'MUR', 'symbol': 'MUR', 'name': 'Roupie mauricienne'},
+    'KM': {'code': 'KMF', 'symbol': 'KMF', 'name': 'Franc comorien'},
+    'SC': {'code': 'SCR', 'symbol': 'SCR', 'name': 'Roupie seychelloise'},
+    'CV': {'code': 'CVE', 'symbol': 'CVE', 'name': 'Escudo cap-verdien'},
+    'ST': {'code': 'STN', 'symbol': 'STN', 'name': 'Dobra santoméen'},
+    'FR': {'code': 'EUR', 'symbol': '€', 'name': 'Euro'},
+    'BE': {'code': 'EUR', 'symbol': '€', 'name': 'Euro'},
+    'IT': {'code': 'EUR', 'symbol': '€', 'name': 'Euro'},
+    'ES': {'code': 'EUR', 'symbol': '€', 'name': 'Euro'},
+    'PT': {'code': 'EUR', 'symbol': '€', 'name': 'Euro'},
+    'DE': {'code': 'EUR', 'symbol': '€', 'name': 'Euro'},
+    'NL': {'code': 'EUR', 'symbol': '€', 'name': 'Euro'},
+    'AT': {'code': 'EUR', 'symbol': '€', 'name': 'Euro'},
+    'GR': {'code': 'EUR', 'symbol': '€', 'name': 'Euro'},
+    'IE': {'code': 'EUR', 'symbol': '€', 'name': 'Euro'},
+    'GB': {'code': 'GBP', 'symbol': '£', 'name': 'Livre sterling'},
+    'US': {'code': 'USD', 'symbol': '$', 'name': 'Dollar américain'},
+    'CA': {'code': 'CAD', 'symbol': 'CAD', 'name': 'Dollar canadien'},
+    'CH': {'code': 'CHF', 'symbol': 'CHF', 'name': 'Franc suisse'},
+    'CN': {'code': 'CNY', 'symbol': '¥', 'name': 'Yuan chinois'},
+    'JP': {'code': 'JPY', 'symbol': '¥', 'name': 'Yen japonais'},
+    'IN': {'code': 'INR', 'symbol': '₹', 'name': 'Roupie indienne'},
+    'BR': {'code': 'BRL', 'symbol': 'R$', 'name': 'Real brésilien'},
+    'MX': {'code': 'MXN', 'symbol': 'MXN', 'name': 'Peso mexicain'},
+    'RU': {'code': 'RUB', 'symbol': '₽', 'name': 'Rouble russe'},
+    'TR': {'code': 'TRY', 'symbol': '₺', 'name': 'Livre turque'},
+    'SA': {'code': 'SAR', 'symbol': 'SAR', 'name': 'Riyal saoudien'},
+    'AE': {'code': 'AED', 'symbol': 'AED', 'name': 'Dirham des EAU'},
+}
+
+def get_currency_for_country(country_code):
+    """
+    Retourne la monnaie pour un code pays donné
+    
+    Args:
+        country_code: Code pays ISO-2 (ex: 'MA', 'CD', 'FR')
+        
+    Returns:
+        dict: Informations sur la monnaie {code, symbol, name} ou MAD par défaut
+    """
+    return COUNTRY_CURRENCIES.get(country_code, {'code': 'MAD', 'symbol': 'MAD', 'name': 'Dirham marocain'})

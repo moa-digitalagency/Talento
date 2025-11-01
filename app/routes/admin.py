@@ -114,7 +114,8 @@ def users():
     
     all_users = query.order_by(User.created_at.desc()).all()
     
-    all_talents = Talent.query.order_by(Talent.category, Talent.name).all()
+    # Exclure les talents cinéma dans la vue admin
+    all_talents = Talent.query.filter_by(tag='general').order_by(Talent.category, Talent.name).all()
     all_cities = City.query.order_by(City.name).all()
     
     return render_template('admin/users.html', users=all_users, talents=all_talents, cities=all_cities)

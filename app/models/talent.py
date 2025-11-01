@@ -16,6 +16,7 @@ class Talent(db.Model):
     name = db.Column(db.String(100), nullable=False, unique=True)
     emoji = db.Column(db.String(10), nullable=False)
     category = db.Column(db.String(50))
+    tag = db.Column(db.String(20), default='general')
     is_active = db.Column(db.Boolean, default=True)
     
     users = db.relationship('UserTalent', back_populates='talent')
