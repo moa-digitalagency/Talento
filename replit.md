@@ -14,6 +14,12 @@ The backend is built with Flask 3.0.0 (Python 3.11), using Blueprints for modula
 ### Database Architecture
 SQLAlchemy with Flask-SQLAlchemy serves as the ORM, supporting PostgreSQL (production) and SQLite (development). Data models include User, Talent, UserTalent, Country, City, AppSettings, CinemaTalent, Production, Project, ProjectTalent, NameTracking, and NameTrackingMatch. Sensitive data is encrypted using Fernet, and passwords are hashed with Werkzeug. The system ensures essential data (countries, cities, talents) is loaded and verified at startup.
 
+**Talent Categorization System:**
+- Talents are categorized using a `tag` field: 'general' (32 talents) or 'cinema' (13 talents)
+- General talents appear in main listings (/, /talents, /admin/users)
+- Cinema talents are exclusive to the CINEMA module (/cinema/talents)
+- Automatic filtering prevents mixing of talent types across different sections
+
 ### Authentication & Authorization
 Flask-Login manages authentication, supporting dual login via email or unique code. Access control is role-based, with Admin, Recruteur (Recruiter), Presence, and User roles, each having specific permissions.
 
@@ -37,6 +43,19 @@ Admin features include activity and security logging, centralized API key manage
 
 ### CINEMA Module Specifics
 This module features a multi-section public registration form, public profile display, and CRUD operations for Productions and Projects, including talent assignment and badge generation.
+
+### Multi-Currency Support
+The platform supports 60+ currencies mapped to their respective countries:
+- **Currency Mapping**: `app/constants.py` contains `COUNTRY_CURRENCIES` dictionary mapping country codes to currencies
+- **Dynamic Currency Display**: Registration forms automatically update currency display based on selected residence country
+- **Supported Currencies**: MAD (Morocco), CDF (DRC), EUR (Europe), USD (USA), FCFA (West Africa), and many more
+- **Helper Function**: `get_currency_for_country(country_code)` provides easy currency lookup
+
+### Recent Enhancements (November 2025)
+- ✅ Implemented talent segregation system (general vs cinema talents)
+- ✅ Added dynamic currency display in registration forms
+- ✅ Synchronized currency mapping between Python backend and JavaScript frontend
+- ✅ Enhanced documentation with comprehensive change tracking
 
 ## External Dependencies
 
