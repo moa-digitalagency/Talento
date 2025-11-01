@@ -14,46 +14,52 @@
         </div>
 
         <!-- Filtres -->
-        <div class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl">🔍</span>
-                    <h2 class="text-2xl font-bold text-gray-800">Filtres</h2>
+        <form method="GET" action="{{ url_for('admin.settings_activity_logs') }}">
+            <div class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="flex items-center gap-3">
+                        <span class="text-3xl">🔍</span>
+                        <h2 class="text-2xl font-bold text-gray-800">Filtres</h2>
+                    </div>
+                    <div class="flex gap-2">
+                        <a href="{{ url_for('admin.settings_activity_logs') }}" class="bg-white border-2 border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 font-semibold text-sm transition-all">
+                            🔄 Réinitialiser
+                        </a>
+                        <button type="submit" class="bg-blue-600 border-2 border-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold text-sm transition-all">
+                            🔍 Filtrer
+                        </button>
+                    </div>
                 </div>
-                <button onclick="window.location.reload()" class="bg-white border-2 border-blue-600 text-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 font-semibold text-sm transition-all">
-                    🔄 Rafraîchir
-                </button>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Type d'action</label>
+                        <select name="action_type" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
+                            <option value="all" {% if current_action_type == 'all' %}selected{% endif %}>Toutes les actions</option>
+                            {% for action_type in action_types %}
+                            <option value="{{ action_type }}" {% if current_action_type == action_type %}selected{% endif %}>{{ action_type }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Utilisateur</label>
+                        <input type="text" name="username" value="{{ current_username }}" placeholder="Nom, email ou code..." 
+                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Date début</label>
+                        <input type="date" name="date_start" value="{{ current_date_start }}" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Date fin</label>
+                        <input type="date" name="date_end" value="{{ current_date_end }}" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
+                    </div>
+                </div>
             </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Type d'action</label>
-                    <select class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
-                        <option>Toutes les actions</option>
-                        <option>Connexion</option>
-                        <option>Modification profil</option>
-                        <option>Upload CV</option>
-                        <option>Création talent</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Utilisateur</label>
-                    <input type="text" placeholder="Rechercher..." 
-                           class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Date début</label>
-                    <input type="date" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Date fin</label>
-                    <input type="date" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
-                </div>
-            </div>
-        </div>
+        </form>
 
         <!-- Historique des activités -->
         <div class="bg-white border-2 border-dashed border-gray-300 rounded-xl p-6">
@@ -97,7 +103,11 @@
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500">
                                     {{ log.action_description }}
-                                    {% if log.resource_type %}<div class="text-xs text-gray-400 mt-1">{{ log.resource_type }} #{{ log.resource_id }}</div>{% endif %}
+                                    {% if log.resource_type %}
+                                        <div class="text-xs text-gray-400 mt-1">
+                                            {{ log.resource_type }}{% if log.resource_id %} #{{ log.resource_id }}{% endif %}
+                                        </div>
+                                    {% endif %}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <div class="font-mono text-gray-900">{{ log.ip_address }}</div>

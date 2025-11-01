@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 ═══════════════════════════════════════════════════════════════════════════════
-                    SCRIPT D'INITIALISATION COMPLÈTE DE LA BASE DE DONNÉES
+                    GESTIONNAIRE DE BASE DE DONNÉES - Talento Platform
                                     taalentio.com
                               MOA Digital Agency LLC
                             Par : Aisance KALONJI
@@ -10,9 +10,16 @@
 ═══════════════════════════════════════════════════════════════════════════════
 
 DESCRIPTION:
-    Script complet et sécurisé pour initialiser et migrer la base de données.
-    Gère la création des tables, l'ajout de colonnes manquantes, et le seeding
-    des données essentielles de manière idempotente et réversible.
+    Gestionnaire unique et consolidé pour l'initialisation, la migration et la
+    maintenance de la base de données. Ce fichier remplace:
+    - migrations_init.py
+    - init_essential_data.py
+    - init_full_database.py
+
+    Il offre une gestion complète et sécurisée de la base de données avec:
+    - Détection automatique des changements de schéma
+    - Protection contre la perte de données
+    - Support des mises à jour via GitHub sans casser les données existantes
 
 FONCTIONNALITÉS:
     ✓ Création automatique de toutes les tables manquantes
@@ -23,49 +30,46 @@ FONCTIONNALITÉS:
     ✓ Logging détaillé de toutes les opérations
     ✓ Mode dry-run pour voir les changements sans les appliquer
     ✓ Compatible PostgreSQL et SQLite
+    ✓ Sûr pour les mises à jour GitHub (n'écrase jamais les données existantes)
 
 USAGE:
+    # Premier démarrage de l'application
+    python database_manager.py --force
+
+    # Mise à jour après pull GitHub (mode sûr avec backup)
+    python database_manager.py --backup-first
+
     # Mode interactif (demande confirmation pour les opérations critiques)
-    python init_full_database.py
+    python database_manager.py
 
-    # Mode automatique (sans confirmation)
-    python init_full_database.py --force
-
-    # Mode dry-run (affiche ce qui serait fait sans l'exécuter)
-    python init_full_database.py --dry-run
-
-    # Avec backup forcé avant toute opération
-    python init_full_database.py --backup-first
-
-    # Combinaison d'options
-    python init_full_database.py --backup-first --force
+    # Vérifier ce qui serait modifié sans rien changer
+    python database_manager.py --dry-run
 
 OPTIONS:
-    --force         Passer les confirmations (mode non-interactif)
+    --force         Mode non-interactif (pas de confirmation)
     --backup-first  Créer un backup avant toute opération
     --dry-run       Afficher les modifications sans les appliquer
     --verbose, -v   Afficher les logs détaillés
     --help, -h      Afficher cette aide
 
 EXEMPLES:
-    # Premier démarrage de l'application
-    python init_full_database.py --force
+    # Après un git pull (mise à jour sécurisée)
+    python database_manager.py --backup-first
 
-    # Migration sécurisée avec backup
-    python init_full_database.py --backup-first
+    # Installation fraîche
+    python database_manager.py --force
 
-    # Vérifier ce qui serait modifié
-    python init_full_database.py --dry-run
-
-    # Réinitialisation complète (⚠️ DESTRUCTIF)
-    python init_full_database.py --force --reset-all
+    # Vérifier l'état de la base de données
+    python database_manager.py --dry-run
 
 SÉCURITÉ:
-    - Les backups sont créés automatiquement avant toute opération destructive
-    - Rollback automatique en cas d'erreur
-    - Données sensibles chiffrées
-    - Confirmations pour les opérations critiques
-    - Logs détaillés de toutes les opérations
+    ✓ Backups automatiques avant modifications destructives
+    ✓ Rollback automatique en cas d'erreur
+    ✓ Données sensibles chiffrées
+    ✓ Confirmations pour les opérations critiques
+    ✓ Logs détaillés de toutes les opérations
+    ✓ Ne supprime jamais de données existantes
+    ✓ Idempotent - peut être exécuté plusieurs fois sans danger
 
 ═══════════════════════════════════════════════════════════════════════════════
 """

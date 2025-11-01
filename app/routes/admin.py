@@ -959,13 +959,14 @@ def save_social_links():
 def save_legal_pages():
     """Sauvegarder les pages légales"""
     legal_pages = {
-        # Contenu des pages
-        'terms_of_service': request.form.get('terms_of_service', '').strip(),
-        'privacy_policy': request.form.get('privacy_policy', '').strip(),
+        # Contenu des pages - utiliser les clés correctes pour correspondre à legal.py
+        'terms_page': request.form.get('terms_of_service', '').strip(),
+        'privacy_page': request.form.get('privacy_policy', '').strip(),
         'about_page': request.form.get('about_page', '').strip(),
-        'cookie_policy': request.form.get('cookie_policy', '').strip(),
+        'cookies_page': request.form.get('cookie_policy', '').strip(),
+        'mentions_page': request.form.get('mentions_legales', '').strip(),
         
-        # Informations de l'entreprise
+        # Informations de l'entreprise pour les mentions légales
         'company_name': request.form.get('company_name', '').strip(),
         'company_type': request.form.get('company_type', '').strip(),
         'registration_number': request.form.get('registration_number', '').strip(),
@@ -988,6 +989,17 @@ def save_legal_pages():
     # Sauvegarder
     AppSettings.set('legal_pages', legal_pages)
     AppSettings.set('legal_pages_enabled', legal_pages_enabled)
+    
+    # Logger l'activité
+    from app.services.logging_service import LoggingService
+    LoggingService.log_activity(
+        user=current_user,
+        action_type='update',
+        action_category='settings',
+        description='Mise à jour des pages légales',
+        resource_type='LegalPages',
+        status='success'
+    )
     
     flash('✅ Pages légales mises à jour avec succès', 'success')
     return redirect(url_for('admin.settings_customization'))
@@ -1224,8 +1236,33 @@ def save_seo_settings():
 @admin_required
 def settings_activity_logs():
     from app.services.logging_service import LoggingService
-    logs = LoggingService.get_recent_activities(limit=100)
-    return render_template('admin/settings/activity_logs.html', logs=logs)
+    from flask import request
+    
+    action_type = request.args.get('action_type', 'all')
+    username = request.args.get('username', '')
+    date_start = request.args.get('date_start', '')
+    date_end = request.args.get('date_end', '')
+    
+    if action_type != 'all' or username or date_start or date_end:
+        logs = LoggingService.get_filtered_activities(
+            action_type=action_type,
+            username=username if username else None,
+            date_start=date_start if date_start else None,
+            date_end=date_end if date_end else None,
+            limit=100
+        )
+    else:
+        logs = LoggingService.get_recent_activities(limit=100)
+    
+    action_types = LoggingService.get_distinct_action_types()
+    
+    return render_template('admin/settings/activity_logs.html', 
+                         logs=logs, 
+                         action_types=action_types,
+                         current_action_type=action_type,
+                         current_username=username,
+                         current_date_start=date_start,
+                         current_date_end=date_end)
 
 @bp.route('/settings/security-logs')
 @login_required

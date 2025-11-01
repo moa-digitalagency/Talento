@@ -173,3 +173,46 @@ class LoggingService:
             query = query.filter_by(ip_address=ip_address)
         
         return query.count()
+    
+    @staticmethod
+    def get_distinct_action_types():
+        """Récupérer tous les types d'action distincts"""
+        try:
+            result = db.session.query(ActivityLog.action_type).distinct().all()
+            return sorted([r[0] for r in result if r[0]])
+        except Exception as e:
+            print(f"❌ Erreur lors de la récupération des types d'action: {e}")
+            return []
+    
+    @staticmethod
+    def get_filtered_activities(action_type=None, username=None, date_start=None, date_end=None, limit=100):
+        """Récupérer les activités filtrées"""
+        query = ActivityLog.query
+        
+        if action_type and action_type != 'all':
+            query = query.filter_by(action_type=action_type)
+        
+        if username:
+            query = query.filter(
+                (ActivityLog.username.ilike(f'%{username}%')) |
+                (ActivityLog.user_email.ilike(f'%{username}%')) |
+                (ActivityLog.user_code.ilike(f'%{username}%'))
+            )
+        
+        if date_start:
+            try:
+                from datetime import datetime as dt
+                start_dt = dt.strptime(date_start, '%Y-%m-%d')
+                query = query.filter(ActivityLog.created_at >= start_dt)
+            except:
+                pass
+        
+        if date_end:
+            try:
+                from datetime import datetime as dt, timedelta
+                end_dt = dt.strptime(date_end, '%Y-%m-%d') + timedelta(days=1)
+                query = query.filter(ActivityLog.created_at < end_dt)
+            except:
+                pass
+        
+        return query.order_by(ActivityLog.created_at.desc()).limit(limit).all()
