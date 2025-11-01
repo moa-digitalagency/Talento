@@ -8,6 +8,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### November 1, 2025 - Registration Forms Bug Fixes
+- **CINEMA Talent Registration Fix**: Corrected CSRF token implementation in `/cinema/register` template to fix 400 error
+  - Changed from `{{ form.hidden_tag() if form }}` to explicit `<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>`
+  - Form now submits successfully without Flask-WTF dependency
+- **Email Notification Improvements**: Enhanced error handling and user feedback for email sending in both talent registration flows
+  - Added explicit boolean checks for email send operations in `app/routes/auth.py` and `app/routes/cinema.py`
+  - Users now receive clear warning messages if SendGrid is not configured
+  - Registration completes successfully even if emails fail to send
+  - Success messages differentiate between "emails sent" vs "contact admin for credentials" scenarios
+
 ### November 1, 2025 - Localisation Form Simplification, SEO, UI Improvements & Platform Audit
 - **Localisation Fields Restructuring**: Simplified registration form location sections for better user experience
   - **Standard Talent Form** (`/auth/register`): Section "Localisation" now has 4 fields only - Pays d'origine, Nationalité, Pays de résidence, Ville de résidence (removed "Ville d'origine")
