@@ -498,8 +498,8 @@ def register_talent():
             
             id_doc_number = request.form.get('id_document_number')
             if id_doc_number:
-                from app.utils.encryption import encrypt_data
-                talent.id_document_number_encrypted = encrypt_data(id_doc_number)
+                from app.utils.encryption import encrypt_sensitive_data
+                talent.id_document_number_encrypted = encrypt_sensitive_data(id_doc_number)
             
             # Origins - Multiple ethnicities
             ethnicities = request.form.getlist('ethnicities')
@@ -624,8 +624,8 @@ def register_talent():
                                          build_types=BUILD_TYPES)
                 
                 # Encrypter le téléphone normalisé (format E.164)
-                from app.utils.encryption import encrypt_data
-                talent.phone_encrypted = encrypt_data(phone_validation.normalized_value)
+                from app.utils.encryption import encrypt_sensitive_data
+                talent.phone_encrypted = encrypt_sensitive_data(phone_validation.normalized_value)
             
             # Valider WhatsApp si fourni (même logique que téléphone)
             whatsapp = request.form.get('whatsapp')
@@ -646,8 +646,8 @@ def register_talent():
                                          build_types=BUILD_TYPES)
                 
                 # Encrypter le WhatsApp normalisé
-                from app.utils.encryption import encrypt_data
-                talent.whatsapp_encrypted = encrypt_data(whatsapp_validation.normalized_value)
+                from app.utils.encryption import encrypt_sensitive_data
+                talent.whatsapp_encrypted = encrypt_sensitive_data(whatsapp_validation.normalized_value)
             
             # Website (not encrypted)
             talent.website = request.form.get('website')
@@ -665,10 +665,10 @@ def register_talent():
                 'threads': request.form.get('threads')
             }
             
-            from app.utils.encryption import encrypt_data
+            from app.utils.encryption import encrypt_sensitive_data
             for key, value in social_media.items():
                 if value:
-                    setattr(talent, f'{key}_encrypted', encrypt_data(value))
+                    setattr(talent, f'{key}_encrypted', encrypt_sensitive_data(value))
             
             # Previous Productions (JSON)
             talent.previous_productions = request.form.get('previous_productions')
