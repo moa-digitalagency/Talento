@@ -7,6 +7,10 @@ Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 ## [Non publié]
 
 ### Ajouté
+- **Sitemap XML et robots.txt** : Ajout de la génération automatique de sitemap pour améliorer le référencement SEO
+  - Route `/sitemap.xml` pour le sitemap dynamique
+  - Route `/robots.txt` pour les directives des moteurs de recherche
+  - Intégration des pages statiques et dynamiques dans le sitemap
 - **Icônes Font Awesome pour les réseaux sociaux** : Remplacement de tous les emojis des réseaux sociaux par de vraies icônes Font Awesome 6.5.1 pour une apparence plus professionnelle
   - Icônes dans le footer du site
   - Icônes dans le formulaire d'administration des réseaux sociaux
