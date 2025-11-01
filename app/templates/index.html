@@ -282,7 +282,7 @@
                             </td>
                             <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-600 hidden md:table-cell">{{ user.email }}</td>
                             <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm text-gray-600 hidden lg:table-cell">
-                                {{ user.city.name if user.city else 'N/A' }}
+                                {{ user.residence_city.name if user.residence_city else 'N/A' }}
                             </td>
                             <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap hidden sm:table-cell">
                                 {% if user.availability == 'Temps plein' %}

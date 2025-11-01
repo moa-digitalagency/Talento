@@ -85,7 +85,7 @@ def admin_dashboard():
         query = query.filter(User.country_id == int(country_filter))
     
     if city_filter:
-        query = query.filter(User.city_id == int(city_filter))
+        query = query.filter(User.residence_city_id == int(city_filter))
     
     if gender_filter:
         query = query.filter(User.gender == gender_filter)
@@ -141,7 +141,7 @@ def admin_dashboard():
         if country_filter:
             base_query = base_query.filter(User.country_id == int(country_filter))
         if city_filter:
-            base_query = base_query.filter(User.city_id == int(city_filter))
+            base_query = base_query.filter(User.residence_city_id == int(city_filter))
         if gender_filter:
             base_query = base_query.filter(User.gender == gender_filter)
         if availability_filter:
@@ -345,7 +345,7 @@ def talents():
         if work_mode_filter:
             base_query = base_query.filter(User.work_mode == work_mode_filter)
         if city_filter:
-            base_query = base_query.filter(User.city_id == int(city_filter))
+            base_query = base_query.filter(User.residence_city_id == int(city_filter))
         if gender_filter:
             base_query = base_query.filter(User.gender == gender_filter)
         
@@ -413,7 +413,7 @@ def talent_users(talent_id):
         query = query.filter(User.work_mode == work_mode_filter)
     
     if city_filter:
-        query = query.filter(User.city_id == int(city_filter))
+        query = query.filter(User.residence_city_id == int(city_filter))
     
     if gender_filter:
         query = query.filter(User.gender == gender_filter)

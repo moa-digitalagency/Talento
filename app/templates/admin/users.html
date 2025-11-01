@@ -179,7 +179,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 font-semibold">{{ user.full_name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ user.email }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ user.phone if user.phone else 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ user.city.name if user.city else 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ user.residence_city.name if user.residence_city else 'N/A' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         <a href="{{ url_for('profile.view_public', unique_code=user.unique_code) }}" 
                                            class="text-blue-600 hover:text-blue-800 font-semibold hover:underline">👁️ Voir</a>
