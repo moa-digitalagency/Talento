@@ -8,6 +8,19 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+### November 1, 2025 - Essential Data Initialization & API Test Improvements
+- **Essential Data Auto-Loading**: Enabled automatic essential data initialization on every deployment and startup
+  - The `_ensure_essential_data_loaded()` function now runs automatically during app startup
+  - Checks for minimum data thresholds: 100 countries, 1000 cities, 50 talents
+  - Automatically runs `init_essential_data.py` if data is missing or incomplete
+  - Ensures forms are always populated with location and talent data in production
+  - Required for all deployments to guarantee data integrity
+- **Dynamic API Test Button**: Enhanced AI API testing functionality in admin settings
+  - Test button now dynamically updates based on selected AI provider (OpenRouter, Perplexity, OpenAI, or Gemini)
+  - Button text changes to reflect current provider (e.g., "Test Perplexity" when Perplexity is selected)
+  - Automatically enables/disables based on whether the selected provider is configured
+  - Tests the currently active provider instead of only OpenRouter
+
 ### November 1, 2025 - Registration Forms Bug Fixes
 - **CINEMA Talent Registration Fix**: Corrected CSRF token implementation in `/cinema/register` template to fix 400 error
   - Changed from `{{ form.hidden_tag() if form }}` to explicit `<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>`

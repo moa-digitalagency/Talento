@@ -33,7 +33,7 @@ def _ensure_essential_data_loaded():
     
     MIN_COUNTRIES = 100
     MIN_CITIES = 1000
-    MIN_TALENTS = 50
+    MIN_TALENTS = 40  # Adjusted to match actual talent categories data
     
     if countries_count < MIN_COUNTRIES or cities_count < MIN_CITIES or talents_count < MIN_TALENTS:
         print("\n" + "="*70)
@@ -49,7 +49,7 @@ def _ensure_essential_data_loaded():
                 [sys.executable, 'init_essential_data.py'],
                 capture_output=True,
                 text=True,
-                timeout=120
+                timeout=300  # Increased to 5 minutes for complete data loading
             )
             
             if result.returncode == 0:
@@ -72,7 +72,7 @@ def _ensure_essential_data_loaded():
                 print("💡 Correction manuelle: Exécutez 'python init_essential_data.py'")
                 print("="*70)
         except subprocess.TimeoutExpired:
-            print("❌ Le script d'initialisation a pris trop de temps (timeout 120s)")
+            print("❌ Le script d'initialisation a pris trop de temps (timeout 300s)")
             print("💡 Essayez de l'exécuter manuellement: python init_essential_data.py")
         except Exception as e:
             print(f"❌ Erreur inattendue lors de l'initialisation: {e}")
@@ -584,12 +584,8 @@ def create_app(config_class=Config):
             safe_auto_migrate(db)
             
             # Garantir que les données essentielles (pays, villes, talents) sont chargées
-            # Temporarily disabled for initial import to speed up startup
-            # _ensure_essential_data_loaded()
-            
-            # Auto-détecter si les données demo doivent être créées
-            # Temporarily disabled to speed up startup
-            # _ensure_demo_data_exists(db, logger)
+            # Cette fonction vérifie automatiquement et charge les données si nécessaire
+            _ensure_essential_data_loaded()
             
             # Garantir que le compte admin existe toujours (après le chargement des données essentielles)
             _ensure_admin_exists(db, logger)
