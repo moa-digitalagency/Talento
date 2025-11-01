@@ -833,11 +833,50 @@ class EmailService:
             )
             
             # Ajouter BCC pour l'admin si configuré
+            # Ne pas ajouter l'admin en copie si l'email lui est déjà destiné
             if self._should_cc_admin(template_type):
                 admin_email = self._get_admin_email()
-                if admin_email and admin_email != to_email:
-                    message.add_bcc(admin_email)
-                    print(f"📬 BCC ajouté pour admin: {admin_email}")
+                
+                # S'assurer que admin_email est une string valide
+                if not admin_email or not isinstance(admin_email, str):
+                    admin_email = None
+                
+                if admin_email:
+                    # Vérifier si l'admin est déjà destinataire
+                    # to_email peut être une string, une liste, ou un dict selon SendGrid
+                    admin_is_recipient = False
+                    admin_lower = admin_email.lower()
+                    
+                    try:
+                        if isinstance(to_email, str):
+                            # Comparaison insensible à la casse pour les strings
+                            admin_is_recipient = admin_lower == to_email.lower()
+                        elif isinstance(to_email, list):
+                            # Vérifier dans la liste - ignorer les valeurs non-string
+                            for e in to_email:
+                                if isinstance(e, str) and e.lower() == admin_lower:
+                                    admin_is_recipient = True
+                                    break
+                                elif isinstance(e, dict):
+                                    recipient_email = e.get('email') or e.get('Email')
+                                    if isinstance(recipient_email, str) and recipient_email.lower() == admin_lower:
+                                        admin_is_recipient = True
+                                        break
+                        elif isinstance(to_email, dict):
+                            # Vérifier dans le dict - gérer les clés manquantes/None
+                            recipient_email = to_email.get('email') or to_email.get('Email')
+                            if isinstance(recipient_email, str):
+                                admin_is_recipient = recipient_email.lower() == admin_lower
+                    except (AttributeError, TypeError) as e:
+                        # En cas d'erreur, ne pas bloquer l'envoi, simplement logger
+                        print(f"⚠️  Erreur lors de la vérification du destinataire admin: {e}")
+                        admin_is_recipient = False
+                    
+                    if not admin_is_recipient:
+                        message.add_bcc(admin_email)
+                        print(f"📬 BCC ajouté pour admin: {admin_email}")
+                    else:
+                        print(f"ℹ️  Admin non ajouté en BCC car déjà destinataire principal: {admin_email}")
             
             if attachments:
                 for att in attachments:

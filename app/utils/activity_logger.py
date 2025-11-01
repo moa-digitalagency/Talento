@@ -46,6 +46,53 @@ class ActivityLogger:
         'warning': {'icon': '⚡', 'label': 'Avertissement'},
         'info': {'icon': 'ℹ️', 'label': 'Information'},
         'action': {'icon': '⚙️', 'label': 'Action'},
+        'navigation': {'icon': '🧭', 'label': 'Navigation'},
+    }
+    
+    PAGE_NAMES_MAP = {
+        '/': 'Accueil',
+        '/auth/login': 'Connexion',
+        '/auth/register': 'Inscription',
+        '/admin/dashboard': 'Dashboard - Administration',
+        '/admin/settings': 'Paramètres - Administration',
+        '/admin/settings/users': 'Utilisateurs - Administration',
+        '/admin/settings/talents': 'Talents - Administration',
+        '/admin/settings/system': 'Système - Administration',
+        '/admin/settings/email-notifications': 'Notifications Email - Administration',
+        '/admin/settings/email-templates': 'Templates Email - Administration',
+        '/admin/settings/customization': 'Personnalisation - Administration',
+        '/admin/settings/activity-logs': 'Logs d\'Activités - Administration',
+        '/admin/settings/security-logs': 'Logs de Sécurité - Administration',
+        '/admin/settings/backups': 'Sauvegardes - Administration',
+        '/admin/settings/cache': 'Cache - Administration',
+        '/admin/settings/api-keys': 'Clés API - Administration',
+        '/admin/settings/roles': 'Rôles - Administration',
+        '/admin/settings/productions': 'Productions - Administration',
+        '/admin/settings/projects': 'Projets - Administration',
+        '/admin/settings/watchlist': 'Liste de Surveillance - Administration',
+        '/admin/settings/recap-config': 'Configuration Récapitulatif - Administration',
+        '/admin/settings/github-updates': 'Mises à Jour GitHub - Administration',
+        '/admin/settings/security': 'Sécurité - Administration',
+        '/admin/users': 'Gestion Utilisateurs - Administration',
+        '/admin/talents': 'Gestion Talents - Administration',
+        '/profile/dashboard': 'Mon Profil - Dashboard',
+        '/profile/edit': 'Modifier Mon Profil',
+        '/profile/view': 'Consulter Mon Profil',
+        '/profile/change-password': 'Changer Mot de Passe',
+        '/cinema/dashboard': 'Dashboard - Cinéma',
+        '/cinema/talents': 'Talents - Cinéma',
+        '/cinema/productions': 'Productions - Cinéma',
+        '/cinema/projects': 'Projets - Cinéma',
+        '/cinema/register-talent': 'Inscription Talent - Cinéma',
+        '/cinema/team': 'Équipe - Cinéma',
+        '/legal/mentions': 'Mentions Légales',
+        '/legal/privacy': 'Politique de Confidentialité',
+        '/legal/terms': 'Conditions d\'Utilisation',
+        '/legal/cookies': 'Politique des Cookies',
+        '/legal/about': 'À Propos',
+        '/presence': 'Présence - Gestion',
+        '/presence/project-attendance': 'Présence Projet',
+        '/presence/talent-history': 'Historique Présence Talent',
     }
     
     @staticmethod
@@ -83,6 +130,33 @@ class ActivityLogger:
         """
         display = ActivityLogger.get_action_display(action_type)
         return f"{display['display']}: {description}"
+    
+    @staticmethod
+    def get_page_name_from_url(path):
+        """
+        Retourne le nom complet d'une page à partir de son URL
+        
+        Args:
+            path: Chemin de l'URL (ex: /admin/settings)
+            
+        Returns:
+            str: Nom complet de la page (ex: "Paramètres - Administration")
+        """
+        # Recherche exacte dans le mapping
+        if path in ActivityLogger.PAGE_NAMES_MAP:
+            return ActivityLogger.PAGE_NAMES_MAP[path]
+        
+        # Recherche par préfixe pour les URLs dynamiques avec paramètres
+        for mapped_path, page_name in ActivityLogger.PAGE_NAMES_MAP.items():
+            if path.startswith(mapped_path + '/') or path.startswith(mapped_path + '?'):
+                # URL avec paramètres ou sous-chemins
+                return page_name
+        
+        # Fallback: nettoyer le chemin pour le rendre plus lisible
+        clean_path = path.replace('/', ' > ').strip(' > ')
+        if clean_path:
+            return clean_path.title()
+        return path
     
     @staticmethod
     def _get_client_info():
@@ -287,7 +361,8 @@ def log_page_view(url=None, user=None):
         if url is None:
             url = request.url if request else 'Unknown'
         
-        page_name = request.path if request else url
+        page_path = request.path if request else url
+        page_name = ActivityLogger.get_page_name_from_url(page_path)
         
         ActivityLogger._create_log_entry(
             user=user,
@@ -295,7 +370,8 @@ def log_page_view(url=None, user=None):
             action_category='navigation',
             description=f"Consultation de page: {page_name}",
             resource_type='page',
-            status='success'
+            status='success',
+            extra_data={'page_path': page_path, 'page_name': page_name}
         )
     except Exception as e:
         print(f"⚠️ Erreur log_page_view (non-bloquante): {e}")

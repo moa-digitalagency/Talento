@@ -176,10 +176,25 @@ class LoggingService:
     
     @staticmethod
     def get_distinct_action_types():
-        """Récupérer tous les types d'action distincts"""
+        """Récupérer tous les types d'action distincts avec leurs icônes et libellés"""
         try:
+            from app.utils.activity_logger import ActivityLogger
+            
             result = db.session.query(ActivityLog.action_type).distinct().all()
-            return sorted([r[0] for r in result if r[0]])
+            action_types_raw = sorted([r[0] for r in result if r[0]])
+            
+            # Enrichir avec les icônes et libellés
+            action_types_enriched = []
+            for action_type in action_types_raw:
+                display = ActivityLogger.get_action_display(action_type)
+                action_types_enriched.append({
+                    'type': action_type,
+                    'icon': display['icon'],
+                    'label': display['label'],
+                    'display': display['display']
+                })
+            
+            return action_types_enriched
         except Exception as e:
             print(f"❌ Erreur lors de la récupération des types d'action: {e}")
             return []

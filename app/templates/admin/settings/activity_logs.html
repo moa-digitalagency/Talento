@@ -35,9 +35,9 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Type d'action</label>
                         <select name="action_type" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none">
-                            <option value="all" {% if current_action_type == 'all' %}selected{% endif %}>Toutes les actions</option>
+                            <option value="all" {% if current_action_type == 'all' %}selected{% endif %}>📋 Toutes les actions</option>
                             {% for action_type in action_types %}
-                            <option value="{{ action_type }}" {% if current_action_type == action_type %}selected{% endif %}>{{ action_type }}</option>
+                            <option value="{{ action_type.type }}" {% if current_action_type == action_type.type %}selected{% endif %}>{{ action_type.display }}</option>
                             {% endfor %}
                         </select>
                     </div>
