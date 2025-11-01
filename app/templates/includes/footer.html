@@ -37,43 +37,43 @@
         {% if SOCIAL_LINKS and (SOCIAL_LINKS.facebook or SOCIAL_LINKS.instagram or SOCIAL_LINKS.twitter or SOCIAL_LINKS.linkedin or SOCIAL_LINKS.tiktok or SOCIAL_LINKS.youtube or SOCIAL_LINKS.whatsapp or SOCIAL_LINKS.telegram) %}
         <div class="flex flex-wrap justify-center gap-4 mb-3">
             {% if SOCIAL_LINKS.facebook %}
-            <a href="{{ SOCIAL_LINKS.facebook }}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 transition-colors" title="Facebook">
-                <span class="text-xl">📘</span>
+            <a href="{{ SOCIAL_LINKS.facebook }}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 transition-colors text-2xl" title="Facebook">
+                <i class="fab fa-facebook"></i>
             </a>
             {% endif %}
             {% if SOCIAL_LINKS.instagram %}
-            <a href="{{ SOCIAL_LINKS.instagram }}" target="_blank" rel="noopener noreferrer" class="text-pink-600 hover:text-pink-800 transition-colors" title="Instagram">
-                <span class="text-xl">📷</span>
+            <a href="{{ SOCIAL_LINKS.instagram }}" target="_blank" rel="noopener noreferrer" class="text-pink-600 hover:text-pink-800 transition-colors text-2xl" title="Instagram">
+                <i class="fab fa-instagram"></i>
             </a>
             {% endif %}
             {% if SOCIAL_LINKS.twitter %}
-            <a href="{{ SOCIAL_LINKS.twitter }}" target="_blank" rel="noopener noreferrer" class="text-sky-600 hover:text-sky-800 transition-colors" title="Twitter/X">
-                <span class="text-xl">🐦</span>
+            <a href="{{ SOCIAL_LINKS.twitter }}" target="_blank" rel="noopener noreferrer" class="text-sky-600 hover:text-sky-800 transition-colors text-2xl" title="Twitter/X">
+                <i class="fab fa-x-twitter"></i>
             </a>
             {% endif %}
             {% if SOCIAL_LINKS.linkedin %}
-            <a href="{{ SOCIAL_LINKS.linkedin }}" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:text-blue-900 transition-colors" title="LinkedIn">
-                <span class="text-xl">💼</span>
+            <a href="{{ SOCIAL_LINKS.linkedin }}" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:text-blue-900 transition-colors text-2xl" title="LinkedIn">
+                <i class="fab fa-linkedin"></i>
             </a>
             {% endif %}
             {% if SOCIAL_LINKS.tiktok %}
-            <a href="{{ SOCIAL_LINKS.tiktok }}" target="_blank" rel="noopener noreferrer" class="text-gray-800 hover:text-black transition-colors" title="TikTok">
-                <span class="text-xl">🎵</span>
+            <a href="{{ SOCIAL_LINKS.tiktok }}" target="_blank" rel="noopener noreferrer" class="text-gray-800 hover:text-black transition-colors text-2xl" title="TikTok">
+                <i class="fab fa-tiktok"></i>
             </a>
             {% endif %}
             {% if SOCIAL_LINKS.youtube %}
-            <a href="{{ SOCIAL_LINKS.youtube }}" target="_blank" rel="noopener noreferrer" class="text-red-600 hover:text-red-800 transition-colors" title="YouTube">
-                <span class="text-xl">📺</span>
+            <a href="{{ SOCIAL_LINKS.youtube }}" target="_blank" rel="noopener noreferrer" class="text-red-600 hover:text-red-800 transition-colors text-2xl" title="YouTube">
+                <i class="fab fa-youtube"></i>
             </a>
             {% endif %}
             {% if SOCIAL_LINKS.whatsapp %}
-            <a href="https://wa.me/{{ SOCIAL_LINKS.whatsapp|replace('+','')|replace(' ','') }}" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-800 transition-colors" title="WhatsApp">
-                <span class="text-xl">📱</span>
+            <a href="https://wa.me/{{ SOCIAL_LINKS.whatsapp|replace('+','')|replace(' ','') }}" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-800 transition-colors text-2xl" title="WhatsApp">
+                <i class="fab fa-whatsapp"></i>
             </a>
             {% endif %}
             {% if SOCIAL_LINKS.telegram %}
-            <a href="{{ SOCIAL_LINKS.telegram }}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700 transition-colors" title="Telegram">
-                <span class="text-xl">💬</span>
+            <a href="{{ SOCIAL_LINKS.telegram }}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700 transition-colors text-2xl" title="Telegram">
+                <i class="fab fa-telegram"></i>
             </a>
             {% endif %}
         </div>
