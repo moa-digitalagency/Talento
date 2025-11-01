@@ -32,13 +32,19 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - ✅ **60+ pays** mappés vers leur monnaie locale
 - ✅ **Monnaies supportées** : MAD (Maroc), CDF (RDC), EUR (France), USD (USA), etc.
 - ✅ **Helper function** : `get_currency_for_country(country_code)` pour récupération facile
-- ✅ **Base pour dynamisme** : Prêt pour l'affichage dynamique des tarifs selon le pays
+- ✅ **Devise dynamique dans formulaires** : Les devises s'ajustent automatiquement selon le pays de résidence sélectionné
+- ✅ **Formulaire d'inscription** : Les champs "Tarif horaire" et "Tarif mensuel" affichent la devise du pays sélectionné
 
 **Mapping inclus** :
 - Afrique : MAD, CDF, XOF, XAF, ZAR, NGN, KES, etc.
 - Europe : EUR, GBP, CHF, etc.
 - Amériques : USD, CAD, BRL, etc.
 - Asie-Pacifique : JPY, CNY, AUD, etc.
+
+**Implémentation** :
+- JavaScript dans `register.html` pour mise à jour automatique de la devise
+- Mapping `countryCurrencies` synchronisé avec `COUNTRY_CURRENCIES` de constants.py
+- Changement en temps réel lors de la sélection du pays de résidence
 
 #### ⚖️ Amélioration des Mentions Légales
 
