@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Politique de Confidentialité - taalentio.com{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-md p-8 border-2 border-dashed border-purple-400">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Politique de Confidentialité</h1>
+            {% if content %}
+                {{ content|safe }}
+            {% else %}
+                <div class="prose prose-lg max-w-none">
+                    <p class="text-sm text-gray-500 mb-6">Dernière mise à jour : {{ current_date or "Date non spécifiée" }}</p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">1. Introduction</h2>
+                    <p class="text-gray-700 mb-4">
+                        La protection de vos données personnelles est une priorité pour taalentio.com. Cette politique de confidentialité 
+                        vous informe sur la manière dont nous collectons, utilisons, stockons et protégeons vos données.
+                    </p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">2. Données Collectées</h2>
+                    <p class="text-gray-700 mb-4">
+                        Nous collectons les données suivantes :
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 mb-4 space-y-2">
+                        <li><strong>Données d'identification :</strong> nom, prénom, adresse email, numéro de téléphone</li>
+                        <li><strong>Données professionnelles :</strong> CV, expériences, compétences, formations</li>
+                        <li><strong>Données de connexion :</strong> adresse IP, cookies, logs de navigation</li>
+                        <li><strong>Données de profil :</strong> photo, informations personnalisées</li>
+                    </ul>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">3. Finalités du Traitement</h2>
+                    <p class="text-gray-700 mb-4">
+                        Vos données sont collectées pour les finalités suivantes :
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 mb-4 space-y-2">
+                        <li>Gestion de votre compte utilisateur</li>
+                        <li>Mise en relation avec des opportunités professionnelles</li>
+                        <li>Amélioration de nos services</li>
+                        <li>Communication d'informations importantes</li>
+                        <li>Conformité aux obligations légales</li>
+                    </ul>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">4. Base Légale</h2>
+                    <p class="text-gray-700 mb-4">
+                        Le traitement de vos données repose sur les bases légales suivantes :
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 mb-4 space-y-2">
+                        <li><strong>Consentement :</strong> pour certaines finalités spécifiques</li>
+                        <li><strong>Exécution du contrat :</strong> pour la fourniture de nos services</li>
+                        <li><strong>Obligation légale :</strong> pour la conformité réglementaire</li>
+                        <li><strong>Intérêt légitime :</strong> pour l'amélioration de nos services</li>
+                    </ul>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">5. Durée de Conservation</h2>
+                    <p class="text-gray-700 mb-4">
+                        Vos données sont conservées pendant la durée nécessaire aux finalités pour lesquelles elles ont été collectées, 
+                        conformément aux obligations légales et aux délais de prescription applicables.
+                    </p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">6. Sécurité des Données</h2>
+                    <p class="text-gray-700 mb-4">
+                        Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos données contre 
+                        tout accès non autorisé, perte, destruction ou altération.
+                    </p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">7. Vos Droits</h2>
+                    <p class="text-gray-700 mb-4">
+                        Conformément à la réglementation en vigueur, vous disposez des droits suivants :
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 mb-4 space-y-2">
+                        <li><strong>Droit d'accès :</strong> obtenir une copie de vos données</li>
+                        <li><strong>Droit de rectification :</strong> corriger vos données inexactes</li>
+                        <li><strong>Droit à l'effacement :</strong> demander la suppression de vos données</li>
+                        <li><strong>Droit à la limitation :</strong> limiter le traitement de vos données</li>
+                        <li><strong>Droit à la portabilité :</strong> récupérer vos données dans un format structuré</li>
+                        <li><strong>Droit d'opposition :</strong> vous opposer au traitement de vos données</li>
+                    </ul>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">8. Cookies</h2>
+                    <p class="text-gray-700 mb-4">
+                        Nous utilisons des cookies pour améliorer votre expérience sur notre plateforme. Pour plus d'informations, 
+                        consultez notre <a href="{{ url_for('main.cookies_policy') }}" class="text-purple-600 hover:text-purple-800 underline">Politique des Cookies</a>.
+                    </p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">9. Contact</h2>
+                    <p class="text-gray-700 mb-4">
+                        Pour exercer vos droits ou pour toute question relative à la protection de vos données, vous pouvez nous contacter 
+                        via notre formulaire de contact ou à l'adresse email indiquée sur notre site.
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+        <div class="mt-6 text-center">
+            <a href="{{ url_for('main.index') }}" class="inline-block px-6 py-3 border-2 border-purple-500 text-purple-600 rounded-lg hover:bg-purple-500 hover:text-white transition-all font-semibold">
+                ← Retour à l'accueil
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

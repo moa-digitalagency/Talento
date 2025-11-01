@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Mentions Légales - taalentio.com{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-md p-8 border-2 border-dashed border-red-400">
+            <h1 class="text-3xl font-bold text-gray-800 mb-6">Mentions Légales</h1>
+            {% if content %}
+                {{ content|safe }}
+            {% else %}
+                <div class="prose prose-lg max-w-none">
+                    <p class="text-sm text-gray-500 mb-6">Dernière mise à jour : {{ current_date or "Date non spécifiée" }}</p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">1. Éditeur du Site</h2>
+                    <p class="text-gray-700 mb-4">
+                        Le site <strong>taalentio.com</strong> est édité par :
+                    </p>
+                    <div class="bg-gray-50 border-l-4 border-red-500 p-4 mb-4">
+                        <p class="text-gray-700"><strong>Raison sociale :</strong> [À compléter]</p>
+                        <p class="text-gray-700"><strong>Forme juridique :</strong> [À compléter]</p>
+                        <p class="text-gray-700"><strong>Adresse du siège social :</strong> [À compléter]</p>
+                        <p class="text-gray-700"><strong>Numéro de téléphone :</strong> [À compléter]</p>
+                        <p class="text-gray-700"><strong>Email :</strong> [À compléter]</p>
+                        <p class="text-gray-700"><strong>Numéro d'immatriculation :</strong> [À compléter]</p>
+                        <p class="text-gray-700"><strong>Capital social :</strong> [À compléter]</p>
+                    </div>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">2. Directeur de la Publication</h2>
+                    <p class="text-gray-700 mb-4">
+                        <strong>Nom :</strong> [À compléter]<br>
+                        <strong>Fonction :</strong> [À compléter]
+                    </p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">3. Hébergement</h2>
+                    <p class="text-gray-700 mb-4">
+                        Le site est hébergé par :
+                    </p>
+                    <div class="bg-gray-50 border-l-4 border-red-500 p-4 mb-4">
+                        <p class="text-gray-700"><strong>Nom de l'hébergeur :</strong> [À compléter]</p>
+                        <p class="text-gray-700"><strong>Adresse :</strong> [À compléter]</p>
+                        <p class="text-gray-700"><strong>Téléphone :</strong> [À compléter]</p>
+                        <p class="text-gray-700"><strong>Site web :</strong> [À compléter]</p>
+                    </div>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">4. Protection des Données Personnelles</h2>
+                    <p class="text-gray-700 mb-4">
+                        Conformément à la loi Informatique et Libertés du 6 janvier 1978 modifiée et au Règlement Général sur la 
+                        Protection des Données (RGPD), vous disposez de droits sur vos données personnelles.
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        <strong>Responsable du traitement des données :</strong><br>
+                        Nom : [À compléter]<br>
+                        Email : [À compléter]
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        Pour plus d'informations sur le traitement de vos données personnelles, consultez notre 
+                        <a href="{{ url_for('main.privacy_policy') }}" class="text-red-600 hover:text-red-800 underline">Politique de Confidentialité</a>.
+                    </p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">5. Propriété Intellectuelle</h2>
+                    <p class="text-gray-700 mb-4">
+                        L'ensemble de ce site relève de la législation française et internationale sur le droit d'auteur et la propriété intellectuelle. 
+                        Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations iconographiques et photographiques.
+                    </p>
+                    <p class="text-gray-700 mb-4">
+                        La reproduction de tout ou partie de ce site sur un support électronique quel qu'il soit est formellement interdite 
+                        sauf autorisation expresse du directeur de la publication.
+                    </p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">6. Crédits</h2>
+                    <p class="text-gray-700 mb-4">
+                        <strong>Conception et réalisation :</strong> [À compléter]<br>
+                        <strong>Design graphique :</strong> [À compléter]<br>
+                        <strong>Développement :</strong> [À compléter]
+                    </p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">7. Liens Hypertextes</h2>
+                    <p class="text-gray-700 mb-4">
+                        Le site peut contenir des liens hypertextes vers d'autres sites. Nous ne sommes pas responsables du contenu 
+                        de ces sites externes. La création de liens hypertextes vers notre site nécessite une autorisation préalable.
+                    </p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">8. Cookies</h2>
+                    <p class="text-gray-700 mb-4">
+                        Le site utilise des cookies pour améliorer l'expérience utilisateur. Pour plus d'informations, consultez notre 
+                        <a href="{{ url_for('main.cookies_policy') }}" class="text-red-600 hover:text-red-800 underline">Politique des Cookies</a>.
+                    </p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">9. Droit Applicable</h2>
+                    <p class="text-gray-700 mb-4">
+                        Les présentes mentions légales sont soumises au droit [pays]. En cas de litige, les tribunaux [juridiction] 
+                        seront seuls compétents.
+                    </p>
+                    
+                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">10. Contact</h2>
+                    <p class="text-gray-700 mb-4">
+                        Pour toute question concernant les mentions légales, vous pouvez nous contacter :<br>
+                        <strong>Email :</strong> [À compléter]<br>
+                        <strong>Téléphone :</strong> [À compléter]<br>
+                        <strong>Adresse postale :</strong> [À compléter]
+                    </p>
+                    
+                    <div class="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mt-6">
+                        <p class="text-sm text-yellow-800">
+                            <strong>⚠️ Note :</strong> Les informations marquées "[À compléter]" doivent être renseignées 
+                            par l'administrateur du site via les paramètres de personnalisation.
+                        </p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="mt-6 text-center">
+            <a href="{{ url_for('main.index') }}" class="inline-block px-6 py-3 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-500 hover:text-white transition-all font-semibold">
+                ← Retour à l'accueil
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

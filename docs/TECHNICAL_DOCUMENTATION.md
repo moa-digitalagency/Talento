@@ -1756,6 +1756,442 @@ talentsmaroc/
 
 ---
 
+## Système de Logs d'Activité Amélioré
+
+### Vue d'Ensemble
+
+Le système enregistre **automatiquement** toutes les actions des utilisateurs avec des informations détaillées pour l'audit, l'analyse et le débogage.
+
+### Table `activity_logs`
+
+**Modèle** : `app/models/activity_log.py`
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `id` | Integer | Clé primaire |
+| `user_id` | Integer | ID utilisateur (FK) |
+| `username` | String(200) | Nom complet |
+| `user_email` | String(150) | Email |
+| `user_code` | String(50) | Code unique |
+| `action_type` | String(50) | Type (create, update, delete, view, login, etc.) |
+| `action_category` | String(50) | Catégorie (auth, cinema, production, etc.) |
+| `action_description` | Text | Description détaillée |
+| `resource_type` | String(100) | Type de ressource |
+| `resource_id` | String(100) | ID de la ressource |
+| `status` | String(20) | Statut (success, error, warning) |
+| `ip_address` | String(45) | Adresse IP client |
+| `user_agent` | Text | User-Agent navigateur |
+| `browser` | String(50) | Navigateur |
+| `browser_version` | String(20) | Version navigateur |
+| `device_type` | String(20) | Type (desktop, mobile, tablet) |
+| `device_brand` | String(50) | Marque appareil |
+| `device_model` | String(50) | Modèle appareil |
+| `operating_system` | String(50) | Système d'exploitation |
+| `os_version` | String(20) | Version OS |
+| `request_method` | String(10) | Méthode HTTP |
+| `request_url` | Text | URL requête |
+| `request_referrer` | Text | URL provenance |
+| `created_at` | DateTime | Date création |
+
+### Consultation via Interface Admin
+
+**Route** : `/admin/settings/activity-logs`
+
+Fonctionnalités :
+- ✅ Consultation tous les logs
+- ✅ Filtres (utilisateur, type, catégorie, statut)
+- ✅ Recherche par mot-clé
+- ✅ Détails complets (IP, device, browser)
+- ✅ Export CSV/Excel
+- ✅ Statistiques et graphiques
+
+---
+
+## Middleware de Logging Automatique
+
+### Vue d'Ensemble
+
+Le **middleware** enregistre automatiquement toutes les consultations de pages et actions **sans intervention du développeur**.
+
+**Fichier** : `app/utils/activity_logger.py`
+
+### Fonctionnalités
+
+- ✅ Enregistrement automatique requêtes HTTP
+- ✅ Extraction informations client (IP, browser, device, OS)
+- ✅ Détection type d'appareil (desktop, mobile, tablet)
+- ✅ Gestion gracieuse erreurs (ne bloque jamais l'application)
+- ✅ Filtrage intelligent (ignore fichiers statiques)
+- ✅ Decorator personnalisé pour actions spécifiques
+
+### Initialisation
+
+Automatique au démarrage dans `app/__init__.py` :
+
+```python
+from app.utils.activity_logger import ActivityLogger
+
+@app.before_request
+def log_request():
+    if ActivityLogger._should_log_request():
+        try:
+            ActivityLogger._create_log_entry(
+                user=current_user if current_user.is_authenticated else None,
+                action_type='view',
+                action_category='page_view',
+                description=f"Consultation de {request.path}",
+                status='success'
+            )
+        except:
+            pass  # Ne jamais bloquer
+```
+
+### Decorator `@log_activity`
+
+Pour enregistrer actions spécifiques :
+
+```python
+from app.utils.activity_logger import log_activity
+
+@bp.route('/cinema/talents/new', methods=['POST'])
+@login_required
+@log_activity('create', 'cinema', 'CinemaTalent')
+def create_cinema_talent():
+    # Logique métier
+    talent = CinemaTalent(...)
+    db.session.add(talent)
+    db.session.commit()
+    
+    # Log créé automatiquement !
+    return redirect(url_for('cinema.talents'))
+```
+
+**Paramètres** :
+- `action_type` : Type d'action (`'create'`, `'update'`, `'delete'`, `'view'`)
+- `action_category` : Catégorie (`'cinema'`, `'production'`, `'project'`)
+- `resource_type` : Type de ressource (optionnel)
+
+### Extraction Informations Client
+
+Le middleware extrait automatiquement :
+
+```json
+{
+    "ip_address": "192.168.1.100",
+    "user_agent": "Mozilla/5.0...",
+    "browser": "Chrome",
+    "browser_version": "118.0.5993.88",
+    "device_type": "desktop",
+    "device_brand": "Apple",
+    "device_model": "Macintosh",
+    "operating_system": "Mac OS X",
+    "os_version": "10.15.7",
+    "request_method": "GET",
+    "request_url": "https://taalentio.com/cinema/talents",
+    "request_referrer": "https://taalentio.com/dashboard"
+}
+```
+
+---
+
+## Pages Légales Personnalisables
+
+### Vue d'Ensemble
+
+Système permettant de configurer et activer/désactiver les pages légales depuis l'interface admin.
+
+### Pages Disponibles
+
+| Page | Route | Description |
+|------|-------|-------------|
+| **CGU** | `/legal/terms` | Conditions Générales d'Utilisation |
+| **Confidentialité** | `/legal/privacy` | Politique de protection des données |
+| **À Propos** | `/about` | Présentation de la plateforme |
+| **Cookies** | `/legal/cookies` | Politique cookies |
+| **Mentions Légales** | `/legal/mentions` | Mentions légales obligatoires |
+
+### Configuration via AppSettings
+
+**Modèle** : `app/models/settings.py`
+
+Deux clés stockées :
+1. **`legal_pages_enabled`** (JSON) : Active/désactive chaque page
+2. **`legal_pages`** (JSON) : Contenu de chaque page
+
+#### Exemple `legal_pages_enabled`
+
+```json
+{
+    "terms": true,
+    "privacy": true,
+    "about": false,
+    "cookies": true,
+    "mentions": false
+}
+```
+
+### Routes et Logique
+
+**Fichier** : `app/routes/legal.py`
+
+Chaque route vérifie si la page est activée :
+
+```python
+@bp.route('/legal/terms')
+def terms():
+    """Conditions Générales d'Utilisation"""
+    legal_pages_enabled = AppSettings.get('legal_pages_enabled', {})
+    
+    # Si page non activée, retourner 404
+    if not legal_pages_enabled.get('terms', False):
+        abort(404)
+    
+    legal_pages = AppSettings.get('legal_pages', {})
+    content = legal_pages.get('terms_page', '')
+    
+    return render_template('legal/terms.html', content=content)
+```
+
+### Interface Admin
+
+**Route** : `/admin/settings/customization`
+
+Permet de :
+- ✅ Activer/Désactiver chaque page (checkbox)
+- ✅ Éditer le contenu (HTML/Markdown)
+- ✅ Prévisualiser avant publication
+- ✅ Sauvegarder modifications
+
+---
+
+## Système de Personnalisation du Footer
+
+### Vue d'Ensemble
+
+Personnalisation complète du footer incluant :
+- ✅ Texte personnalisé
+- ✅ Email et téléphone de contact
+- ✅ Liens vers 8 réseaux sociaux
+- ✅ Logo, favicon, image hero
+
+**Route Admin** : `/admin/settings/customization`
+
+### Configuration via AppSettings
+
+| Clé | Type | Description |
+|-----|------|-------------|
+| `footer_text` | String | Texte personnalisé du footer |
+| `footer_contact_email` | String | Email de contact |
+| `footer_contact_phone` | String | Téléphone de contact |
+| `social_links` | JSON | Liens réseaux sociaux |
+| `logo_url` | String | URL logo principal |
+| `favicon_url` | String | URL favicon |
+| `hero_image_url` | String | URL image hero |
+
+### Réseaux Sociaux Supportés
+
+```json
+{
+    "facebook": "https://facebook.com/votreprofil",
+    "instagram": "https://instagram.com/votreprofil",
+    "twitter": "https://twitter.com/votreprofil",
+    "linkedin": "https://linkedin.com/company/votreentreprise",
+    "tiktok": "https://tiktok.com/@votreprofil",
+    "youtube": "https://youtube.com/@votrechaine",
+    "whatsapp": "+212XXXXXXXXX",
+    "telegram": "https://t.me/votregroupe"
+}
+```
+
+### Sauvegarde
+
+**Routes** :
+- `/admin/settings/customization/save-footer` - Footer
+- `/admin/settings/customization/save-social-links` - Réseaux sociaux
+- `/admin/settings/customization/save-logo-images` - Images
+
+```python
+@bp.route('/settings/customization/save-footer', methods=['POST'])
+@login_required
+@admin_required
+def save_site_footer():
+    footer_text = request.form.get('footer_text', '').strip()
+    footer_contact_email = request.form.get('footer_contact_email', '').strip()
+    footer_contact_phone = request.form.get('footer_contact_phone', '').strip()
+    
+    AppSettings.set('footer_text', footer_text)
+    AppSettings.set('footer_contact_email', footer_contact_email)
+    AppSettings.set('footer_contact_phone', footer_contact_phone)
+    
+    flash('✅ Pied de page mis à jour', 'success')
+    return redirect(url_for('admin.settings_customization'))
+```
+
+---
+
+## Nouvelles Tables et Modèles
+
+### 1. AppSettings (`app/models/settings.py`)
+
+**Table** : `app_settings`
+
+Stocke tous les paramètres configurables de l'application.
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `id` | Integer | Clé primaire |
+| `key` | String(100) | Clé unique du paramètre |
+| `value` | Text (JSON) | Valeur (JSON pour objets/listes) |
+| `updated_at` | DateTime | Date dernière modification |
+
+**Méthodes** :
+
+```python
+# Récupérer
+value = AppSettings.get('key', default=None)
+
+# Définir
+AppSettings.set('key', value)
+
+# Supprimer
+AppSettings.delete('key')
+```
+
+### 2. SecurityLog (`app/models/security_log.py`)
+
+**Table** : `security_logs`
+
+Journal de sécurité pour événements sensibles.
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `id` | Integer | Clé primaire |
+| `user_id` | Integer | ID utilisateur (nullable) |
+| `event_type` | String(50) | Type (`login_failed`, `unauthorized_access`, etc.) |
+| `ip_address` | String(45) | Adresse IP |
+| `user_agent` | Text | User-Agent |
+| `details` | Text (JSON) | Détails supplémentaires |
+| `severity` | String(20) | Sévérité (`low`, `medium`, `high`, `critical`) |
+| `created_at` | DateTime | Date création |
+
+### 3. EmailLog (`app/models/email_log.py`)
+
+**Table** : `email_logs`
+
+Journal de tous les emails envoyés.
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `id` | Integer | Clé primaire |
+| `recipient` | String(150) | Email destinataire |
+| `subject` | String(200) | Sujet |
+| `template_type` | String(50) | Type template |
+| `status` | String(20) | Statut (`sent`, `failed`, `queued`) |
+| `error_message` | Text | Message d'erreur (si échec) |
+| `html_content` | Text | Contenu HTML |
+| `sent_at` | DateTime | Date envoi |
+
+**Types de templates** :
+- `talent_registration` - Inscription talent standard
+- `cinema_talent_registration` - Inscription talent cinéma
+- `ai_talent_match` - Résultats matching IA
+- `weekly_recap` - Récapitulatif hebdomadaire admin
+- `name_detection` - Détection de nom existant
+
+### 4. NameTracking (`app/models/name_tracking.py`)
+
+**Table** : `name_tracking`
+
+Suivi des noms pour détection de doublons.
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `id` | Integer | Clé primaire |
+| `first_name` | String(100) | Prénom normalisé |
+| `last_name` | String(100) | Nom normalisé |
+| `full_name` | String(200) | Nom complet normalisé |
+| `original_user_id` | Integer | ID premier utilisateur avec ce nom |
+| `count` | Integer | Nombre d'occurrences |
+| `created_at` | DateTime | Date première occurrence |
+| `updated_at` | DateTime | Date dernière mise à jour |
+
+### 5. NameTrackingMatch (`app/models/name_tracking.py`)
+
+**Table** : `name_tracking_matches`
+
+Correspondances de doublons de noms.
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| `id` | Integer | Clé primaire |
+| `tracking_id` | Integer | FK vers `name_tracking` |
+| `user_id` | Integer | FK vers `users` |
+| `similarity_score` | Float | Score similarité (0-1) |
+| `status` | String(20) | Statut (`pending`, `reviewed`, `ignored`) |
+| `created_at` | DateTime | Date détection |
+
+---
+
+## Service Email - Footer Personnalisé et Notification Admin
+
+### Footer Personnalisé des Emails
+
+**Service** : `app/services/email_service.py`
+
+Le footer des emails peut être configuré via AppSettings :
+
+```python
+footer_text = """
+© 2024 taalentio.com - Plateforme de valorisation des talents
+Ceci est un email automatique, merci de ne pas y répondre.
+
+Pour toute question : contact@taalentio.com
+"""
+
+AppSettings.set('email_footer', footer_text)
+```
+
+Le footer est automatiquement ajouté à tous les emails :
+
+```python
+def _get_email_footer(self):
+    """Récupère le pied de page configuré pour tous les emails"""
+    try:
+        from app.models.settings import AppSettings
+        footer_text = AppSettings.get('email_footer', 
+            '© 2024 taalentio.com\nCeci est un email automatique.')
+        
+        footer_html = footer_text.replace('\n', '<br>')
+        
+        return f"""
+        <div class="footer">
+            <p>{footer_html}</p>
+        </div>
+        """
+    except Exception as e:
+        # Fallback
+        return "<div class=\"footer\"><p>© 2024 taalentio.com</p></div>"
+```
+
+### Notification Admin
+
+Les emails de notification admin (récapitulatifs hebdomadaires, détections de doublons) sont envoyés à l'adresse configurée :
+
+```python
+# Récupérer l'email admin
+admin_email = AppSettings.get('admin_notification_email')
+
+# Si pas configuré, chercher le premier admin
+if not admin_email:
+    admin = User.query.filter_by(role='admin').first()
+    if admin:
+        admin_email = admin.email
+```
+
+**Configuration via Interface Admin** : `/admin/settings/email-notifications`
+
+---
+
 ## Support et Contribution
 
 ### Problèmes Connus

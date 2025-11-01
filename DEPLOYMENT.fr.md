@@ -102,6 +102,7 @@ ENCRYPTION_KEY=votre_encryption_key_base64
 # Configuration de l'application
 FLASK_ENV=production
 SKIP_AUTO_MIGRATION=0
+BASE_URL=https://votre-domaine.com
 
 # Configuration email (optionnel)
 MAIL_SERVER=smtp.gmail.com
@@ -109,6 +110,14 @@ MAIL_PORT=587
 MAIL_USE_TLS=True
 MAIL_USERNAME=votre_email@gmail.com
 MAIL_PASSWORD=votre_app_password
+
+# SendGrid (recommandé pour production)
+SENDGRID_API_KEY=votre_sendgrid_api_key
+SENDGRID_FROM_EMAIL=noreply@votre-domaine.com
+
+# IA et Services externes (optionnel)
+OPENROUTER_API_KEY=votre_openrouter_api_key
+OMDB_API_KEY=votre_omdb_api_key
 ```
 
 Pour générer les clés de sécurité :
@@ -273,33 +282,163 @@ sudo certbot renew --dry-run
 
 ## Scripts de migration et mise à jour
 
-### Script principal : `migrations_init.py`
+### Script principal (RECOMMANDÉ) : `init_full_database.py`
 
-**🎯 Utilisation principale :**
-- ✅ Première installation de l'application
-- ✅ Mise à jour de la structure de la base de données
-- ✅ Ajout de nouvelles tables sans écraser les données existantes
-- ✅ Ajout de nouvelles colonnes aux tables existantes
+**🎯 Script complet et intelligent d'initialisation et migration de la base de données**
+
+Le script `init_full_database.py` est le **script recommandé** pour toutes les opérations de base de données. Il offre des fonctionnalités avancées de migration, backup et rollback automatique.
+
+#### Fonctionnalités
+
+- ✅ **Création automatique** de toutes les tables manquantes
+- ✅ **Ajout intelligent** des colonnes manquantes (sans perte de données)
+- ✅ **Seeding** des données essentielles (pays, villes, talents, admin)
+- ✅ **Backup automatique** avant modifications critiques
+- ✅ **Rollback automatique** en cas d'erreur
+- ✅ **Logging détaillé** de toutes les opérations
+- ✅ **Mode dry-run** pour prévisualiser les changements
+- ✅ **Compatible** PostgreSQL et SQLite
+
+#### Usage
+
+```bash
+# Mode interactif (recommandé pour première utilisation)
+python init_full_database.py
+
+# Mode automatique (sans confirmation) - PRODUCTION
+python init_full_database.py --force
+
+# Mode dry-run (voir les changements sans les appliquer)
+python init_full_database.py --dry-run
+
+# Avec backup forcé avant toute opération
+python init_full_database.py --backup-first
+
+# Combinaison d'options (mode production sécurisé)
+python init_full_database.py --backup-first --force
+```
+
+#### Options disponibles
+
+| Option | Description |
+|--------|-------------|
+| `--force` | Passer les confirmations (mode non-interactif) |
+| `--backup-first` | Créer un backup avant toute opération |
+| `--dry-run` | Afficher les modifications sans les appliquer |
+| `--verbose, -v` | Afficher les logs détaillés |
+| `--help, -h` | Afficher l'aide complète |
+
+#### Exemples d'utilisation sur VPS
 
 ```bash
 # Exécution sur VPS Ubuntu/Gunicorn
 cd /home/talento/talentsmaroc
 source venv/bin/activate
-python3 migrations_init.py
+
+# Premier déploiement - Mode automatique avec backup
+python init_full_database.py --backup-first --force
+
+# Migration après mise à jour - Vérifier d'abord
+python init_full_database.py --dry-run
+
+# Si tout est OK, appliquer les migrations
+python init_full_database.py --force
 
 # Redémarrer Gunicorn après les migrations
 sudo systemctl restart talento
 ```
 
-**Ce que fait le script :**
-1. Vérifie toutes les tables requises
-2. Crée les tables manquantes (ne touche pas aux tables existantes)
-3. Ajoute les colonnes manquantes aux tables existantes
-4. Initialise les données essentielles (pays, villes, talents)
-5. Crée l'utilisateur admin si inexistant
-6. Génère les QR codes manquants
+#### Tables créées/gérées par le script
 
-### Script alternatif : `init_essential_data.py`
+Le script gère automatiquement **16 tables** :
+
+| Table | Description |
+|-------|-------------|
+| `users` | Utilisateurs de la plateforme |
+| `talents` | Types de talents disponibles |
+| `user_talents` | Association utilisateurs-talents |
+| `countries` | Pays (54 pays africains + monde) |
+| `cities` | Villes principales par pays |
+| `productions` | Sociétés de production cinéma |
+| `projects` | Projets de production |
+| `project_talents` | Assignation talents aux projets |
+| `cinema_talents` | Talents cinéma avec caractéristiques |
+| `attendances` | Gestion des présences |
+| `activity_logs` | **Journal d'activité** (nouveau) |
+| `security_logs` | **Journal de sécurité** (nouveau) |
+| `email_logs` | **Journal des emails** (nouveau) |
+| `app_settings` | **Paramètres système** (nouveau) |
+| `name_tracking` | **Suivi des noms** (doublons) |
+| `name_tracking_matches` | **Correspondances de doublons** |
+
+#### Sécurité et backups
+
+- Les **backups sont créés automatiquement** avant toute opération destructive
+- **Rollback automatique** en cas d'erreur pendant la migration
+- Données sensibles **chiffrées** (Fernet encryption)
+- **Confirmations** pour les opérations critiques (sauf mode `--force`)
+- **Logs détaillés** de toutes les opérations dans `operations_log`
+
+#### Script de migration pour VPS (Gunicorn)
+
+Créer un script de mise à jour complet pour VPS :
+
+```bash
+#!/bin/bash
+# update_database_vps.sh - Script de mise à jour base de données sur VPS
+
+set -e  # Arrêter en cas d'erreur
+
+echo "🔄 Mise à jour de la base de données Talento..."
+
+# Se placer dans le répertoire de l'application
+cd /home/talento/talentsmaroc
+
+# Activer l'environnement virtuel
+source venv/bin/activate
+
+# Sauvegarder la base de données PostgreSQL
+echo "💾 Sauvegarde de la base de données..."
+sudo -u postgres pg_dump talento_db > "backups/manual_backup_$(date +%Y%m%d_%H%M%S).sql"
+
+# Exécuter le script de migration avec backup automatique
+echo "🚀 Exécution des migrations..."
+python init_full_database.py --backup-first --force
+
+# Redémarrer Gunicorn
+echo "♻️ Redémarrage de Gunicorn..."
+sudo systemctl restart talento
+
+# Vérifier le statut
+echo "✅ Vérification du service..."
+sudo systemctl status talento --no-pager
+
+echo "✅ Mise à jour terminée avec succès !"
+```
+
+Rendre le script exécutable :
+
+```bash
+chmod +x update_database_vps.sh
+./update_database_vps.sh
+```
+
+### Script alternatif : `migrations_init.py`
+
+**🎯 Script legacy (utilisé avant init_full_database.py) :**
+- ✅ Première installation de l'application
+- ✅ Mise à jour de la structure de la base de données
+- ✅ Ajout de nouvelles tables sans écraser les données existantes
+
+**⚠️ Recommandation :** Utiliser `init_full_database.py` à la place.
+
+```bash
+cd /home/talento/talentsmaroc
+source venv/bin/activate
+python3 migrations_init.py
+```
+
+### Script : `init_essential_data.py`
 
 **🎯 Utilisation :**
 - ✅ Réinitialiser uniquement les données essentielles

@@ -387,10 +387,18 @@ def create_app(config_class=Config):
             from datetime import datetime
             custom_head_code = AppSettings.get('custom_head_code', '')
             footer_text = AppSettings.get('footer_text', '')
+            footer_contact_email = AppSettings.get('footer_contact_email', '')
+            footer_contact_phone = AppSettings.get('footer_contact_phone', '')
+            social_links = AppSettings.get('social_links', {})
+            legal_pages_enabled = AppSettings.get('legal_pages_enabled', {})
             current_year = datetime.now().year
             return {
                 'CUSTOM_HEAD_CODE': custom_head_code,
                 'FOOTER_TEXT': footer_text,
+                'FOOTER_CONTACT_EMAIL': footer_contact_email,
+                'FOOTER_CONTACT_PHONE': footer_contact_phone,
+                'SOCIAL_LINKS': social_links,
+                'LEGAL_PAGES_ENABLED': legal_pages_enabled,
                 'current_year': current_year
             }
         except Exception:
@@ -398,10 +406,14 @@ def create_app(config_class=Config):
             return {
                 'CUSTOM_HEAD_CODE': '',
                 'FOOTER_TEXT': '',
+                'FOOTER_CONTACT_EMAIL': '',
+                'FOOTER_CONTACT_PHONE': '',
+                'SOCIAL_LINKS': {},
+                'LEGAL_PAGES_ENABLED': {},
                 'current_year': datetime.now().year
             }
     
-    from app.routes import auth, profile, admin, main, api, cinema, presence
+    from app.routes import auth, profile, admin, main, api, cinema, presence, legal
     from app.routes import api_v1
     app.register_blueprint(auth.bp)
     app.register_blueprint(profile.bp)
@@ -410,10 +422,15 @@ def create_app(config_class=Config):
     app.register_blueprint(api.bp)
     app.register_blueprint(cinema.bp)
     app.register_blueprint(presence.bp)
+    app.register_blueprint(legal.bp)
     app.register_blueprint(api_v1.bp)
     
     # Exemption CSRF pour toutes les routes API v1
     csrf.exempt(api_v1.bp)
+    
+    # Initialiser le middleware de logging automatique des activités
+    from app.utils.activity_logger import init_activity_logging_middleware
+    init_activity_logging_middleware(app)
     
     # Désactiver le cache pour éviter les problèmes avec les mises à jour
     @app.after_request

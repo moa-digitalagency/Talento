@@ -5,6 +5,80 @@
             {{ FOOTER_TEXT }}
         </div>
         {% endif %}
+        
+        {% if FOOTER_CONTACT_EMAIL or FOOTER_CONTACT_PHONE %}
+        <div class="text-center text-gray-500 text-sm mb-3">
+            {% if FOOTER_CONTACT_EMAIL %}📧 {{ FOOTER_CONTACT_EMAIL }}{% endif %}
+            {% if FOOTER_CONTACT_EMAIL and FOOTER_CONTACT_PHONE %} | {% endif %}
+            {% if FOOTER_CONTACT_PHONE %}📞 {{ FOOTER_CONTACT_PHONE }}{% endif %}
+        </div>
+        {% endif %}
+        
+        {% if LEGAL_PAGES_ENABLED and (LEGAL_PAGES_ENABLED.about or LEGAL_PAGES_ENABLED.terms or LEGAL_PAGES_ENABLED.privacy or LEGAL_PAGES_ENABLED.cookies or LEGAL_PAGES_ENABLED.mentions) %}
+        <div class="flex flex-wrap justify-center gap-4 mb-3 text-sm">
+            {% if LEGAL_PAGES_ENABLED.about %}
+            <a href="{{ url_for('legal.about') }}" class="text-blue-600 hover:underline">À propos</a>
+            {% endif %}
+            {% if LEGAL_PAGES_ENABLED.terms %}
+            <a href="{{ url_for('legal.terms') }}" class="text-blue-600 hover:underline">CGU</a>
+            {% endif %}
+            {% if LEGAL_PAGES_ENABLED.privacy %}
+            <a href="{{ url_for('legal.privacy') }}" class="text-blue-600 hover:underline">Confidentialité</a>
+            {% endif %}
+            {% if LEGAL_PAGES_ENABLED.cookies %}
+            <a href="{{ url_for('legal.cookies') }}" class="text-blue-600 hover:underline">Cookies</a>
+            {% endif %}
+            {% if LEGAL_PAGES_ENABLED.mentions %}
+            <a href="{{ url_for('legal.mentions') }}" class="text-blue-600 hover:underline">Mentions légales</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        {% if SOCIAL_LINKS and (SOCIAL_LINKS.facebook or SOCIAL_LINKS.instagram or SOCIAL_LINKS.twitter or SOCIAL_LINKS.linkedin or SOCIAL_LINKS.tiktok or SOCIAL_LINKS.youtube or SOCIAL_LINKS.whatsapp or SOCIAL_LINKS.telegram) %}
+        <div class="flex flex-wrap justify-center gap-4 mb-3">
+            {% if SOCIAL_LINKS.facebook %}
+            <a href="{{ SOCIAL_LINKS.facebook }}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 transition-colors" title="Facebook">
+                <span class="text-xl">📘</span>
+            </a>
+            {% endif %}
+            {% if SOCIAL_LINKS.instagram %}
+            <a href="{{ SOCIAL_LINKS.instagram }}" target="_blank" rel="noopener noreferrer" class="text-pink-600 hover:text-pink-800 transition-colors" title="Instagram">
+                <span class="text-xl">📷</span>
+            </a>
+            {% endif %}
+            {% if SOCIAL_LINKS.twitter %}
+            <a href="{{ SOCIAL_LINKS.twitter }}" target="_blank" rel="noopener noreferrer" class="text-sky-600 hover:text-sky-800 transition-colors" title="Twitter/X">
+                <span class="text-xl">🐦</span>
+            </a>
+            {% endif %}
+            {% if SOCIAL_LINKS.linkedin %}
+            <a href="{{ SOCIAL_LINKS.linkedin }}" target="_blank" rel="noopener noreferrer" class="text-blue-700 hover:text-blue-900 transition-colors" title="LinkedIn">
+                <span class="text-xl">💼</span>
+            </a>
+            {% endif %}
+            {% if SOCIAL_LINKS.tiktok %}
+            <a href="{{ SOCIAL_LINKS.tiktok }}" target="_blank" rel="noopener noreferrer" class="text-gray-800 hover:text-black transition-colors" title="TikTok">
+                <span class="text-xl">🎵</span>
+            </a>
+            {% endif %}
+            {% if SOCIAL_LINKS.youtube %}
+            <a href="{{ SOCIAL_LINKS.youtube }}" target="_blank" rel="noopener noreferrer" class="text-red-600 hover:text-red-800 transition-colors" title="YouTube">
+                <span class="text-xl">📺</span>
+            </a>
+            {% endif %}
+            {% if SOCIAL_LINKS.whatsapp %}
+            <a href="https://wa.me/{{ SOCIAL_LINKS.whatsapp|replace('+','')|replace(' ','') }}" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-800 transition-colors" title="WhatsApp">
+                <span class="text-xl">📱</span>
+            </a>
+            {% endif %}
+            {% if SOCIAL_LINKS.telegram %}
+            <a href="{{ SOCIAL_LINKS.telegram }}" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:text-blue-700 transition-colors" title="Telegram">
+                <span class="text-xl">💬</span>
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
         <p class="text-center text-gray-500 text-sm">
             &copy; {{ current_year or 2024 }} taalentio.com. Tous droits réservés.
         </p>

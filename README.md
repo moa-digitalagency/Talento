@@ -690,6 +690,10 @@ SECRET_KEY=votre-cle-secrete-super-longue-et-aleatoire
 DATABASE_URL=postgresql://user:password@localhost:5432/talentsmaroc
 ENCRYPTION_KEY=votre-cle-de-chiffrement-32-bytes-base64
 
+# Configuration de l'application
+SKIP_AUTO_MIGRATION=0  # 0 = activer migrations auto, 1 = désactiver
+BASE_URL=https://votre-domaine.com  # URL publique de l'application
+
 # Optionnelles (configurables via l'interface admin)
 SENDGRID_API_KEY=SG.votre-cle-sendgrid
 SENDGRID_FROM_EMAIL=noreply@talentsmaroc.com
@@ -706,19 +710,40 @@ print(Fernet.generate_key().decode())
 
 ### Initialisation de la Base de Données
 
+**⚡ Script Recommandé** : `init_full_database.py` (complet et intelligent)
+
 ```bash
-# Créer les tables et insérer les données de démonstration
-python migrations_init.py
+# Mode automatique avec backup (PRODUCTION)
+python init_full_database.py --backup-first --force
+
+# Mode interactif (DÉVELOPPEMENT)
+python init_full_database.py
+
+# Mode dry-run (voir les changements sans les appliquer)
+python init_full_database.py --dry-run
 ```
 
-**Cette commande** :
-1. Crée toutes les tables
-2. Charge les 54 pays africains
+**Ce script offre** :
+- ✅ **Création automatique** de toutes les tables manquantes
+- ✅ **Ajout intelligent** des colonnes manquantes (sans perte de données)
+- ✅ **Backup automatique** avant modifications critiques
+- ✅ **Rollback automatique** en cas d'erreur
+- ✅ **Logging détaillé** de toutes les opérations
+- ✅ **Compatible** PostgreSQL et SQLite
+
+**Tables créées** (16 au total) :
+1. Crée toutes les tables nécessaires
+2. Charge les 54 pays africains + monde entier
 3. Charge les villes principales
 4. Crée le compte administrateur
-5. Crée 5 comptes utilisateurs de démonstration
-6. Crée 3 talents CINEMA de démonstration
-7. Crée 2 boîtes de production de démonstration
+5. Initialise les paramètres système (AppSettings)
+6. Crée les logs d'activité, sécurité et emails
+7. Configure le tracking des noms (détection doublons)
+
+**Script alternatif** : `migrations_init.py` (legacy)
+```bash
+python migrations_init.py
+```
 
 ### Lancement de l'Application
 

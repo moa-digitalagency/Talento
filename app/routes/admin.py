@@ -663,55 +663,70 @@ def settings_email_notifications():
     # Configuration des templates email (enabled/disabled)
     email_config = AppSettings.get('email_notifications_config', {})
     
+    # Configuration CC admin
+    email_cc_admin = AppSettings.get('email_cc_admin', {})
+    
     # Templates disponibles avec leur configuration par défaut
     if not isinstance(email_config, dict):
         email_config = {}
+    
+    if not isinstance(email_cc_admin, dict):
+        email_cc_admin = {}
     
     available_templates = {
         'talent_registration': {
             'name': 'Inscription Talent',
             'description': 'Email envoyé après l\'inscription d\'un nouveau talent',
-            'enabled': email_config.get('talent_registration', {}).get('enabled', True) if isinstance(email_config.get('talent_registration'), dict) else True
+            'enabled': email_config.get('talent_registration', {}).get('enabled', True) if isinstance(email_config.get('talent_registration'), dict) else True,
+            'cc_admin': email_cc_admin.get('talent_registration', False)
         },
         'cinema_talent_registration': {
             'name': 'Inscription Talent Cinéma',
             'description': 'Email envoyé après l\'inscription d\'un nouveau talent cinéma',
-            'enabled': email_config.get('cinema_talent_registration', {}).get('enabled', True) if isinstance(email_config.get('cinema_talent_registration'), dict) else True
+            'enabled': email_config.get('cinema_talent_registration', {}).get('enabled', True) if isinstance(email_config.get('cinema_talent_registration'), dict) else True,
+            'cc_admin': email_cc_admin.get('cinema_talent_registration', False)
         },
         'ai_talent_match': {
             'name': 'Match IA - Talents',
             'description': 'Notification envoyée aux talents lorsque leur profil correspond à une recherche IA',
-            'enabled': email_config.get('ai_talent_match', {}).get('enabled', True) if isinstance(email_config.get('ai_talent_match'), dict) else True
+            'enabled': email_config.get('ai_talent_match', {}).get('enabled', True) if isinstance(email_config.get('ai_talent_match'), dict) else True,
+            'cc_admin': email_cc_admin.get('ai_talent_match', False)
         },
         'ai_cinema_match': {
             'name': 'Match IA - Cinéma',
             'description': 'Notification envoyée aux talents cinéma lorsque leur profil correspond à un rôle',
-            'enabled': email_config.get('ai_cinema_match', {}).get('enabled', True) if isinstance(email_config.get('ai_cinema_match'), dict) else True
+            'enabled': email_config.get('ai_cinema_match', {}).get('enabled', True) if isinstance(email_config.get('ai_cinema_match'), dict) else True,
+            'cc_admin': email_cc_admin.get('ai_cinema_match', False)
         },
         'project_selection': {
             'name': 'Sélection Projet',
             'description': 'Email de confirmation envoyé aux talents sélectionnés pour un projet',
-            'enabled': email_config.get('project_selection', {}).get('enabled', True) if isinstance(email_config.get('project_selection'), dict) else True
+            'enabled': email_config.get('project_selection', {}).get('enabled', True) if isinstance(email_config.get('project_selection'), dict) else True,
+            'cc_admin': email_cc_admin.get('project_selection', False)
         },
         'login_credentials': {
             'name': 'Identifiants de Connexion',
             'description': 'Email contenant les identifiants de connexion',
-            'enabled': email_config.get('login_credentials', {}).get('enabled', True) if isinstance(email_config.get('login_credentials'), dict) else True
+            'enabled': email_config.get('login_credentials', {}).get('enabled', True) if isinstance(email_config.get('login_credentials'), dict) else True,
+            'cc_admin': email_cc_admin.get('login_credentials', False)
         },
         'weekly_recap_talents': {
             'name': 'Récapitulatif Hebdomadaire - Talents',
             'description': 'Email récapitulatif des nouvelles inscriptions de talents envoyé chaque dimanche',
-            'enabled': email_config.get('weekly_recap_talents', {}).get('enabled', True) if isinstance(email_config.get('weekly_recap_talents'), dict) else True
+            'enabled': email_config.get('weekly_recap_talents', {}).get('enabled', True) if isinstance(email_config.get('weekly_recap_talents'), dict) else True,
+            'cc_admin': email_cc_admin.get('weekly_recap_talents', False)
         },
         'weekly_recap_cinema': {
             'name': 'Récapitulatif Hebdomadaire - Talents Cinéma',
             'description': 'Email récapitulatif des nouvelles inscriptions de talents cinéma envoyé chaque dimanche',
-            'enabled': email_config.get('weekly_recap_cinema', {}).get('enabled', True) if isinstance(email_config.get('weekly_recap_cinema'), dict) else True
+            'enabled': email_config.get('weekly_recap_cinema', {}).get('enabled', True) if isinstance(email_config.get('weekly_recap_cinema'), dict) else True,
+            'cc_admin': email_cc_admin.get('weekly_recap_cinema', False)
         },
         'name_detection': {
             'name': 'Détection de Nom',
             'description': 'Email de notification lors de la détection d\'un nom existant dans le système',
-            'enabled': email_config.get('name_detection', {}).get('enabled', True) if isinstance(email_config.get('name_detection'), dict) else True
+            'enabled': email_config.get('name_detection', {}).get('enabled', True) if isinstance(email_config.get('name_detection'), dict) else True,
+            'cc_admin': email_cc_admin.get('name_detection', False)
         }
     }
     
@@ -777,6 +792,26 @@ def toggle_email_notification(template_type):
     
     return redirect(url_for('admin.settings_email_notifications'))
 
+@bp.route('/settings/email-notifications/toggle-cc-admin/<template_type>', methods=['POST'])
+@login_required
+@admin_required
+def toggle_email_cc_admin(template_type):
+    """Activer/désactiver la copie admin pour un type de notification email"""
+    # Récupérer les paramètres actuels
+    email_cc_admin = AppSettings.get('email_cc_admin', {})
+    
+    # Toggle la valeur pour ce template
+    current_value = email_cc_admin.get(template_type, False)
+    email_cc_admin[template_type] = not current_value
+    
+    # Sauvegarder
+    AppSettings.set('email_cc_admin', email_cc_admin)
+    
+    status = "activée" if email_cc_admin[template_type] else "désactivée"
+    flash(f'✅ Copie admin {status} pour {template_type}', 'success')
+    
+    return redirect(url_for('admin.settings_email_notifications'))
+
 @bp.route('/settings/email-notifications/<int:log_id>/view')
 @login_required
 @admin_required
@@ -809,6 +844,13 @@ def settings_customization():
     
     # Legal pages
     legal_pages = AppSettings.get('legal_pages', {})
+    legal_pages_enabled = AppSettings.get('legal_pages_enabled', {
+        'terms': False,
+        'privacy': False,
+        'about': False,
+        'cookies': False,
+        'mentions': False
+    })
     
     return render_template('admin/settings/customization.html',
                          footer_text=footer_text,
@@ -819,6 +861,7 @@ def settings_customization():
                          hero_image_url=hero_image_url,
                          social_links=social_links,
                          legal_pages=legal_pages,
+                         legal_pages_enabled=legal_pages_enabled,
                          current_year=datetime.now().year)
 
 @bp.route('/settings/customization/save-footer', methods=['POST'])
@@ -933,8 +976,18 @@ def save_legal_pages():
         'hosting_phone': request.form.get('hosting_phone', '').strip()
     }
     
+    # Options d'activation des pages
+    legal_pages_enabled = {
+        'terms': request.form.get('enable_terms') == '1',
+        'privacy': request.form.get('enable_privacy') == '1',
+        'about': request.form.get('enable_about') == '1',
+        'cookies': request.form.get('enable_cookies') == '1',
+        'mentions': request.form.get('enable_mentions') == '1'
+    }
+    
     # Sauvegarder
     AppSettings.set('legal_pages', legal_pages)
+    AppSettings.set('legal_pages_enabled', legal_pages_enabled)
     
     flash('✅ Pages légales mises à jour avec succès', 'success')
     return redirect(url_for('admin.settings_customization'))

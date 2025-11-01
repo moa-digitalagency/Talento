@@ -254,10 +254,6 @@ def admin_dashboard():
                          top_talents=top_talents,
                          top_morocco_cities=top_morocco_cities)
 
-@bp.route('/about')
-def about():
-    return render_template('about.html')
-
 @bp.route('/contrats')
 @login_required
 def contrats():

@@ -293,11 +293,19 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 
                 <!-- CGU -->
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <span>📜</span>
-                        <span>Conditions Générales d'Utilisation (CGU)</span>
-                    </label>
+                <div class="mb-6 border-2 border-dashed border-blue-300 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                            <span>📜</span>
+                            <span>Conditions Générales d'Utilisation (CGU)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <span class="text-sm text-gray-600">Activer cette page</span>
+                            <input type="checkbox" name="enable_terms" value="1" 
+                                   {% if legal_pages_enabled.terms %}checked{% endif %}
+                                   class="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500">
+                        </label>
+                    </div>
                     <textarea name="terms_of_service" rows="8" 
                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none font-mono text-sm"
                               placeholder="Entrez vos conditions générales d'utilisation...">{{ legal_pages.terms_of_service or '' }}</textarea>
@@ -305,11 +313,19 @@
                 </div>
 
                 <!-- Politique de confidentialité -->
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <span>🔒</span>
-                        <span>Politique de Confidentialité</span>
-                    </label>
+                <div class="mb-6 border-2 border-dashed border-green-300 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                            <span>🔒</span>
+                            <span>Politique de Confidentialité</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <span class="text-sm text-gray-600">Activer cette page</span>
+                            <input type="checkbox" name="enable_privacy" value="1" 
+                                   {% if legal_pages_enabled.privacy %}checked{% endif %}
+                                   class="w-5 h-5 text-green-600 border-2 border-gray-300 rounded focus:ring-green-500">
+                        </label>
+                    </div>
                     <textarea name="privacy_policy" rows="8" 
                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none font-mono text-sm"
                               placeholder="Entrez votre politique de confidentialité...">{{ legal_pages.privacy_policy or '' }}</textarea>
@@ -317,11 +333,19 @@
                 </div>
 
                 <!-- À propos -->
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <span>ℹ️</span>
-                        <span>À Propos</span>
-                    </label>
+                <div class="mb-6 border-2 border-dashed border-purple-300 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                            <span>ℹ️</span>
+                            <span>À Propos</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <span class="text-sm text-gray-600">Activer cette page</span>
+                            <input type="checkbox" name="enable_about" value="1" 
+                                   {% if legal_pages_enabled.about %}checked{% endif %}
+                                   class="w-5 h-5 text-purple-600 border-2 border-gray-300 rounded focus:ring-purple-500">
+                        </label>
+                    </div>
                     <textarea name="about_page" rows="6" 
                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none font-mono text-sm"
                               placeholder="Présentez votre entreprise, votre mission, vos valeurs...">{{ legal_pages.about_page or '' }}</textarea>
@@ -329,11 +353,19 @@
                 </div>
 
                 <!-- Politique de cookies -->
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <span>🍪</span>
-                        <span>Politique de Cookies</span>
-                    </label>
+                <div class="mb-6 border-2 border-dashed border-orange-300 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                            <span>🍪</span>
+                            <span>Politique de Cookies</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <span class="text-sm text-gray-600">Activer cette page</span>
+                            <input type="checkbox" name="enable_cookies" value="1" 
+                                   {% if legal_pages_enabled.cookies %}checked{% endif %}
+                                   class="w-5 h-5 text-orange-600 border-2 border-gray-300 rounded focus:ring-orange-500">
+                        </label>
+                    </div>
                     <textarea name="cookie_policy" rows="6" 
                               class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none font-mono text-sm"
                               placeholder="Expliquez l'utilisation des cookies sur votre site...">{{ legal_pages.cookie_policy or '' }}</textarea>
@@ -341,11 +373,19 @@
                 </div>
 
                 <!-- Mentions légales -->
-                <div class="mb-6">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <span>⚖️</span>
-                        <span>Mentions Légales</span>
-                    </label>
+                <div class="mb-6 border-2 border-dashed border-red-300 rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-3">
+                        <label class="block text-sm font-semibold text-gray-700 flex items-center gap-2">
+                            <span>⚖️</span>
+                            <span>Mentions Légales</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <span class="text-sm text-gray-600">Activer cette page</span>
+                            <input type="checkbox" name="enable_mentions" value="1" 
+                                   {% if legal_pages_enabled.mentions %}checked{% endif %}
+                                   class="w-5 h-5 text-red-600 border-2 border-gray-300 rounded focus:ring-red-500">
+                        </label>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                         <div>
                             <label class="block text-xs font-medium text-gray-600 mb-1">Raison sociale</label>

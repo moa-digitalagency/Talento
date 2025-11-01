@@ -80,26 +80,40 @@
     
     <div class="space-y-3">
         {% for template_id, template_info in available_templates.items() %}
-        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <div class="flex-1">
-                <p class="font-semibold text-gray-800">{{ template_info.name }}</p>
-                <p class="text-sm text-gray-600">{{ template_info.description }}</p>
+        <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex-1">
+                    <p class="font-semibold text-gray-800">{{ template_info.name }}</p>
+                    <p class="text-sm text-gray-600">{{ template_info.description }}</p>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{{ url_for('admin.view_email_template', template_type=template_id) }}" 
+                       target="_blank"
+                       class="btn-primary">
+                        👁️ Voir le Template
+                    </a>
+                    <form method="POST" action="{{ url_for('admin.toggle_email_notification', template_type=template_id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn-primary">
+                            {% if template_info.enabled %}
+                            ✅ Activé - Cliquer pour désactiver
+                            {% else %}
+                            ❌ Désactivé - Cliquer pour activer
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
             </div>
-            <div class="flex gap-2">
-                <a href="{{ url_for('admin.view_email_template', template_type=template_id) }}" 
-                   target="_blank"
-                   class="btn-primary">
-                    👁️ Voir le Template
-                </a>
-                <form method="POST" action="{{ url_for('admin.toggle_email_notification', template_type=template_id) }}">
+            <div class="border-t border-gray-300 pt-3">
+                <form method="POST" action="{{ url_for('admin.toggle_email_cc_admin', template_type=template_id) }}" class="inline">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit" class="btn-primary">
-                        {% if template_info.enabled %}
-                        ✅ Activé - Cliquer pour désactiver
-                        {% else %}
-                        ❌ Désactivé - Cliquer pour activer
-                        {% endif %}
-                    </button>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" 
+                               {% if template_info.cc_admin %}checked{% endif %}
+                               onchange="this.form.submit()"
+                               class="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500">
+                        <span class="text-sm text-gray-700">📧 Mettre l'admin en copie lors de l'envoi</span>
+                    </label>
                 </form>
             </div>
         </div>

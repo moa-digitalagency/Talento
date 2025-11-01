@@ -95,6 +95,39 @@ class EmailService:
             </div>
             """
     
+    def _should_cc_admin(self, template_type):
+        """
+        Vérifie si l'admin doit recevoir une copie de cet email
+        
+        Args:
+            template_type: Type de template email
+        
+        Returns:
+            bool: True si l'admin doit recevoir une copie
+        """
+        try:
+            from app.models.settings import AppSettings
+            email_cc_admin = AppSettings.get('email_cc_admin', {})
+            return email_cc_admin.get(template_type, False)
+        except:
+            return False
+    
+    def _get_admin_email(self):
+        """
+        Récupère l'email de l'administrateur
+        
+        Returns:
+            str: Email de l'administrateur
+        """
+        try:
+            from app.models.settings import AppSettings
+            admin_email = AppSettings.get('admin_email')
+            if not admin_email:
+                admin_email = os.environ.get('ADMIN_EMAIL', 'admin@talento.com')
+            return admin_email
+        except:
+            return os.environ.get('ADMIN_EMAIL', 'admin@talento.com')
+    
     def get_template_preview(self, template_type, data):
         """
         Génère un aperçu HTML d'un template email
@@ -798,6 +831,13 @@ class EmailService:
                 subject=subject,
                 html_content=html_content
             )
+            
+            # Ajouter BCC pour l'admin si configuré
+            if self._should_cc_admin(template_type):
+                admin_email = self._get_admin_email()
+                if admin_email and admin_email != to_email:
+                    message.add_bcc(admin_email)
+                    print(f"📬 BCC ajouté pour admin: {admin_email}")
             
             if attachments:
                 for att in attachments:

@@ -5,6 +5,251 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0] - 2025-11-01
+
+### 📚 Documentation Complète et Nouvelles Fonctionnalités
+
+#### 🎯 Système de Logs d'Activité Amélioré
+
+**Nouvelle Table** : `activity_logs`
+
+- **Enregistrement automatique** de toutes les actions utilisateurs
+- **Informations détaillées** : IP, browser, device, OS, version
+- **Catégorisation** : 10+ types d'actions (create, update, delete, view, login, etc.)
+- **Catégories** : auth, cinema, production, project, talent, settings, admin
+- **Interface admin** : `/admin/settings/activity-logs`
+  - Filtres (utilisateur, type, catégorie, statut)
+  - Recherche par mot-clé
+  - Export CSV/Excel
+  - Statistiques et graphiques
+
+**Colonnes principales** :
+- Informations utilisateur (ID, nom, email, code)
+- Type et catégorie d'action
+- Ressource concernée (type, ID)
+- Statut (success, error, warning)
+- Informations client (IP, browser, device, OS)
+- Requête HTTP (méthode, URL, referrer)
+
+#### 🔧 Middleware de Logging Automatique
+
+**Fichier** : `app/utils/activity_logger.py`
+
+- ✅ **Enregistrement automatique** de toutes les requêtes HTTP
+- ✅ **Extraction automatique** des informations client (IP, browser, device, OS)
+- ✅ **Détection du type d'appareil** (desktop, mobile, tablet)
+- ✅ **Gestion gracieuse des erreurs** (ne bloque jamais l'application)
+- ✅ **Filtrage intelligent** (ignore fichiers statiques)
+- ✅ **Decorator `@log_activity`** pour actions spécifiques
+
+**Utilisation du decorator** :
+```python
+@log_activity('create', 'cinema', 'CinemaTalent')
+def create_cinema_talent():
+    # Le log est créé automatiquement
+    ...
+```
+
+#### 📝 Pages Légales Personnalisables
+
+**Fichier** : `app/routes/legal.py`
+
+5 pages configurables depuis l'interface admin :
+- ✅ **CGU** (`/legal/terms`) - Conditions Générales d'Utilisation
+- ✅ **Confidentialité** (`/legal/privacy`) - Politique de protection des données
+- ✅ **À Propos** (`/about`) - Présentation de la plateforme
+- ✅ **Cookies** (`/legal/cookies`) - Politique d'utilisation des cookies
+- ✅ **Mentions Légales** (`/legal/mentions`) - Mentions légales obligatoires
+
+**Fonctionnalités** :
+- Activation/Désactivation individuelle de chaque page
+- Édition du contenu (HTML/Markdown)
+- Prévisualisation avant publication
+- Configuration via `/admin/settings/customization`
+- Stockage dans AppSettings (`legal_pages`, `legal_pages_enabled`)
+
+#### 🎨 Système de Personnalisation du Footer
+
+**Route Admin** : `/admin/settings/customization`
+
+**Personnalisation complète** :
+- ✅ **Texte personnalisé** du footer
+- ✅ **Email de contact** principal
+- ✅ **Téléphone de contact**
+- ✅ **8 réseaux sociaux** : Facebook, Instagram, Twitter, LinkedIn, TikTok, YouTube, WhatsApp, Telegram
+- ✅ **Logo principal** (upload ou URL)
+- ✅ **Favicon** (upload ou URL)
+- ✅ **Image hero** (upload ou URL)
+
+**Routes de sauvegarde** :
+- `/admin/settings/customization/save-footer` - Texte et contact
+- `/admin/settings/customization/save-social-links` - Réseaux sociaux
+- `/admin/settings/customization/save-logo-images` - Images
+
+**Stockage** : AppSettings (`footer_text`, `footer_contact_email`, `footer_contact_phone`, `social_links`, `logo_url`, `favicon_url`, `hero_image_url`)
+
+#### 📧 Service Email - Footer Personnalisé
+
+**Fichier** : `app/services/email_service.py`
+
+- ✅ **Footer personnalisé** pour tous les emails
+- ✅ Configuration via AppSettings (`email_footer`)
+- ✅ **Email admin configurable** (`admin_notification_email`)
+- ✅ Fallback automatique si non configuré
+
+**Utilisation** :
+```python
+AppSettings.set('email_footer', 'Texte du footer...')
+AppSettings.set('admin_notification_email', 'admin@talento.com')
+```
+
+#### 🗄️ Nouvelles Tables et Modèles
+
+**1. AppSettings** (`app/models/settings.py`)
+- Table : `app_settings`
+- Stocke tous les paramètres configurables
+- Méthodes : `get()`, `set()`, `delete()`
+- Valeurs JSON supportées
+
+**2. SecurityLog** (`app/models/security_log.py`)
+- Table : `security_logs`
+- Journal de sécurité pour événements sensibles
+- Types : login_failed, unauthorized_access, password_changed, etc.
+- Sévérité : low, medium, high, critical
+
+**3. EmailLog** (`app/models/email_log.py`)
+- Table : `email_logs`
+- Journal de tous les emails envoyés
+- Statuts : sent, failed, queued
+- Stockage du contenu HTML
+
+**4. NameTracking** (`app/models/name_tracking.py`)
+- Table : `name_tracking`
+- Suivi des noms pour détection de doublons
+- Normalisation des noms (prénom + nom)
+
+**5. NameTrackingMatch** (`app/models/name_tracking.py`)
+- Table : `name_tracking_matches`
+- Correspondances de doublons de noms
+- Score de similarité (0-1)
+- Statuts : pending, reviewed, ignored
+
+#### 🛠️ Script d'Initialisation Complet
+
+**Fichier** : `init_full_database.py`
+
+**Script recommandé** pour toutes les opérations de base de données :
+
+- ✅ **Création automatique** de toutes les tables manquantes (16 tables)
+- ✅ **Ajout intelligent** des colonnes manquantes (sans perte de données)
+- ✅ **Seeding** des données essentielles (pays, villes, talents, admin)
+- ✅ **Backup automatique** avant modifications critiques
+- ✅ **Rollback automatique** en cas d'erreur
+- ✅ **Logging détaillé** de toutes les opérations
+- ✅ **Mode dry-run** pour prévisualiser les changements
+- ✅ **Compatible** PostgreSQL et SQLite
+
+**Options disponibles** :
+```bash
+# Mode automatique (production)
+python init_full_database.py --force
+
+# Avec backup forcé
+python init_full_database.py --backup-first --force
+
+# Mode dry-run
+python init_full_database.py --dry-run
+
+# Mode verbose
+python init_full_database.py --verbose
+```
+
+**Tables gérées** : users, talents, user_talents, countries, cities, productions, projects, project_talents, cinema_talents, attendances, activity_logs, security_logs, email_logs, app_settings, name_tracking, name_tracking_matches
+
+#### 📖 Documentation Mise à Jour
+
+**DEPLOYMENT.fr.md** :
+- ✅ Section complète sur `init_full_database.py` avec exemples
+- ✅ Script de mise à jour pour VPS (`update_database_vps.sh`)
+- ✅ Nouvelles variables d'environnement (`SKIP_AUTO_MIGRATION`, `BASE_URL`)
+- ✅ Guide complet de migration avec backup/rollback
+
+**TECHNICAL_DOCUMENTATION.md** (docs/) :
+- ✅ Système de logs d'activité amélioré (table, middleware, usage)
+- ✅ Middleware de logging automatique (decorator, extraction client)
+- ✅ Pages légales personnalisables (configuration, routes, admin)
+- ✅ Système de personnalisation du footer (réseaux sociaux, images)
+- ✅ Nouvelles tables et modèles (5 nouveaux modèles documentés)
+- ✅ Service Email avec footer personnalisé et notification admin
+
+**README.md** :
+- ✅ Variables d'environnement mises à jour (`SKIP_AUTO_MIGRATION`, `BASE_URL`)
+- ✅ Section `init_full_database.py` avec options et exemples
+- ✅ Tables créées (16 au total) avec descriptions
+
+#### 🔧 Nouvelles Variables d'Environnement
+
+| Variable | Type | Description | Défaut |
+|----------|------|-------------|--------|
+| `SKIP_AUTO_MIGRATION` | Integer | 0 = activer migrations auto, 1 = désactiver | `0` |
+| `BASE_URL` | String | URL publique de l'application | - |
+
+#### 🎯 Améliorations Système
+
+- **Journalisation complète** : Tous les logs (activité, sécurité, emails) centralisés
+- **Personnalisation totale** : Footer, pages légales, réseaux sociaux configurables
+- **Migration intelligente** : Script complet avec backup, rollback et dry-run
+- **Gestion des erreurs** : Middleware gracieux qui ne bloque jamais l'application
+- **Détection de doublons** : Système de tracking des noms avec score de similarité
+
+#### 📊 Statistiques
+
+- **5 nouvelles tables** : activity_logs, security_logs, email_logs, app_settings, name_tracking, name_tracking_matches
+- **16 tables totales** gérées par init_full_database.py
+- **100+ paramètres** configurables via AppSettings
+- **8 réseaux sociaux** intégrés dans le footer
+- **5 pages légales** configurables
+
+#### 🚀 Pour les Développeurs
+
+**Utiliser le middleware de logging** :
+```python
+from app.utils.activity_logger import log_activity
+
+@log_activity('create', 'cinema', 'Production')
+def create_production():
+    # Code automatiquement loggé
+    ...
+```
+
+**Configurer les paramètres** :
+```python
+from app.models.settings import AppSettings
+
+# Récupérer
+value = AppSettings.get('key', default='default_value')
+
+# Définir
+AppSettings.set('key', 'value')
+AppSettings.set('social_links', {'facebook': 'https://...'})
+```
+
+**Consulter les logs** :
+- Activité : `/admin/settings/activity-logs`
+- Sécurité : `/admin/settings/security`
+- Emails : `/admin/settings/email-notifications`
+
+#### ✅ Résultat
+
+- ✅ **Documentation complète** : DEPLOYMENT.fr.md, TECHNICAL_DOCUMENTATION.md, README.md à jour
+- ✅ **Système de logs complet** : Activité, sécurité, emails avec middleware automatique
+- ✅ **Personnalisation totale** : Footer, pages légales, réseaux sociaux configurables
+- ✅ **Migration intelligente** : Script init_full_database.py avec backup/rollback
+- ✅ **5 nouvelles tables** : Logs, settings, tracking de noms
+- ✅ **Variables d'environnement** : SKIP_AUTO_MIGRATION, BASE_URL documentées
+
+---
+
 ## [3.1.0] - 2025-10-30
 
 ### 🎯 Import Replit et Configuration Complète
