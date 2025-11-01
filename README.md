@@ -65,3 +65,18 @@ Web: www.myoneart.com
 ---
 
 *Pour la documentation complète, consultez le dossier [`docs/`](./docs/)*
+
+## Script d'initialisation des données
+
+Pour charger ou recharger les données essentielles (pays, villes, talents) dans la base de données, exécutez:
+
+```bash
+SECRET_KEY=<votre_secret_key> ENCRYPTION_KEY=<votre_encryption_key> python init_essential_data.py
+```
+
+Ce script charge:
+- **194 pays** du monde entier
+- **1711 villes** réparties dans différents pays
+- **45 catégories de talents** (arts de la scène, arts visuels, musique, sports, etc.)
+
+Le script est **idempotent** - il peut être exécuté plusieurs fois sans créer de doublons.
