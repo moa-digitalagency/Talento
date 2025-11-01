@@ -15,10 +15,11 @@ The backend is built with Flask 3.0.0 (Python 3.11), using Blueprints for modula
 SQLAlchemy with Flask-SQLAlchemy serves as the ORM, supporting PostgreSQL (production) and SQLite (development). Data models include User, Talent, UserTalent, Country, City, AppSettings, CinemaTalent, Production, Project, ProjectTalent, NameTracking, and NameTrackingMatch. Sensitive data is encrypted using Fernet, and passwords are hashed with Werkzeug. The system ensures essential data (countries, cities, talents) is loaded and verified at startup.
 
 **Talent Categorization System:**
-- Talents are categorized using a `tag` field: 'general' (32 talents) or 'cinema' (13 talents)
-- General talents appear in main listings (/, /talents, /admin/users)
-- Cinema talents are exclusive to the CINEMA module (/cinema/talents)
+- Talents are categorized using a `tag` field: 'general' (158 talents) or 'cinema' (57 talents)
+- General talents appear in main listings (/, /talents, /admin/users) across 14 service categories
+- Cinema talents are exclusive to the CINEMA module (/cinema/talents) organized in 7 skill categories
 - Automatic filtering prevents mixing of talent types across different sections
+- Cinema categories: Talents artistiques et créatifs, Compétences physiques et sportives, Compétences manuelles et artisanales, Compétences sociales et linguistiques, Compétences techniques diverses, Expériences professionnelles variées valorisantes, Qualités humaines et habitudes de vie
 
 ### Authentication & Authorization
 Flask-Login manages authentication, supporting dual login via email or unique code. Access control is role-based, with Admin, Recruteur (Recruiter), Presence, and User roles, each having specific permissions.
@@ -55,6 +56,9 @@ The platform supports 60+ currencies mapped to their respective countries:
 - ✅ Implemented talent segregation system (general vs cinema talents)
 - ✅ Added dynamic currency display in registration forms
 - ✅ Synchronized currency mapping between Python backend and JavaScript frontend
+- ✅ Updated general talent categories: 160 talents across 14 service categories (Services à la personne, Bâtiment, Commerce, Multimédia, Santé, etc.)
+- ✅ Updated cinema talent categories: 57 talents across 7 skill categories (artistic, physical, manual, social, technical, professional experience, personal qualities)
+- ✅ Enhanced cinema.py to filter only cinema-tagged talents in registration forms
 - ✅ Enhanced documentation with comprehensive change tracking
 
 ## External Dependencies
