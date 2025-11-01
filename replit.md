@@ -8,7 +8,9 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-### November 1, 2025 - Activity Logging & Email Improvements
+### November 1, 2025 - Activity Logging, Legal Pages & Email Improvements
+- **Legal Mentions Page Redesign**: Completely redesigned `/legal/mentions` page to display exactly the 8 fields from the admin form (company_name, company_type, registration_number, capital, company_address, director_name, hosting_provider, hosting_phone) with modern dashed-border blocks in different colors. Each field has its own emoji icon and shows "Non renseigné" when empty. Maintains support for custom HTML content override.
+- **Activity Logs Display Enhancement**: Enhanced activity logs view to show both page name AND page path for consultation actions (view). Page name appears in bold with the path displayed below in smaller text for better visibility and tracking.
 - **Activity Logs Enhancement**: Implemented comprehensive page name mapping system (PAGE_NAMES_MAP) in `app/utils/activity_logger.py` to display human-readable page names (e.g., "Paramètres - Administration") instead of raw URLs in activity logs.
 - **Action Type Icons**: Enhanced action types with visual icons and labels in the admin activity logs dropdown:
   - 👁️ Consultation (view)
