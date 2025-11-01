@@ -97,9 +97,19 @@ class AIProviderService:
         """
         Appelle une API compatible OpenAI (OpenRouter, Perplexity, OpenAI)
         """
+        api_key = config['api_key'].strip()
+        
+        if not api_key:
+            return {
+                'success': False,
+                'content': '',
+                'error': f"Clé API {config['provider']} vide ou invalide"
+            }
+        
         headers = {
-            'Authorization': f'Bearer {config["api_key"]}',
-            'Content-Type': 'application/json'
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
         }
         
         # Headers spécifiques selon le provider
@@ -124,23 +134,42 @@ class AIProviderService:
             'temperature': temperature
         }
         
-        response = requests.post(
-            config['endpoint'],
-            headers=headers,
-            json=data,
-            timeout=timeout
-        )
+        logger.info(f"Appel API {config['provider']} - Modèle: {config['model']}")
         
-        if response.status_code == 200:
-            result = response.json()
-            content = result['choices'][0]['message']['content']
+        try:
+            response = requests.post(
+                config['endpoint'],
+                headers=headers,
+                json=data,
+                timeout=timeout
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                content = result['choices'][0]['message']['content']
+                return {
+                    'success': True,
+                    'content': content,
+                    'error': ''
+                }
+            else:
+                error_msg = f"Erreur API {config['provider']}: {response.status_code} - {response.text[:500]}"
+                logger.error(f"{error_msg} | Endpoint: {config['endpoint']} | Modèle: {config['model']}")
+                return {
+                    'success': False,
+                    'content': '',
+                    'error': error_msg
+                }
+        except requests.exceptions.Timeout:
+            error_msg = f"Timeout lors de l'appel à {config['provider']} (>{timeout}s)"
+            logger.error(error_msg)
             return {
-                'success': True,
-                'content': content,
-                'error': ''
+                'success': False,
+                'content': '',
+                'error': error_msg
             }
-        else:
-            error_msg = f"Erreur API {config['provider']}: {response.status_code} - {response.text}"
+        except Exception as e:
+            error_msg = f"Erreur réseau {config['provider']}: {str(e)}"
             logger.error(error_msg)
             return {
                 'success': False,
@@ -153,10 +182,18 @@ class AIProviderService:
         """
         Appelle l'API Google Gemini (format différent)
         """
-        endpoint = config['endpoint'].format(model=config['model'])
-        url = f"{endpoint}?key={config['api_key']}"
+        api_key = config['api_key'].strip()
         
-        # Gemini utilise un format différent
+        if not api_key:
+            return {
+                'success': False,
+                'content': '',
+                'error': "Clé API Gemini vide ou invalide"
+            }
+        
+        endpoint = config['endpoint'].format(model=config['model'])
+        url = f"{endpoint}?key={api_key}"
+        
         full_prompt = prompt
         if system_message:
             full_prompt = f"{system_message}\n\n{prompt}"
@@ -173,23 +210,45 @@ class AIProviderService:
             }
         }
         
-        response = requests.post(
-            url,
-            headers={'Content-Type': 'application/json'},
-            json=data,
-            timeout=timeout
-        )
+        logger.info(f"Appel API Gemini - Modèle: {config['model']}")
         
-        if response.status_code == 200:
-            result = response.json()
-            content = result['candidates'][0]['content']['parts'][0]['text']
+        try:
+            response = requests.post(
+                url,
+                headers={
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                json=data,
+                timeout=timeout
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                content = result['candidates'][0]['content']['parts'][0]['text']
+                return {
+                    'success': True,
+                    'content': content,
+                    'error': ''
+                }
+            else:
+                error_msg = f"Erreur API Gemini: {response.status_code} - {response.text[:500]}"
+                logger.error(f"{error_msg} | Endpoint: {endpoint} | Modèle: {config['model']}")
+                return {
+                    'success': False,
+                    'content': '',
+                    'error': error_msg
+                }
+        except requests.exceptions.Timeout:
+            error_msg = f"Timeout lors de l'appel à Gemini (>{timeout}s)"
+            logger.error(error_msg)
             return {
-                'success': True,
-                'content': content,
-                'error': ''
+                'success': False,
+                'content': '',
+                'error': error_msg
             }
-        else:
-            error_msg = f"Erreur API Gemini: {response.status_code} - {response.text}"
+        except Exception as e:
+            error_msg = f"Erreur réseau Gemini: {str(e)}"
             logger.error(error_msg)
             return {
                 'success': False,

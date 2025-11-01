@@ -1703,11 +1703,11 @@ def test_openrouter():
     
     if not api_key:
         flash(f'Clé API {provider.upper()} non configurée.', 'error')
-        return redirect(url_for('admin.settings'))
+        return redirect(url_for('admin.settings_api_keys'))
     
     if not model:
         flash(f'Modèle pour {provider.upper()} non sélectionné.', 'error')
-        return redirect(url_for('admin.settings'))
+        return redirect(url_for('admin.settings_api_keys'))
     
     try:
         result = AIProviderService.call_ai(
@@ -1721,11 +1721,30 @@ def test_openrouter():
             flash(f'{provider.upper()} API fonctionne correctement! ✅<br>Modèle: {model}<br>Réponse: {response_content}', 'success')
         else:
             error_msg = result.get('error', 'Erreur inconnue')
-            flash(f'Erreur {provider.upper()}: {error_msg}', 'error')
+            
+            # Messages d'aide spécifiques selon l'erreur
+            help_msg = ""
+            if '401' in str(error_msg):
+                if provider == 'perplexity':
+                    help_msg = "<br><br><b>💡 Solutions possibles:</b><br>"
+                    help_msg += "1. Vérifiez que votre clé API est valide sur <a href='https://www.perplexity.ai/settings/api' target='_blank' class='underline'>perplexity.ai/settings/api</a><br>"
+                    help_msg += "2. Assurez-vous d'avoir des crédits sur votre compte Perplexity<br>"
+                    help_msg += "3. Vérifiez que vous avez bien copié la clé complète (commence par 'pplx-')<br>"
+                    help_msg += "4. Essayez de régénérer une nouvelle clé API"
+                elif provider == 'openai':
+                    help_msg = "<br><br><b>💡 Vérifiez:</b><br>"
+                    help_msg += "• Clé API valide sur <a href='https://platform.openai.com/api-keys' target='_blank' class='underline'>platform.openai.com</a><br>"
+                    help_msg += "• Crédits disponibles sur votre compte"
+                elif provider == 'openrouter':
+                    help_msg = "<br><br><b>💡 Vérifiez:</b><br>"
+                    help_msg += "• Clé API valide sur <a href='https://openrouter.ai/keys' target='_blank' class='underline'>openrouter.ai/keys</a><br>"
+                    help_msg += "• Crédits disponibles"
+            
+            flash(f'Erreur {provider.upper()}: {error_msg}{help_msg}', 'error')
     except Exception as e:
         flash(f'Erreur lors du test {provider.upper()}: {str(e)}', 'error')
     
-    return redirect(url_for('admin.settings'))
+    return redirect(url_for('admin.settings_api_keys'))
 
 @bp.route('/create-admin-user', methods=['GET', 'POST'])
 @login_required
