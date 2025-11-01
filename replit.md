@@ -6,22 +6,28 @@ taalentio.com is a professional web application designed to centralize and showc
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 
-## Recent Changes (October 31, 2025)
+## Recent Changes
 
-### Automated Email Recaps
+### November 1, 2025 - Activity Logging & Email Improvements
+- **Activity Logs Enhancement**: Implemented comprehensive page name mapping system (PAGE_NAMES_MAP) in `app/utils/activity_logger.py` to display human-readable page names (e.g., "Paramètres - Administration") instead of raw URLs in activity logs.
+- **Action Type Icons**: Enhanced action types with visual icons and labels in the admin activity logs dropdown:
+  - 👁️ Consultation (view)
+  - ➕ Création (create)
+  - ✏️ Modification (update)
+  - 🗑️ Suppression (delete)
+  - 🔐 Connexion (login)
+  - 🚪 Déconnexion (logout)
+  - ⚠️ Erreur (error)
+  - 🧭 Navigation (navigation - new)
+- **Email CC Logic**: Improved email service to prevent duplicate admin CC when admin is already the primary recipient. Now handles all SendGrid recipient formats (string, list, dict) with defensive type checking and case-insensitive comparison.
+- **Legal Pages Fix**: Corrected url_for blueprint references in `/legal/mentions` template (legal.privacy, legal.cookies) to prevent 500 errors when legal pages are enabled.
+- **Error Logging**: Enhanced error logging with complete JSON format including stack traces.
+
+### October 31, 2025
 - **Weekly Admin Recap**: Automated weekly email system that sends a summary every Sunday at 12:59 PM to the admin with new registrations from the past week, separated into regular talents and cinema talents. Includes registration count, names, locations, unique codes, and direct profile view buttons.
 - **Scheduler**: APScheduler integrated for automated task scheduling (`app/scheduler.py`).
-
-### Enhanced AI Configuration
-- **Per-Provider Model Selection**: Added model selection dropdowns in admin settings for all AI providers (Perplexity, OpenAI, Gemini) to complement the existing OpenRouter model selection. Administrators can now choose specific models for each provider:
-  - **Perplexity**: llama-3.1-sonar-small/large/huge-128k-online
-  - **OpenAI**: gpt-4o-mini, gpt-4o, gpt-4-turbo, gpt-3.5-turbo
-  - **Gemini**: gemini-2.0-flash-exp, gemini-1.5-flash, gemini-1.5-pro
-- **Dynamic Configuration**: AIProviderService now reads model selections from AppSettings, allowing runtime configuration changes without code modifications.
-
-### Name Tracking System
-- **NameTracking Model**: Created database models (`NameTracking`, `NameTrackingMatch`) to enable administrators to monitor specific names during registration and receive notifications when tracked individuals register.
-- **Infrastructure Ready**: Models are in place and ready for implementation of admin UI and notification system.
+- **Per-Provider Model Selection**: Added model selection dropdowns in admin settings for all AI providers (Perplexity, OpenAI, Gemini) to complement the existing OpenRouter model selection.
+- **Name Tracking System**: Created database models (`NameTracking`, `NameTrackingMatch`) to enable administrators to monitor specific names during registration and receive notifications when tracked individuals register.
 
 ## System Architecture
 
