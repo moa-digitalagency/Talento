@@ -9,11 +9,80 @@ from app import db
 from app.models.activity_log import ActivityLog
 from user_agents import parse
 import json
+import traceback
 from datetime import datetime
 
 
 class ActivityLogger:
     """Classe pour gérer le logging automatique des activités"""
+    
+    ACTION_TYPES_CONFIG = {
+        'view': {'icon': '👁️', 'label': 'Consultation'},
+        'create': {'icon': '➕', 'label': 'Création'},
+        'update': {'icon': '✏️', 'label': 'Modification'},
+        'delete': {'icon': '🗑️', 'label': 'Suppression'},
+        'login': {'icon': '🔐', 'label': 'Connexion'},
+        'logout': {'icon': '🚪', 'label': 'Déconnexion'},
+        'download': {'icon': '📥', 'label': 'Téléchargement'},
+        'upload': {'icon': '📤', 'label': 'Upload'},
+        'export': {'icon': '📤', 'label': 'Export'},
+        'import': {'icon': '📥', 'label': 'Import'},
+        'search': {'icon': '🔍', 'label': 'Recherche'},
+        'share': {'icon': '🔗', 'label': 'Partage'},
+        'send': {'icon': '📧', 'label': 'Envoi'},
+        'print': {'icon': '🖨️', 'label': 'Impression'},
+        'approve': {'icon': '✅', 'label': 'Approbation'},
+        'reject': {'icon': '❌', 'label': 'Rejet'},
+        'archive': {'icon': '📦', 'label': 'Archivage'},
+        'restore': {'icon': '♻️', 'label': 'Restauration'},
+        'duplicate': {'icon': '📋', 'label': 'Duplication'},
+        'merge': {'icon': '🔀', 'label': 'Fusion'},
+        'split': {'icon': '✂️', 'label': 'Division'},
+        'assign': {'icon': '👤', 'label': 'Attribution'},
+        'unassign': {'icon': '🚫', 'label': 'Désattribution'},
+        'validate': {'icon': '✔️', 'label': 'Validation'},
+        'invalidate': {'icon': '✖️', 'label': 'Invalidation'},
+        'error': {'icon': '⚠️', 'label': 'Erreur'},
+        'warning': {'icon': '⚡', 'label': 'Avertissement'},
+        'info': {'icon': 'ℹ️', 'label': 'Information'},
+        'action': {'icon': '⚙️', 'label': 'Action'},
+    }
+    
+    @staticmethod
+    def get_action_display(action_type):
+        """
+        Retourne l'icône et le libellé pour un type d'action
+        
+        Args:
+            action_type: Type d'action (create, update, delete, etc.)
+            
+        Returns:
+            dict: {'icon': '➕', 'label': 'Création', 'display': '➕ Création'}
+        """
+        config = ActivityLogger.ACTION_TYPES_CONFIG.get(action_type, {
+            'icon': '⚙️',
+            'label': action_type.capitalize()
+        })
+        return {
+            'icon': config['icon'],
+            'label': config['label'],
+            'display': f"{config['icon']} {config['label']}"
+        }
+    
+    @staticmethod
+    def format_action_description(action_type, description):
+        """
+        Formate la description d'une action avec son icône et libellé
+        
+        Args:
+            action_type: Type d'action
+            description: Description de l'action
+            
+        Returns:
+            str: Description formatée avec icône
+        """
+        display = ActivityLogger.get_action_display(action_type)
+        return f"{display['display']}: {description}"
     
     @staticmethod
     def _get_client_info():
@@ -100,6 +169,9 @@ class ActivityLogger:
         try:
             client_info = ActivityLogger._get_client_info()
             
+            # Formater la description avec icône et libellé
+            formatted_description = ActivityLogger.format_action_description(action_type, description)
+            
             activity_log = ActivityLog(
                 user_id=user.id if user and hasattr(user, 'id') else None,
                 username=f"{user.first_name} {user.last_name}" if user and hasattr(user, 'first_name') else "Anonyme",
@@ -107,12 +179,12 @@ class ActivityLogger:
                 user_code=user.unique_code if user and hasattr(user, 'unique_code') else None,
                 action_type=action_type,
                 action_category=action_category,
-                action_description=description,
+                action_description=formatted_description,
                 resource_type=resource_type,
                 resource_id=resource_id,
                 status=status,
                 error_message=error_message,
-                extra_data=json.dumps(extra_data) if extra_data else None,
+                extra_data=json.dumps(extra_data, ensure_ascii=False) if extra_data else None,
                 **client_info
             )
             
@@ -168,17 +240,28 @@ def log_activity(action_type, action_category, resource_type=None):
                 return result
             
             except Exception as e:
-                description = f"{action_type.capitalize()} - {f.__name__} (échec)"
+                description = f"{f.__name__} (échec)"
+                
+                # Capturer la stack trace complète pour diagnostic
+                error_traceback = traceback.format_exc()
+                error_data = {
+                    'error_type': type(e).__name__,
+                    'error_message': str(e),
+                    'stack_trace': error_traceback,
+                    'function': f.__name__,
+                    'timestamp': datetime.utcnow().isoformat()
+                }
                 
                 try:
                     ActivityLogger._create_log_entry(
                         user=user,
-                        action_type=action_type,
+                        action_type='error',
                         action_category=action_category,
                         description=description,
                         resource_type=resource_type,
                         status='error',
-                        error_message=str(e)
+                        error_message=str(e),
+                        extra_data=error_data
                     )
                 except Exception as log_error:
                     print(f"⚠️ Erreur lors du logging d'erreur (non-bloquante): {log_error}")
@@ -224,7 +307,7 @@ def log_action(action_type, description, resource_type=None, resource_id=None,
     Logger une action personnalisée
     
     Args:
-        action_type: Type d'action (create, update, delete, etc.)
+        action_type: Type d'action (create, update, delete, view, login, error, etc.)
         description: Description de l'action
         resource_type: Type de ressource concernée (optionnel)
         resource_id: ID de la ressource (optionnel)
@@ -250,6 +333,10 @@ def log_action(action_type, description, resource_type=None, resource_id=None,
                 action_category = 'user'
             elif 'settings' in resource_type_lower or 'setting' in resource_type_lower:
                 action_category = 'settings'
+        
+        # Si c'est une erreur et qu'on n'a pas de stack trace dans extra_data, en capturer une
+        if status == 'error' and extra_data and 'stack_trace' not in extra_data:
+            extra_data['stack_trace'] = traceback.format_stack()
         
         ActivityLogger._create_log_entry(
             user=user,
