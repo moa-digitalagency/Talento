@@ -166,21 +166,109 @@ LANGUAGES_CINEMA = [
 
 TALENT_CATEGORIES = [
     {
-        'name': 'Arts de la scène',
-        'emoji': '🎭',
+        'name': 'Talents artistiques et créatifs',
+        'emoji': '🎨',
         'tag': 'cinema',
         'talents': [
-            'Acteur/Actrice', 'Chanteur', 'Danseur', 'Comédien de doublage',
-            'Humoriste', 'Présentateur/Animateur', 'Conteur'
+            'Danse (classique, hip-hop, contemporain, folklorique, etc.)',
+            'Chant / chant choral / chant lyrique',
+            'Dessin et peinture (aquarelle, huile, art plastique)',
+            'Photographie amateur ou avancée',
+            'Sculpture',
+            'Tatouage (pratique artistique)',
+            'Musique (jouer d\'un ou plusieurs instruments)',
+            'Écriture créative (poésie, nouvelle, récits)',
+            'Calligraphie',
+            'Artisanat d\'art (couture, bijouterie, poterie)',
+            'Décoration d\'intérieur',
+            'Maquillage artistique (hors effets spéciaux)'
         ]
     },
     {
-        'name': 'Techniques & Créatives',
-        'emoji': '🎬',
+        'name': 'Compétences physiques et sportives',
+        'emoji': '⚽',
         'tag': 'cinema',
         'talents': [
-            'Chorégraphe', 'Metteur en scène', 'Réalisateur',
-            'Scénariste', 'Monteur vidéo', 'Cadreur/Opérateur'
+            'Arts martiaux (karaté, judo, taekwondo, krav maga, etc.)',
+            'Yoga, pilates, méditation',
+            'Gymnastique, acrobaties, parkour',
+            'Boxe / lutte',
+            'Escalade',
+            'Sports d\'endurance (course, natation)',
+            'Danse sportive',
+            'Équitation',
+            'Skateboard, roller, BMX',
+            'Natation synchronisée'
+        ]
+    },
+    {
+        'name': 'Compétences manuelles et artisanales',
+        'emoji': '🛠️',
+        'tag': 'cinema',
+        'talents': [
+            'Couture / stylisme / modélisme',
+            'Jardinage / horticulture / permaculture',
+            'Travail du bois / sculpture sur bois',
+            'Restauration d\'objets anciens / antiquités',
+            'Travail du cuir',
+            'Ferronnerie d\'art',
+            'Pâtisserie / cuisine gastronomique / cuisine internationale',
+            'Atelier poterie / céramique'
+        ]
+    },
+    {
+        'name': 'Compétences sociales et linguistiques',
+        'emoji': '🗣️',
+        'tag': 'cinema',
+        'talents': [
+            'Multilinguisme (parler plusieurs langues)',
+            'Communication interculturelle',
+            'Animation de groupe et prise de parole',
+            'Leadership / gestion d\'équipe',
+            'Empathie et écoute active',
+            'Gestion et résolution des conflits',
+            'Négociation commerciale'
+        ]
+    },
+    {
+        'name': 'Compétences techniques diverses',
+        'emoji': '💾',
+        'tag': 'cinema',
+        'talents': [
+            'Montage vidéo amateur / production multimédia amateur',
+            'Graphisme amateur (photoshop, dessin numérique)',
+            'Gestion et animation de réseaux sociaux',
+            'Programmation informatique basique / web personnel',
+            'Utilisation avancée de logiciels bureautiques',
+            'Gestion simple de base de données',
+            'Photographie numérique'
+        ]
+    },
+    {
+        'name': 'Expériences professionnelles variées valorisantes',
+        'emoji': '💼',
+        'tag': 'cinema',
+        'talents': [
+            'Vente et commerce',
+            'Expérience en marchés artisanaux / foires',
+            'Travail en salon de tatouage (hors rôle d\'acteur)',
+            'Organisation événementielle et animation de loisirs',
+            'Expérience dans la restauration ou hôtellerie',
+            'Travail associatif / bénévolat'
+        ]
+    },
+    {
+        'name': 'Qualités humaines et habitudes de vie',
+        'emoji': '⭐',
+        'tag': 'cinema',
+        'talents': [
+            'Polyvalence',
+            'Adaptabilité',
+            'Discipline et autonomie',
+            'Résistance au stress',
+            'Sens de l\'organisation',
+            'Curiosité intellectuelle',
+            'Esprit d\'équipe'
         ]
     },
     {
