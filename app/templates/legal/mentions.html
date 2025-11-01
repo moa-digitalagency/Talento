@@ -127,6 +127,19 @@
                                 {% endif %}
                             </p>
                         </div>
+                        <div>
+                            <p class="text-xs font-semibold text-gray-500 uppercase mb-1">WhatsApp</p>
+                            <p class="text-base text-gray-800">
+                                {% if company_info.company_whatsapp %}
+                                    <a href="https://wa.me/{{ company_info.company_whatsapp.replace('+', '').replace(' ', '') }}" target="_blank" class="text-green-600 hover:underline flex items-center gap-1">
+                                        <span>💬</span>
+                                        {{ company_info.company_whatsapp }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-gray-400 italic">Non renseigné</span>
+                                {% endif %}
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -139,15 +152,27 @@
                             <p class="text-sm text-gray-500">Responsable de la publication</p>
                         </div>
                     </div>
-                    <div class="mt-4">
-                        <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Directeur de publication</p>
-                        <p class="text-base text-gray-800">
-                            {% if company_info.director_name %}
-                                {{ company_info.director_name }}
-                            {% else %}
-                                <span class="text-gray-400 italic">Non renseigné</span>
-                            {% endif %}
-                        </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Directeur de publication</p>
+                            <p class="text-base text-gray-800">
+                                {% if company_info.director_name %}
+                                    {{ company_info.director_name }}
+                                {% else %}
+                                    <span class="text-gray-400 italic">Non renseigné</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold text-gray-500 uppercase mb-1">Rôle / Poste</p>
+                            <p class="text-base text-gray-800">
+                                {% if company_info.director_role %}
+                                    {{ company_info.director_role }}
+                                {% else %}
+                                    <span class="text-gray-400 italic">Non renseigné</span>
+                                {% endif %}
+                            </p>
+                        </div>
                     </div>
                 </div>
 

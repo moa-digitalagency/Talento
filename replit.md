@@ -9,6 +9,7 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes
 
 ### November 1, 2025 - Activity Logging, Legal Pages & Email Improvements
+- **Legal Mentions New Fields**: Added two new fields to legal mentions - `company_whatsapp` (WhatsApp contact in Coordonnées section with clickable link) and `director_role` (Director's role/position in Direction section). Total of 14 fields now available organized in 4 blocks.
 - **Legal Mentions Enhancement**: Enhanced legal mentions system with 12 comprehensive fields organized in 4 grouped blocks (Informations sur l'entreprise, Coordonnées, Direction, Hébergement). Added new fields: company_phone, company_email, company_website, hosting_address. Redesigned `/legal/mentions` page with modern grouped dashed-border blocks for better organization and readability.
 - **Activity Logs Display Enhancement**: Enhanced activity logs view to show both page name AND page path for consultation actions (view). Page name appears in bold with the path displayed below in smaller text for better visibility and tracking.
 - **Activity Logs Enhancement**: Implemented comprehensive page name mapping system (PAGE_NAMES_MAP) in `app/utils/activity_logger.py` to display human-readable page names (e.g., "Paramètres - Administration") instead of raw URLs in activity logs.

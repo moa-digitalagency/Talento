@@ -450,6 +450,13 @@
                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 outline-none"
                                    placeholder="https://www.entreprise.com">
                         </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">WhatsApp</label>
+                            <input type="text" name="company_whatsapp" value="{{ legal_pages.company_whatsapp or '' }}"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 outline-none"
+                                   placeholder="+212XXXXXXXXX">
+                            <p class="text-xs text-gray-400 mt-1">Format: +212XXXXXXXXX (sans espaces)</p>
+                        </div>
                         
                         <!-- Direction -->
                         <div class="md:col-span-2 mt-4">
@@ -463,6 +470,12 @@
                             <input type="text" name="director_name" value="{{ legal_pages.director_name or '' }}"
                                    class="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 outline-none"
                                    placeholder="Prénom NOM">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Rôle / Poste</label>
+                            <input type="text" name="director_role" value="{{ legal_pages.director_role or '' }}"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded focus:border-blue-500 outline-none"
+                                   placeholder="Directeur Général, CEO, etc.">
                         </div>
                         
                         <!-- Hébergement -->
