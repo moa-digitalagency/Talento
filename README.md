@@ -77,7 +77,7 @@ SECRET_KEY=<votre_secret_key> ENCRYPTION_KEY=<votre_encryption_key> python init_
 Ce script charge:
 - **194 pays** du monde entier avec mapping automatique vers leur monnaie
 - **1837 villes** réparties dans différents pays
-- **45 catégories de talents** (32 talents généraux, 13 talents cinéma)
+- **188 talents** (131 talents généraux, 57 talents cinéma)
   - Talents généraux: visibles dans les listings principaux (/, /talents, /admin/users)
   - Talents cinéma: exclusifs à la plateforme cinéma (/cinema/talents)
 
@@ -86,11 +86,18 @@ Le script est **idempotent** - il peut être exécuté plusieurs fois sans crée
 ## 🎯 Fonctionnalités Clés
 
 ### Système de Catégorisation des Talents
-- **Talents Généraux (tag='general')**: 32 catégories incluant développeurs, designers, marketeurs, etc.
-- **Talents Cinéma (tag='cinema')**: 13 catégories spécialisées (acteurs, réalisateurs, producteurs, etc.)
+- **Talents Généraux (tag='general')**: 131 talents organisés en 14 catégories de services (Services à la personne, Bâtiment, Commerce, Multimédia, Santé, etc.)
+- **Talents Cinéma (tag='cinema')**: 57 talents organisés en 7 catégories de compétences (artistiques, physiques, manuelles, sociales, techniques, expériences professionnelles, qualités humaines)
 - Filtrage automatique basé sur les tags pour séparer les talents cinéma des talents généraux
+- API `/api/talents` filtre automatiquement pour afficher uniquement les talents généraux dans le formulaire d'inscription standard
+
+### Gestion des Localisations
+- **Double gestion des villes**: Ville d'origine (city) et Ville de résidence (residence_city)
+- **Affichage prioritaire**: Les listings administratifs affichent la ville de résidence (plus pertinent pour le recrutement)
+- **Filtrage**: Recherches et filtres utilisent residence_city_id pour des résultats précis
 
 ### Support Multi-Devises
 - Mapping automatique de **60+ pays** vers leur monnaie locale
-- Support pour MAD (Maroc), CDF (RDC), EUR (France), USD (USA), etc.
-- Base pour l'affichage dynamique des tarifs selon le pays de résidence
+- Support pour MAD (Maroc), CDF (RDC), EUR (France), USD (USA), FCFA (Afrique de l'Ouest), etc.
+- **Affichage dynamique**: Les formulaires d'inscription mettent à jour automatiquement la devise affichée selon le pays de résidence sélectionné
+- JavaScript synchronisé avec les constantes Python pour une expérience utilisateur cohérente

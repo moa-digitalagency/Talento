@@ -52,13 +52,22 @@ The platform supports 60+ currencies mapped to their respective countries:
 - **Supported Currencies**: MAD (Morocco), CDF (DRC), EUR (Europe), USD (USA), FCFA (West Africa), and many more
 - **Helper Function**: `get_currency_for_country(country_code)` provides easy currency lookup
 
+### Location Data Management
+The platform manages two sets of location data for each user:
+- **City of Origin** (`city_id`, `country_id`): User's birthplace or origin
+- **Residence City** (`residence_city_id`, `residence_country_id`): Current residence location
+- **Display Priority**: User listings in admin dashboards display the residence city as it's more relevant for recruitment and availability
+- **Filtering**: Search and filter operations use residence_city_id for accurate location-based queries
+
 ### Recent Enhancements (November 2025)
 - ✅ Implemented talent segregation system (general vs cinema talents)
-- ✅ Added dynamic currency display in registration forms
+- ✅ Added dynamic currency display in registration forms based on residence country
 - ✅ Synchronized currency mapping between Python backend and JavaScript frontend
 - ✅ Updated general talent categories: 160 talents across 14 service categories (Services à la personne, Bâtiment, Commerce, Multimédia, Santé, etc.)
 - ✅ Updated cinema talent categories: 57 talents across 7 skill categories (artistic, physical, manual, social, technical, professional experience, personal qualities)
 - ✅ Enhanced cinema.py to filter only cinema-tagged talents in registration forms
+- ✅ Fixed city display in admin listings to show residence_city instead of city (more relevant for recruitment)
+- ✅ Updated filters in main routes to use residence_city_id for accurate location-based searches
 - ✅ Enhanced documentation with comprehensive change tracking
 
 ## External Dependencies
