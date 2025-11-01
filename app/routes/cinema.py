@@ -480,6 +480,9 @@ def register_talent():
     # Get nationalities list with flags (sorted alphabetically)
     nationalities = NATIONALITIES_WITH_FLAGS
     
+    # Filter TALENT_CATEGORIES to only show cinema talents
+    cinema_talent_categories = [cat for cat in TALENT_CATEGORIES if cat.get('tag') == 'cinema']
+    
     if request.method == 'POST':
         try:
             talent = CinemaTalent()
@@ -580,7 +583,7 @@ def register_talent():
                                      countries=countries, 
                                      nationalities=nationalities, 
                                      languages=LANGUAGES_CINEMA, 
-                                     talent_categories=TALENT_CATEGORIES,
+                                     talent_categories=cinema_talent_categories,
                                      cinema_talent_types=CINEMA_TALENT_TYPES,
                                      eye_colors=EYE_COLORS,
                                      hair_colors=HAIR_COLORS,
@@ -598,7 +601,7 @@ def register_talent():
                                      countries=countries, 
                                      nationalities=nationalities, 
                                      languages=LANGUAGES_CINEMA, 
-                                     talent_categories=TALENT_CATEGORIES,
+                                     talent_categories=cinema_talent_categories,
                                      cinema_talent_types=CINEMA_TALENT_TYPES,
                                      eye_colors=EYE_COLORS,
                                      hair_colors=HAIR_COLORS,
@@ -615,7 +618,7 @@ def register_talent():
                                          countries=countries, 
                                          nationalities=nationalities, 
                                          languages=LANGUAGES_CINEMA, 
-                                         talent_categories=TALENT_CATEGORIES,
+                                         talent_categories=cinema_talent_categories,
                                          cinema_talent_types=CINEMA_TALENT_TYPES,
                                          eye_colors=EYE_COLORS,
                                          hair_colors=HAIR_COLORS,
@@ -637,7 +640,7 @@ def register_talent():
                                          countries=countries, 
                                          nationalities=nationalities, 
                                          languages=LANGUAGES_CINEMA, 
-                                         talent_categories=TALENT_CATEGORIES,
+                                         talent_categories=cinema_talent_categories,
                                          cinema_talent_types=CINEMA_TALENT_TYPES,
                                          eye_colors=EYE_COLORS,
                                          hair_colors=HAIR_COLORS,
@@ -708,7 +711,7 @@ def register_talent():
                                      countries=countries,
                                      nationalities=nationalities,
                                      languages=LANGUAGES_CINEMA,
-                                     talent_categories=TALENT_CATEGORIES,
+                                     talent_categories=cinema_talent_categories,
                                      cinema_talent_types=CINEMA_TALENT_TYPES,
                                      eye_colors=EYE_COLORS,
                                      hair_colors=HAIR_COLORS,
@@ -778,7 +781,7 @@ def register_talent():
                                  countries=countries,
                                  nationalities=nationalities,
                                  languages=LANGUAGES_CINEMA,
-                                 talent_categories=TALENT_CATEGORIES,
+                                 talent_categories=cinema_talent_categories,
                                  cinema_talent_types=CINEMA_TALENT_TYPES,
                                  eye_colors=EYE_COLORS,
                                  hair_colors=HAIR_COLORS,
@@ -790,7 +793,7 @@ def register_talent():
                          countries=countries,
                          nationalities=nationalities,
                          languages=LANGUAGES_CINEMA,
-                         talent_categories=TALENT_CATEGORIES,
+                         talent_categories=cinema_talent_categories,
                          cinema_talent_types=CINEMA_TALENT_TYPES,
                          eye_colors=EYE_COLORS,
                          hair_colors=HAIR_COLORS,
