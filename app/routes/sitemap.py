@@ -4,8 +4,6 @@ Route pour générer le sitemap.xml dynamique
 
 from flask import Blueprint, Response, url_for
 from datetime import datetime
-from app.models import User, Project, Production
-from app import db
 
 bp = Blueprint('sitemap', __name__)
 
