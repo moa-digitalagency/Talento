@@ -1694,41 +1694,36 @@ def test_email():
 @login_required
 @admin_required
 def test_openrouter():
-    import requests
+    from app.services.ai_provider_service import AIProviderService
     
-    openrouter_key = AppSettings.get('openrouter_api_key', '') or os.environ.get('OPENROUTER_API_KEY', '')
+    config = AIProviderService.get_ai_config()
+    provider = config['provider']
+    api_key = config['api_key']
+    model = config['model']
     
-    if not openrouter_key:
-        flash('Clé OpenRouter API non configurée.', 'error')
+    if not api_key:
+        flash(f'Clé API {provider.upper()} non configurée.', 'error')
+        return redirect(url_for('admin.settings'))
+    
+    if not model:
+        flash(f'Modèle pour {provider.upper()} non sélectionné.', 'error')
         return redirect(url_for('admin.settings'))
     
     try:
-        response = requests.post(
-            'https://openrouter.ai/api/v1/chat/completions',
-            headers={
-                'Authorization': f'Bearer {openrouter_key}',
-                'Content-Type': 'application/json',
-                'HTTP-Referer': request.host_url,
-            },
-            json={
-                'model': 'google/gemini-2.5-flash',
-                'messages': [
-                    {
-                        'role': 'user',
-                        'content': 'Réponds juste "OK" si tu me reçois.'
-                    }
-                ],
-                'max_tokens': 10
-            },
+        result = AIProviderService.call_ai(
+            prompt='Réponds juste "OK" si tu me reçois.',
+            temperature=0.3,
             timeout=15
         )
         
-        if response.status_code == 200:
-            flash('OpenRouter API fonctionne correctement! ✅', 'success')
+        if result['success']:
+            response_content = result['content'][:100]
+            flash(f'{provider.upper()} API fonctionne correctement! ✅<br>Modèle: {model}<br>Réponse: {response_content}', 'success')
         else:
-            flash(f'Erreur OpenRouter: {response.status_code} - {response.text[:200]}', 'error')
+            error_msg = result.get('error', 'Erreur inconnue')
+            flash(f'Erreur {provider.upper()}: {error_msg}', 'error')
     except Exception as e:
-        flash(f'Erreur lors du test OpenRouter: {str(e)}', 'error')
+        flash(f'Erreur lors du test {provider.upper()}: {str(e)}', 'error')
     
     return redirect(url_for('admin.settings'))
 
