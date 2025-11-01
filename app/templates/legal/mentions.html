@@ -3,115 +3,180 @@
 {% block content %}
 <div class="min-h-screen bg-gray-50 py-8 px-4">
     <div class="max-w-4xl mx-auto">
-        <div class="bg-white rounded-lg shadow-md p-8 border-2 border-dashed border-red-400">
-            <h1 class="text-3xl font-bold text-gray-800 mb-6">Mentions Légales</h1>
-            {% if content %}
+        <!-- Titre principal -->
+        <div class="bg-white rounded-xl shadow-lg p-8 border-2 border-dashed border-red-400 mb-6">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2 flex items-center gap-3">
+                <span class="text-5xl">⚖️</span>
+                Mentions Légales
+            </h1>
+            <p class="text-gray-600">Informations légales concernant taalentio.com</p>
+        </div>
+
+        {% if content %}
+            <!-- Contenu personnalisé HTML -->
+            <div class="bg-white rounded-xl shadow-lg p-8 border-2 border-dashed border-red-400">
                 {{ content|safe }}
-            {% else %}
-                <div class="prose prose-lg max-w-none">
-                    <p class="text-sm text-gray-500 mb-6">Dernière mise à jour : {{ current_date or "Date non spécifiée" }}</p>
-                    
-                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">1. Éditeur du Site</h2>
-                    <p class="text-gray-700 mb-4">
-                        Le site <strong>taalentio.com</strong> est édité par :
-                    </p>
-                    <div class="bg-gray-50 border-l-4 border-red-500 p-4 mb-4">
-                        <p class="text-gray-700"><strong>Raison sociale :</strong> {{ company_info.company_name or '[À compléter]' }}</p>
-                        <p class="text-gray-700"><strong>Forme juridique :</strong> {{ company_info.company_type or '[À compléter]' }}</p>
-                        <p class="text-gray-700"><strong>Adresse du siège social :</strong> {{ company_info.company_address or '[À compléter]' }}</p>
-                        <p class="text-gray-700"><strong>Numéro de téléphone :</strong> [À compléter]</p>
-                        <p class="text-gray-700"><strong>Email :</strong> [À compléter]</p>
-                        <p class="text-gray-700"><strong>Numéro d'immatriculation :</strong> {{ company_info.registration_number or '[À compléter]' }}</p>
-                        <p class="text-gray-700"><strong>Capital social :</strong> {{ company_info.capital or '[À compléter]' }}</p>
+            </div>
+        {% else %}
+            <!-- Affichage des informations du formulaire -->
+            <div class="space-y-6">
+                <!-- Raison sociale -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-dashed border-blue-300">
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl">🏢</span>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-2">Raison sociale</h2>
+                            <p class="text-lg text-gray-700">
+                                {% if company_info.company_name %}
+                                    {{ company_info.company_name }}
+                                {% else %}
+                                    <span class="text-gray-400 italic">Non renseigné</span>
+                                {% endif %}
+                            </p>
+                        </div>
                     </div>
-                    
-                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">2. Directeur de la Publication</h2>
-                    <p class="text-gray-700 mb-4">
-                        <strong>Nom :</strong> {{ company_info.director_name or '[À compléter]' }}<br>
-                        <strong>Fonction :</strong> [À compléter]
-                    </p>
-                    
-                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">3. Hébergement</h2>
-                    <p class="text-gray-700 mb-4">
-                        Le site est hébergé par :
-                    </p>
-                    <div class="bg-gray-50 border-l-4 border-red-500 p-4 mb-4">
-                        <p class="text-gray-700"><strong>Nom de l'hébergeur :</strong> {{ company_info.hosting_provider or '[À compléter]' }}</p>
-                        <p class="text-gray-700"><strong>Adresse :</strong> [À compléter]</p>
-                        <p class="text-gray-700"><strong>Téléphone :</strong> {{ company_info.hosting_phone or '[À compléter]' }}</p>
-                        <p class="text-gray-700"><strong>Site web :</strong> [À compléter]</p>
+                </div>
+
+                <!-- Forme juridique -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-dashed border-green-300">
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl">📋</span>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-2">Forme juridique</h2>
+                            <p class="text-lg text-gray-700">
+                                {% if company_info.company_type %}
+                                    {{ company_info.company_type }}
+                                {% else %}
+                                    <span class="text-gray-400 italic">Non renseigné</span>
+                                {% endif %}
+                            </p>
+                        </div>
                     </div>
-                    
-                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">4. Protection des Données Personnelles</h2>
-                    <p class="text-gray-700 mb-4">
-                        Conformément à la loi Informatique et Libertés du 6 janvier 1978 modifiée et au Règlement Général sur la 
-                        Protection des Données (RGPD), vous disposez de droits sur vos données personnelles.
-                    </p>
-                    <p class="text-gray-700 mb-4">
-                        <strong>Responsable du traitement des données :</strong><br>
-                        Nom : [À compléter]<br>
-                        Email : [À compléter]
-                    </p>
-                    <p class="text-gray-700 mb-4">
-                        Pour plus d'informations sur le traitement de vos données personnelles, consultez notre 
-                        <a href="{{ url_for('legal.privacy') }}" class="text-red-600 hover:text-red-800 underline">Politique de Confidentialité</a>.
-                    </p>
-                    
-                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">5. Propriété Intellectuelle</h2>
-                    <p class="text-gray-700 mb-4">
-                        L'ensemble de ce site relève de la législation française et internationale sur le droit d'auteur et la propriété intellectuelle. 
-                        Tous les droits de reproduction sont réservés, y compris pour les documents téléchargeables et les représentations iconographiques et photographiques.
-                    </p>
-                    <p class="text-gray-700 mb-4">
-                        La reproduction de tout ou partie de ce site sur un support électronique quel qu'il soit est formellement interdite 
-                        sauf autorisation expresse du directeur de la publication.
-                    </p>
-                    
-                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">6. Crédits</h2>
-                    <p class="text-gray-700 mb-4">
-                        <strong>Conception et réalisation :</strong> [À compléter]<br>
-                        <strong>Design graphique :</strong> [À compléter]<br>
-                        <strong>Développement :</strong> [À compléter]
-                    </p>
-                    
-                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">7. Liens Hypertextes</h2>
-                    <p class="text-gray-700 mb-4">
-                        Le site peut contenir des liens hypertextes vers d'autres sites. Nous ne sommes pas responsables du contenu 
-                        de ces sites externes. La création de liens hypertextes vers notre site nécessite une autorisation préalable.
-                    </p>
-                    
-                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">8. Cookies</h2>
-                    <p class="text-gray-700 mb-4">
-                        Le site utilise des cookies pour améliorer l'expérience utilisateur. Pour plus d'informations, consultez notre 
-                        <a href="{{ url_for('legal.cookies') }}" class="text-red-600 hover:text-red-800 underline">Politique des Cookies</a>.
-                    </p>
-                    
-                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">9. Droit Applicable</h2>
-                    <p class="text-gray-700 mb-4">
-                        Les présentes mentions légales sont soumises au droit [pays]. En cas de litige, les tribunaux [juridiction] 
-                        seront seuls compétents.
-                    </p>
-                    
-                    <h2 class="text-2xl font-bold text-gray-800 mt-6 mb-4">10. Contact</h2>
-                    <p class="text-gray-700 mb-4">
-                        Pour toute question concernant les mentions légales, vous pouvez nous contacter :<br>
-                        <strong>Email :</strong> [À compléter]<br>
-                        <strong>Téléphone :</strong> [À compléter]<br>
-                        <strong>Adresse postale :</strong> [À compléter]
-                    </p>
-                    
-                    <div class="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-4 mt-6">
-                        <p class="text-sm text-yellow-800">
-                            <strong>⚠️ Note :</strong> Les informations marquées "[À compléter]" doivent être renseignées 
-                            par l'administrateur du site via les paramètres de personnalisation.
+                </div>
+
+                <!-- Numéro d'immatriculation -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-dashed border-purple-300">
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl">🔢</span>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-2">Numéro d'immatriculation</h2>
+                            <p class="text-lg text-gray-700">
+                                {% if company_info.registration_number %}
+                                    {{ company_info.registration_number }}
+                                {% else %}
+                                    <span class="text-gray-400 italic">Non renseigné</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Capital social -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-dashed border-yellow-300">
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl">💰</span>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-2">Capital social</h2>
+                            <p class="text-lg text-gray-700">
+                                {% if company_info.capital %}
+                                    {{ company_info.capital }}
+                                {% else %}
+                                    <span class="text-gray-400 italic">Non renseigné</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Adresse du siège social -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-dashed border-pink-300">
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl">📍</span>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-2">Adresse du siège social</h2>
+                            <p class="text-lg text-gray-700">
+                                {% if company_info.company_address %}
+                                    {{ company_info.company_address }}
+                                {% else %}
+                                    <span class="text-gray-400 italic">Non renseigné</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Directeur de publication -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-dashed border-indigo-300">
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl">👤</span>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-2">Directeur de publication</h2>
+                            <p class="text-lg text-gray-700">
+                                {% if company_info.director_name %}
+                                    {{ company_info.director_name }}
+                                {% else %}
+                                    <span class="text-gray-400 italic">Non renseigné</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hébergeur du site -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-dashed border-teal-300">
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl">🖥️</span>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-2">Hébergeur du site</h2>
+                            <p class="text-lg text-gray-700">
+                                {% if company_info.hosting_provider %}
+                                    {{ company_info.hosting_provider }}
+                                {% else %}
+                                    <span class="text-gray-400 italic">Non renseigné</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Téléphone hébergeur -->
+                <div class="bg-white rounded-xl shadow-lg p-6 border-2 border-dashed border-orange-300">
+                    <div class="flex items-start gap-3">
+                        <span class="text-3xl">📞</span>
+                        <div class="flex-1">
+                            <h2 class="text-xl font-bold text-gray-800 mb-2">Téléphone hébergeur</h2>
+                            <p class="text-lg text-gray-700">
+                                {% if company_info.hosting_phone %}
+                                    {{ company_info.hosting_phone }}
+                                {% else %}
+                                    <span class="text-gray-400 italic">Non renseigné</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message d'information -->
+            <div class="bg-blue-50 border-2 border-dashed border-blue-400 rounded-xl p-6 mt-6">
+                <div class="flex items-start gap-3">
+                    <span class="text-3xl">ℹ️</span>
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-800 mb-2">Comment modifier ces informations ?</h3>
+                        <p class="text-gray-700">
+                            Pour mettre à jour ces informations, rendez-vous dans 
+                            <strong>Paramètres → Personnalisation → Mentions Légales</strong>.
                         </p>
                     </div>
                 </div>
-            {% endif %}
-        </div>
-        <div class="mt-6 text-center">
-            <a href="{{ url_for('main.index') }}" class="inline-block px-6 py-3 border-2 border-red-500 text-red-600 rounded-lg hover:bg-red-500 hover:text-white transition-all font-semibold">
-                ← Retour à l'accueil
+            </div>
+        {% endif %}
+
+        <!-- Bouton retour -->
+        <div class="mt-8 text-center">
+            <a href="{{ url_for('main.index') }}" class="inline-flex items-center gap-2 px-6 py-3 border-2 border-red-500 text-red-600 rounded-xl hover:bg-red-500 hover:text-white transition-all font-semibold shadow-lg">
+                <span>←</span>
+                Retour à l'accueil
             </a>
         </div>
     </div>
