@@ -99,6 +99,12 @@ The platform manages two sets of location data for each user:
   - Updated database schema to use more descriptive city option for unlisted locations
   - Improved user experience with clearer labeling in city selection dropdowns
   - Change applies to both general talent registration and cinema talent registration forms
+- ✅ **[02/11/2025]** Enhanced city selection and PDF footer system:
+  - Modified city API endpoints (`/api/cities` and `/api/v1/cities`) to always place "Ville non listée" at the bottom of city lists
+  - Fixed sorting issue where "Ville non listée" appeared alphabetically in the middle instead of at the end
+  - Added PDF footer customization to talent list export (pdf_footer_talent_list) - previously missing
+  - Confirmed all 3 PDF export types now use the admin-configurable footer system (Talent List, Talent Card, Cinema Talent Card)
+  - Improved user experience with consistent city dropdown ordering across all forms
 
 ## External Dependencies
 

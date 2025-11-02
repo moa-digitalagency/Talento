@@ -5,6 +5,41 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.1] - 2025-11-02
+
+### 🔧 Améliorations
+
+#### 🏙️ Tri des Villes Amélioré
+
+**Fichiers modifiés** : `app/routes/api.py`, `app/routes/api_v1/talents.py`
+
+- ✅ **Position de "Ville non listée"** : Toujours affichée en bas de la liste au lieu de l'ordre alphabétique
+- ✅ **API /api/cities** : Logique de tri améliorée pour séparer "Ville non listée"
+- ✅ **API /api/v1/cities** : Logique de tri améliorée pour séparer "Ville non listée"
+- ✅ **Expérience utilisateur** : Les formulaires affichent maintenant "Ville non listée" à la fin de la liste déroulante
+- ✅ **Cohérence** : Tri uniforme sur tous les formulaires (inscription générale et cinéma)
+
+**Implémentation** :
+- Séparation des villes en deux listes : villes normales et "Ville non listée"
+- Réorganisation avant envoi au client : autres villes + "Ville non listée"
+- Tri alphabétique maintenu pour les villes normales
+
+#### 📄 Système de Pied de Page PDF Complété
+
+**Fichiers modifiés** : `app/services/export_service.py`
+
+- ✅ **Liste de talents (PDF)** : Ajout du pied de page personnalisable `pdf_footer_talent_list`
+- ✅ **Fiche talent (PDF)** : Utilise `pdf_footer_talent_card` (déjà existant)
+- ✅ **Fiche cinéma (PDF)** : Utilise `pdf_footer_cinema_talent_card` (déjà existant)
+- ✅ **Configuration admin** : Les 3 types de PDF utilisent maintenant le système de customisation via `/admin/settings/customization`
+
+**Types de PDF couverts** :
+1. `export_list_to_pdf` → Utilise `pdf_footer_talent_list`
+2. `export_talent_card_pdf` → Utilise `pdf_footer_talent_card`
+3. `export_cinema_talent_card_pdf` → Utilise `pdf_footer_cinema_talent_card`
+
+**Valeur par défaut** : "Plateforme taalentio.com - Centralisation des Talents"
+
 ## [3.2.0] - 2025-11-01
 
 ### 📚 Documentation Complète et Nouvelles Fonctionnalités
