@@ -69,6 +69,7 @@ The platform manages two sets of location data for each user:
 - ✅ Fixed city display in admin listings to show residence_city instead of city (more relevant for recruitment)
 - ✅ Updated filters in main routes to use residence_city_id for accurate location-based searches
 - ✅ Enhanced documentation with comprehensive change tracking
+- ✅ **[02/11/2025]** Fixed cinema talent profile photo display issue - corrected file path from `uploads/photos/` to `uploads/cinema_photos/` in project badge generation (cinema.py) and talent assignment view template, ensuring profile photos display correctly in all locations (talent list, profile page, PDF, badges)
 
 ## External Dependencies
 
