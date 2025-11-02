@@ -1,6 +1,6 @@
 /**
  * Script de logging des erreurs JavaScript côté client
- * Envoie les erreurs au serveur pour analyse et débogage
+ * Envoie les erreurs critiques au serveur pour analyse et débogage
  */
 
 (function() {
@@ -8,28 +8,55 @@
     
     // Configuration
     const ERROR_LOG_ENDPOINT = '/api/v1/log-client-error';
-    const MAX_ERRORS_PER_SESSION = 50; // Limiter le nombre d'erreurs envoyées
+    const MAX_ERRORS_PER_SESSION = 10; // Réduire le nombre d'erreurs envoyées
     let errorCount = 0;
+    
+    // Liste des erreurs à ignorer (bruit de fond, extensions navigateur, etc.)
+    const IGNORED_ERRORS = [
+        'beacon.js',
+        'chrome-extension://',
+        'moz-extension://',
+        'safari-extension://',
+        'Unknown error', // Erreurs génériques sans contexte
+        'Script error', // Erreurs cross-origin
+        'ResizeObserver loop', // Erreurs bénignes du navigateur
+    ];
+    
+    // Vérifier si l'erreur doit être ignorée
+    function shouldIgnoreError(errorData) {
+        // Ignorer si limite atteinte
+        if (errorCount >= MAX_ERRORS_PER_SESSION) {
+            return true;
+        }
+        
+        // Ignorer les erreurs sans stack trace et sans informations utiles
+        if (errorData.message === 'Unknown error' && 
+            errorData.filename === 'unknown' && 
+            !errorData.stack) {
+            return true;
+        }
+        
+        // Ignorer les erreurs de la liste
+        const errorString = JSON.stringify(errorData).toLowerCase();
+        for (let i = 0; i < IGNORED_ERRORS.length; i++) {
+            if (errorString.indexOf(IGNORED_ERRORS[i].toLowerCase()) !== -1) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
     
     // Fonction pour envoyer l'erreur au serveur
     function sendErrorToServer(errorData) {
-        if (errorCount >= MAX_ERRORS_PER_SESSION) {
-            console.warn('Limite d\'envoi d\'erreurs atteinte pour cette session');
+        if (shouldIgnoreError(errorData)) {
             return;
         }
         
         errorCount++;
         
         // Envoyer l'erreur de manière asynchrone sans bloquer l'application
-        if (navigator.sendBeacon) {
-            // Utiliser sendBeacon avec un Blob pour spécifier le type application/json
-            const blob = new Blob(
-                [JSON.stringify(errorData)], 
-                { type: 'application/json' }
-            );
-            navigator.sendBeacon(ERROR_LOG_ENDPOINT, blob);
-        } else {
-            // Fallback avec fetch
+        try {
             fetch(ERROR_LOG_ENDPOINT, {
                 method: 'POST',
                 headers: {
@@ -37,15 +64,21 @@
                 },
                 body: JSON.stringify(errorData),
                 keepalive: true
-            }).catch(function(err) {
-                // Silencieux si l'envoi échoue pour ne pas créer de boucle d'erreurs
-                console.warn('Impossible d\'envoyer l\'erreur au serveur:', err);
+            }).catch(function() {
+                // Silencieux si l'envoi échoue
             });
+        } catch (err) {
+            // Ignorer les erreurs du logger lui-même
         }
     }
     
     // Capturer les erreurs JavaScript non gérées
     window.addEventListener('error', function(event) {
+        // Ignorer les erreurs de ressources (gérées séparément)
+        if (event.target !== window) {
+            return;
+        }
+        
         const errorData = {
             type: 'javascript_error',
             message: event.message || 'Unknown error',
@@ -58,7 +91,6 @@
             timestamp: new Date().toISOString()
         };
         
-        console.error('❌ Erreur JavaScript détectée:', errorData);
         sendErrorToServer(errorData);
     }, true);
     
@@ -73,56 +105,45 @@
             timestamp: new Date().toISOString()
         };
         
-        console.error('❌ Promise rejetée non gérée:', errorData);
         sendErrorToServer(errorData);
     });
     
-    // Capturer les erreurs de ressources (images, scripts, etc.)
+    // Capturer uniquement les erreurs de ressources importantes (scripts et stylesheets)
     window.addEventListener('error', function(event) {
         if (event.target !== window && event.target.tagName) {
+            const tagName = event.target.tagName.toLowerCase();
+            
+            // Ignorer les erreurs d'images (souvent des 404 bénignes)
+            if (tagName === 'img') {
+                return;
+            }
+            
+            const resourceSrc = event.target.src || event.target.href || 'unknown';
+            
+            // Ignorer les ressources externes (extensions, CDN tiers non critiques)
+            if (resourceSrc.indexOf('chrome-extension://') !== -1 ||
+                resourceSrc.indexOf('moz-extension://') !== -1 ||
+                resourceSrc.indexOf('beacon.js') !== -1) {
+                return;
+            }
+            
             const errorData = {
                 type: 'resource_error',
                 message: 'Failed to load resource',
-                resourceType: event.target.tagName,
-                resourceSrc: event.target.src || event.target.href || 'unknown',
+                resourceType: tagName.toUpperCase(),
+                resourceSrc: resourceSrc,
                 url: window.location.href,
                 userAgent: navigator.userAgent,
                 timestamp: new Date().toISOString()
             };
             
-            console.warn('⚠️ Erreur de chargement de ressource:', errorData);
             sendErrorToServer(errorData);
         }
     }, true);
     
-    // Log console.error pour capture additionnelle
-    const originalConsoleError = console.error;
-    console.error = function() {
-        // Appeler le console.error original
-        originalConsoleError.apply(console, arguments);
-        
-        // Envoyer au serveur
-        try {
-            const args = Array.from(arguments);
-            const errorData = {
-                type: 'console_error',
-                message: args.map(arg => 
-                    typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
-                ).join(' '),
-                url: window.location.href,
-                userAgent: navigator.userAgent,
-                timestamp: new Date().toISOString()
-            };
-            
-            sendErrorToServer(errorData);
-        } catch (err) {
-            // Ignorer les erreurs dans le logger lui-même
-        }
-    };
-    
-    // Logger les informations de session au démarrage
-    console.log('📊 Error Logger initialisé');
-    console.log('Browser:', navigator.userAgent);
-    console.log('URL:', window.location.href);
+    // Logger les informations de session au démarrage (une seule fois)
+    if (window.console && window.console.log) {
+        console.log('📊 Error Logger initialisé - Mode production');
+    }
     
 })();
