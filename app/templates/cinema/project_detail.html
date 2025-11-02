@@ -109,27 +109,31 @@
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-                <label for="cinema_talent_id" class="block text-sm font-semibold text-gray-700 mb-2">
+                <label for="talent_autocomplete" class="block text-sm font-semibold text-gray-700 mb-2">
                     Sélectionner un talent <span class="text-red-500">*</span>
                 </label>
                 
-                <!-- Champ de recherche -->
+                <!-- Champ d'autocomplétion -->
                 <input type="text" 
-                       id="talent_search" 
-                       placeholder="🔍 Rechercher par nom ou code..."
-                       class="w-full px-4 py-2 mb-2 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all">
+                       id="talent_autocomplete" 
+                       list="talents_datalist"
+                       placeholder="🔍 Rechercher par nom ou code unique..."
+                       autocomplete="off"
+                       required
+                       class="w-full px-4 py-2 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all">
                 
-                <select id="cinema_talent_id" 
-                        name="cinema_talent_id" 
-                        required
-                        class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all">
-                    <option value="">-- Choisir un talent --</option>
+                <!-- Champ caché pour l'ID du talent -->
+                <input type="hidden" id="cinema_talent_id" name="cinema_talent_id" required>
+                
+                <!-- Datalist pour l'autocomplétion -->
+                <datalist id="talents_datalist">
                     {% for talent in all_cinema_talents %}
-                    <option value="{{ talent.id }}" data-name="{{ talent.first_name }} {{ talent.last_name }}" data-code="{{ talent.unique_code }}">
-                        {{ talent.first_name }} {{ talent.last_name }} ({{ talent.unique_code }})
-                    </option>
+                    <option value="{{ talent.unique_code }} - {{ talent.first_name }} {{ talent.last_name }}" data-id="{{ talent.id }}">
                     {% endfor %}
-                </select>
+                </datalist>
+                
+                <!-- Indicateur de sélection -->
+                <div id="talent_selection_status" class="mt-2 text-sm"></div>
             </div>
             
             <div>
@@ -264,54 +268,99 @@
 </div>
 
 <script>
-// Fonction de recherche pour le select de talents
+// Système d'autocomplétion avancé pour la sélection de talents
 document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('talent_search');
-    const selectElement = document.getElementById('cinema_talent_id');
+    const autocompleteInput = document.getElementById('talent_autocomplete');
+    const hiddenIdInput = document.getElementById('cinema_talent_id');
+    const statusDiv = document.getElementById('talent_selection_status');
+    const datalist = document.getElementById('talents_datalist');
     
-    if (searchInput && selectElement) {
-        const allOptions = Array.from(selectElement.options);
+    // Créer un mapping des talents (valeur affichée -> ID)
+    const talentsMap = new Map();
+    {% for talent in all_cinema_talents %}
+    talentsMap.set('{{ (talent.unique_code ~ " - " ~ talent.first_name ~ " " ~ talent.last_name)|escapejs }}', '{{ talent.id }}');
+    talentsMap.set('{{ talent.unique_code|escapejs }}', '{{ talent.id }}');  // Aussi accepter juste le code
+    talentsMap.set('{{ (talent.first_name ~ " " ~ talent.last_name)|escapejs }}'.toLowerCase(), '{{ talent.id }}');  // Aussi accepter juste le nom
+    {% endfor %}
+    
+    // Fonction pour mettre à jour le statut de sélection
+    function updateSelectionStatus(isValid, message) {
+        if (isValid) {
+            statusDiv.innerHTML = '<span class="text-green-600 font-semibold">✓ ' + message + '</span>';
+            statusDiv.classList.remove('text-red-600');
+            statusDiv.classList.add('text-green-600');
+        } else if (message) {
+            statusDiv.innerHTML = '<span class="text-red-600 font-semibold">⚠ ' + message + '</span>';
+            statusDiv.classList.remove('text-green-600');
+            statusDiv.classList.add('text-red-600');
+        } else {
+            statusDiv.innerHTML = '';
+        }
+    }
+    
+    // Gérer la sélection depuis l'autocomplétion
+    autocompleteInput.addEventListener('input', function() {
+        const inputValue = this.value.trim();
         
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase().trim();
-            const currentSelection = selectElement.value;
-            
-            // Réinitialiser le select
-            selectElement.innerHTML = '';
-            
-            if (searchTerm === '') {
-                // Si la recherche est vide, afficher toutes les options
-                allOptions.forEach(option => {
-                    selectElement.appendChild(option.cloneNode(true));
-                });
-            } else {
-                // Filtrer les options
-                const defaultOption = allOptions[0].cloneNode(true);
-                selectElement.appendChild(defaultOption);
-                
-                let matchCount = 0;
-                allOptions.slice(1).forEach(option => {
-                    const name = (option.dataset.name || '').toLowerCase();
-                    const code = (option.dataset.code || '').toLowerCase();
-                    
-                    if (name.includes(searchTerm) || code.includes(searchTerm)) {
-                        selectElement.appendChild(option.cloneNode(true));
-                        matchCount++;
-                    }
-                });
-                
-                // Si aucun résultat, afficher un message
-                if (matchCount === 0) {
-                    const noResultOption = document.createElement('option');
-                    noResultOption.textContent = '❌ Aucun talent trouvé';
-                    noResultOption.disabled = true;
-                    selectElement.appendChild(noResultOption);
+        // Réinitialiser le champ caché si l'input est vide
+        if (!inputValue) {
+            hiddenIdInput.value = '';
+            updateSelectionStatus(false, '');
+            return;
+        }
+        
+        // Chercher une correspondance exacte
+        let talentId = talentsMap.get(inputValue);
+        
+        // Si pas de correspondance exacte, chercher par nom (insensible à la casse)
+        if (!talentId) {
+            talentId = talentsMap.get(inputValue.toLowerCase());
+        }
+        
+        // Si pas de correspondance, chercher si l'input commence par un code unique
+        if (!talentId) {
+            for (let [key, value] of talentsMap.entries()) {
+                if (key.startsWith(inputValue) || key.toLowerCase().includes(inputValue.toLowerCase())) {
+                    talentId = value;
+                    break;
                 }
             }
-            
-            // Restaurer la sélection précédente si elle existe toujours dans les options filtrées
-            if (currentSelection) {
-                selectElement.value = currentSelection;
+        }
+        
+        if (talentId) {
+            hiddenIdInput.value = talentId;
+            updateSelectionStatus(true, 'Talent sélectionné');
+        } else {
+            hiddenIdInput.value = '';
+            updateSelectionStatus(false, 'Aucune correspondance trouvée');
+        }
+    });
+    
+    // Validation lors de la perte de focus
+    autocompleteInput.addEventListener('blur', function() {
+        setTimeout(() => {
+            if (!hiddenIdInput.value && autocompleteInput.value) {
+                updateSelectionStatus(false, 'Veuillez sélectionner un talent valide dans la liste');
+            }
+        }, 200);
+    });
+    
+    // Réinitialiser le message d'erreur quand l'utilisateur commence à taper
+    autocompleteInput.addEventListener('focus', function() {
+        if (!hiddenIdInput.value) {
+            updateSelectionStatus(false, '');
+        }
+    });
+    
+    // Validation du formulaire avant soumission
+    const form = autocompleteInput.closest('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (!hiddenIdInput.value) {
+                e.preventDefault();
+                updateSelectionStatus(false, 'Veuillez sélectionner un talent valide');
+                autocompleteInput.focus();
+                return false;
             }
         });
     }
