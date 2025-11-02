@@ -87,9 +87,31 @@ def load_cities():
                 db.session.add(city)
                 added += 1
     
+    # Ajouter une option "Autres" pour chaque pays
+    print("\n📌 Ajout de l'option 'Autres' pour chaque pays...")
+    autres_added = 0
+    all_countries = Country.query.all()
+    
+    for country in all_countries:
+        # Vérifier si "Autres" existe déjà pour ce pays
+        autres_city = City.query.filter(
+            City.name == "Autres",
+            City.country_id == country.id
+        ).first()
+        
+        if not autres_city:
+            city = City(
+                name="Autres",
+                code="AUT",
+                country_id=country.id
+            )
+            db.session.add(city)
+            autres_added += 1
+    
     try:
         db.session.commit()
         print(f"✅ Villes: {added} ajoutées, {updated} codes corrigés, {skipped} ignorées")
+        print(f"✅ Options 'Autres': {autres_added} ajoutées")
         total = City.query.count()
         print(f"   Total: {total} villes dans la base de données")
         return True

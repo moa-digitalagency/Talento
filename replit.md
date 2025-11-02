@@ -70,6 +70,13 @@ The platform manages two sets of location data for each user:
 - ✅ Updated filters in main routes to use residence_city_id for accurate location-based searches
 - ✅ Enhanced documentation with comprehensive change tracking
 - ✅ **[02/11/2025]** Fixed cinema talent profile photo display issue - corrected file path from `uploads/photos/` to `uploads/cinema_photos/` in project badge generation (cinema.py) and talent assignment view template, ensuring profile photos display correctly in all locations (talent list, profile page, PDF, badges)
+- ✅ **[02/11/2025]** Major enhancements to statistics, city selection, and PDF customization:
+  - Replaced Moroccan city statistics with world city statistics on admin dashboard homepage
+  - Added "Autres" (Other) option for all countries in city selection dropdowns - 194 special city entries added
+  - Implemented dynamic PDF footer system with admin customization for 4 PDF types (Talent List, Talent Card, Cinema Talent List, Cinema Talent Card)
+  - Removed unnecessary PageBreak in Talent PDF that was causing blank second pages
+  - Fixed Cinema Talent PDF header: removed subtitle text "Profil Cinématographique - Talents du Cinéma Africain" and green line, kept only blue separator line
+  - Enhanced cinema project badge generation to properly display profile photo or ID photo with multiple path fallbacks instead of placeholder image
 
 ## External Dependencies
 

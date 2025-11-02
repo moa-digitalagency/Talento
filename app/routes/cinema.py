@@ -1792,14 +1792,23 @@ def generate_project_badge(project_talent_id):
         if not os.path.exists(logo_path):
             logo_path = os.path.join('static', 'img', 'logo.png')
         
-        # Photo path
+        # Photo path - essayer d'abord la photo de profil, puis la photo d'identité
         photo_path = None
-        if talent.profile_photo_filename:
-            photo_path = os.path.join('app', 'static', 'uploads', 'cinema_photos', talent.profile_photo_filename)
-            if not os.path.exists(photo_path):
-                photo_path = os.path.join('static', 'uploads', 'cinema_photos', talent.profile_photo_filename)
-                if not os.path.exists(photo_path):
-                    photo_path = None
+        photo_filename = talent.profile_photo_filename or talent.id_photo_filename
+        
+        if photo_filename:
+            # Essayer différents chemins possibles
+            possible_paths = [
+                os.path.join(current_app.config.get('UPLOAD_FOLDER', 'app/static/uploads'), 'cinema_photos', photo_filename),
+                os.path.join('app', 'static', 'uploads', 'cinema_photos', photo_filename),
+                os.path.join('static', 'uploads', 'cinema_photos', photo_filename),
+                os.path.join('uploads', 'cinema_photos', photo_filename)
+            ]
+            
+            for path in possible_paths:
+                if os.path.exists(path):
+                    photo_path = path
+                    break
         
         # Dates du projet
         dates_text = "Dates: Non spécifiées"

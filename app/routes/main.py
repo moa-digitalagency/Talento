@@ -235,15 +235,17 @@ def admin_dashboard():
         User.is_admin == False
     ).group_by(Talent.id, Talent.name, Talent.emoji, Talent.category).order_by(desc('count')).limit(10).all()
     
-    # Top 10 villes marocaines avec le plus de talents
-    top_morocco_cities = db.session.query(
+    # Top 10 villes du monde avec le plus de talents
+    top_world_cities = db.session.query(
         City.name,
+        Country.name.label('country_name'),
         func.count(User.id).label('user_count')
-    ).join(User, City.id == User.city_id).join(Country, Country.id == User.country_id).filter(
+    ).join(User, City.id == User.residence_city_id
+    ).join(Country, Country.id == User.residence_country_id
+    ).filter(
         User.account_active == True,
-        User.is_admin == False,
-        Country.code == 'MA'
-    ).group_by(City.id, City.name).order_by(desc('user_count')).limit(10).all()
+        User.is_admin == False
+    ).group_by(City.id, City.name, Country.name).order_by(desc('user_count')).limit(10).all()
     
     # Données pour les filtres - exclure les talents cinéma
     all_talents = Talent.query.filter_by(tag='general').order_by(Talent.category, Talent.name).all()
@@ -269,7 +271,7 @@ def admin_dashboard():
                          total_cities_with_users=total_cities_with_users,
                          recent_users=recent_users,
                          top_talents=top_talents,
-                         top_morocco_cities=top_morocco_cities)
+                         top_world_cities=top_world_cities)
 
 @bp.route('/contrats')
 @login_required

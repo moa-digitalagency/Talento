@@ -853,6 +853,12 @@ def settings_customization():
     footer_contact_email = AppSettings.get('footer_contact_email', '')
     footer_contact_phone = AppSettings.get('footer_contact_phone', '')
     
+    # PDF Footer settings
+    pdf_footer_talent_list = AppSettings.get('pdf_footer_talent_list', 'Plateforme taalentio.com - Talents')
+    pdf_footer_talent_card = AppSettings.get('pdf_footer_talent_card', 'Plateforme Talento CINEMA - Talents du Cinéma Africain')
+    pdf_footer_cinema_talent_list = AppSettings.get('pdf_footer_cinema_talent_list', 'Plateforme taalentio.com CINEMA - Talents du Cinéma Africain')
+    pdf_footer_cinema_talent_card = AppSettings.get('pdf_footer_cinema_talent_card', 'Plateforme taalentio.com CINEMA - Talents du Cinéma Africain')
+    
     # Logo and images
     logo_url = AppSettings.get('logo_url', '')
     favicon_url = AppSettings.get('favicon_url', '')
@@ -875,6 +881,10 @@ def settings_customization():
                          footer_text=footer_text,
                          footer_contact_email=footer_contact_email,
                          footer_contact_phone=footer_contact_phone,
+                         pdf_footer_talent_list=pdf_footer_talent_list,
+                         pdf_footer_talent_card=pdf_footer_talent_card,
+                         pdf_footer_cinema_talent_list=pdf_footer_cinema_talent_list,
+                         pdf_footer_cinema_talent_card=pdf_footer_cinema_talent_card,
                          logo_url=logo_url,
                          favicon_url=favicon_url,
                          hero_image_url=hero_image_url,
@@ -898,6 +908,25 @@ def save_site_footer():
     AppSettings.set('footer_contact_phone', footer_contact_phone)
     
     flash('✅ Pied de page du site mis à jour avec succès', 'success')
+    return redirect(url_for('admin.settings_customization'))
+
+@bp.route('/settings/customization/save-pdf-footers', methods=['POST'])
+@login_required
+@admin_required
+def save_pdf_footers():
+    """Sauvegarder les pieds de page des PDF"""
+    pdf_footer_talent_list = request.form.get('pdf_footer_talent_list', '').strip()
+    pdf_footer_talent_card = request.form.get('pdf_footer_talent_card', '').strip()
+    pdf_footer_cinema_talent_list = request.form.get('pdf_footer_cinema_talent_list', '').strip()
+    pdf_footer_cinema_talent_card = request.form.get('pdf_footer_cinema_talent_card', '').strip()
+    
+    # Sauvegarder dans les paramètres
+    AppSettings.set('pdf_footer_talent_list', pdf_footer_talent_list)
+    AppSettings.set('pdf_footer_talent_card', pdf_footer_talent_card)
+    AppSettings.set('pdf_footer_cinema_talent_list', pdf_footer_cinema_talent_list)
+    AppSettings.set('pdf_footer_cinema_talent_card', pdf_footer_cinema_talent_card)
+    
+    flash('✅ Pieds de page des PDF mis à jour avec succès', 'success')
     return redirect(url_for('admin.settings_customization'))
 
 @bp.route('/settings/customization/save-logo-images', methods=['POST'])

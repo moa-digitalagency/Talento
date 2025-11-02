@@ -15,6 +15,7 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_JUSTIFY
 from app.utils.encryption import decrypt_sensitive_data
+from app.models.settings import AppSettings
 from config import Config
 
 class ExportService:
@@ -540,7 +541,6 @@ class ExportService:
         
         # ==== SECTION TALENTS & COMPÉTENCES ====
         if user.talents:
-            elements.append(PageBreak())
             talents_title = Table([['TALENTS & COMPÉTENCES']], colWidths=[6.5*inch])
             talents_title.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), color_purple),
@@ -728,7 +728,11 @@ class ExportService:
         )
         elements.append(Spacer(1, 10))
         elements.append(Paragraph(f"Document généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')}", footer_style))
-        elements.append(Paragraph("Plateforme Talento CINEMA - Talents du Cinéma Africain", footer_style))
+        
+        # Footer dynamique depuis les paramètres
+        pdf_footer = AppSettings.get('pdf_footer_talent_card', 'Plateforme Talento CINEMA - Talents du Cinéma Africain')
+        if pdf_footer:
+            elements.append(Paragraph(pdf_footer, footer_style))
         
         doc.build(elements)
         buffer.seek(0)
@@ -809,16 +813,14 @@ class ExportService:
                 pass
         
         elements.append(Paragraph("CINEMA - FICHE DE TALENT", header_style))
-        elements.append(Paragraph("Profil Cinématographique - Talents du Cinéma Africain", subtitle_header_style))
         
-        # Ligne de séparation
+        # Ligne de séparation (uniquement bleue)
         line_table = Table([['']],  colWidths=[6.5*inch])
         line_table.setStyle(TableStyle([
             ('LINEABOVE', (0, 0), (-1, 0), 3, color_indigo),
-            ('LINEBELOW', (0, 0), (-1, 0), 1, color_green),
         ]))
         elements.append(line_table)
-        elements.append(Spacer(1, 10))
+        elements.append(Spacer(1, 15))
         
         # ==== SECTION PRINCIPALE: PHOTO, INFO & QR CODE ====
         def get_initial(name):
@@ -1445,7 +1447,11 @@ class ExportService:
         )
         elements.append(Spacer(1, 10))
         elements.append(Paragraph(f"Document généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')}", footer_style))
-        elements.append(Paragraph("Plateforme taalentio.com CINEMA - Talents du Cinéma Africain", footer_style))
+        
+        # Footer dynamique depuis les paramètres
+        pdf_footer = AppSettings.get('pdf_footer_cinema_talent_card', 'Plateforme taalentio.com CINEMA - Talents du Cinéma Africain')
+        if pdf_footer:
+            elements.append(Paragraph(pdf_footer, footer_style))
         
         doc.build(elements)
         buffer.seek(0)
