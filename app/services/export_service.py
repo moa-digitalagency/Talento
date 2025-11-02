@@ -750,7 +750,9 @@ class ExportService:
         import json
         
         buffer = io.BytesIO()
-        doc = SimpleDocTemplate(buffer, pagesize=letter, topMargin=0.5*inch, bottomMargin=0.5*inch)
+        doc = SimpleDocTemplate(buffer, pagesize=letter, 
+                               topMargin=0.4*inch, bottomMargin=0.4*inch,
+                               leftMargin=0.6*inch, rightMargin=0.6*inch)
         elements = []
         
         styles = getSampleStyleSheet()
@@ -816,7 +818,7 @@ class ExportService:
             ('LINEBELOW', (0, 0), (-1, 0), 1, color_green),
         ]))
         elements.append(line_table)
-        elements.append(Spacer(1, 15))
+        elements.append(Spacer(1, 10))
         
         # ==== SECTION PRINCIPALE: PHOTO, INFO & QR CODE ====
         def get_initial(name):
@@ -937,7 +939,7 @@ class ExportService:
             ('RIGHTPADDING', (0, 0), (-1, -1), 10),
         ]))
         elements.append(main_layout)
-        elements.append(Spacer(1, 20))
+        elements.append(Spacer(1, 12))
         
         # ==== SECTION IDENTITÉ ====
         identity_title = Table([['IDENTITÉ & CONTACT']], colWidths=[6.5*inch])
@@ -1065,7 +1067,7 @@ class ExportService:
                 ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
             ]))
             elements.append(origins_table)
-            elements.append(Spacer(1, 15))
+            elements.append(Spacer(1, 10))
         
         # ==== LANGUES ====
         try:
@@ -1100,7 +1102,7 @@ class ExportService:
                 ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
             ]))
             elements.append(lang_table)
-            elements.append(Spacer(1, 15))
+            elements.append(Spacer(1, 10))
         
         # ==== CARACTÉRISTIQUES PHYSIQUES ====
         has_physical = (cinema_talent.height or cinema_talent.eye_color or cinema_talent.hair_color or 
@@ -1149,7 +1151,7 @@ class ExportService:
                 ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
             ]))
             elements.append(phys_table)
-            elements.append(Spacer(1, 15))
+            elements.append(Spacer(1, 10))
         
         # ==== TYPES DE TALENTS ====
         try:
@@ -1185,7 +1187,7 @@ class ExportService:
                 ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
             ]))
             elements.append(talents_table)
-            elements.append(Spacer(1, 15))
+            elements.append(Spacer(1, 10))
         
         # ==== COMPÉTENCES ARTISTIQUES ====
         try:
@@ -1220,7 +1222,7 @@ class ExportService:
                 ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
             ]))
             elements.append(comp_table)
-            elements.append(Spacer(1, 15))
+            elements.append(Spacer(1, 10))
         
         # ==== RÉSEAUX SOCIAUX ====
         social_networks = []
@@ -1278,7 +1280,7 @@ class ExportService:
                 ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
             ]))
             elements.append(social_table)
-            elements.append(Spacer(1, 15))
+            elements.append(Spacer(1, 10))
         
         # ==== PRODUCTIONS PRÉCÉDENTES ====
         try:
@@ -1322,7 +1324,7 @@ class ExportService:
                 ('ROWBACKGROUNDS', (0, 0), (-1, -1), [colors.white, colors.HexColor('#FEE2E2')]),
             ]))
             elements.append(prod_table)
-            elements.append(Spacer(1, 15))
+            elements.append(Spacer(1, 10))
         
         # ==== GALERIE PHOTO ====
         gallery_title = Table([['GALERIE PHOTO']], colWidths=[6.5*inch])
@@ -1424,10 +1426,10 @@ class ExportService:
                 ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
             ]))
             elements.append(no_photos_table)
-        elements.append(Spacer(1, 15))
+        elements.append(Spacer(1, 10))
         
         # ==== FOOTER ====
-        elements.append(Spacer(1, 20))
+        elements.append(Spacer(1, 12))
         footer_line = Table([['']],  colWidths=[6.5*inch])
         footer_line.setStyle(TableStyle([
             ('LINEABOVE', (0, 0), (-1, 0), 2, color_indigo),

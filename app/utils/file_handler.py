@@ -7,6 +7,7 @@ www.myoneart.com
 """
 
 import os
+import shutil
 from werkzeug.utils import secure_filename
 from flask import current_app
 import uuid
@@ -76,6 +77,39 @@ def delete_file(filename, upload_type='photo'):
     
     if os.path.exists(file_path):
         os.remove(file_path)
+
+def copy_file_between_folders(filename, source_upload_type, dest_upload_type):
+    """
+    Copy a file from one upload folder to another
+    Returns: True if successful, False otherwise
+    """
+    if not filename:
+        return False
+    
+    # Map upload types to folder names
+    def get_folder_name(upload_type):
+        if upload_type == 'photo':
+            return 'photos'
+        elif upload_type == 'cv':
+            return 'cvs'
+        else:
+            return upload_type
+    
+    source_folder = get_folder_name(source_upload_type)
+    dest_folder = get_folder_name(dest_upload_type)
+    
+    source_path = os.path.join(current_app.config['UPLOAD_FOLDER'], source_folder, filename)
+    dest_path = os.path.join(current_app.config['UPLOAD_FOLDER'], dest_folder, filename)
+    
+    # Create destination directory if it doesn't exist
+    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+    
+    # Copy file if source exists
+    if os.path.exists(source_path):
+        shutil.copy2(source_path, dest_path)
+        return True
+    
+    return False
 
 class FileHandler:
     """Gestionnaire de fichiers pour uploads"""

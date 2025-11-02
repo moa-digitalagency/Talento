@@ -754,7 +754,13 @@ def register_talent():
             
             # Copier la photo si disponible
             if talent.profile_photo_filename:
-                cinema_user.photo_filename = talent.profile_photo_filename
+                # Copier physiquement le fichier de cinema_photos vers photos pour l'affichage dans le tableau principal
+                from app.utils.file_handler import copy_file_between_folders
+                copy_success = copy_file_between_folders(talent.profile_photo_filename, 'cinema_photos', 'photo')
+                if copy_success:
+                    cinema_user.photo_filename = talent.profile_photo_filename
+                else:
+                    current_app.logger.warning(f"Impossible de copier la photo de profil pour le talent {talent.unique_code}")
             
             # Copier le QR code
             cinema_user.qr_code_filename = talent.qr_code_filename
