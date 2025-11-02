@@ -28,11 +28,11 @@
 | CSS Framework | Tailwind CSS | CDN |
 | Migration DB | Flask-Migrate (Alembic) | 4.0.5 |
 | Email Service | SendGrid | Latest |
-| AI Service | OpenRouter API | google/gemini-2.5-flash |
+| AI Service | Multi-provider | OpenRouter, Bytez, Perplexity, OpenAI, Gemini |
 
 ### Services IA
 
-taalentio.com intègre trois services IA majeurs utilisant l'API OpenRouter pour automatiser le recrutement et le casting.
+taalentio.com intègre plusieurs fournisseurs IA majeurs (OpenRouter, Bytez, Perplexity, OpenAI, Google Gemini) pour automatiser le recrutement et le casting avec accès à des centaines de modèles.
 
 #### OpenRouter AI Integration
 

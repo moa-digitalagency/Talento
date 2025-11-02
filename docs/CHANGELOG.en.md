@@ -2,8 +2,29 @@
 
 All notable changes to the Talento project are documented in this file.
 
-**Version:** 2.0  
-**Last Updated:** November 1, 2025
+**Version:** 2.1  
+**Last Updated:** November 2, 2025
+
+## [2.1.0] - 2025-11-02
+
+### 🤖 New AI Integration: Bytez
+
+**Modified files**: `app/services/ai_provider_service.py`, `app/templates/admin/settings/api_keys.html`, `config.py`, `replit.md`
+
+- ✅ **New AI Provider**: Bytez added as option (OpenRouter, Bytez, Perplexity, OpenAI, Gemini)
+- ✅ **Multi-model Access**: Hundreds of open-source and closed-source models available
+- ✅ **Pre-configured Models**: Qwen 2.5 72B Instruct, Llama 3.3 70B, Mistral 7B, DeepSeek V3
+- ✅ **Admin Interface**: Bytez configuration section added to API settings
+- ✅ **OpenAI Compatibility**: Uses standard chat completions format
+- ✅ **Environment Variable**: BYTEZ_API_KEY support added
+- ✅ **Documentation**: All documentation files updated
+- ✅ **API Endpoint**: https://api.bytez.com/v1/chat/completions
+- ✅ **Official Documentation**: https://docs.bytez.com/model-api/docs/welcome
+
+**Usage**:
+- Configuration via `/admin/settings/api-keys`
+- Provider and model selection
+- Same interface as other AI providers
 
 ## [2.0.0] - 2025-11-01
 

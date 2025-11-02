@@ -28,7 +28,7 @@ Flask-Login manages authentication, supporting dual login via email or unique co
 The platform handles uploads of photos, CVs, and SEO images, organizing them into specific directories. QR codes are dynamically generated for multi-environment compatibility.
 
 ### AI Integration
-Multi-provider AI support (OpenRouter, Perplexity, OpenAI, Google Gemini) is integrated for talent matching, CV analysis, and job description analysis. AI-powered search is available for general and cinema-specific talents, with customizable model selection per provider.
+Multi-provider AI support (OpenRouter, Bytez, Perplexity, OpenAI, Google Gemini) is integrated for talent matching, CV analysis, and job description analysis. AI-powered search is available for general and cinema-specific talents, with customizable model selection per provider. Bytez provides access to hundreds of open-source and closed-source models through a unified API.
 
 ### Data Export & Backup
 Talent data can be exported in Excel, CSV, and PDF formats. A comprehensive system for full application backup and restoration is included.
@@ -105,12 +105,20 @@ The platform manages two sets of location data for each user:
   - Added PDF footer customization to talent list export (pdf_footer_talent_list) - previously missing
   - Confirmed all 3 PDF export types now use the admin-configurable footer system (Talent List, Talent Card, Cinema Talent Card)
   - Improved user experience with consistent city dropdown ordering across all forms
+- ✅ **[02/11/2025]** Integrated Bytez AI provider for multi-model AI services:
+  - Added Bytez as a new AI provider option alongside OpenRouter, Perplexity, OpenAI, and Google Gemini
+  - Updated `app/services/ai_provider_service.py` to support Bytez API with OpenAI-compatible chat completions endpoint
+  - Added Bytez configuration section in admin settings UI (`app/templates/admin/settings/api_keys.html`)
+  - Included popular open-source models: Qwen 2.5 72B Instruct, Llama 3.3 70B, Mistral 7B, DeepSeek V3
+  - Added BYTEZ_API_KEY environment variable support in `config.py`
+  - Bytez provides access to hundreds of open-source and closed-source models through unified API
+  - Documentation: https://docs.bytez.com/model-api/docs/welcome
 
 ## External Dependencies
 
 ### Core Services
 - **Database**: PostgreSQL (production), SQLite (development).
-- **AI Service**: OpenRouter API, Perplexity AI, OpenAI, Google Gemini.
+- **AI Service**: OpenRouter API, Bytez API, Perplexity AI, OpenAI, Google Gemini.
 - **Email Service**: SendGrid API.
 - **Movie Database**: OMDB API.
 

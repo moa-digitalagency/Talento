@@ -1,6 +1,6 @@
 """
 Service unifié pour gérer différents fournisseurs d'IA
-Supporte: OpenRouter, Perplexity, OpenAI, Google Gemini
+Supporte: OpenRouter, Perplexity, OpenAI, Google Gemini, Bytez
 """
 
 import os
@@ -53,6 +53,11 @@ class AIProviderService:
             config['model'] = AppSettings.get('gemini_model', 'gemini-2.0-flash-exp')
             config['endpoint'] = 'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent'
         
+        elif provider == 'bytez':
+            config['api_key'] = AppSettings.get('bytez_api_key') or os.environ.get('BYTEZ_API_KEY')
+            config['model'] = AppSettings.get('bytez_model', 'Qwen/Qwen2.5-72B-Instruct')
+            config['endpoint'] = 'https://api.bytez.com/v1/chat/completions'
+        
         return config
     
     @staticmethod
@@ -81,6 +86,8 @@ class AIProviderService:
         try:
             if config['provider'] == 'gemini':
                 return AIProviderService._call_gemini(config, prompt, system_message, temperature, timeout)
+            elif config['provider'] == 'bytez':
+                return AIProviderService._call_bytez(config, prompt, system_message, temperature, timeout)
             else:
                 return AIProviderService._call_openai_compatible(config, prompt, system_message, temperature, timeout)
         
@@ -249,6 +256,89 @@ class AIProviderService:
             }
         except Exception as e:
             error_msg = f"Erreur réseau Gemini: {str(e)}"
+            logger.error(error_msg)
+            return {
+                'success': False,
+                'content': '',
+                'error': error_msg
+            }
+    
+    @staticmethod
+    def _call_bytez(config, prompt, system_message, temperature, timeout):
+        """
+        Appelle l'API Bytez (compatible OpenAI format)
+        Supporte les modèles open-source et closed-source
+        Documentation: https://docs.bytez.com/model-api/docs/welcome
+        """
+        api_key = config['api_key'].strip()
+        
+        if not api_key:
+            return {
+                'success': False,
+                'content': '',
+                'error': "Clé API Bytez vide ou invalide"
+            }
+        
+        headers = {
+            'Authorization': f'Bearer {api_key}',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+        
+        messages = []
+        if system_message:
+            messages.append({
+                'role': 'system',
+                'content': system_message
+            })
+        messages.append({
+            'role': 'user',
+            'content': prompt
+        })
+        
+        data = {
+            'model': config['model'],
+            'messages': messages,
+            'temperature': temperature,
+            'max_tokens': 2048
+        }
+        
+        logger.info(f"Appel API Bytez - Modèle: {config['model']}")
+        
+        try:
+            response = requests.post(
+                config['endpoint'],
+                headers=headers,
+                json=data,
+                timeout=timeout
+            )
+            
+            if response.status_code == 200:
+                result = response.json()
+                content = result['choices'][0]['message']['content']
+                return {
+                    'success': True,
+                    'content': content,
+                    'error': ''
+                }
+            else:
+                error_msg = f"Erreur API Bytez: {response.status_code} - {response.text[:500]}"
+                logger.error(f"{error_msg} | Endpoint: {config['endpoint']} | Modèle: {config['model']}")
+                return {
+                    'success': False,
+                    'content': '',
+                    'error': error_msg
+                }
+        except requests.exceptions.Timeout:
+            error_msg = f"Timeout lors de l'appel à Bytez (>{timeout}s)"
+            logger.error(error_msg)
+            return {
+                'success': False,
+                'content': '',
+                'error': error_msg
+            }
+        except Exception as e:
+            error_msg = f"Erreur réseau Bytez: {str(e)}"
             logger.error(error_msg)
             return {
                 'success': False,

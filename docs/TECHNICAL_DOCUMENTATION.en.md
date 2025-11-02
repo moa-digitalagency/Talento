@@ -139,15 +139,21 @@ app/static/uploads/
    - Multi-model access
    - Customizable model selection
 
-2. **Perplexity AI**
+2. **Bytez** (NEW)
+   - Hundreds of open-source and closed-source models
+   - Models: Qwen 2.5 72B, Llama 3.3 70B, Mistral 7B, DeepSeek V3
+   - Unified API for all models
+   - Documentation: https://docs.bytez.com
+
+3. **Perplexity AI**
    - Models: llama-3.1-sonar (small/large/huge)
    - Online search capabilities
 
-3. **OpenAI**
+4. **OpenAI**
    - Models: GPT-4o, GPT-4-turbo, GPT-3.5-turbo
    - CV analysis and matching
 
-4. **Google Gemini**
+5. **Google Gemini**
    - Models: gemini-2.0-flash-exp, gemini-1.5-pro
    - Advanced reasoning
 

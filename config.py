@@ -59,7 +59,14 @@ class Config:
     
     SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
     
+    # API Keys pour services IA
     OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY')
+    BYTEZ_API_KEY = os.environ.get('BYTEZ_API_KEY')
+    PERPLEXITY_API_KEY = os.environ.get('PERPLEXITY_API_KEY')
+    OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+    GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
+    
+    # Autres API Keys
     OMDB_API_KEY = os.environ.get('OMDB_API_KEY')
     
     # URL de base pour les QR codes et liens publics

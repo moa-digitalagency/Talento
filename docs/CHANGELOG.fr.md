@@ -5,6 +5,27 @@ Toutes les modifications notables du projet sont documentées dans ce fichier.
 Le format est basé sur [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/),
 et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.2] - 2025-11-02
+
+### 🤖 Nouvelle Intégration IA : Bytez
+
+**Fichiers modifiés** : `app/services/ai_provider_service.py`, `app/templates/admin/settings/api_keys.html`, `config.py`, `replit.md`
+
+- ✅ **Nouveau fournisseur IA** : Bytez ajouté aux options (OpenRouter, Bytez, Perplexity, OpenAI, Gemini)
+- ✅ **Accès multi-modèles** : Centaines de modèles open-source et closed-source disponibles
+- ✅ **Modèles pré-configurés** : Qwen 2.5 72B Instruct, Llama 3.3 70B, Mistral 7B, DeepSeek V3
+- ✅ **Interface admin** : Section de configuration Bytez ajoutée dans les paramètres API
+- ✅ **Compatibilité OpenAI** : Utilise le format chat completions standard
+- ✅ **Variable d'environnement** : Support de BYTEZ_API_KEY
+- ✅ **Documentation** : Mise à jour de tous les fichiers de documentation
+- ✅ **API endpoint** : https://api.bytez.com/v1/chat/completions
+- ✅ **Documentation officielle** : https://docs.bytez.com/model-api/docs/welcome
+
+**Utilisation** :
+- Configuration via `/admin/settings/api-keys`
+- Sélection du fournisseur et du modèle
+- Même interface que les autres fournisseurs IA
+
 ## [3.2.1] - 2025-11-02
 
 ### 🔧 Améliorations
