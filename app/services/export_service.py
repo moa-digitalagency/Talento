@@ -330,20 +330,9 @@ class ExportService:
                 logo = Image(logo_path, width=2.5*inch, height=1*inch, kind='proportional')
                 logo.hAlign = 'CENTER'
                 elements.append(logo)
-                elements.append(Spacer(1, 10))
+                elements.append(Spacer(1, 20))
             except:
                 pass
-        
-        elements.append(Paragraph("Plateforme de Centralisation des Talents Africain Subsahrien aux Maroc", subtitle_header_style))
-        
-        # Ligne de séparation
-        line_table = Table([['']],  colWidths=[6.5*inch])
-        line_table.setStyle(TableStyle([
-            ('LINEABOVE', (0, 0), (-1, 0), 3, color_indigo),
-            ('LINEBELOW', (0, 0), (-1, 0), 1, color_cyan),
-        ]))
-        elements.append(line_table)
-        elements.append(Spacer(1, 15))
         
         # ==== SECTION PRINCIPALE: PHOTO, INFO & QR CODE ====
         def get_initial(name):

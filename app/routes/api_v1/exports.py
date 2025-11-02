@@ -127,7 +127,7 @@ def export_users_pdf():
                 'error': 'No users found'
             }), 404
         
-        pdf_bytes = ExportService.export_to_pdf(users)
+        pdf_bytes = ExportService.export_list_to_pdf(users, current_user=current_user)
         
         buffer = io.BytesIO(pdf_bytes)
         buffer.seek(0)

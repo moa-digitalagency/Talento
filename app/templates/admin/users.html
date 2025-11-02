@@ -153,9 +153,33 @@
 
         <!-- Liste des talents -->
         <div class="section-blue p-8">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="text-4xl">👥</span>
-                <h2 class="text-2xl font-bold text-gray-800">Talents ({{ users|length }})</h2>
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <span class="text-4xl">👥</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Talents ({{ users|length }})</h2>
+                </div>
+                
+                <!-- Boutons d'export -->
+                {% if users and users|length > 0 %}
+                <div class="flex flex-wrap gap-2">
+                    <a href="{{ url_for('api_v1.export_users_excel') }}" 
+                       class="inline-flex items-center px-4 py-2 bg-green-100 text-green-700 font-bold rounded-lg border-2 border-green-500 hover:bg-green-200 transition-all text-sm">
+                        <span class="mr-2">📊</span>
+                        <span>Excel</span>
+                    </a>
+                    <a href="{{ url_for('api_v1.export_users_csv') }}" 
+                       class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 font-bold rounded-lg border-2 border-blue-500 hover:bg-blue-200 transition-all text-sm">
+                        <span class="mr-2">📋</span>
+                        <span>CSV</span>
+                    </a>
+                    <a href="{{ url_for('api_v1.export_users_pdf') }}" 
+                       onclick="exportAllUsersPDF(event)"
+                       class="inline-flex items-center px-4 py-2 bg-red-100 text-red-700 font-bold rounded-lg border-2 border-red-500 hover:bg-red-200 transition-all text-sm">
+                        <span class="mr-2">📄</span>
+                        <span>PDF</span>
+                    </a>
+                </div>
+                {% endif %}
             </div>
             
             <div class="bg-white rounded-lg border-2 border-dotted border-blue-500 p-6">
@@ -254,4 +278,66 @@
         </div>
     </div>
 </div>
+
+<script>
+// Fonction pour exporter tous les utilisateurs en PDF
+function exportAllUsersPDF(event) {
+    event.preventDefault();
+    
+    // Récupérer tous les IDs des utilisateurs affichés
+    const userIds = [];
+    {% for user in users %}
+    userIds.push({{ user.id }});
+    {% endfor %}
+    
+    if (userIds.length === 0) {
+        alert('Aucun talent à exporter');
+        return;
+    }
+    
+    // Créer un formulaire caché pour envoyer la requête POST
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ url_for("api_v1.export_users_pdf") }}';
+    form.style.display = 'none';
+    
+    // Ajouter le token CSRF
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrf_token';
+    csrfInput.value = '{{ csrf_token() }}';
+    form.appendChild(csrfInput);
+    
+    // Créer une requête avec fetch pour envoyer les IDs en JSON
+    fetch('{{ url_for("api_v1.export_users_pdf") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ user_ids: userIds })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erreur lors de l\'export');
+        }
+        return response.blob();
+    })
+    .then(blob => {
+        // Créer un lien de téléchargement
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'talento_users_' + new Date().toISOString().slice(0,10) + '.pdf';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        alert('Erreur lors de l\'export PDF');
+    });
+}
+</script>
 {% endblock %}

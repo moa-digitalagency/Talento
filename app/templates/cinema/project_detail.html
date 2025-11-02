@@ -278,9 +278,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Créer un mapping des talents (valeur affichée -> ID)
     const talentsMap = new Map();
     {% for talent in all_cinema_talents %}
-    talentsMap.set('{{ (talent.unique_code ~ " - " ~ talent.first_name ~ " " ~ talent.last_name)|escapejs }}', '{{ talent.id }}');
-    talentsMap.set('{{ talent.unique_code|escapejs }}', '{{ talent.id }}');  // Aussi accepter juste le code
-    talentsMap.set('{{ (talent.first_name ~ " " ~ talent.last_name)|escapejs }}'.toLowerCase(), '{{ talent.id }}');  // Aussi accepter juste le nom
+    talentsMap.set('{{ (talent.unique_code ~ " - " ~ talent.first_name ~ " " ~ talent.last_name)|replace("'", "\\'")|replace('"', '\\"') }}', '{{ talent.id }}');
+    talentsMap.set('{{ talent.unique_code|replace("'", "\\'")|replace('"', '\\"') }}', '{{ talent.id }}');  // Aussi accepter juste le code
+    talentsMap.set('{{ (talent.first_name ~ " " ~ talent.last_name)|replace("'", "\\'")|replace('"', '\\"') }}'.toLowerCase(), '{{ talent.id }}');  // Aussi accepter juste le nom
     {% endfor %}
     
     // Fonction pour mettre à jour le statut de sélection
