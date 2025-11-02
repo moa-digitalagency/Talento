@@ -31,11 +31,24 @@ def get_cities():
     else:
         cities = City.query.order_by(City.name).all()
     
+    # Séparer "Ville non listée" pour la mettre en dernier
+    ville_non_listee = []
+    other_cities = []
+    
+    for city in cities:
+        if city.name == "Ville non listée":
+            ville_non_listee.append(city)
+        else:
+            other_cities.append(city)
+    
+    # Réorganiser: autres villes d'abord, puis "Ville non listée"
+    sorted_cities = other_cities + ville_non_listee
+    
     return jsonify([{
         'id': c.id,
         'name': c.name,
         'code': c.code
-    } for c in cities])
+    } for c in sorted_cities])
 
 @bp.route('/talents')
 def get_talents():

@@ -273,6 +273,19 @@ class ExportService:
         
         elements.append(Paragraph(footer_text, footer_style))
         
+        # Footer dynamique depuis les paramètres
+        pdf_footer = AppSettings.get('pdf_footer_talent_list', 'Plateforme taalentio.com - Centralisation des Talents')
+        if pdf_footer:
+            elements.append(Spacer(1, 5))
+            footer_custom_style = ParagraphStyle(
+                'FooterCustom',
+                parent=styles['Normal'],
+                fontSize=9,
+                textColor=colors.HexColor('#6B7280'),
+                alignment=TA_CENTER
+            )
+            elements.append(Paragraph(pdf_footer, footer_custom_style))
+        
         doc.build(elements)
         buffer.seek(0)
         return buffer.getvalue()

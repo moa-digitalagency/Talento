@@ -137,8 +137,21 @@ def get_cities():
         
         cities = query.order_by(City.name).all()
         
-        cities_data = []
+        # Séparer "Ville non listée" pour la mettre en dernier
+        ville_non_listee = []
+        other_cities = []
+        
         for city in cities:
+            if city.name == "Ville non listée":
+                ville_non_listee.append(city)
+            else:
+                other_cities.append(city)
+        
+        # Réorganiser: autres villes d'abord, puis "Ville non listée"
+        sorted_cities = other_cities + ville_non_listee
+        
+        cities_data = []
+        for city in sorted_cities:
             cities_data.append({
                 'id': city.id,
                 'name': city.name,
