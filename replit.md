@@ -77,6 +77,14 @@ The platform manages two sets of location data for each user:
   - Removed unnecessary PageBreak in Talent PDF that was causing blank second pages
   - Fixed Cinema Talent PDF header: removed subtitle text "Profil Cinématographique - Talents du Cinéma Africain" and green line, kept only blue separator line
   - Enhanced cinema project badge generation to properly display profile photo or ID photo with multiple path fallbacks instead of placeholder image
+- ✅ **[02/11/2025]** Implemented image lightbox functionality for profile photo viewing:
+  - Added JavaScript-based lightbox for viewing profile photos and gallery images in full screen
+  - Created `/app/static/js/image-lightbox.js` - standalone lightbox module with keyboard navigation support (Esc, Arrow keys)
+  - Created `/app/static/css/lightbox.css` - responsive lightbox styles with mobile breakpoints
+  - Updated `profile/view.html` to enable lightbox on talent profile photos
+  - Updated `cinema/profile_view.html` to enable lightbox on cinema talent profile photos and gallery images with navigation between photos
+  - Gallery images in cinema profiles can be navigated using previous/next buttons or keyboard arrows
+  - Lightbox features: click to enlarge, keyboard navigation, image counter for galleries, responsive design
 
 ## External Dependencies
 
