@@ -1789,9 +1789,9 @@ def generate_project_badge(project_talent_id):
         # Photo path
         photo_path = None
         if talent.profile_photo_filename:
-            photo_path = os.path.join('app', 'static', 'uploads', 'photos', talent.profile_photo_filename)
+            photo_path = os.path.join('app', 'static', 'uploads', 'cinema_photos', talent.profile_photo_filename)
             if not os.path.exists(photo_path):
-                photo_path = os.path.join('static', 'uploads', 'photos', talent.profile_photo_filename)
+                photo_path = os.path.join('static', 'uploads', 'cinema_photos', talent.profile_photo_filename)
                 if not os.path.exists(photo_path):
                     photo_path = None
         
