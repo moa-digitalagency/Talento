@@ -76,10 +76,15 @@ def users():
     city_filter = request.args.get('city')
     talent_filter = request.args.getlist('talent')
     
-    # Exclure les admins ET les talents cinéma (codes de 11 ou 13 caractères)
+    # Sous-requête pour identifier les utilisateurs ayant au moins un talent général
+    users_with_general_talents_subquery = db.session.query(User.id).join(UserTalent).join(Talent).filter(
+        Talent.tag == 'general'
+    ).distinct().subquery()
+    
+    # Requête principale - n'afficher que les utilisateurs avec au moins un talent général
     query = User.query.filter(
         User.is_admin == False,
-        func.length(User.unique_code) == 10
+        User.id.in_(db.session.query(users_with_general_talents_subquery))
     )
     
     if search_query:
@@ -106,11 +111,11 @@ def users():
         query = query.filter(User.gender == gender_filter)
     
     if city_filter:
-        query = query.filter(User.city_id == int(city_filter))
+        query = query.filter(User.residence_city_id == int(city_filter))
     
     if talent_filter:
         talent_ids = [int(tid) for tid in talent_filter]
-        query = query.join(User.talents).filter(UserTalent.talent_id.in_(talent_ids)).group_by(User.id).having(func.count(func.distinct(UserTalent.talent_id)) == len(talent_ids))
+        query = query.join(UserTalent).filter(UserTalent.talent_id.in_(talent_ids)).group_by(User.id).having(func.count(func.distinct(UserTalent.talent_id)) == len(talent_ids))
     
     all_users = query.order_by(User.created_at.desc()).all()
     
@@ -151,11 +156,10 @@ def delete_user(user_id):
 @login_required
 @recruiter_or_admin_required
 def export_excel():
-    # Exclure les admins et talents cinéma (uniquement codes de 10 caractères)
+    # Exclure les admins et n'exporter que les utilisateurs avec talents généraux
     users = User.query.filter(
-        User.is_admin == False,
-        func.length(User.unique_code) == 10
-    ).all()
+        User.is_admin == False
+    ).join(UserTalent).join(Talent).filter(Talent.tag == 'general').distinct().all()
     excel_bytes = ExportService.export_to_excel(users)
     
     buffer = io.BytesIO(excel_bytes)
@@ -172,11 +176,10 @@ def export_excel():
 @login_required
 @recruiter_or_admin_required
 def export_csv():
-    # Exclure les admins et talents cinéma (uniquement codes de 10 caractères)
+    # Exclure les admins et n'exporter que les utilisateurs avec talents généraux
     users = User.query.filter(
-        User.is_admin == False,
-        func.length(User.unique_code) == 10
-    ).all()
+        User.is_admin == False
+    ).join(UserTalent).join(Talent).filter(Talent.tag == 'general').distinct().all()
     csv_data = ExportService.export_to_csv(users)
     
     buffer = io.BytesIO()
@@ -195,11 +198,10 @@ def export_csv():
 @recruiter_or_admin_required
 def export_pdf():
     try:
-        # Exclure les admins et talents cinéma (uniquement codes de 10 caractères)
+        # Exclure les admins et n'exporter que les utilisateurs avec talents généraux
         users = User.query.filter(
-            User.is_admin == False,
-            func.length(User.unique_code) == 10
-        ).all()
+            User.is_admin == False
+        ).join(UserTalent).join(Talent).filter(Talent.tag == 'general').distinct().all()
         pdf_bytes = ExportService.export_list_to_pdf(users, current_user=current_user)
         
         from app.services.logging_service import LoggingService

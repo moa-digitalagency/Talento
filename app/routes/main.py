@@ -48,10 +48,15 @@ def admin_dashboard():
     date_from = request.args.get('date_from')
     date_to = request.args.get('date_to')
     
-    # Base query - exclure les admins ET les talents cinéma (codes de 11 ou 13 caractères)
+    # Sous-requête pour identifier les utilisateurs ayant au moins un talent général
+    users_with_general_talents_subquery = db.session.query(User.id).join(UserTalent).join(Talent).filter(
+        Talent.tag == 'general'
+    ).distinct().subquery()
+    
+    # Base query - exclure les admins et n'afficher que les utilisateurs avec au moins un talent general
     query = User.query.filter(
         User.is_admin == False,
-        func.length(User.unique_code) == 10
+        User.id.in_(db.session.query(users_with_general_talents_subquery))
     )
     
     # Filtres de recherche (sans phone/whatsapp qui sont chiffrés)
@@ -79,7 +84,7 @@ def admin_dashboard():
     
     if talent_filter:
         for talent_id in talent_filter:
-            query = query.join(User.talents).filter(UserTalent.talent_id == int(talent_id))
+            query = query.join(UserTalent).filter(UserTalent.talent_id == int(talent_id))
     
     if country_filter:
         query = query.filter(User.country_id == int(country_filter))
@@ -129,15 +134,15 @@ def admin_dashboard():
         
         # Récupérer tous les users avec autres filtres (sans search_query)
         # pour chercher dans phone/whatsapp
-        base_query = User.query.filter(User.is_admin == False)
-        
-        # Filtrer les talents cinéma (uniquement codes de 10 caractères pour talents standards)
-        base_query = base_query.filter(func.length(User.unique_code) == 10)
+        base_query = User.query.filter(
+            User.is_admin == False,
+            User.id.in_(db.session.query(users_with_general_talents_subquery))
+        )
         
         # Réappliquer tous les filtres sauf search_query
         if talent_filter:
             for talent_id in talent_filter:
-                base_query = base_query.join(User.talents).filter(UserTalent.talent_id == int(talent_id))
+                base_query = base_query.join(UserTalent).filter(UserTalent.talent_id == int(talent_id))
         if country_filter:
             base_query = base_query.filter(User.country_id == int(country_filter))
         if city_filter:
@@ -186,12 +191,11 @@ def admin_dashboard():
     else:
         users = query.order_by(User.created_at.desc()).all()
     
-    # Statistiques générales basées sur les utilisateurs actifs (exclure talents cinéma)
+    # Statistiques générales basées sur les utilisateurs actifs (uniquement talents généraux)
     total_users = User.query.filter(
         User.account_active == True,
-        User.is_admin == False,
-        func.length(User.unique_code) == 10
-    ).count()
+        User.is_admin == False
+    ).join(UserTalent).join(Talent).filter(Talent.tag == 'general').distinct().count()
     
     # Nombre de compétences sélectionnées par les talents (pas le total disponible)
     total_talents_selected = db.session.query(func.count(func.distinct(UserTalent.talent_id))).filter(
@@ -214,12 +218,11 @@ def admin_dashboard():
         User.country_id.isnot(None)
     ).scalar() or 0
     
-    # Utilisateurs récents (derniers 6) - exclure talents cinéma
+    # Utilisateurs récents (derniers 6) - uniquement talents généraux
     recent_users = User.query.filter(
         User.account_active == True,
-        User.is_admin == False,
-        func.length(User.unique_code) == 10
-    ).order_by(desc(User.created_at)).limit(6).all()
+        User.is_admin == False
+    ).join(UserTalent).join(Talent).filter(Talent.tag == 'general').distinct().order_by(desc(User.created_at)).limit(6).all()
     
     # Top 10 compétences les plus sélectionnées par les utilisateurs
     top_talents = db.session.query(
@@ -286,12 +289,11 @@ def talents():
     city_filter = request.args.get('city')
     gender_filter = request.args.get('gender')
     
-    # Obtenir tous les utilisateurs avec filtres - exclure les talents cinéma (codes de 11 ou 13 caractères)
+    # Obtenir tous les utilisateurs avec filtres - uniquement talents généraux
     user_query = User.query.filter(
         User.account_active == True,
-        User.is_admin == False,
-        func.length(User.unique_code) == 10
-    )
+        User.is_admin == False
+    ).join(UserTalent).join(Talent).filter(Talent.tag == 'general').distinct()
     
     # Filtrer par talent si sélectionné dans le dropdown
     if talent_filter:
