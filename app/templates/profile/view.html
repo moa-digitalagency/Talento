@@ -62,7 +62,8 @@
                         {% if user.photo_filename %}
                         <img src="{{ url_for('static', filename='uploads/photos/' + user.photo_filename) }}" 
                              alt="{{ user.full_name }}" 
-                             class="w-48 h-48 rounded-full mx-auto mb-6 object-cover border-4 border-blue-500 shadow-xl">
+                             class="w-48 h-48 rounded-full mx-auto mb-6 object-cover border-4 border-blue-500 shadow-xl lightbox-trigger"
+                             data-image-src="{{ url_for('static', filename='uploads/photos/' + user.photo_filename) }}">
                         {% else %}
                         <div class="w-48 h-48 rounded-full mx-auto mb-6 bg-blue-500 flex items-center justify-center text-white text-6xl font-bold border-4 border-blue-500 shadow-xl">
                             {{ user.first_name[0] if user.first_name else '?' }}{{ user.last_name[0] if user.last_name else '?' }}
