@@ -321,7 +321,10 @@ class ExportService:
         )
         
         # Ajout du logo
-        logo_path = os.path.join('static', 'img', 'logo-full.png')
+        logo_path = os.path.join('app', 'static', 'img', 'logo-full.png')
+        if not os.path.exists(logo_path):
+            logo_path = os.path.join('static', 'img', 'logo-full.png')
+        
         if os.path.exists(logo_path):
             try:
                 logo = Image(logo_path, width=2.5*inch, height=1*inch, kind='proportional')
@@ -801,7 +804,10 @@ class ExportService:
         )
         
         # Ajout du logo
-        logo_path = os.path.join('static', 'img', 'logo-full.png')
+        logo_path = os.path.join('app', 'static', 'img', 'logo-full.png')
+        if not os.path.exists(logo_path):
+            logo_path = os.path.join('static', 'img', 'logo-full.png')
+        
         if os.path.exists(logo_path):
             try:
                 logo = Image(logo_path, width=2.5*inch, height=1*inch, kind='proportional')

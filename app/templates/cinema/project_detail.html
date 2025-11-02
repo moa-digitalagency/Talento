@@ -112,13 +112,20 @@
                 <label for="cinema_talent_id" class="block text-sm font-semibold text-gray-700 mb-2">
                     Sélectionner un talent <span class="text-red-500">*</span>
                 </label>
+                
+                <!-- Champ de recherche -->
+                <input type="text" 
+                       id="talent_search" 
+                       placeholder="🔍 Rechercher par nom ou code..."
+                       class="w-full px-4 py-2 mb-2 border-2 border-purple-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all">
+                
                 <select id="cinema_talent_id" 
                         name="cinema_talent_id" 
                         required
                         class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all">
                     <option value="">-- Choisir un talent --</option>
                     {% for talent in all_cinema_talents %}
-                    <option value="{{ talent.id }}">
+                    <option value="{{ talent.id }}" data-name="{{ talent.first_name }} {{ talent.last_name }}" data-code="{{ talent.unique_code }}">
                         {{ talent.first_name }} {{ talent.last_name }} ({{ talent.unique_code }})
                     </option>
                     {% endfor %}
@@ -255,4 +262,60 @@
     </div>
     {% endif %}
 </div>
+
+<script>
+// Fonction de recherche pour le select de talents
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('talent_search');
+    const selectElement = document.getElementById('cinema_talent_id');
+    
+    if (searchInput && selectElement) {
+        const allOptions = Array.from(selectElement.options);
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const currentSelection = selectElement.value;
+            
+            // Réinitialiser le select
+            selectElement.innerHTML = '';
+            
+            if (searchTerm === '') {
+                // Si la recherche est vide, afficher toutes les options
+                allOptions.forEach(option => {
+                    selectElement.appendChild(option.cloneNode(true));
+                });
+            } else {
+                // Filtrer les options
+                const defaultOption = allOptions[0].cloneNode(true);
+                selectElement.appendChild(defaultOption);
+                
+                let matchCount = 0;
+                allOptions.slice(1).forEach(option => {
+                    const name = (option.dataset.name || '').toLowerCase();
+                    const code = (option.dataset.code || '').toLowerCase();
+                    
+                    if (name.includes(searchTerm) || code.includes(searchTerm)) {
+                        selectElement.appendChild(option.cloneNode(true));
+                        matchCount++;
+                    }
+                });
+                
+                // Si aucun résultat, afficher un message
+                if (matchCount === 0) {
+                    const noResultOption = document.createElement('option');
+                    noResultOption.textContent = '❌ Aucun talent trouvé';
+                    noResultOption.disabled = true;
+                    selectElement.appendChild(noResultOption);
+                }
+            }
+            
+            // Restaurer la sélection précédente si elle existe toujours dans les options filtrées
+            if (currentSelection) {
+                selectElement.value = currentSelection;
+            }
+        });
+    }
+});
+</script>
+
 {% endblock %}
