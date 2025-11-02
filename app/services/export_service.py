@@ -843,9 +843,9 @@ class ExportService:
         
         # Générer la photo ou le placeholder
         photo_element = None
-        if cinema_talent.id_photo_filename:
+        if cinema_talent.profile_photo_filename:
             try:
-                photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'photos', cinema_talent.id_photo_filename)
+                photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'cinema_photos', cinema_talent.profile_photo_filename)
                 if os.path.exists(photo_path):
                     photo_element = Image(photo_path, width=1.8*inch, height=1.8*inch)
             except:
@@ -1354,7 +1354,7 @@ class ExportService:
         # Photo de profil
         if cinema_talent.profile_photo_filename:
             try:
-                photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'photos', cinema_talent.profile_photo_filename)
+                photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'cinema_photos', cinema_talent.profile_photo_filename)
                 if os.path.exists(photo_path):
                     img = Image(photo_path, width=1.5*inch, height=1.5*inch)
                     label = Paragraph("<b>Photo de profil</b>", styles['Normal'])
@@ -1365,7 +1365,7 @@ class ExportService:
         # Photo d'identité
         if cinema_talent.id_photo_filename:
             try:
-                photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'photos', cinema_talent.id_photo_filename)
+                photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'cinema_photos', cinema_talent.id_photo_filename)
                 if os.path.exists(photo_path):
                     img = Image(photo_path, width=1.5*inch, height=1.5*inch)
                     label = Paragraph("<b>Photo d'identité</b>", styles['Normal'])
@@ -1378,7 +1378,7 @@ class ExportService:
             gallery = json.loads(cinema_talent.gallery_photos) if cinema_talent.gallery_photos else []
             for idx, photo_filename in enumerate(gallery, 1):
                 try:
-                    photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'photos', photo_filename)
+                    photo_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'cinema_photos', photo_filename)
                     if os.path.exists(photo_path):
                         img = Image(photo_path, width=1.5*inch, height=1.5*inch)
                         label = Paragraph(f"<b>Photo {idx}</b>", styles['Normal'])

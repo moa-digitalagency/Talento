@@ -43,8 +43,8 @@
                 
                 <!-- Photo -->
                 <div class="flex-shrink-0 mx-auto lg:mx-0">
-                    {% if talent.id_photo_filename %}
-                    <img src="{{ url_for('static', filename='uploads/photos/' + talent.id_photo_filename) }}" 
+                    {% if talent.profile_photo_filename %}
+                    <img src="{{ url_for('static', filename='uploads/cinema_photos/' + talent.profile_photo_filename) }}" 
                          alt="{{ talent.full_name }}" 
                          class="w-48 h-48 rounded-full object-cover border-4 border-blue-500 shadow-xl">
                     {% else %}
@@ -405,32 +405,16 @@
                 <span>Galerie photos</span>
             </h2>
             
-            {% if talent.photo_1 or talent.photo_2 or talent.photo_3 %}
+            {% if parsed.gallery and parsed.gallery|length > 0 %}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% if talent.photo_1 %}
+                {% for photo_filename in parsed.gallery %}
                 <div class="bg-white p-4 rounded-lg border-2 border-emerald-200 shadow-sm">
-                    <img src="{{ url_for('static', filename='uploads/photos/' + talent.photo_1) }}" 
-                         alt="Photo 1" 
+                    <img src="{{ url_for('static', filename='uploads/cinema_photos/' + photo_filename) }}" 
+                         alt="Photo galerie" 
                          class="w-full h-64 object-cover rounded-lg">
-                    <p class="text-center text-sm text-gray-600 mt-2 font-semibold">Photo 1</p>
+                    <p class="text-center text-sm text-gray-600 mt-2 font-semibold">Photo {{ loop.index }}</p>
                 </div>
-                {% endif %}
-                {% if talent.photo_2 %}
-                <div class="bg-white p-4 rounded-lg border-2 border-emerald-200 shadow-sm">
-                    <img src="{{ url_for('static', filename='uploads/photos/' + talent.photo_2) }}" 
-                         alt="Photo 2" 
-                         class="w-full h-64 object-cover rounded-lg">
-                    <p class="text-center text-sm text-gray-600 mt-2 font-semibold">Photo 2</p>
-                </div>
-                {% endif %}
-                {% if talent.photo_3 %}
-                <div class="bg-white p-4 rounded-lg border-2 border-emerald-200 shadow-sm">
-                    <img src="{{ url_for('static', filename='uploads/photos/' + talent.photo_3) }}" 
-                         alt="Photo 3" 
-                         class="w-full h-64 object-cover rounded-lg">
-                    <p class="text-center text-sm text-gray-600 mt-2 font-semibold">Photo 3</p>
-                </div>
-                {% endif %}
+                {% endfor %}
             </div>
             {% else %}
             <div class="bg-white p-8 rounded-lg border-2 border-emerald-200 text-center">
