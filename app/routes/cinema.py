@@ -88,7 +88,15 @@ def add_production():
             
             # Informations de base
             production.name = request.form.get('name')
-            production.logo_url = request.form.get('logo_url')
+            
+            # Gérer l'upload du logo
+            if 'logo_file' in request.files:
+                logo_file = request.files['logo_file']
+                if logo_file and logo_file.filename:
+                    from app.utils.file_handler import FileHandler
+                    logo_url = FileHandler.save_production_logo(logo_file)
+                    production.logo_url = logo_url
+            
             production.description = request.form.get('description')
             production.specialization = request.form.get('specialization')
             
@@ -197,7 +205,17 @@ def edit_production(production_id):
         try:
             # Informations de base
             production.name = request.form.get('name')
-            production.logo_url = request.form.get('logo_url')
+            
+            # Gérer l'upload du logo (seulement si un nouveau fichier est uploadé)
+            if 'logo_file' in request.files:
+                logo_file = request.files['logo_file']
+                if logo_file and logo_file.filename:
+                    from app.utils.file_handler import FileHandler
+                    logo_url = FileHandler.save_production_logo(logo_file)
+                    if logo_url:
+                        production.logo_url = logo_url
+            # Si aucun nouveau fichier, conserver le logo existant
+            
             production.description = request.form.get('description')
             production.specialization = request.form.get('specialization')
             

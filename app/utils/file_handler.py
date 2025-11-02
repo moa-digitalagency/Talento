@@ -13,6 +13,7 @@ import uuid
 
 ALLOWED_PHOTO_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 ALLOWED_CV_EXTENSIONS = {'pdf', 'doc', 'docx'}
+ALLOWED_LOGO_EXTENSIONS = {'png', 'jpg', 'jpeg', 'svg'}
 
 def allowed_file(filename, allowed_extensions):
     """Check if file extension is allowed"""
@@ -55,3 +56,30 @@ def delete_file(filename, upload_type='photo'):
     
     if os.path.exists(file_path):
         os.remove(file_path)
+
+class FileHandler:
+    """Gestionnaire de fichiers pour uploads"""
+    
+    @staticmethod
+    def save_production_logo(file):
+        """
+        Sauvegarder le logo d'une production
+        Retourne l'URL du logo sauvegardé
+        """
+        if not file or file.filename == '':
+            return None
+        
+        if not allowed_file(file.filename, ALLOWED_LOGO_EXTENSIONS):
+            return None
+        
+        original_filename = secure_filename(file.filename)
+        extension = original_filename.rsplit('.', 1)[1].lower()
+        unique_filename = f"production_logo_{uuid.uuid4().hex}.{extension}"
+        
+        upload_path = os.path.join(current_app.config['UPLOAD_FOLDER'], 'production_logos')
+        os.makedirs(upload_path, exist_ok=True)
+        
+        file_path = os.path.join(upload_path, unique_filename)
+        file.save(file_path)
+        
+        return f"/uploads/production_logos/{unique_filename}"
