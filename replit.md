@@ -85,6 +85,20 @@ The platform manages two sets of location data for each user:
   - Updated `cinema/profile_view.html` to enable lightbox on cinema talent profile photos and gallery images with navigation between photos
   - Gallery images in cinema profiles can be navigated using previous/next buttons or keyboard arrows
   - Lightbox features: click to enlarge, keyboard navigation, image counter for galleries, responsive design
+- ✅ **[02/11/2025]** Implemented image cropping functionality with Cropper.js for all photo uploads:
+  - Integrated Cropper.js library (v1.6.1) via CDN for professional image cropping capabilities
+  - Created `/app/static/js/image-cropper.js` - standalone cropper manager with 1:1 aspect ratio enforcement
+  - Created `/app/static/css/image-cropper.css` - modern modal UI with gradient header and responsive design
+  - Automatically intercepts all single-file image uploads and opens cropping modal
+  - Features: zoom controls, 90° rotation, drag to reposition, high-quality output (800x800px JPEG)
+  - Real-time preview of cropped image before form submission
+  - Prevents distorted photos by enforcing square 1:1 ratio for all profile photos
+  - Mobile-responsive design with touch support for crop adjustments
+- ✅ **[02/11/2025]** Updated city naming convention from "Autres" to "Ville non listée":
+  - Modified `init_essential_data.py` to create "Ville non listée" entries (code: VNL) for all 194 countries
+  - Updated database schema to use more descriptive city option for unlisted locations
+  - Improved user experience with clearer labeling in city selection dropdowns
+  - Change applies to both general talent registration and cinema talent registration forms
 
 ## External Dependencies
 

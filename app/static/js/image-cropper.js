@@ -4,6 +4,7 @@ class ImageCropperManager {
         this.currentInput = null;
         this.currentFile = null;
         this.modal = null;
+        this.isProcessing = false;
         this.init();
     }
 
@@ -138,7 +139,7 @@ class ImageCropperManager {
         });
     }
 
-    close() {
+    close(skipResetInput = false) {
         this.modal.classList.remove('active');
         document.body.style.overflow = '';
         
@@ -147,11 +148,14 @@ class ImageCropperManager {
             this.cropper = null;
         }
 
-        if (this.currentInput) {
+        if (this.currentInput && !skipResetInput) {
             this.currentInput.value = '';
-            this.currentInput = null;
         }
-        this.currentFile = null;
+        
+        if (!skipResetInput) {
+            this.currentInput = null;
+            this.currentFile = null;
+        }
     }
 
     zoom(ratio) {
@@ -169,6 +173,8 @@ class ImageCropperManager {
     confirm() {
         if (!this.cropper || !this.currentInput) return;
 
+        this.isProcessing = true;
+
         this.cropper.getCroppedCanvas({
             width: 800,
             height: 800,
@@ -185,12 +191,13 @@ class ImageCropperManager {
             dataTransfer.items.add(croppedFile);
             this.currentInput.files = dataTransfer.files;
 
-            const changeEvent = new Event('change', { bubbles: true });
-            this.currentInput.dispatchEvent(changeEvent);
-
             this.showPreview(this.currentInput);
             
-            this.close();
+            this.close(true);
+            
+            this.currentInput = null;
+            this.currentFile = null;
+            this.isProcessing = false;
         }, 'image/jpeg', 0.95);
     }
 
@@ -227,6 +234,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const photoInputs = document.querySelectorAll('input[type="file"][accept*="image"]');
     photoInputs.forEach(input => {
         input.addEventListener('change', function(e) {
+            if (cropperManager.isProcessing) {
+                return;
+            }
+            
             if (this.files && this.files.length > 0) {
                 if (this.multiple) {
                     return;
