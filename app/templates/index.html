@@ -274,9 +274,15 @@
                             </td>
                             <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">
                                 <div class="flex items-center gap-2 sm:gap-3">
+                                    {% if user.photo_filename %}
+                                    <img src="{{ url_for('static', filename='uploads/photos/' + user.photo_filename) }}" 
+                                         alt="{{ user.full_name }}"
+                                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-cyan-500">
+                                    {% else %}
                                     <div class="w-8 h-8 sm:w-10 sm:h-10 bg-cyan-600 rounded-full flex items-center justify-center text-white font-bold text-xs sm:text-base">
                                         {{ user.first_name[0] if user.first_name else '?' }}{{ user.last_name[0] if user.last_name else '?' }}
                                     </div>
+                                    {% endif %}
                                     <span class="font-semibold text-gray-900 text-sm sm:text-base">{{ user.full_name }}</span>
                                 </div>
                             </td>
