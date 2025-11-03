@@ -31,12 +31,13 @@ class CVAnalyzerService:
         Returns:
             dict: Résultats de l'analyse avec score et recommandations
         """
-        api_key = os.environ.get('OPENROUTER_API_KEY')
+        from app.services.ai_provider_service import AIProviderService
         
-        if not api_key:
+        config = AIProviderService.get_ai_config()
+        if not config['api_key']:
             return {
                 'success': False,
-                'error': 'OPENROUTER_API_KEY non configurée',
+                'error': f"Clé API {config['provider']} non configurée",
                 'score': 0
             }
         
@@ -52,35 +53,15 @@ class CVAnalyzerService:
             
             analysis_prompt = CVAnalyzerService._build_analysis_prompt(cv_text, user_data)
             
-            response = requests.post(
-                'https://openrouter.ai/api/v1/chat/completions',
-                headers={
-                    'Authorization': f'Bearer {api_key}',
-                    'Content-Type': 'application/json',
-                    'HTTP-Referer': os.environ.get('REPLIT_DEV_DOMAIN', 'http://localhost:5004'),
-                },
-                json={
-                    'model': 'google/gemini-2.5-flash',
-                    'messages': [
-                        {
-                            'role': 'system',
-                            'content': 'Tu es un expert RH qui analyse des CV et profils professionnels. Réponds toujours en JSON valide.'
-                        },
-                        {
-                            'role': 'user',
-                            'content': analysis_prompt
-                        }
-                    ],
-                    'temperature': 0.3,
-                    'max_tokens': 1000
-                },
+            result = AIProviderService.call_ai(
+                prompt=analysis_prompt,
+                system_message='Tu es un expert RH qui analyse des CV et profils professionnels. Réponds toujours en JSON valide.',
+                temperature=0.3,
                 timeout=30
             )
             
-            if response.status_code == 200:
-                result = response.json()
-                ai_response = result['choices'][0]['message']['content']
-                
+            if result['success']:
+                ai_response = result['content']
                 analysis = CVAnalyzerService._parse_ai_response(ai_response)
                 
                 return {
@@ -96,7 +77,7 @@ class CVAnalyzerService:
             else:
                 return {
                     'success': False,
-                    'error': f'Erreur API: {response.status_code}',
+                    'error': f'Erreur AI: {result.get("error", "Erreur inconnue")}',
                     'score': 0
                 }
                 
