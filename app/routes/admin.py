@@ -292,7 +292,12 @@ def analyze_cv(user_id):
         return jsonify({'error': 'Aucun CV disponible pour cet utilisateur'}), 400
     
     try:
-        analysis = CVAnalyzerService.analyze_cv(user)
+        user_data = {
+            'name': user.full_name,
+            'talents': [ut.talent_id for ut in user.user_talents] if user.user_talents else [],
+            'location': f"{user.city.name if user.city else ''}, {user.country.name if user.country else ''}"
+        }
+        analysis = CVAnalyzerService.analyze_cv(user.cv_filename, user_data)
         return jsonify(analysis)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -1799,6 +1804,15 @@ def test_openrouter():
                     help_msg = "<br><br><b>💡 Vérifiez:</b><br>"
                     help_msg += "• Clé API valide sur <a href='https://openrouter.ai/keys' target='_blank' class='underline'>openrouter.ai/keys</a><br>"
                     help_msg += "• Crédits disponibles"
+                elif provider == 'bytez':
+                    help_msg = "<br><br><b>💡 Vérifiez:</b><br>"
+                    help_msg += "• Clé API valide sur <a href='https://bytez.com/api' target='_blank' class='underline'>bytez.com/api</a><br>"
+                    help_msg += "• Vérifiez que vous avez bien copié la clé complète<br>"
+                    help_msg += "• Assurez-vous que votre clé a accès au modèle sélectionné"
+                elif provider == 'gemini':
+                    help_msg = "<br><br><b>💡 Vérifiez:</b><br>"
+                    help_msg += "• Clé API valide sur <a href='https://makersuite.google.com/app/apikey' target='_blank' class='underline'>Google AI Studio</a><br>"
+                    help_msg += "• Vérifiez que l'API Generative Language est activée"
             
             flash(f'Erreur {provider.upper()}: {error_msg}{help_msg}', 'error')
     except Exception as e:
