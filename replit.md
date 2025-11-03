@@ -113,6 +113,18 @@ The platform manages two sets of location data for each user:
   - Added BYTEZ_API_KEY environment variable support in `config.py`
   - Bytez provides access to hundreds of open-source and closed-source models through unified API
   - Documentation: https://docs.bytez.com/model-api/docs/welcome
+- ✅ **[03/11/2025]** Fixed and verified all AI provider API endpoints against official documentation:
+  - **Bytez endpoint corrected**: Changed from incorrect `/v1/chat/completions` to official `/models/v2/{model}/run`
+  - **Bytez response format fixed**: Updated to use `output` field and `max_new_tokens` parameter instead of OpenAI format
+  - **Google Gemini authentication improved**: Changed from query parameter to secure `x-goog-api-key` header (best practice)
+  - **All providers verified**: Confirmed OpenRouter, Perplexity, OpenAI, Gemini, and Bytez use correct official endpoints
+  - Added comprehensive documentation links in code comments for each provider
+  - Endpoints verified:
+    - OpenRouter: `https://openrouter.ai/api/v1/chat/completions` ✅
+    - Perplexity: `https://api.perplexity.ai/chat/completions` ✅
+    - OpenAI: `https://api.openai.com/v1/chat/completions` ✅
+    - Google Gemini: `https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent` ✅
+    - Bytez: `https://api.bytez.com/models/v2/{model}/run` ✅
 
 ## External Dependencies
 

@@ -187,7 +187,9 @@ class AIProviderService:
     @staticmethod
     def _call_gemini(config, prompt, system_message, temperature, timeout):
         """
-        Appelle l'API Google Gemini (format différent)
+        Appelle l'API Google Gemini (format spécifique Google)
+        Documentation: https://ai.google.dev/api/generate-content
+        Endpoint: https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent
         """
         api_key = config['api_key'].strip()
         
@@ -199,7 +201,6 @@ class AIProviderService:
             }
         
         endpoint = config['endpoint'].format(model=config['model'])
-        url = f"{endpoint}?key={api_key}"
         
         full_prompt = prompt
         if system_message:
@@ -221,10 +222,11 @@ class AIProviderService:
         
         try:
             response = requests.post(
-                url,
+                endpoint,
                 headers={
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'x-goog-api-key': api_key
                 },
                 json=data,
                 timeout=timeout
