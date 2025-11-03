@@ -535,6 +535,7 @@ def settings_api_keys():
     perplexity_key = AppSettings.get('perplexity_api_key', '')
     openai_key = AppSettings.get('openai_api_key', '')
     gemini_key = AppSettings.get('gemini_api_key', '')
+    bytez_key = AppSettings.get('bytez_api_key', '') or os.environ.get('BYTEZ_API_KEY', '')
     omdb_key = AppSettings.get('omdb_api_key', '') or os.environ.get('OMDB_API_KEY', '')
     sender_email = AppSettings.get('sender_email', 'noreply@myoneart.com')
     
@@ -544,12 +545,14 @@ def settings_api_keys():
     perplexity_model = AppSettings.get('perplexity_model', 'sonar')
     openai_model = AppSettings.get('openai_model', 'gpt-4o-mini')
     gemini_model = AppSettings.get('gemini_model', 'gemini-2.0-flash-exp')
+    bytez_model = AppSettings.get('bytez_model', 'Qwen/Qwen2.5-72B-Instruct')
     
     sendgrid_configured = bool(sendgrid_key)
     openrouter_configured = bool(openrouter_key)
     perplexity_configured = bool(perplexity_key)
     openai_configured = bool(openai_key)
     gemini_configured = bool(gemini_key)
+    bytez_configured = bool(bytez_key)
     omdb_configured = bool(omdb_key)
     
     def mask_key(key):
@@ -563,19 +566,22 @@ def settings_api_keys():
         'perplexity': perplexity_configured,
         'openai': openai_configured,
         'gemini': gemini_configured,
+        'bytez': bytez_configured,
         'omdb': omdb_configured,
         'sendgrid_key_masked': mask_key(sendgrid_key) if sendgrid_configured else '',
         'openrouter_key_masked': mask_key(openrouter_key) if openrouter_configured else '',
         'perplexity_key_masked': mask_key(perplexity_key) if perplexity_configured else '',
         'openai_key_masked': mask_key(openai_key) if openai_configured else '',
         'gemini_key_masked': mask_key(gemini_key) if gemini_configured else '',
+        'bytez_key_masked': mask_key(bytez_key) if bytez_configured else '',
         'omdb_key_masked': mask_key(omdb_key) if omdb_configured else '',
         'sendgrid_from': sender_email,
         'ai_provider': ai_provider,
         'openrouter_model': openrouter_model,
         'perplexity_model': perplexity_model,
         'openai_model': openai_model,
-        'gemini_model': gemini_model
+        'gemini_model': gemini_model,
+        'bytez_model': bytez_model
     }
     
     return render_template('admin/settings/api_keys.html', config=config_info)
@@ -1668,6 +1674,7 @@ def save_settings():
     perplexity_key = request.form.get('perplexity_api_key', '').strip()
     openai_key = request.form.get('openai_api_key', '').strip()
     gemini_key = request.form.get('gemini_api_key', '').strip()
+    bytez_key = request.form.get('bytez_api_key', '').strip()
     omdb_key = request.form.get('omdb_api_key', '').strip()
     sender_email = request.form.get('sender_email', '').strip() or 'noreply@myoneart.com'
     
@@ -1677,6 +1684,7 @@ def save_settings():
     perplexity_model = request.form.get('perplexity_model', '').strip() or 'sonar'
     openai_model = request.form.get('openai_model', '').strip() or 'gpt-4o-mini'
     gemini_model = request.form.get('gemini_model', '').strip() or 'gemini-2.0-flash-exp'
+    bytez_model = request.form.get('bytez_model', '').strip() or 'Qwen/Qwen2.5-72B-Instruct'
     
     # Enregistrer les clés API si elles ne commencent pas par '*' (masquées)
     if sendgrid_key and not sendgrid_key.startswith('*'):
@@ -1694,6 +1702,9 @@ def save_settings():
     if gemini_key and not gemini_key.startswith('*'):
         AppSettings.set('gemini_api_key', gemini_key)
     
+    if bytez_key and not bytez_key.startswith('*'):
+        AppSettings.set('bytez_api_key', bytez_key)
+    
     if omdb_key and not omdb_key.startswith('*'):
         AppSettings.set('omdb_api_key', omdb_key)
     
@@ -1703,6 +1714,7 @@ def save_settings():
     AppSettings.set('perplexity_model', perplexity_model)
     AppSettings.set('openai_model', openai_model)
     AppSettings.set('gemini_model', gemini_model)
+    AppSettings.set('bytez_model', bytez_model)
     AppSettings.set('sender_email', sender_email)
     
     flash('Paramètres sauvegardés avec succès.', 'success')
