@@ -56,7 +56,7 @@ class AIProviderService:
         elif provider == 'bytez':
             config['api_key'] = AppSettings.get('bytez_api_key') or os.environ.get('BYTEZ_API_KEY')
             config['model'] = AppSettings.get('bytez_model', 'Qwen/Qwen2.5-72B-Instruct')
-            config['endpoint'] = 'https://api.bytez.com/v1/chat/completions'
+            config['endpoint'] = 'https://api.bytez.com/models/v2/{model}/run'
         
         return config
     
@@ -266,9 +266,10 @@ class AIProviderService:
     @staticmethod
     def _call_bytez(config, prompt, system_message, temperature, timeout):
         """
-        Appelle l'API Bytez (compatible OpenAI format)
+        Appelle l'API Bytez (format spécifique Bytez, pas OpenAI)
         Supporte les modèles open-source et closed-source
         Documentation: https://docs.bytez.com/model-api/docs/welcome
+        Endpoint: https://api.bytez.com/models/v2/{model}/run
         """
         api_key = config['api_key'].strip()
         
@@ -297,17 +298,19 @@ class AIProviderService:
         })
         
         data = {
-            'model': config['model'],
             'messages': messages,
             'temperature': temperature,
-            'max_tokens': 2048
+            'max_new_tokens': 2048
         }
         
+        endpoint = config['endpoint'].format(model=config['model'])
+        
         logger.info(f"Appel API Bytez - Modèle: {config['model']}")
+        logger.info(f"Endpoint: {endpoint}")
         
         try:
             response = requests.post(
-                config['endpoint'],
+                endpoint,
                 headers=headers,
                 json=data,
                 timeout=timeout
@@ -315,7 +318,15 @@ class AIProviderService:
             
             if response.status_code == 200:
                 result = response.json()
-                content = result['choices'][0]['message']['content']
+                if result.get('error'):
+                    error_msg = f"Erreur API Bytez: {result.get('error')}"
+                    logger.error(error_msg)
+                    return {
+                        'success': False,
+                        'content': '',
+                        'error': error_msg
+                    }
+                content = result.get('output', '')
                 return {
                     'success': True,
                     'content': content,
@@ -323,7 +334,7 @@ class AIProviderService:
                 }
             else:
                 error_msg = f"Erreur API Bytez: {response.status_code} - {response.text[:500]}"
-                logger.error(f"{error_msg} | Endpoint: {config['endpoint']} | Modèle: {config['model']}")
+                logger.error(f"{error_msg} | Endpoint: {endpoint} | Modèle: {config['model']}")
                 return {
                     'success': False,
                     'content': '',
