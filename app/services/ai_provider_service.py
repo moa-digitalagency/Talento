@@ -341,12 +341,23 @@ class AIProviderService:
                     'error': ''
                 }
             else:
-                error_msg = f"Erreur API Bytez: {response.status_code} - {response.text[:500]}"
+                try:
+                    error_response = response.json()
+                    error_detail = error_response.get('error', response.text[:500])
+                    error_msg = f"Erreur API Bytez: {response.status_code} - {error_detail}"
+                except:
+                    error_msg = f"Erreur API Bytez: {response.status_code} - {response.text[:500]}"
+                
                 logger.error(f"{error_msg} | Endpoint: {endpoint} | Modèle: {config['model']}")
+                
+                help_text = ""
+                if response.status_code == 500:
+                    help_text = " Vérifiez que le modèle sélectionné est valide et disponible. Essayez un autre modèle comme 'Qwen/Qwen2.5-72B-Instruct' ou 'meta-llama/Llama-3.3-70B-Instruct'."
+                
                 return {
                     'success': False,
                     'content': '',
-                    'error': error_msg
+                    'error': error_msg + help_text
                 }
         except requests.exceptions.Timeout:
             error_msg = f"Timeout lors de l'appel à Bytez (>{timeout}s)"

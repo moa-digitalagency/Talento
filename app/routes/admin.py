@@ -505,10 +505,42 @@ def settings():
     
     sendgrid_key = AppSettings.get('sendgrid_api_key', '') or os.environ.get('SENDGRID_API_KEY', '')
     openrouter_key = AppSettings.get('openrouter_api_key', '') or os.environ.get('OPENROUTER_API_KEY', '')
+    omdb_key = AppSettings.get('omdb_api_key', '') or os.environ.get('OMDB_API_KEY', '')
     sender_email = AppSettings.get('sender_email', 'noreply@myoneart.com')
+    
+    ai_provider = AppSettings.get('ai_provider', 'openrouter')
+    
+    perplexity_key = AppSettings.get('perplexity_api_key', '')
+    openai_key = AppSettings.get('openai_api_key', '')
+    gemini_key = AppSettings.get('gemini_api_key', '')
+    bytez_key = AppSettings.get('bytez_api_key', '') or os.environ.get('BYTEZ_API_KEY', '')
     
     sendgrid_configured = bool(sendgrid_key)
     openrouter_configured = bool(openrouter_key)
+    omdb_configured = bool(omdb_key)
+    perplexity_configured = bool(perplexity_key)
+    openai_configured = bool(openai_key)
+    gemini_configured = bool(gemini_key)
+    bytez_configured = bool(bytez_key)
+    
+    ai_provider_configured = False
+    ai_provider_name = ''
+    
+    if ai_provider == 'openrouter':
+        ai_provider_configured = openrouter_configured
+        ai_provider_name = 'OpenRouter'
+    elif ai_provider == 'bytez':
+        ai_provider_configured = bytez_configured
+        ai_provider_name = 'Bytez'
+    elif ai_provider == 'perplexity':
+        ai_provider_configured = perplexity_configured
+        ai_provider_name = 'Perplexity'
+    elif ai_provider == 'openai':
+        ai_provider_configured = openai_configured
+        ai_provider_name = 'OpenAI'
+    elif ai_provider == 'gemini':
+        ai_provider_configured = gemini_configured
+        ai_provider_name = 'Gemini'
     
     def mask_key(key):
         if not key or len(key) < 8:
@@ -518,6 +550,10 @@ def settings():
     config_info = {
         'sendgrid': sendgrid_configured,
         'openrouter': openrouter_configured,
+        'omdb': omdb_configured,
+        'ai_provider': ai_provider,
+        'ai_provider_name': ai_provider_name,
+        'ai_provider_configured': ai_provider_configured,
         'sendgrid_key_masked': mask_key(sendgrid_key) if sendgrid_configured else '',
         'openrouter_key_masked': mask_key(openrouter_key) if openrouter_configured else '',
         'sendgrid_from': sender_email,

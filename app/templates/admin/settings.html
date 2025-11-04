@@ -29,10 +29,29 @@
                     <span class="text-3xl">🔑</span>
                     <h3 class="text-lg font-bold text-gray-800">Clés API</h3>
                 </div>
-                <p class="text-sm text-gray-600 mb-3">Gérer SendGrid, OpenRouter et autres services</p>
-                <div class="flex items-center gap-2 text-xs text-gray-500">
-                    <span class="{% if config.sendgrid %}text-green-600{% else %}text-red-600{% endif %}">● SendGrid</span>
-                    <span class="{% if config.openrouter %}text-green-600{% else %}text-red-600{% endif %}">● OpenRouter</span>
+                <p class="text-sm text-gray-600 mb-3">Gérer SendGrid, OMDB et fournisseurs d'IA</p>
+                <div class="grid grid-cols-1 gap-1 text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="{% if config.sendgrid %}text-green-600{% else %}text-red-600{% endif %}">●</span>
+                        <span class="text-gray-700">SendGrid</span>
+                        <span class="ml-auto {% if config.sendgrid %}text-green-600 font-semibold{% else %}text-red-600{% endif %}">
+                            {% if config.sendgrid %}✓{% else %}✗{% endif %}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="{% if config.omdb %}text-green-600{% else %}text-red-600{% endif %}">●</span>
+                        <span class="text-gray-700">OMDB</span>
+                        <span class="ml-auto {% if config.omdb %}text-green-600 font-semibold{% else %}text-red-600{% endif %}">
+                            {% if config.omdb %}✓{% else %}✗{% endif %}
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="{% if config.ai_provider_configured %}text-green-600{% else %}text-red-600{% endif %}">●</span>
+                        <span class="text-gray-700">{{ config.ai_provider_name or 'IA' }}</span>
+                        <span class="ml-auto {% if config.ai_provider_configured %}text-green-600 font-semibold{% else %}text-red-600{% endif %}">
+                            {% if config.ai_provider_configured %}✓{% else %}✗{% endif %}
+                        </span>
+                    </div>
                 </div>
             </a>
 
