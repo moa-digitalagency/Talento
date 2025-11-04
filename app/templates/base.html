@@ -99,12 +99,12 @@
                                 <span>🔐</span>
                                 <span>Connexion</span>
                             </a>
-                            <a href="{{ url_for('auth.register') }}" class="btn-primary px-4">
-                                ✨ <span>S'inscrire</span>
+                            <a href="{{ url_for('auth.register') }}" class="px-4 py-2 border-2 border-blue-600 text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-semibold">
+                                ✨ <span>Inscription Talent</span>
                             </a>
-                            <a href="{{ url_for('cinema.register_talent') }}" class="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg transition-all font-semibold">
+                            <a href="{{ url_for('cinema.register_talent') }}" class="px-4 py-2 border-2 border-red-600 text-red-600 hover:bg-red-50 rounded-lg transition-all font-semibold">
                                 <span>🎬</span>
-                                <span>Inscription Talent</span>
+                                <span>Inscription Cinema</span>
                             </a>
                         </div>
                         <!-- Mobile Hamburger Menu (Not Authenticated) -->
@@ -176,12 +176,12 @@
                         <span>🔐</span>
                         <span class="ml-2">Connexion</span>
                     </a>
-                    <a href="{{ url_for('auth.register') }}" class="block px-4 py-3 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-all font-semibold">
-                        ✨ <span class="ml-2">S'inscrire</span>
+                    <a href="{{ url_for('auth.register') }}" class="block px-4 py-3 border-2 border-blue-600 text-blue-600 hover:bg-blue-50 rounded-lg transition-all font-semibold">
+                        ✨ <span class="ml-2">Inscription Talent</span>
                     </a>
-                    <a href="{{ url_for('cinema.register_talent') }}" class="block px-4 py-3 bg-red-600 text-white hover:bg-red-700 rounded-lg transition-all font-semibold">
+                    <a href="{{ url_for('cinema.register_talent') }}" class="block px-4 py-3 border-2 border-red-600 text-red-600 hover:bg-red-50 rounded-lg transition-all font-semibold">
                         <span>🎬</span>
-                        <span class="ml-2">Inscription Talent</span>
+                        <span class="ml-2">Inscription Cinema</span>
                     </a>
                 {% endif %}
             </div>

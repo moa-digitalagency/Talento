@@ -268,13 +268,12 @@ class AIProviderService:
     @staticmethod
     def _call_bytez(config, prompt, system_message, temperature, timeout):
         """
-        Appelle l'API Bytez (format spécifique Bytez, pas OpenAI)
+        Appelle l'API Bytez (format spécifique Bytez - utilise 'text' pas 'messages')
         Supporte les modèles open-source et closed-source
         Documentation: https://docs.bytez.com/model-api/docs/welcome
-        Endpoint: https://api.bytez.com/models/v2/{model}
+        Endpoint: https://api.bytez.com/models/v2/{provider}/{model_id}
+        Format: POST avec {"text": "...", "params": {...}}
         """
-        import urllib.parse
-        
         api_key = config['api_key'].strip()
         
         if not api_key:
@@ -290,27 +289,24 @@ class AIProviderService:
             'Accept': 'application/json'
         }
         
-        messages = []
+        # Bytez utilise un format simple: juste 'text' avec le prompt complet
+        full_prompt = prompt
         if system_message:
-            messages.append({
-                'role': 'system',
-                'content': system_message
-            })
-        messages.append({
-            'role': 'user',
-            'content': prompt
-        })
+            full_prompt = f"{system_message}\n\n{prompt}"
         
+        # Format Bytez: text + params (pas de messages)
         data = {
-            'messages': messages,
+            'text': full_prompt,
+            'stream': False,
             'params': {
                 'temperature': temperature,
-                'max_length': 2048
+                'max_new_tokens': 2048
             }
         }
         
-        model_encoded = urllib.parse.quote(config['model'], safe='')
-        endpoint = config['endpoint'].format(model=model_encoded)
+        # Le modèle contient déjà provider/model (ex: Qwen/Qwen2.5-72B-Instruct)
+        # L'endpoint est: /models/v2/{model_complet}
+        endpoint = config['endpoint'].format(model=config['model'])
         
         logger.info(f"Appel API Bytez - Modèle: {config['model']}")
         logger.info(f"Endpoint: {endpoint}")
@@ -323,6 +319,9 @@ class AIProviderService:
                 timeout=timeout
             )
             
+            logger.info(f"Bytez response status: {response.status_code}")
+            logger.info(f"Bytez response: {response.text[:500]}")
+            
             if response.status_code == 200:
                 result = response.json()
                 if result.get('error'):
@@ -334,6 +333,8 @@ class AIProviderService:
                         'error': error_msg
                     }
                 content = result.get('output', '')
+                if not content:
+                    logger.warning(f"Bytez a retourné une réponse vide. Réponse complète: {result}")
                 return {
                     'success': True,
                     'content': content,
