@@ -202,19 +202,10 @@ class ExportService:
             except:
                 pass
         
-        title_style = ParagraphStyle(
-            'CustomTitle',
-            parent=styles['Heading1'],
-            fontSize=24,
-            textColor=colors.HexColor('#4F46E5'),
-            spaceAfter=20,
-            alignment=TA_CENTER
-        )
-        
-        elements.append(Paragraph("Liste de Talent", title_style))
+        # Titre retiré comme demandé
         elements.append(Spacer(1, 15))
         
-        data = [['Code', 'Nom Complet', 'Talents', 'Pays Origine', 'Ville Résidence', 'Téléphone', 'WhatsApp']]
+        data = [['Code', 'Nom Complet', 'Talents', 'Pays Origine', 'Ville Résidence', 'Téléphone', 'WhatsApp', 'Observations']]
         
         cell_style = ParagraphStyle(
             'CellStyle',
@@ -235,10 +226,11 @@ class ExportService:
                 user.country.name if user.country else 'N/A',
                 user.residence_city.name if user.residence_city else 'N/A',
                 user.phone if user.phone else 'N/A',
-                user.whatsapp if user.whatsapp else 'N/A'
+                user.whatsapp if user.whatsapp else 'N/A',
+                ''  # Colonne observations vide pour notes manuelles
             ])
         
-        table = Table(data, colWidths=[1.2*inch, 1.8*inch, 2*inch, 1.3*inch, 1.3*inch, 1.2*inch, 1.2*inch])
+        table = Table(data, colWidths=[1.0*inch, 1.5*inch, 1.8*inch, 1.1*inch, 1.1*inch, 1.0*inch, 1.0*inch, 1.5*inch])
         table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#4F46E5')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
@@ -723,6 +715,123 @@ class ExportService:
             ]))
             elements.append(social_table)
             elements.append(Spacer(1, 15))
+        
+        # ==== SECTION ANALYSE IA DU CV ====
+        ai_analysis_title = Table([['ANALYSE IA DU CV']], colWidths=[6.5*inch])
+        ai_analysis_title.setStyle(TableStyle([
+            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#8B5CF6')),
+            ('TEXTCOLOR', (0, 0), (-1, -1), colors.white),
+            ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, 0), (-1, -1), 14),
+            ('TOPPADDING', (0, 0), (-1, -1), 8),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+            ('LEFTPADDING', (0, 0), (-1, -1), 10),
+        ]))
+        elements.append(ai_analysis_title)
+        
+        # Vérifier si l'analyse IA existe
+        if user.cv_analysis:
+            try:
+                import json
+                analysis = json.loads(user.cv_analysis)
+                
+                analysis_style = ParagraphStyle(
+                    'Analysis',
+                    parent=styles['Normal'],
+                    fontSize=10,
+                    leading=14,
+                    alignment=TA_LEFT
+                )
+                
+                # Score et date d'analyse
+                analysis_data = []
+                if analysis.get('score'):
+                    analysis_data.append(['Score du CV', f"{analysis['score']}/100"])
+                if user.cv_analyzed_at:
+                    analysis_data.append(['Analysé le', user.cv_analyzed_at.strftime('%d/%m/%Y à %H:%M')])
+                
+                # Points forts
+                if analysis.get('strengths'):
+                    strengths_text = '• ' + '\n• '.join(analysis['strengths'])
+                    analysis_data.append(['Points forts', Paragraph(strengths_text, analysis_style)])
+                
+                # Points faibles
+                if analysis.get('weaknesses'):
+                    weaknesses_text = '• ' + '\n• '.join(analysis['weaknesses'])
+                    analysis_data.append(['Points à améliorer', Paragraph(weaknesses_text, analysis_style)])
+                
+                # Recommandations
+                if analysis.get('recommendations'):
+                    recommendations_text = '• ' + '\n• '.join(analysis['recommendations'])
+                    analysis_data.append(['Recommandations', Paragraph(recommendations_text, analysis_style)])
+                
+                # Compétences détectées
+                if analysis.get('skills_detected'):
+                    skills_text = ', '.join(analysis['skills_detected'])
+                    analysis_data.append(['Compétences détectées', Paragraph(skills_text, analysis_style)])
+                
+                # Années d'expérience détectées
+                if analysis.get('experience_years'):
+                    analysis_data.append(['Expérience estimée', f"{analysis['experience_years']} ans"])
+                
+                if analysis_data:
+                    analysis_table = Table(analysis_data, colWidths=[2*inch, 4.5*inch])
+                    analysis_table.setStyle(TableStyle([
+                        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+                        ('FONTNAME', (1, 0), (1, -1), 'Helvetica'),
+                        ('FONTSIZE', (0, 0), (-1, -1), 10),
+                        ('TOPPADDING', (0, 0), (-1, -1), 8),
+                        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+                        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                        ('BACKGROUND', (0, 0), (0, -1), colors.HexColor('#EDE9FE')),
+                        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                        ('GRID', (0, 0), (-1, -1), 0.5, color_gray),
+                        ('ROWBACKGROUNDS', (1, 0), (1, -1), [colors.white, colors.HexColor('#F9FAFB')]),
+                    ]))
+                    elements.append(analysis_table)
+                else:
+                    # Si le JSON existe mais est vide
+                    no_analysis_para = Paragraph("Analyse non disponible", content_style)
+                    no_analysis_table = Table([[no_analysis_para]], colWidths=[6.5*inch])
+                    no_analysis_table.setStyle(TableStyle([
+                        ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#FEF3C7')),
+                        ('TOPPADDING', (0, 0), (-1, -1), 10),
+                        ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                        ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                        ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
+                    ]))
+                    elements.append(no_analysis_table)
+            except:
+                # Si l'analyse existe mais ne peut pas être parsée
+                no_analysis_para = Paragraph("Analyse non disponible", content_style)
+                no_analysis_table = Table([[no_analysis_para]], colWidths=[6.5*inch])
+                no_analysis_table.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#FEF3C7')),
+                    ('TOPPADDING', (0, 0), (-1, -1), 10),
+                    ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                    ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                    ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                    ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
+                ]))
+                elements.append(no_analysis_table)
+        else:
+            # Si aucune analyse n'est disponible
+            no_analysis_para = Paragraph("Analyse non disponible", content_style)
+            no_analysis_table = Table([[no_analysis_para]], colWidths=[6.5*inch])
+            no_analysis_table.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#FEF3C7')),
+                ('TOPPADDING', (0, 0), (-1, -1), 10),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
+                ('LEFTPADDING', (0, 0), (-1, -1), 10),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 10),
+                ('BOX', (0, 0), (-1, -1), 0.5, color_gray),
+            ]))
+            elements.append(no_analysis_table)
+        
+        elements.append(Spacer(1, 15))
         
         # ==== FOOTER ====
         elements.append(Spacer(1, 20))

@@ -65,7 +65,9 @@ class AIMatchingService:
                         None  # api_key is now handled by AIProviderService
                     )
                     
-                    if match_result and match_result.get('score', 0) > 0:
+                    # Accepter tous les résultats avec un score >= 0 (y compris 0 pour voir pourquoi ça ne matche pas)
+                    # Mais en production, on pourrait filtrer sur score >= 10 ou 20
+                    if match_result and match_result.get('score', 0) >= 0:
                         matched_candidates.append(match_result)
                 
                 except Exception as e:
@@ -95,10 +97,14 @@ class AIMatchingService:
             'code': user.formatted_code,
             'nom': user.full_name,
             'email': user.email,
-            'ville': user.city.name if user.city else None,
-            'pays': user.country.name if user.country else None,
-            'disponibilite': user.availability,
-            'mode_travail': user.work_mode,
+            'pays_origine': user.country.name if user.country else 'Non spécifié',
+            'nationalite': user.nationality or 'Non spécifiée',
+            'ville': user.city.name if user.city else 'Non spécifiée',
+            'pays': user.country.name if user.country else 'Non spécifié',
+            'ville_residence': user.residence_city.name if user.residence_city else 'Non spécifiée',
+            'pays_residence': user.residence_country.name if user.residence_country else 'Non spécifié',
+            'disponibilite': user.availability or 'Non spécifiée',
+            'mode_travail': user.work_mode or 'Non spécifié',
             'talents': [],
             'competences_cv': None
         }
@@ -169,7 +175,9 @@ DESCRIPTION DU POSTE:
 PROFIL DU CANDIDAT:
 Nom: {profile_data['nom']}
 Code: {profile_data['code']}
-Localisation: {profile_data['ville']}, {profile_data['pays']}
+Pays d'origine: {profile_data['pays_origine']}
+Nationalité: {profile_data['nationalite']}
+Localisation actuelle: {profile_data['ville_residence']}, {profile_data['pays_residence']}
 Disponibilité: {profile_data['disponibilite']}
 Mode de travail: {profile_data['mode_travail']}
 Talents/Compétences déclarés: {', '.join(profile_data['talents']) if profile_data['talents'] else 'Aucun'}
@@ -178,10 +186,11 @@ Talents/Compétences déclarés: {', '.join(profile_data['talents']) if profile_
 {profile_data['competences_cv'] if profile_data['competences_cv'] else "CV non disponible"}
 
 INSTRUCTIONS:
-1. Attribue un score de matching de 0 à 100 (0 = pas du tout adapté, 100 = parfaitement adapté)
-2. Fournis une explication détaillée en français expliquant pourquoi ce candidat correspond ou non au poste
-3. Liste les points forts du candidat pour ce poste
-4. Liste les points faibles ou manques éventuels
+1. Analyse TOUS les critères de la description du poste (localisation, nationalité, compétences, disponibilité, mode de travail, etc.)
+2. Attribue un score de matching de 0 à 100 (0 = pas du tout adapté, 100 = parfaitement adapté)
+3. Si plusieurs critères correspondent même partiellement, donne un score > 0
+4. Fournis une explication détaillée en français expliquant pourquoi ce candidat correspond ou non
+5. Liste les points forts et faibles
 
 Réponds UNIQUEMENT avec ce format JSON (pas de texte avant ou après):
 {{
@@ -275,7 +284,9 @@ Réponds UNIQUEMENT avec ce format JSON (pas de texte avant ou après):
                         None  # api_key is now handled by AIProviderService
                     )
                     
-                    if match_result and match_result.get('score', 0) > 0:
+                    # Accepter tous les résultats avec un score >= 0 (y compris 0 pour voir pourquoi ça ne matche pas)
+                    # Mais en production, on pourrait filtrer sur score >= 10 ou 20
+                    if match_result and match_result.get('score', 0) >= 0:
                         matched_candidates.append(match_result)
                 
                 except Exception as e:
@@ -307,23 +318,26 @@ Réponds UNIQUEMENT avec ce format JSON (pas de texte avant ou après):
             'code': talent.unique_code if talent.unique_code else f'ID-{talent.id}',
             'nom': f"{talent.first_name} {talent.last_name}",
             'email': talent.email,
-            'ville': talent.city_of_residence,
-            'pays': talent.country_of_residence,
-            'age': talent.age,
+            'pays_origine': talent.country_of_origin or 'Non spécifié',
+            'nationalite': talent.nationality or 'Non spécifiée',
+            'ville': talent.city_of_residence or 'Non spécifiée',
+            'pays': talent.country_of_residence or 'Non spécifié',
+            'age': talent.age if talent.age else 'Non spécifié',
             'genre': 'Homme' if talent.gender == 'M' else 'Femme' if talent.gender == 'F' else 'Autre',
-            'taille': f"{talent.height} cm" if talent.height else None,
-            'poids': f"{talent.weight} kg" if talent.weight else None,
-            'teint': talent.skin_tone,
-            'couleur_yeux': talent.eye_color,
-            'couleur_cheveux': talent.hair_color,
-            'type_cheveux': talent.hair_type,
-            'corpulence': talent.build,
+            'taille': f"{talent.height} cm" if talent.height else 'Non spécifiée',
+            'poids': f"{talent.weight} kg" if talent.weight else 'Non spécifié',
+            'teint': talent.skin_tone or 'Non spécifié',
+            'couleur_yeux': talent.eye_color or 'Non spécifiée',
+            'couleur_cheveux': talent.hair_color or 'Non spécifiée',
+            'type_cheveux': talent.hair_type or 'Non spécifié',
+            'corpulence': talent.build or 'Non spécifiée',
             'ethnicites': json.loads(talent.ethnicities) if talent.ethnicities else [],
             'types_talents': json.loads(talent.talent_types) if talent.talent_types else [],
+            'autres_talents': json.loads(talent.other_talents) if talent.other_talents else [],
             'langues': json.loads(talent.languages_spoken) if talent.languages_spoken else [],
             'competences': json.loads(talent.skills) if talent.skills else [],
-            'experience': talent.experience_years,
-            'bio': talent.bio
+            'experience': talent.experience_years if talent.experience_years else 0,
+            'bio': talent.bio or 'Non renseignée'
         }
         
         return profile_data
@@ -335,6 +349,13 @@ Réponds UNIQUEMENT avec ce format JSON (pas de texte avant ou après):
             from app.services.ai_provider_service import AIProviderService
             import json
             
+            # Construire les listes de talents et compétences
+            talents_list = []
+            if profile_data['types_talents']:
+                talents_list.extend(profile_data['types_talents'])
+            if profile_data['autres_talents']:
+                talents_list.extend(profile_data['autres_talents'])
+            
             prompt = f"""Tu es un directeur de casting professionnel. Analyse le profil du talent suivant par rapport à cette description de rôle et détermine s'il correspond au casting.
 
 DESCRIPTION DU RÔLE:
@@ -343,9 +364,13 @@ DESCRIPTION DU RÔLE:
 PROFIL DU TALENT:
 Nom: {profile_data['nom']}
 Code: {profile_data['code']}
-Âge: {profile_data['age']} ans
+Âge: {profile_data['age']}
 Genre: {profile_data['genre']}
-Localisation: {profile_data['ville']}, {profile_data['pays']}
+Pays d'origine: {profile_data['pays_origine']}
+Nationalité: {profile_data['nationalite']}
+Résidence actuelle: {profile_data['ville']}, {profile_data['pays']}
+
+CARACTÉRISTIQUES PHYSIQUES:
 Taille: {profile_data['taille']}
 Poids: {profile_data['poids']}
 Teint de peau: {profile_data['teint']}
@@ -353,18 +378,23 @@ Couleur des yeux: {profile_data['couleur_yeux']}
 Couleur des cheveux: {profile_data['couleur_cheveux']}
 Type de cheveux: {profile_data['type_cheveux']}
 Corpulence: {profile_data['corpulence']}
+
+ORIGINES ET TALENTS:
 Ethnicités: {', '.join(profile_data['ethnicites']) if profile_data['ethnicites'] else 'Non spécifié'}
-Types de talents: {', '.join(profile_data['types_talents']) if profile_data['types_talents'] else 'Non spécifié'}
+Talents artistiques: {', '.join(talents_list) if talents_list else 'Non spécifié'}
 Langues parlées: {', '.join(profile_data['langues']) if profile_data['langues'] else 'Non spécifié'}
 Compétences spéciales: {', '.join(profile_data['competences']) if profile_data['competences'] else 'Aucune'}
+
+EXPÉRIENCE:
 Années d'expérience: {profile_data['experience']} ans
-Bio: {profile_data['bio'] if profile_data['bio'] else 'Non renseignée'}
+Bio: {profile_data['bio']}
 
 INSTRUCTIONS:
-1. Attribue un score de matching de 0 à 100 (0 = pas du tout adapté, 100 = parfaitement adapté)
-2. Fournis une explication détaillée en français expliquant pourquoi ce talent correspond ou non au rôle
-3. Liste les points forts du talent pour ce rôle (caractéristiques physiques, compétences, expérience)
-4. Liste les points faibles ou manques éventuels
+1. Analyse TOUS les critères de la description du rôle (genre, âge, nationalité, caractéristiques physiques, compétences, etc.)
+2. Attribue un score de matching de 0 à 100 (0 = pas du tout adapté, 100 = parfaitement adapté)
+3. Si plusieurs critères correspondent même partiellement, donne un score > 0
+4. Fournis une explication détaillée en français expliquant pourquoi ce talent correspond ou non
+5. Liste les points forts et faibles
 
 Réponds UNIQUEMENT avec ce format JSON (pas de texte avant ou après):
 {{

@@ -88,6 +88,16 @@ def edit():
             city_id = request.form.get('city_id')
             current_user.city_id = int(city_id) if city_id else None
             
+            # Nationalité
+            current_user.nationality = request.form.get('nationality', '').strip() or None
+            
+            # Pays et ville de résidence
+            residence_country_id = request.form.get('residence_country_id')
+            current_user.residence_country_id = int(residence_country_id) if residence_country_id else None
+            
+            residence_city_id = request.form.get('residence_city_id')
+            current_user.residence_city_id = int(residence_city_id) if residence_city_id else None
+            
             current_user.availability = request.form.get('availability')
             current_user.work_mode = request.form.get('work_mode')
             current_user.rate_range = request.form.get('rate_range', '').strip() or None
@@ -185,6 +195,7 @@ def edit():
             flash(f'Une erreur est survenue: {str(e)}', 'error')
     
     from app.constants import LANGUAGES_CINEMA
+    from app.data.world_countries import WORLD_COUNTRIES
     
     countries = Country.query.order_by(Country.name).all()
     cities = City.query.order_by(City.name).all()
@@ -203,6 +214,7 @@ def edit():
                          user=current_user,
                          countries=countries,
                          cities=cities,
+                         countries_with_nationalities=WORLD_COUNTRIES,
                          all_talents=all_talents,
                          user_talent_ids=user_talent_ids,
                          all_languages=LANGUAGES_CINEMA,
