@@ -1,0 +1,70 @@
+CURRICULUM VITAE
+
+Jean Dupont
+Développeur Full Stack Senior
+Email: jean.dupont@example.com
+Téléphone: +243 81 234 5678
+Localisation: Kinshasa, RDC
+
+RÉSUMÉ PROFESSIONNEL
+Développeur Full Stack passionné avec 8 ans d'expérience dans la conception et le développement d'applications web et mobiles. Expert en Python, JavaScript, et technologies cloud. Forte capacité à diriger des équipes techniques et à livrer des projets complexes dans les délais impartis.
+
+EXPÉRIENCE PROFESSIONNELLE
+
+Développeur Full Stack Senior | TechCorp DRC | 2020 - Présent
+- Direction d'une équipe de 5 développeurs pour la création d'une plateforme e-commerce
+- Développement d'API REST avec Flask et Django
+- Mise en place d'une architecture microservices sur AWS
+- Amélioration des performances de 40% grâce à l'optimisation du code
+- Formation et mentorat de développeurs juniors
+
+Développeur Backend | Digital Solutions | 2018 - 2020
+- Développement de modules backend en Python et Node.js
+- Intégration de services de paiement mobile (M-Pesa, Airtel Money)
+- Création de tableaux de bord analytiques avec React
+- Réduction du temps de réponse API de 60%
+
+Développeur Web | StartUp Innovante | 2016 - 2018
+- Développement d'applications web avec Flask et JavaScript
+- Création de sites e-commerce pour PME locales
+- Gestion de bases de données PostgreSQL et MongoDB
+- Support technique et maintenance des applications
+
+FORMATION
+Licence en Informatique | Université de Kinshasa | 2012 - 2016
+- Mention: Très Bien
+- Projet de fin d'études: Système de gestion scolaire
+
+CERTIFICATIONS
+- AWS Certified Solutions Architect (2021)
+- Google Cloud Professional Developer (2020)
+- Certified Scrum Master (2019)
+
+COMPÉTENCES TECHNIQUES
+Langages: Python, JavaScript, TypeScript, SQL, HTML/CSS
+Frameworks: Flask, Django, React, Vue.js, Node.js
+Bases de données: PostgreSQL, MongoDB, Redis, MySQL
+Cloud: AWS, Google Cloud, Azure
+DevOps: Docker, Kubernetes, CI/CD, Git, Jenkins
+Outils: Jira, Slack, VS Code, Postman
+
+COMPÉTENCES INTERPERSONNELLES
+- Leadership d'équipe
+- Communication efficace
+- Résolution de problèmes
+- Gestion de projet Agile/Scrum
+- Mentorat et formation
+
+LANGUES
+- Français: Langue maternelle
+- Anglais: Courant
+- Lingala: Courant
+
+RÉALISATIONS NOTABLES
+- Augmentation du trafic web de 150% pour un client e-commerce
+- Réduction des coûts d'infrastructure cloud de 35%
+- Publication de 3 articles techniques sur Medium
+- Contribution à 5 projets open source sur GitHub
+
+RÉFÉRENCES
+Disponibles sur demande
