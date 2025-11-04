@@ -39,17 +39,17 @@ class AIProviderService:
             config['endpoint'] = 'https://openrouter.ai/api/v1/chat/completions'
         
         elif provider == 'perplexity':
-            config['api_key'] = AppSettings.get('perplexity_api_key')
+            config['api_key'] = AppSettings.get('perplexity_api_key') or os.environ.get('PERPLEXITY_API_KEY')
             config['model'] = AppSettings.get('perplexity_model', 'sonar')
             config['endpoint'] = 'https://api.perplexity.ai/chat/completions'
         
         elif provider == 'openai':
-            config['api_key'] = AppSettings.get('openai_api_key')
+            config['api_key'] = AppSettings.get('openai_api_key') or os.environ.get('OPENAI_API_KEY')
             config['model'] = AppSettings.get('openai_model', 'gpt-4o-mini')
             config['endpoint'] = 'https://api.openai.com/v1/chat/completions'
         
         elif provider == 'gemini':
-            config['api_key'] = AppSettings.get('gemini_api_key')
+            config['api_key'] = AppSettings.get('gemini_api_key') or os.environ.get('GEMINI_API_KEY')
             config['model'] = AppSettings.get('gemini_model', 'gemini-2.0-flash-exp')
             config['endpoint'] = 'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent'
         

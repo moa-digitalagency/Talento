@@ -48,6 +48,28 @@ The platform manages two sets of location data for each user: City of Origin and
 
 ## Recent Changes
 
+### [04/11/2025] Feature Verification and Enhancements
+- **CV Download Functionality**: Added CV download button in user profile view, accessible to both profile owners and admins
+  - Button appears in the "Analyse du Profil" section header
+  - Direct download link to uploaded CV file
+  - Visible for authenticated users viewing their own profile or admins viewing any profile
+- **Email Notification System**: Verified all email templates function correctly
+  - Talent registration confirmations (standard and cinema)
+  - Login credentials distribution
+  - AI match notifications (talent and cinema)
+  - Project selection confirmations
+  - Weekly admin recaps (automated every Sunday at 12:59 PM)
+  - Watchlist/name detection alerts
+- **Cinema Film Search**: Confirmed OMDB API integration in cinema registration form
+  - Real-time film/series search functionality
+  - Movie selection with poster display
+  - Manual production entry fallback option
+- **AI Provider Support**: Verified multi-provider AI functionality
+  - Google Gemini API properly integrated and functional
+  - Support for OpenRouter, Bytez, Perplexity, OpenAI, and Gemini
+  - Configurable via admin settings or environment variables
+  - Used for CV analysis, talent matching, and job description analysis
+
 ### [04/11/2025] Navigation Menu and Admin Settings Enhancements
 - **Navigation buttons redesign**: Renamed and restyled registration buttons for better clarity
   - "S'inscrire" → "Inscription Talent" (blue outline style)

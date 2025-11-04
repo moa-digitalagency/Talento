@@ -151,9 +151,18 @@
 
         <!-- Score et Analyse CV -->
         <div class="section-yellow p-8 mb-8">
-            <div class="flex items-center gap-3 mb-6">
-                <span class="text-4xl">🎯</span>
-                <h2 class="text-2xl font-bold text-gray-800">Analyse du Profil</h2>
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <span class="text-4xl">🎯</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Analyse du Profil</h2>
+                </div>
+                {% if user.cv_filename and current_user.is_authenticated and (current_user.id == user.id or current_user.is_admin) %}
+                <a href="{{ url_for('static', filename='uploads/cvs/' + user.cv_filename) }}" download
+                   class="px-4 sm:px-6 py-2 sm:py-3 bg-green-100 text-green-700 font-bold rounded-lg border-2 border-green-500 hover:bg-green-200 transition-all flex items-center gap-2">
+                    <span>📎</span>
+                    <span>Télécharger CV</span>
+                </a>
+                {% endif %}
             </div>
             
             {% if not user.cv_filename %}

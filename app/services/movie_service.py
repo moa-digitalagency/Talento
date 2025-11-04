@@ -23,7 +23,7 @@ def search_movies(query, page=1):
     Returns:
         dict: Résultats de recherche ou erreur
     """
-    from app.models.app_settings import AppSettings
+    from app.models.settings import AppSettings
     
     OMDB_API_KEY = AppSettings.get('omdb_api_key', '') or os.environ.get('OMDB_API_KEY', '')
     
