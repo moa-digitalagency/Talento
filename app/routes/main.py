@@ -23,14 +23,17 @@ logger = logging.getLogger(__name__)
 bp = Blueprint('main', __name__)
 
 @bp.route('/')
-@login_required
 def index():
-    # Si l'utilisateur est admin, afficher la vue admin avec filtres
-    if current_user.is_admin:
-        return admin_dashboard()
+    if current_user.is_authenticated:
+        # Si l'utilisateur est admin, afficher la vue admin avec filtres
+        if current_user.is_admin:
+            return admin_dashboard()
+        else:
+            # Sinon, afficher le profil de l'utilisateur
+            return render_template('profile/dashboard.html', user=current_user)
     else:
-        # Sinon, afficher le profil de l'utilisateur
-        return render_template('profile/dashboard.html', user=current_user)
+        # Rediriger vers la page d'inscription pour les visiteurs
+        return redirect(url_for('auth.register'))
 
 def admin_dashboard():
     """Dashboard admin avec statistiques et filtres"""

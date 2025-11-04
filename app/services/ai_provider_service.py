@@ -56,7 +56,7 @@ class AIProviderService:
         elif provider == 'bytez':
             config['api_key'] = AppSettings.get('bytez_api_key') or os.environ.get('BYTEZ_API_KEY')
             config['model'] = AppSettings.get('bytez_model', 'Qwen/Qwen2.5-72B-Instruct')
-            config['endpoint'] = 'https://api.bytez.com/models/v2/{model}/run'
+            config['endpoint'] = 'https://api.bytez.com/models/v2/{model}'
         
         return config
     
@@ -271,8 +271,10 @@ class AIProviderService:
         Appelle l'API Bytez (format spécifique Bytez, pas OpenAI)
         Supporte les modèles open-source et closed-source
         Documentation: https://docs.bytez.com/model-api/docs/welcome
-        Endpoint: https://api.bytez.com/models/v2/{model}/run
+        Endpoint: https://api.bytez.com/models/v2/{model}
         """
+        import urllib.parse
+        
         api_key = config['api_key'].strip()
         
         if not api_key:
@@ -283,7 +285,7 @@ class AIProviderService:
             }
         
         headers = {
-            'Authorization': f'Bearer {api_key}',
+            'Authorization': api_key,
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
@@ -301,11 +303,14 @@ class AIProviderService:
         
         data = {
             'messages': messages,
-            'temperature': temperature,
-            'max_new_tokens': 2048
+            'params': {
+                'temperature': temperature,
+                'max_length': 2048
+            }
         }
         
-        endpoint = config['endpoint'].format(model=config['model'])
+        model_encoded = urllib.parse.quote(config['model'], safe='')
+        endpoint = config['endpoint'].format(model=model_encoded)
         
         logger.info(f"Appel API Bytez - Modèle: {config['model']}")
         logger.info(f"Endpoint: {endpoint}")

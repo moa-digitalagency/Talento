@@ -102,6 +102,10 @@
                             <a href="{{ url_for('auth.register') }}" class="btn-primary px-4">
                                 ✨ <span>S'inscrire</span>
                             </a>
+                            <a href="{{ url_for('cinema.register') }}" class="px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded-lg transition-all font-semibold">
+                                <span>🎬</span>
+                                <span>Inscription Talent</span>
+                            </a>
                         </div>
                         <!-- Mobile Hamburger Menu (Not Authenticated) -->
                         <div class="md:hidden">
@@ -173,8 +177,11 @@
                         <span class="ml-2">Connexion</span>
                     </a>
                     <a href="{{ url_for('auth.register') }}" class="block px-4 py-3 bg-blue-600 text-white hover:bg-blue-700 rounded-lg transition-all font-semibold">
-                        <span>✨</span>
-                        <span class="ml-2">S'inscrire</span>
+                        ✨ <span class="ml-2">S'inscrire</span>
+                    </a>
+                    <a href="{{ url_for('cinema.register') }}" class="block px-4 py-3 bg-red-600 text-white hover:bg-red-700 rounded-lg transition-all font-semibold">
+                        <span>🎬</span>
+                        <span class="ml-2">Inscription Talent</span>
                     </a>
                 {% endif %}
             </div>
