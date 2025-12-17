@@ -18,6 +18,13 @@ def _ensure_essential_data_loaded():
     Vérifier et charger les données essentielles (pays, villes, talents)
     Cette fonction est appelée au démarrage de l'application
     """
+    import os
+    
+    # Skip data loading if SKIP_AUTO_MIGRATION is set (for faster startup)
+    if os.environ.get('SKIP_AUTO_MIGRATION') == '1':
+        print("⏭️  Chargement des données essentielles ignoré (SKIP_AUTO_MIGRATION=1)")
+        return
+    
     from app.models.location import Country, City
     from app.models.talent import Talent
     import subprocess
