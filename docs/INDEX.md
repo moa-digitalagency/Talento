@@ -1,160 +1,233 @@
-# Talento - Documentation Index
+# taalentio.com - Index de Documentation
 
-> Central documentation hub for the Talento platform | Centre de documentation de la plateforme Talento
-
-**Version:** 2.0  
-**Last Updated / Dernière mise à jour:** 1er novembre 2025
-
-## 📚 Documentation Structure / Structure de la Documentation
-
-All documentation is available in **French (FR)** and **English (EN)**.  
-Toute la documentation est disponible en **français (FR)** et **anglais (EN)**.
-
-## 📖 Main Documents / Documents Principaux
-
-### README - Project Overview / Vue d'ensemble du projet
-
-Complete documentation about the Talento platform.  
-Documentation complète sur la plateforme Talento.
-
-- 🇫🇷 **French:** [README.fr.md](./README.fr.md)
-- 🇬🇧 **English:** [README.en.md](./README.en.md)
+**Centre de documentation de la plateforme de talents africains**
+**Version 2.0 | Derniere mise a jour : Decembre 2024**
 
 ---
 
-### CHANGELOG - Version History / Historique des versions
+## Structure de la documentation
 
-All notable changes and updates to the project.  
-Toutes les modifications et mises à jour notables du projet.
-
-- 🇫🇷 **French:** [CHANGELOG.fr.md](./CHANGELOG.fr.md)
-- 🇬🇧 **English:** [CHANGELOG.en.md](./CHANGELOG.en.md)
+Toute la documentation est organisee par theme et public cible.
 
 ---
 
-### DEPLOYMENT - Deployment Guide / Guide de déploiement
+## Documents disponibles
 
-Complete guide for deploying Talento in production and development.  
-Guide complet pour déployer Talento en production et développement.
+### Guide Utilisateur
 
-- 🇫🇷 **French:** [DEPLOYMENT.fr.md](./DEPLOYMENT.fr.md)
-- 🇬🇧 **English:** [DEPLOYMENT.en.md](./DEPLOYMENT.en.md)
+Documentation complete pour les utilisateurs finaux de la plateforme.
 
----
+**Fichier :** [GUIDE_UTILISATEUR.md](./GUIDE_UTILISATEUR.md)
 
-### TECHNICAL_DOCUMENTATION - Technical Details / Détails techniques
-
-In-depth technical documentation covering architecture, APIs, and implementation.  
-Documentation technique approfondie couvrant l'architecture, les APIs et l'implémentation.
-
-- 🇫🇷 **French:** [TECHNICAL_DOCUMENTATION.fr.md](./TECHNICAL_DOCUMENTATION.fr.md)
-- 🇬🇧 **English:** [TECHNICAL_DOCUMENTATION.en.md](./TECHNICAL_DOCUMENTATION.en.md)
+**Contenu :**
+- Presentation de la plateforme
+- Inscription et creation de compte
+- Connexion et gestion du profil
+- Module CINEMA
+- Questions frequentes
 
 ---
 
-### DATABASE_MANAGER - Database Management / Gestion de la base de données
+### Guide Commercial
 
-Guide for using the database manager tool (`database_manager.py`).  
-Guide d'utilisation de l'outil de gestion de base de données (`database_manager.py`).
+Documentation business et commerciale.
 
-- 🇫🇷 **French:** [DATABASE_MANAGER.fr.md](./DATABASE_MANAGER.fr.md)
-- 🇬🇧 **English:** [DATABASE_MANAGER.en.md](./DATABASE_MANAGER.en.md)
+**Fichier :** [GUIDE_COMMERCIAL.md](./GUIDE_COMMERCIAL.md)
 
----
-
-### DATABASE_USAGE - Legacy Database Documentation / Documentation base de données (ancien)
-
-⚠️ **Note:** This document is in French only and contains legacy database usage information.  
-⚠️ **Note:** Ce document est en français uniquement et contient des informations d'utilisation de base de données héritées.
-
-- 🇫🇷 **French:** [DATABASE_USAGE.fr.md](./DATABASE_USAGE.fr.md)
+**Contenu :**
+- Vision et positionnement
+- Marche cible
+- Proposition de valeur
+- Fonctionnalites cles
+- Avantages concurrentiels
+- Cas d'usage
 
 ---
 
-## 🚀 Quick Navigation / Navigation Rapide
+### Architecture Technique
 
-### For Developers / Pour les Développeurs
+Documentation technique detaillee du systeme.
 
-1. **Getting Started / Démarrage**
-   - [README (FR)](./README.fr.md) | [README (EN)](./README.en.md)
-   - [Deployment Guide (FR)](./DEPLOYMENT.fr.md) | [Deployment Guide (EN)](./DEPLOYMENT.en.md)
+**Fichier :** [ARCHITECTURE_TECHNIQUE.md](./ARCHITECTURE_TECHNIQUE.md)
 
-2. **Database Setup / Configuration de la base de données**
-   - [Database Manager (FR)](./DATABASE_MANAGER.fr.md) | [Database Manager (EN)](./DATABASE_MANAGER.en.md)
-
-3. **Technical Reference / Référence technique**
-   - [Technical Documentation (FR)](./TECHNICAL_DOCUMENTATION.fr.md) | [Technical Documentation (EN)](./TECHNICAL_DOCUMENTATION.en.md)
-
-### For Administrators / Pour les Administrateurs
-
-1. **Deployment / Déploiement**
-   - [Deployment Guide (FR)](./DEPLOYMENT.fr.md) | [Deployment Guide (EN)](./DEPLOYMENT.en.md)
-
-2. **Maintenance / Maintenance**
-   - [Database Manager (FR)](./DATABASE_MANAGER.fr.md) | [Database Manager (EN)](./DATABASE_MANAGER.en.md)
-   - [Changelog (FR)](./CHANGELOG.fr.md) | [Changelog (EN)](./CHANGELOG.en.md)
+**Contenu :**
+- Vue d'ensemble
+- Stack technologique
+- Structure du projet
+- Base de donnees
+- Securite
+- Services externes
+- Deploiement
 
 ---
 
-## 📝 Document Descriptions / Descriptions des documents
+### Module CINEMA
 
-### README
-- Project overview / Vue d'ensemble du projet
-- Features / Fonctionnalités
-- Quick start guide / Guide de démarrage rapide
-- Technology stack / Stack technologique
+Documentation complete du module cinematographique.
 
-### CHANGELOG
-- Version history / Historique des versions
-- New features / Nouvelles fonctionnalités
-- Bug fixes / Corrections de bugs
-- Breaking changes / Changements incompatibles
+**Fichier :** [MODULE_CINEMA.md](./MODULE_CINEMA.md)
 
-### DEPLOYMENT
-- Installation prerequisites / Prérequis d'installation
-- Development setup / Configuration de développement
-- Production deployment / Déploiement en production
-- Security checklist / Liste de vérification de sécurité
-
-### TECHNICAL_DOCUMENTATION
-- Architecture / Architecture
-- Database schema / Schéma de base de données
-- API endpoints / Points de terminaison API
-- Security implementation / Implémentation de la sécurité
-
-### DATABASE_MANAGER
-- Database initialization / Initialisation de la base de données
-- Migration guide / Guide de migration
-- Backup and restore / Sauvegarde et restauration
-- Command-line options / Options de ligne de commande
+**Contenu :**
+- Inscription des talents
+- Caracteristiques physiques
+- Types de talents
+- Gestion des productions
+- Gestion des projets
+- Systeme de presences
+- Recherche et casting
 
 ---
 
-## 🔍 Finding Information / Trouver des informations
+### Reference API
 
-### By Topic / Par sujet
+Documentation complete de l'API REST.
 
-**Installation:**
-- [Deployment Guide (FR)](./DEPLOYMENT.fr.md) | [Deployment Guide (EN)](./DEPLOYMENT.en.md)
+**Fichier :** [API_COMPLETE.md](./API_COMPLETE.md)
 
-**Database:**
-- [Database Manager (FR)](./DATABASE_MANAGER.fr.md) | [Database Manager (EN)](./DATABASE_MANAGER.en.md)
-
-**API:**
-- [Technical Documentation (FR)](./TECHNICAL_DOCUMENTATION.fr.md) | [Technical Documentation (EN)](./TECHNICAL_DOCUMENTATION.en.md)
-
-**Updates:**
-- [Changelog (FR)](./CHANGELOG.fr.md) | [Changelog (EN)](./CHANGELOG.en.md)
-
----
-
-## 📧 Contact & Support
-
-**MOA Digital Agency LLC**  
-Developer / Développeur: Aisance KALONJI  
-Email: moa@myoneart.com  
-Website / Site web: www.myoneart.com
+**Contenu :**
+- Authentification
+- Endpoints utilisateurs
+- Endpoints talents
+- Endpoints CINEMA
+- Statistiques
+- Exports
+- Exemples d'integration
 
 ---
 
-**[← Back to Root README](../README.md)** | **[← Retour au README principal](../README.md)**
+### README Principal
+
+Vue d'ensemble du projet avec toutes les fonctionnalites.
+
+**Fichiers :**
+- [README.fr.md](./README.fr.md) (Francais)
+- [README.en.md](./README.en.md) (English)
+
+---
+
+### Historique des versions
+
+Journal des modifications et mises a jour.
+
+**Fichiers :**
+- [CHANGELOG.fr.md](./CHANGELOG.fr.md) (Francais)
+- [CHANGELOG.en.md](./CHANGELOG.en.md) (English)
+
+---
+
+### Guide de deploiement
+
+Instructions pour le deploiement en production.
+
+**Fichiers :**
+- [DEPLOYMENT.fr.md](./DEPLOYMENT.fr.md) (Francais)
+- [DEPLOYMENT.en.md](./DEPLOYMENT.en.md) (English)
+
+---
+
+### Documentation technique existante
+
+Documentation technique approfondie.
+
+**Fichiers :**
+- [TECHNICAL_DOCUMENTATION.fr.md](./TECHNICAL_DOCUMENTATION.fr.md) (Francais)
+- [TECHNICAL_DOCUMENTATION.en.md](./TECHNICAL_DOCUMENTATION.en.md) (English)
+
+---
+
+### Gestionnaire de base de donnees
+
+Guide d'utilisation de l'outil database_manager.py.
+
+**Fichiers :**
+- [DATABASE_MANAGER.fr.md](./DATABASE_MANAGER.fr.md) (Francais)
+- [DATABASE_MANAGER.en.md](./DATABASE_MANAGER.en.md) (English)
+- [DATABASE_USAGE.fr.md](./DATABASE_USAGE.fr.md) (Francais uniquement)
+
+---
+
+## Navigation par profil
+
+### Pour les utilisateurs
+
+1. [Guide Utilisateur](./GUIDE_UTILISATEUR.md) - Demarrage et utilisation quotidienne
+2. [Module CINEMA](./MODULE_CINEMA.md) - Si vous etes dans l'industrie audiovisuelle
+
+### Pour les recruteurs et productions
+
+1. [Guide Commercial](./GUIDE_COMMERCIAL.md) - Comprendre la proposition de valeur
+2. [Module CINEMA](./MODULE_CINEMA.md) - Gestion des castings et projets
+3. [Guide Utilisateur](./GUIDE_UTILISATEUR.md) - Utilisation de la plateforme
+
+### Pour les developpeurs
+
+1. [Architecture Technique](./ARCHITECTURE_TECHNIQUE.md) - Comprendre le systeme
+2. [Reference API](./API_COMPLETE.md) - Integration avec l'API
+3. [Guide de deploiement](./DEPLOYMENT.fr.md) - Mise en production
+
+### Pour les administrateurs
+
+1. [Guide de deploiement](./DEPLOYMENT.fr.md) - Installation et configuration
+2. [Architecture Technique](./ARCHITECTURE_TECHNIQUE.md) - Maintenance
+3. [Gestionnaire de base](./DATABASE_MANAGER.fr.md) - Operations base de donnees
+
+---
+
+## Navigation par sujet
+
+### Inscription et profils
+
+- [Guide Utilisateur - Inscription](./GUIDE_UTILISATEUR.md#inscription-et-creation-de-compte)
+- [Module CINEMA - Inscription talents](./MODULE_CINEMA.md#inscription-des-talents)
+
+### Module CINEMA
+
+- [Documentation complete](./MODULE_CINEMA.md)
+- [README - Section CINEMA](./README.fr.md#module-cinema)
+
+### API et integration
+
+- [Reference API complete](./API_COMPLETE.md)
+- [Architecture - API REST](./ARCHITECTURE_TECHNIQUE.md#api-rest)
+
+### Base de donnees
+
+- [Architecture - Base de donnees](./ARCHITECTURE_TECHNIQUE.md#base-de-donnees)
+- [Gestionnaire DB](./DATABASE_MANAGER.fr.md)
+
+### Securite
+
+- [Architecture - Securite](./ARCHITECTURE_TECHNIQUE.md#securite)
+- [README - Securite](./README.fr.md#securite)
+
+### Deploiement
+
+- [Guide deploiement](./DEPLOYMENT.fr.md)
+- [Architecture - Deploiement](./ARCHITECTURE_TECHNIQUE.md#deploiement)
+
+---
+
+## Mises a jour recentes
+
+| Date | Document | Modification |
+|------|----------|--------------|
+| Dec 2024 | GUIDE_UTILISATEUR.md | Nouveau document |
+| Dec 2024 | GUIDE_COMMERCIAL.md | Nouveau document |
+| Dec 2024 | ARCHITECTURE_TECHNIQUE.md | Nouveau document |
+| Dec 2024 | MODULE_CINEMA.md | Nouveau document |
+| Dec 2024 | API_COMPLETE.md | Nouveau document |
+| Dec 2024 | INDEX.md | Restructuration complete |
+
+---
+
+## Contact et support
+
+**MOA Digital Agency LLC**
+
+- Developpeur : Aisance KALONJI
+- Email : moa@myoneart.com
+- Site : www.myoneart.com
+
+---
+
+**[Retour au README principal](../README.md)**
